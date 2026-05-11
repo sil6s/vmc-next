@@ -1,0 +1,39 @@
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  trailingSlash: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.sanity.io"
+      }
+    ]
+  },
+  async redirects() {
+    return [
+      {
+        source: "/service-item/:slug/",
+        destination: "/services/:slug/",
+        permanent: true
+      },
+      {
+        source: "/online-vet-pharmacy/",
+        destination: "/online-vet-pharmacy-northern-kentucky-cincinnati/",
+        permanent: true
+      },
+      {
+        source: "/veterinary-medical-center-contact/",
+        destination: "/contact/",
+        permanent: true
+      },
+      {
+        source: "/first-vet-visit-northern-kentucky/",
+        destination: "/new-patients/",
+        permanent: true
+      }
+    ];
+  }
+};
+
+export default nextConfig;

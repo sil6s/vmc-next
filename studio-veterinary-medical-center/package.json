@@ -1,0 +1,23 @@
+{
+  "name": "studio-veterinary-medical-center",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "sanity dev",
+    "start": "sanity start",
+    "build": "sanity build",
+    "deploy": "sanity deploy"
+  },
+  "dependencies": {
+    "@sanity/vision": "^5.24.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "sanity": "^5.24.0",
+    "styled-components": "^6.1.19"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.12",
+    "@types/react-dom": "^19.0.4",
+    "typescript": "^5.8.3"
+  }
+}

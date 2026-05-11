@@ -1,0 +1,14 @@
+{
+  "/[...slug]/page": "/[...slug]",
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/blog/[slug]/page": "/blog/[slug]",
+  "/blog/page": "/blog",
+  "/locations/[slug]/page": "/locations/[slug]",
+  "/locations/page": "/locations",
+  "/page": "/",
+  "/robots.txt/route": "/robots.txt",
+  "/services/[slug]/page": "/services/[slug]",
+  "/services/page": "/services",
+  "/sitemap.xml/route": "/sitemap.xml"
+}

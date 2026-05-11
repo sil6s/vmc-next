@@ -1,0 +1,51 @@
+/* VMC Editor Styles – applied inside Gutenberg block editor */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,500;1,700&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+:root {
+  --red:#A91B1B; --dark:#131010; --mid:#5A5050;
+  --cream:#F7F3EC; --warm:#EDE5D8; --gold:#B87D3A;
+}
+
+.editor-styles-wrapper {
+  font-family: 'Instrument Sans', sans-serif;
+  color: var(--dark);
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+.editor-styles-wrapper h1,
+.editor-styles-wrapper h2,
+.editor-styles-wrapper h3,
+.editor-styles-wrapper h4 {
+  font-family: 'Playfair Display', serif;
+  color: var(--dark);
+  line-height: 1.2;
+}
+
+.editor-styles-wrapper h1 { font-size: 42px; }
+.editor-styles-wrapper h2 { font-size: 32px; }
+.editor-styles-wrapper h3 { font-size: 24px; }
+.editor-styles-wrapper h4 { font-size: 18px; }
+
+.editor-styles-wrapper p { color: var(--mid); margin-bottom: 1.2em; }
+
+.editor-styles-wrapper a { color: var(--red); }
+.editor-styles-wrapper a:hover { color: #7A0E0E; }
+
+.editor-styles-wrapper ul,
+.editor-styles-wrapper ol {
+  padding-left: 1.5em;
+  color: var(--mid);
+}
+.editor-styles-wrapper li { margin-bottom: 0.4em; }
+
+.editor-styles-wrapper blockquote {
+  border-left: 3px solid var(--red);
+  margin: 1.5em 0;
+  padding: 16px 24px;
+  background: var(--cream);
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 18px;
+  color: var(--dark);
+}

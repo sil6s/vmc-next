@@ -1,4 +1,0 @@
-import { posts } from '@/lib/content';
-import { buildMetadata } from '@/lib/metadata';
-export const metadata = buildMetadata({title:'Blog | Veterinary Medical Center',description:'Pet health resources from Veterinary Medical Center in Northern Kentucky.'}, '/blog/');
-export default function BlogIndex(){return <><section className="page-hero"><div className="page-hero-inner"><h1 className="hero-h1">Pet Health Blog</h1><p className="hero-body">Helpful resources for Northern Kentucky dog and cat owners.</p></div></section><section className="content-section"><div className="post-grid rv">{posts.map((post)=><article className="post-card" key={post.slug}><span>{post.date}</span><h2>{post.title}</h2><p>{post.excerpt}</p><a href={`/blog/${post.slug}/`}>Read article →</a></article>)}</div></section></>}
