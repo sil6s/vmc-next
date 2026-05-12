@@ -29,6 +29,7 @@ declare global {
 }
 
 const STORAGE_KEY = "vmc_otto_selected_location";
+const LAUNCHER_COMPACT_KEY = "vmc_otto_launcher_compact";
 
 const OTTO_CLINICS: Record<LocationKey, string> = {
   fortThomas:
@@ -79,6 +80,8 @@ export function OttoLocationLauncher() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [mockMessage, setMockMessage] = useState("");
+  const [isLauncherCompact, setIsLauncherCompact] = useState(false);
+  const [isStatusCollapsed, setIsStatusCollapsed] = useState(false);
   const dialogRef = useRef<HTMLDivElement>(null);
   const lastFocusedElement = useRef<HTMLElement | null>(null);
 
@@ -92,6 +95,8 @@ export function OttoLocationLauncher() {
     if (isLocationKey(saved)) {
       setSelectedLocation(saved);
     }
+
+    setIsLauncherCompact(window.localStorage.getItem(LAUNCHER_COMPACT_KEY) === "true");
 
     const checkOtto = () => setIsOttoReady(Boolean(window.otto?.widget));
     checkOtto();
@@ -154,6 +159,7 @@ export function OttoLocationLauncher() {
     setErrorMessage("");
     setMockMessage("");
     setSelectedLocation(locationKey);
+    setIsStatusCollapsed(false);
     window.localStorage.setItem(STORAGE_KEY, locationKey);
 
     if (!window.otto?.widget) {
@@ -198,6 +204,7 @@ export function OttoLocationLauncher() {
     setSelectedLocation(null);
     setMockMessage("");
     setErrorMessage("");
+    setIsStatusCollapsed(false);
     try {
       window.otto?.widget?.destroy?.();
     } catch (error) {
@@ -206,11 +213,28 @@ export function OttoLocationLauncher() {
     setIsSelectorOpen(true);
   };
 
+  const minimizeLauncher = () => {
+    setIsLauncherCompact(true);
+    window.localStorage.setItem(LAUNCHER_COMPACT_KEY, "true");
+  };
+
+  const shouldShowStatus = !isStatusCollapsed && (selectedLocation || mockMessage || errorMessage || !isSelectorOpen);
+
   return (
     <>
-      <div className="otto-launcher-shell">
-        {(selectedLocation || mockMessage || errorMessage || !isSelectorOpen) && (
+      <div className={`otto-launcher-shell${isLauncherCompact ? " otto-launcher-shell-compact" : ""}`}>
+        {shouldShowStatus && (
           <div className="otto-launcher-status" aria-live="polite">
+            <div className="otto-launcher-status-actions">
+              {!isLauncherCompact && (
+                <button type="button" aria-label="Minimize chat launcher" onClick={minimizeLauncher}>
+                  Minimize
+                </button>
+              )}
+              <button type="button" aria-label="Collapse chat message" onClick={() => setIsStatusCollapsed(true)}>
+                <X aria-hidden="true" size={14} />
+              </button>
+            </div>
             {mockMessage ? (
               <span>{mockMessage}</span>
             ) : errorMessage ? (
@@ -237,7 +261,7 @@ export function OttoLocationLauncher() {
           </div>
         )}
         <button
-          className="otto-launcher-button"
+          className={`otto-launcher-button${isLauncherCompact ? " otto-launcher-button-compact" : ""}`}
           type="button"
           aria-label={selectedLocation ? `Open ${savedLocationLabel} chat support` : "Choose a chat support location"}
           onClick={handleLauncherClick}

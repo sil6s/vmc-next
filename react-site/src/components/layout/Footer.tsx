@@ -55,7 +55,10 @@ export function Footer() {
 
       <div className="footer-bottom">
         <span>Copyright {new Date().getFullYear()} {site.name}. All rights reserved.</span>
-        <span>{site.legal}</span>
+        <span className="footer-legal-links">
+          <span>{site.legal}</span>
+          <Link href="/privacy-policy/">Privacy Policy & SMS Terms</Link>
+        </span>
       </div>
     </footer>
   );
