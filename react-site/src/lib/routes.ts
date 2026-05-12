@@ -13,7 +13,8 @@ export const staticRoutes = [
   "/patient-portal-online-booking/",
   "/online-vet-pharmacy-northern-kentucky-cincinnati/",
   "/vet-near-me/",
-  "/new-patient-registration-form/"
+  "/new-patient-registration-form/",
+  "/privacy-policy/"
 ] as const;
 
 export function allRoutes() {
