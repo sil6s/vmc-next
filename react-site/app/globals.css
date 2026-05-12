@@ -3744,7 +3744,60 @@ textarea {
   color: var(--body);
   padding: 12px 14px;
   text-align: right;
+  padding-right: 84px;
+  position: relative;
   backdrop-filter: blur(12px);
+}
+
+.otto-launcher-status-actions {
+  position: absolute;
+  top: 9px;
+  right: 10px;
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.otto-launcher-status .otto-launcher-status-actions button {
+  display: inline-flex;
+  min-height: 26px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(169, 27, 27, 0.14);
+  border-radius: 999px;
+  background: var(--white);
+  padding: 4px 8px;
+  color: var(--red);
+  line-height: 1;
+}
+
+.otto-launcher-status .otto-launcher-status-actions button:last-child {
+  width: 26px;
+  padding: 0;
+}
+
+.otto-launcher-shell-compact .otto-launcher-status {
+  padding-right: 46px;
+}
+
+.otto-launcher-shell-compact .otto-launcher-status-actions {
+  right: 9px;
+}
+
+.otto-launcher-button-compact {
+  min-height: 58px;
+  width: 58px;
+  gap: 0;
+  padding: 0;
+}
+
+.otto-launcher-button-compact > span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
 .otto-launcher-status span {
