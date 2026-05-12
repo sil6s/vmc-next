@@ -18,6 +18,31 @@ const nextConfig: NextConfig = {
         permanent: true
       },
       {
+        source: "/locations/fort-thomas/",
+        destination: "/locations/vet-in-fort-thomas-ky/",
+        permanent: true
+      },
+      {
+        source: "/locations/independence/",
+        destination: "/locations/vet-in-independence-ky/",
+        permanent: true
+      },
+      {
+        source: "/vet-in-fort-thomas-ky/",
+        destination: "/locations/vet-in-fort-thomas-ky/",
+        permanent: true
+      },
+      {
+        source: "/vet-in-independence-ky/",
+        destination: "/locations/vet-in-independence-ky/",
+        permanent: true
+      },
+      {
+        source: "/vet-in-independence-ky-locally-owned-trusted-pet-care/",
+        destination: "/locations/vet-in-independence-ky/",
+        permanent: true
+      },
+      {
         source: "/online-vet-pharmacy/",
         destination: "/online-vet-pharmacy-northern-kentucky-cincinnati/",
         permanent: true

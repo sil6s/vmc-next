@@ -7,7 +7,8 @@ export function Section({
   title,
   intro,
   tone = "cream",
-  id
+  id,
+  className
 }: {
   children?: ReactNode;
   eyebrow?: string;
@@ -15,9 +16,10 @@ export function Section({
   intro?: string;
   tone?: "cream" | "white" | "warm" | "red";
   id?: string;
+  className?: string;
 }) {
   return (
-    <section id={id} className={`section section-${tone}`}>
+    <section id={id} className={`section section-${tone}${className ? ` ${className}` : ""}`}>
       <Container>
         {(eyebrow || title || intro) && (
           <div className="section-heading">

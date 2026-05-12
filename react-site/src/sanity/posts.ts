@@ -12,7 +12,16 @@ export type SanityBlogPost = {
   publishedAt: string;
   excerpt?: string;
   image?: SanityImageSource;
+  imageAlt?: string;
+  author?: BlogAuthor;
   body?: PortableTextBlock[];
+};
+
+export type BlogAuthor = {
+  name: string;
+  title: string;
+  image: string;
+  imageAlt: string;
 };
 
 export type BlogPost = {
@@ -25,6 +34,9 @@ export type BlogPost = {
   content?: string[];
   body?: PortableTextBlock[];
   image?: SanityImageSource;
+  featuredImage?: string;
+  featuredImageAlt: string;
+  author: BlogAuthor;
   seo: {
     title: string;
     description: string;
@@ -32,6 +44,13 @@ export type BlogPost = {
 };
 
 const options = { next: { revalidate: 30 } };
+
+export const defaultBlogAuthor: BlogAuthor = {
+  name: "Veterinary Medical Center Team",
+  title: "Northern Kentucky dog and cat care team",
+  image: "/images/vet-stock2.jpg",
+  imageAlt: "Veterinary Medical Center team member with a pet"
+};
 
 function fromStaticPost(post: Post): BlogPost {
   return {
@@ -42,12 +61,23 @@ function fromStaticPost(post: Post): BlogPost {
     category: post.category,
     excerpt: post.excerpt,
     content: post.content,
+    featuredImage: post.featuredImage,
+    featuredImageAlt: post.featuredImageAlt,
+    author: post.author,
     seo: post.seo
   };
 }
 
 function fromSanityPost(post: SanityBlogPost): BlogPost {
   const excerpt = post.excerpt || "Veterinary Medical Center pet health article.";
+  const author = post.author
+    ? {
+        name: post.author.name || defaultBlogAuthor.name,
+        title: post.author.title || defaultBlogAuthor.title,
+        image: post.author.image || defaultBlogAuthor.image,
+        imageAlt: post.author.imageAlt || defaultBlogAuthor.imageAlt
+      }
+    : defaultBlogAuthor;
 
   return {
     source: "sanity",
@@ -58,6 +88,9 @@ function fromSanityPost(post: SanityBlogPost): BlogPost {
     excerpt,
     body: post.body,
     image: post.image,
+    featuredImage: "/images/veterinary-care-hero.jpg",
+    featuredImageAlt: post.imageAlt || `${post.title} from Veterinary Medical Center`,
+    author,
     seo: {
       title: `${post.title} | Veterinary Medical Center`,
       description: excerpt

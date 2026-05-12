@@ -1,4 +1,5 @@
 import type { FAQ } from "@/data/faqs";
+import type { LocationPage } from "@/data/locations";
 import type { ServiceDetail } from "@/data/serviceHub";
 import { absoluteUrl, site } from "@/data/site";
 
@@ -116,6 +117,39 @@ export function veterinaryServiceSchema(service: ServiceDetail, path: string) {
         addressCountry: "US"
       }))
     }
+  };
+}
+
+export function locationVeterinaryCareSchema(location: LocationPage, path: string) {
+  const officialName =
+    location.shortName === "Fort Thomas"
+      ? "Veterinary Medical Center of Fort Thomas"
+      : "Veterinary Medical Center of Independence";
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "VeterinaryCare",
+    name: officialName,
+    url: absoluteUrl(path),
+    image: absoluteUrl(location.image),
+    telephone: location.tel,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: location.address.split(",")[0],
+      addressLocality: location.shortName,
+      addressRegion: "KY",
+      postalCode: location.shortName === "Fort Thomas" ? "41075" : "41051",
+      addressCountry: "US"
+    },
+    openingHoursSpecification: [
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        opens: "08:00",
+        closes: "18:00"
+      }
+    ],
+    areaServed: location.communities
   };
 }
 

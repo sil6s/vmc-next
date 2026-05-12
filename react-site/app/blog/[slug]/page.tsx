@@ -33,7 +33,7 @@ export default async function BlogPostPage({ params }: Params) {
   const { slug } = await params;
   const post = await getBlogPost(slug);
   if (!post) notFound();
-  const imageUrl = post.image ? urlFor(post.image).width(1100).height(620).fit("crop").url() : null;
+  const imageUrl = post.image ? urlFor(post.image).width(1280).height(720).fit("crop").url() : post.featuredImage || "/images/veterinary-care-hero.jpg";
 
   const crumbs = [
     { name: "Home", path: "/" },
@@ -45,12 +45,34 @@ export default async function BlogPostPage({ params }: Params) {
     <>
       <div className="prose-page">
         <Container>
-          <article>
-            <p className="eyebrow">{post.category}</p>
-            <h1>{post.title}</h1>
-            <p>{displayDate(post.date)}</p>
-            {imageUrl && <Image src={imageUrl} alt={post.title} width={1100} height={620} sizes="(max-width: 900px) 100vw, 860px" />}
-            {post.body?.length ? <PortableText value={post.body} /> : post.content?.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+          <article className="blog-post-article">
+            <header className="blog-post-hero">
+              <div className="blog-post-heading">
+                <p className="eyebrow">{post.category}</p>
+                <h1>{post.title}</h1>
+                <p>{post.excerpt}</p>
+                <div className="blog-post-byline">
+                  <Image src={post.author.image} alt={post.author.imageAlt} width={58} height={58} />
+                  <div>
+                    <strong>{post.author.name}</strong>
+                    <span>{post.author.title}</span>
+                    <small>{displayDate(post.date)}</small>
+                  </div>
+                </div>
+              </div>
+              <Image
+                className="blog-post-featured-image"
+                src={imageUrl}
+                alt={post.featuredImageAlt}
+                width={1280}
+                height={720}
+                priority
+                sizes="(max-width: 900px) 100vw, 1040px"
+              />
+            </header>
+            <div className="blog-post-content">
+              {post.body?.length ? <PortableText value={post.body} /> : post.content?.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+            </div>
           </article>
         </Container>
       </div>

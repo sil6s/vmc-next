@@ -5,33 +5,43 @@ export type FAQ = {
 
 export const homeFaqs: FAQ[] = [
   {
-    question: "How much does a vet visit cost in Northern Kentucky?",
+    question: "Do you accept new veterinary patients?",
     answer:
-      "Costs vary by appointment type and your pet's needs. We explain recommended services and pricing before care is performed, so you can make a clear decision."
+      "Yes. Veterinary Medical Center welcomes new dogs and cats at both the Fort Thomas and Independence locations. You can request an appointment online, call your local vet team, or start with the new patient information page before your first visit."
   },
   {
-    question: "When should I take my pet to the vet?",
+    question: "What should I bring to my pet's first visit?",
     answer:
-      "Healthy adult pets should usually have a wellness exam at least once a year. Puppies, kittens, senior pets, and pets with chronic conditions may need more frequent visits."
+      "Bring vaccine records, previous medical records if available, medication information, adoption paperwork, and a list of questions or concerns. Completing new client forms before your visit can also make check-in easier."
   },
   {
-    question: "Do you offer urgent care?",
+    question: "Do you treat both dogs and cats?",
     answer:
-      "Yes. VMC sees urgent concerns during regular clinic hours at both Fort Thomas and Independence. Call first so our team can triage and prepare for your arrival."
+      "Yes. Our vet team provides care for dogs, cats, puppies, and kittens, including wellness exams, vaccines, sick visits, dental care, diagnostics, surgery planning, and senior pet support."
   },
   {
-    question: "Are you accepting new patients?",
+    question: "How do I request an appointment?",
     answer:
-      "Yes. New dogs and cats are welcome at both locations. You can request an appointment online, call either clinic, or complete the new patient form before your first visit."
+      "You can request an appointment through the contact page, message our team with questions, or call the Fort Thomas or Independence clinic directly. If your pet is sick or needs care soon, calling is usually the best first step."
   },
   {
-    question: "What does Fear-Free Certified mean?",
+    question: "Do you offer pet dental care?",
     answer:
-      "Fear-Free care uses handling, pacing, and environmental choices that help reduce stress during veterinary visits, especially for nervous pets and cats."
+      "Yes. VMC provides dental evaluations and professional dental care recommendations for dogs and cats. Dental visits can help with bad breath, tartar, chewing changes, discomfort, and oral disease concerns."
   },
   {
-    question: "Do you see dogs and cats?",
+    question: "Do you provide surgery for pets?",
     answer:
-      "Yes. Veterinary Medical Center provides full-service care for dogs and cats, including wellness, dental care, surgery, behavior support, and urgent same-day concerns when available."
+      "Yes. Our vet team provides spay and neuter procedures and select soft tissue surgery services. We explain preparation, monitoring, pain control, recovery, and follow-up care before moving forward."
+  },
+  {
+    question: "What areas of Northern Kentucky do you serve?",
+    answer:
+      "Our two locations serve pets from Fort Thomas, Independence, Newport, Bellevue, Dayton, Highland Heights, Alexandria, Cold Spring, Covington, Taylor Mill, Latonia, Erlanger, and nearby Cincinnati-area communities."
+  },
+  {
+    question: "What if my pet is sick and needs care soon?",
+    answer:
+      "If your pet is vomiting, limping, coughing, not eating, acting painful, or showing new symptoms, call your preferred clinic so the team can help you decide the right next step. For emergencies, contact an emergency veterinary hospital right away."
   }
 ];

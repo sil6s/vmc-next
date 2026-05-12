@@ -1,19 +1,74 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, PawPrint, UsersRound } from "lucide-react";
+import { BookOpenCheck, ChevronDown, GraduationCap, HeartHandshake, MessageSquareText, PawPrint, ShieldCheck, Stethoscope, UsersRound } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { Section } from "@/components/ui/Section";
 
-const doctors = [
+type DoctorProfile = {
+  name: string;
+  role: string;
+  bio: string;
+  highlights: [string, string, LucideIcon][];
+  education: string[];
+  location: string;
+};
+
+const doctors: DoctorProfile[] = [
   {
     name: "Dr. Kristi Baker",
     role: "Owner & DVM",
-    bio: "A licensed veterinarian in Kentucky and Ohio, Dr. Baker built VMC around unhurried care, practical communication, and long-term relationships."
+    bio:
+      "Dr. Kristi brings more than two decades of veterinary experience to pets and families across Northern Kentucky. Her background includes general practice, emergency veterinary medicine, and long-term leadership at Veterinary Medical Center of Independence and Veterinary Medical Center of Fort Thomas. She is known for combining practical medical guidance with a calm, approachable style that helps pet owners understand their options and feel confident about next steps.",
+    highlights: [
+      ["20+ years", "in veterinary medicine", Stethoscope],
+      ["DVM", "Ross University School of Veterinary Medicine", GraduationCap],
+      ["Emergency background", "and general practice leadership", ShieldCheck],
+      ["Dogs and cats", "preventive and relationship-based care", PawPrint]
+    ],
+    education: [
+      "Ross University School of Veterinary Medicine, Doctorate Veterinary Medicine, 2000 to 2003",
+      "Purdue University, Clinical Rotation, Veterinary Medicine, 2003 to 2004"
+    ],
+    location: "Veterinary Medical Center of Fort Thomas and Veterinary Medical Center of Independence"
   },
   {
-    name: "Dr. Becky Golatzki",
-    role: "Associate Veterinarian",
-    bio: "Dr. Golatzki brings warmth and expertise to every appointment, partnering with families to provide consistent, relationship-focused care."
+    name: "Veterinarian Name",
+    role: "Veterinarian",
+    bio:
+      "Add a short bio for this veterinarian, including their approach to care, experience, education, and what pet owners can expect during a visit.",
+    highlights: [
+      ["Experience", "Add years or background", Stethoscope],
+      ["Education", "Add veterinary school details", GraduationCap],
+      ["Care philosophy", "Add communication and comfort notes", MessageSquareText],
+      ["Location", "Add Fort Thomas or Independence", PawPrint]
+    ],
+    education: ["Add veterinary education details."],
+    location: "Add location association."
+  }
+];
+
+const careApproach = [
+  {
+    title: "Preventive-first care",
+    text:
+      "We focus on catching small changes early through exams, vaccines, parasite prevention, dental checks, and age-appropriate screenings.",
+    icon: ShieldCheck
+  },
+  {
+    title: "Clear explanations",
+    text: "We explain findings, options, and next steps in plain language so you understand what is happening and why.",
+    icon: MessageSquareText
+  },
+  {
+    title: "Low-stress handling",
+    text: "Our team works to make visits calmer with gentle handling, patient pacing, and a pet-first approach.",
+    icon: HeartHandshake
+  },
+  {
+    title: "Relationship-based medicine",
+    text: "We get to know your pet over time, which helps us notice changes and recommend care that fits their needs.",
+    icon: BookOpenCheck
   }
 ];
 
@@ -25,7 +80,12 @@ export function TeamSection() {
 
   return (
     <>
-      <Section tone="cream" eyebrow="Meet Your Doctors" title="Veterinarians who actually stay." intro="When you come to VMC, you get continuity with someone who remembers your pet, your history, and what matters to your family.">
+      <Section
+        tone="cream"
+        eyebrow="Meet Your Vet Team"
+        title="Meet the veterinarians behind your pet’s care"
+        intro="Our doctors combine years of clinical experience with a practical, relationship-based approach to veterinary medicine. We take time to explain what we find, answer your questions, and help you make confident decisions for your pet."
+      >
         <div className="doctor-grid">
           {doctors.map((doctor) => (
             <article className="doctor-card" key={doctor.name}>
@@ -37,7 +97,36 @@ export function TeamSection() {
                 </div>
               </div>
               <p>{doctor.bio}</p>
-              <blockquote>Care should feel personal, clear, and rooted in a team that knows your pet over time.</blockquote>
+              <div className="doctor-highlight-grid" aria-label={`${doctor.name} profile highlights`}>
+                {doctor.highlights.map(([label, text, Icon]) => (
+                  <div key={`${doctor.name}-${label}`}>
+                    <Icon aria-hidden="true" size={18} />
+                    <strong>{label}</strong>
+                    <small>{text}</small>
+                  </div>
+                ))}
+              </div>
+              <div className="doctor-education-card">
+                <GraduationCap aria-hidden="true" size={18} />
+                <div>
+                  <strong>Veterinary medicine education</strong>
+                  <ul>
+                    {doctor.education.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+              <blockquote>{doctor.location}</blockquote>
+            </article>
+          ))}
+        </div>
+        <div className="care-approach-grid" aria-label="How our team approaches care">
+          {careApproach.map(({ title, text, icon: Icon }) => (
+            <article className="care-approach-card" key={title}>
+              <Icon aria-hidden="true" size={21} />
+              <h3>{title}</h3>
+              <p>{text}</p>
             </article>
           ))}
         </div>

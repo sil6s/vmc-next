@@ -7,6 +7,8 @@ export const POSTS_QUERY = `*[
   "slug": slug.current,
   publishedAt,
   image,
+  "imageAlt": coalesce(image.alt, title),
+  author->{name, title, "image": image.asset->url, "imageAlt": coalesce(image.alt, name)},
   body,
   "excerpt": coalesce(excerpt, pt::text(body)[0...180])
 }`;
@@ -20,6 +22,8 @@ export const POST_QUERY = `*[
   "slug": slug.current,
   publishedAt,
   image,
+  "imageAlt": coalesce(image.alt, title),
+  author->{name, title, "image": image.asset->url, "imageAlt": coalesce(image.alt, name)},
   body,
   "excerpt": coalesce(excerpt, pt::text(body)[0...180])
 }`;

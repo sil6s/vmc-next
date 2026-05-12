@@ -3,6 +3,7 @@ import { Instrument_Sans, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
+import { OttoLocationLauncher } from "@/components/layout/OttoLocationLauncher";
 import { site } from "@/data/site";
 import { JsonLd, organizationSchema, websiteSchema } from "@/lib/schema";
 
@@ -26,7 +27,12 @@ export const metadata: Metadata = {
   },
   description: "Trusted Northern Kentucky vet for dogs and cats. Fear-Free visits and thoughtful care in Fort Thomas and Independence.",
   icons: {
-    icon: "/icon.svg"
+    icon: [
+      { url: "/favicon.png", type: "image/png" },
+      { url: "/icon.svg", type: "image/svg+xml" }
+    ],
+    shortcut: "/favicon.png",
+    apple: "/favicon.png"
   }
 };
 
@@ -42,6 +48,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <Header />
         <main id="main">{children}</main>
         <Footer />
+        {/* TODO: Load the real Otto embed script once here with next/script when Otto provides the production script URL. */}
+        <OttoLocationLauncher />
         <JsonLd data={[organizationSchema(), websiteSchema()]} />
       </body>
     </html>

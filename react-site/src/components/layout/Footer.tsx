@@ -57,9 +57,6 @@ export function Footer() {
         <span>Copyright {new Date().getFullYear()} {site.name}. All rights reserved.</span>
         <span>{site.legal}</span>
       </div>
-      <a href={`tel:${site.locations[0].tel}`} className="call-floater" aria-label="Call Veterinary Medical Center Fort Thomas">
-        Call Now
-      </a>
     </footer>
   );
 }

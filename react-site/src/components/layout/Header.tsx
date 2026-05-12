@@ -2,13 +2,19 @@
 
 import Link from "next/link";
 import { ArrowRight, CalendarDays, MapPin, Phone, ShoppingBag, UserRound } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { navigation, utilityNavigation } from "@/data/navigation";
+import { locations } from "@/data/locations";
 import { site } from "@/data/site";
 import { Logo } from "./Logo";
 
 export function Header() {
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    document.body.classList.toggle("mobile-menu-open", open);
+    return () => document.body.classList.remove("mobile-menu-open");
+  }, [open]);
 
   return (
     <header className="site-header">
@@ -19,16 +25,38 @@ export function Header() {
         <Logo />
 
         <nav className="desktop-nav" aria-label="Primary navigation">
-          {navigation.map((item) => (
-            <Link href={item.href} key={item.href}>
-              {item.label}
-            </Link>
-          ))}
+          {navigation.map((item) =>
+            item.label === "About" ? (
+              <div className="nav-dropdown" key={item.href}>
+                <Link href={item.href}>{item.label}</Link>
+                <div className="nav-dropdown-menu" aria-label="About and location pages">
+                  <Link href="/about/">
+                    <strong>About VMC</strong>
+                    <span>Our story and care approach</span>
+                  </Link>
+                  <Link href="/locations/">
+                    <strong>Locations</strong>
+                    <span>Fort Thomas & Independence</span>
+                  </Link>
+                  {locations.map((location) => (
+                    <Link href={`/locations/${location.slug}/`} key={location.slug}>
+                      <strong>{location.shortName}</strong>
+                      <span>{location.address.split(",")[0]}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <Link href={item.href} key={item.href}>
+                {item.label}
+              </Link>
+            )
+          )}
         </nav>
 
         <div className="desktop-actions">
-          <Link href={utilityNavigation[0].href}>Patient Portal</Link>
-          <Link href={utilityNavigation[1].href}>Online Pharmacy</Link>
+          <Link className="utility-button" href={utilityNavigation[0].href}>Patient Portal</Link>
+          <Link className="utility-button" href={utilityNavigation[1].href}>Online Pharmacy</Link>
           <Link className="nav-cta" href="/contact/">
             Book Appointment
           </Link>
@@ -51,12 +79,16 @@ export function Header() {
           </button>
         </div>
         <nav aria-label="Mobile navigation">
-          {navigation.filter((item) => item.label !== "Locations").map((item) => (
+          {navigation.map((item) => (
             <Link href={item.href} key={item.href} onClick={() => setOpen(false)}>
               <span>{item.label}</span>
               <ArrowRight aria-hidden="true" size={18} strokeWidth={2.2} />
             </Link>
           ))}
+          <Link href="/locations/" onClick={() => setOpen(false)}>
+            <span>Locations</span>
+            <ArrowRight aria-hidden="true" size={18} strokeWidth={2.2} />
+          </Link>
         </nav>
         <div className="mobile-actions">
           <Link className="mobile-action-primary" href="/contact/" onClick={() => setOpen(false)}>
@@ -79,15 +111,15 @@ export function Header() {
         <div className="mobile-locations">
           <p>Our Locations</p>
           {site.locations.map((location) => (
-            <div className="mobile-location" key={location.id}>
+            <Link className="mobile-location" href={`/locations/vet-in-${location.id}-ky/`} key={location.id} onClick={() => setOpen(false)}>
               <MapPin aria-hidden="true" size={24} />
               <div>
                 <strong>{location.name}</strong>
                 <span>
-                  {location.address.split(",")[0]} · <a href={`tel:${location.tel}`}>{location.phone}</a>
+                  {location.address.split(",")[0]} · {location.phone}
                 </span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
