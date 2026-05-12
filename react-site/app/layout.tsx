@@ -22,10 +22,16 @@ const serif = Playfair_Display({
 export const metadata: Metadata = {
   metadataBase: new URL(site.siteUrl),
   title: {
-    default: "Veterinary Medical Center | Fort Thomas & Independence KY Vet",
-    template: "%s"
+    default: "Northern Kentucky Vet for Dogs & Cats | Fort Thomas & Independence",
+    template: "%s | Veterinary Medical Center"
   },
-  description: "Trusted Northern Kentucky vet for dogs and cats. Fear-Free visits and thoughtful care in Fort Thomas and Independence.",
+  description:
+    "Locally owned Northern Kentucky vet for dogs and cats in Fort Thomas and Independence KY. Relationship-based care, same-week appointments, and two convenient NKY locations.",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 }
+  },
   icons: {
     icon: [
       { url: "/favicon.png", type: "image/png" },

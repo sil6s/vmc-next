@@ -4,6 +4,14 @@ import { site } from "@/data/site";
 import { NewsletterForm } from "@/components/forms/NewsletterForm";
 import { Logo } from "./Logo";
 
+const trackingMap: Record<string, string> = {
+  "/patient-portal-online-booking/": "click_patient_portal",
+  "/online-vet-pharmacy-northern-kentucky-cincinnati/": "click_online_pharmacy",
+  "/new-patient-registration-form/": "start_new_patient_form",
+  "/contact/": "click_book_appointment",
+  "/privacy-policy/": "click_privacy_policy"
+};
+
 export function Footer() {
   return (
     <footer className="site-footer">
@@ -26,7 +34,7 @@ export function Footer() {
           <ul>
             {navigation.map((item) => (
               <li key={item.href}>
-                <Link href={item.href}>{item.label}</Link>
+                <Link href={item.href} data-track={trackingMap[item.href]}>{item.label}</Link>
               </li>
             ))}
           </ul>
@@ -36,7 +44,7 @@ export function Footer() {
           <ul>
             {utilityNavigation.map((item) => (
               <li key={item.href}>
-                <Link href={item.href}>{item.label}</Link>
+                <Link href={item.href} data-track={trackingMap[item.href]}>{item.label}</Link>
               </li>
             ))}
           </ul>
@@ -47,7 +55,12 @@ export function Footer() {
             <address key={location.id}>
               <strong>{location.name}</strong>
               <span>{location.address}</span>
-              <a href={`tel:${location.tel}`}>{location.phone}</a>
+              <a
+                href={`tel:${location.tel}`}
+                data-track={location.id === "fort-thomas" ? "click_call_fort_thomas" : "click_call_independence"}
+              >
+                {location.phone}
+              </a>
             </address>
           ))}
         </div>
@@ -57,7 +70,7 @@ export function Footer() {
         <span>Copyright {new Date().getFullYear()} {site.name}. All rights reserved.</span>
         <span className="footer-legal-links">
           <span>{site.legal}</span>
-          <Link href="/privacy-policy/">Privacy Policy & SMS Terms</Link>
+          <Link href="/privacy-policy/" data-track="click_privacy_policy">Privacy Policy &amp; SMS Terms</Link>
         </span>
       </div>
     </footer>

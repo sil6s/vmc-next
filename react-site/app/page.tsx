@@ -66,11 +66,11 @@ const newClientSteps = [
 ];
 
 const toolLinks = [
-  { title: "Schedule an Appointment", text: "Request a visit with your local vet team.", href: "/contact/", icon: CalendarCheck },
-  { title: "Request a Refill", text: "Use the pharmacy path for eligible medication support.", href: "/online-vet-pharmacy-northern-kentucky-cincinnati/", icon: Stethoscope },
-  { title: "Access Pet Records", text: "Use the patient portal for records and online booking.", href: "/patient-portal-online-booking/", icon: FileText },
-  { title: "Online Pharmacy", text: "Shop trusted products and refill options online.", href: "/online-vet-pharmacy-northern-kentucky-cincinnati/", icon: PawPrint },
-  { title: "New Client Forms", text: "Start your first visit paperwork before you arrive.", href: "/new-patient-registration-form/", icon: ShieldCheck }
+  { title: "Schedule an Appointment", text: "Request a visit with your local vet team.", href: "/contact/", icon: CalendarCheck, track: "click_book_appointment" },
+  { title: "Request a Refill", text: "Use the pharmacy path for eligible medication support.", href: "/online-vet-pharmacy-northern-kentucky-cincinnati/", icon: Stethoscope, track: "click_online_pharmacy" },
+  { title: "Access Pet Records", text: "Use the patient portal for records and online booking.", href: "/patient-portal-online-booking/", icon: FileText, track: "click_patient_portal" },
+  { title: "Online Pharmacy", text: "Shop trusted products and refill options online.", href: "/online-vet-pharmacy-northern-kentucky-cincinnati/", icon: PawPrint, track: "click_online_pharmacy" },
+  { title: "New Client Forms", text: "Start your first visit paperwork before you arrive.", href: "/new-patient-registration-form/", icon: ShieldCheck, track: "start_new_patient_form" }
 ];
 
 const guideCards = [
@@ -164,8 +164,8 @@ export default async function HomePage() {
               <p>New to Northern Kentucky Veterinary Medical Center? Start with a wellness visit, request an appointment, or message our team with questions.</p>
             </div>
             <div className="hero-actions">
-              <Button href="/contact/">Request an Appointment</Button>
-              <Button href="/contact/#chat-support" variant="ghost">Message Our Team</Button>
+              <Button href="/contact/" data-track="click_book_appointment">Request an Appointment</Button>
+              <Button href="/contact/#chat-support" variant="ghost" data-track="open_chat_launcher">Message Our Team</Button>
               <Button href="/services/" variant="ghost">Explore Services</Button>
             </div>
           </div>
@@ -275,7 +275,11 @@ export default async function HomePage() {
                     <MapPin aria-hidden="true" size={17} />
                     {location.address}
                   </address>
-                  <a href={`tel:${location.tel}`} aria-label={`Call ${officialLocationName(location.shortName)} at ${location.phone}`}>
+                  <a
+                    href={`tel:${location.tel}`}
+                    aria-label={`Call ${officialLocationName(location.shortName)} at ${location.phone}`}
+                    data-track={location.shortName === "Fort Thomas" ? "click_call_fort_thomas" : "click_call_independence"}
+                  >
                     <Phone aria-hidden="true" size={17} />
                     {location.phone}
                   </a>
@@ -293,8 +297,14 @@ export default async function HomePage() {
               <MapEmbed src={site.locations[index].mapEmbedUrl} title={`Map to ${officialLocationName(location.shortName)}`} />
               <div className="inline-actions">
                 <a className="btn btn-primary" href={site.locations[index].mapUrl} target="_blank" rel="noopener noreferrer">Get Directions</a>
-                <a className="btn btn-ghost" href={`tel:${location.tel}`}>Call This Location</a>
-                <Link className="btn btn-ghost" href="/contact/">Request Appointment</Link>
+                <a
+                  className="btn btn-ghost"
+                  href={`tel:${location.tel}`}
+                  data-track={location.shortName === "Fort Thomas" ? "click_call_fort_thomas" : "click_call_independence"}
+                >
+                  Call This Location
+                </a>
+                <Link className="btn btn-ghost" href="/contact/" data-track="click_book_appointment">Request Appointment</Link>
               </div>
             </article>
           ))}
@@ -335,8 +345,8 @@ export default async function HomePage() {
 
       <Section tone="white" eyebrow="Online Tools" title="Manage your pet’s care online">
         <div className="quick-links-grid">
-          {toolLinks.map(({ title, text, href, icon: Icon }) => (
-            <Link href={href} className="quick-link-card" key={title}>
+          {toolLinks.map(({ title, text, href, icon: Icon, track }) => (
+            <Link href={href} className="quick-link-card" key={title} data-track={track}>
               <span>
                 <strong>{title}</strong>
                 <small>{text}</small>
@@ -354,9 +364,9 @@ export default async function HomePage() {
           <h2>Ready to schedule a visit with your Northern Kentucky vet team?</h2>
           <p>Choose your location, request an appointment, or call our team. We’ll help you find the right next step for your dog or cat.</p>
           <div className="hero-actions">
-            <Button href="/contact/" variant="secondary">Request an Appointment</Button>
-            <Button href="/contact/#chat-support" variant="ghost">Message Our Team</Button>
-            <Button href={`tel:${site.locations[0].tel}`} variant="ghost">Call the Clinic</Button>
+            <Button href="/contact/" variant="secondary" data-track="click_book_appointment">Request an Appointment</Button>
+            <Button href="/contact/#chat-support" variant="ghost" data-track="open_chat_launcher">Message Our Team</Button>
+            <Button href={`tel:${site.locations[0].tel}`} variant="ghost" data-track="click_call_fort_thomas">Call the Clinic</Button>
           </div>
         </div>
       </Section>

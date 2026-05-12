@@ -12,6 +12,14 @@ import { breadcrumbSchema, faqSchema, JsonLd, webpageSchema } from "@/lib/schema
 
 type Params = { params: Promise<{ slug: string }> };
 
+// Maps legacy /services/ slugs to the canonical /veterinary-services/ equivalents
+const canonicalServiceMap: Record<string, string> = {
+  "pet-wellness-exams-northern-kentucky": "wellness-exams",
+  "pet-dental-care-northern-kentucky": "pet-dental-care",
+  "pet-soft-tissue-surgery-northern-kentucky": "soft-tissue-surgery",
+  "northern-kentucky-urgent-care-vet": "sick-pet-visits"
+};
+
 export function generateStaticParams() {
   return services.map((service) => ({ slug: service.slug }));
 }
@@ -20,6 +28,14 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const service = getService(slug);
   if (!service) return {};
+
+  const canonicalSlug = canonicalServiceMap[slug];
+  if (canonicalSlug) {
+    return pageMetadata({
+      ...service.seo,
+      path: `/veterinary-services/${canonicalSlug}/`
+    });
+  }
   return pageMetadata({ ...service.seo, path: `/services/${service.slug}/` });
 }
 

@@ -37,6 +37,7 @@ export type BlogPost = {
   featuredImage?: string;
   featuredImageAlt: string;
   author: BlogAuthor;
+  relatedServices?: { title: string; href: string }[];
   seo: {
     title: string;
     description: string;
@@ -64,6 +65,7 @@ function fromStaticPost(post: Post): BlogPost {
     featuredImage: post.featuredImage,
     featuredImageAlt: post.featuredImageAlt,
     author: post.author,
+    relatedServices: post.relatedServices,
     seo: post.seo
   };
 }
