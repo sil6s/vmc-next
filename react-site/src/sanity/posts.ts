@@ -1,6 +1,7 @@
 import type { SanityImageSource } from "@sanity/image-url";
 import type { PortableTextBlock } from "next-sanity";
 import { posts as staticPosts, type Post } from "@/data/posts";
+import { getManagedBlogPost, getManagedBlogPosts, type ManagedBlogPost } from "@/lib/blog-admin";
 import { client } from "./client";
 import { POSTS_QUERY, POST_QUERY } from "./queries";
 import { sanityEnabled } from "./env";
@@ -98,6 +99,30 @@ function fromSanityPost(post: SanityBlogPost): BlogPost {
   };
 }
 
+function fromManagedPost(post: ManagedBlogPost): BlogPost {
+  return {
+    source: "static",
+    title: post.title,
+    slug: post.slug,
+    date: post.publishDate || post.updatedAt,
+    category: post.category,
+    excerpt: post.excerpt,
+    content: post.body.split(/\n{2,}/).filter(Boolean),
+    featuredImage: post.featuredImageUrl || "/images/veterinary-care-hero.jpg",
+    featuredImageAlt: post.featuredImageAlt || `${post.title} from Veterinary Medical Center`,
+    author: {
+      name: post.author,
+      title: "Veterinary Medical Center Team",
+      image: "/images/vet-stock2.jpg",
+      imageAlt: "Veterinary Medical Center team member with a pet"
+    },
+    seo: {
+      title: post.seoTitle || `${post.title} | Veterinary Medical Center`,
+      description: post.seoMetaDescription || post.excerpt
+    }
+  };
+}
+
 async function fetchSanityPosts(limit = 12) {
   if (!sanityEnabled) return [];
 
@@ -121,11 +146,19 @@ async function fetchSanityPost(slug: string) {
 }
 
 export async function getBlogPosts(limit = 12) {
+  const managedPosts = await getManagedBlogPosts({ publicOnly: true });
+  if (managedPosts.length) {
+    return managedPosts.slice(0, limit).map(fromManagedPost);
+  }
+
   const sanityPosts = await fetchSanityPosts(limit);
   return sanityPosts.length ? sanityPosts : staticPosts.slice(0, limit).map(fromStaticPost);
 }
 
 export async function getBlogPost(slug: string) {
+  const managedPost = await getManagedBlogPost(slug);
+  if (managedPost?.status === "published") return fromManagedPost(managedPost);
+
   const sanityPost = await fetchSanityPost(slug);
   if (sanityPost) return sanityPost;
 

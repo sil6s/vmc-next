@@ -4,12 +4,16 @@ import Link from "next/link";
 import { ArrowRight, CalendarDays, MapPin, Phone, ShoppingBag, UserRound } from "lucide-react";
 import { useEffect, useState } from "react";
 import { navigation, utilityNavigation } from "@/data/navigation";
-import { locations } from "@/data/locations";
+import { locations as locationPages } from "@/data/locations";
 import { site } from "@/data/site";
+import type { PublicLocation } from "@/lib/settings/public";
 import { Logo } from "./Logo";
 
-export function Header() {
+type HeaderLocation = Pick<PublicLocation, "id" | "name" | "address" | "phone" | "tel">;
+
+export function Header({ ctaHref = "/contact/", locations, showBookingButton = true }: { ctaHref?: string; locations?: ReadonlyArray<HeaderLocation>; showBookingButton?: boolean }) {
   const [open, setOpen] = useState(false);
+  const publicLocations = locations || site.locations;
 
   useEffect(() => {
     document.body.classList.toggle("mobile-menu-open", open);
@@ -38,7 +42,7 @@ export function Header() {
                     <strong>Locations</strong>
                     <span>Fort Thomas & Independence</span>
                   </Link>
-                  {locations.map((location) => (
+                  {locationPages.map((location) => (
                     <Link href={`/locations/${location.slug}/`} key={location.slug}>
                       <strong>{location.shortName}</strong>
                       <span>{location.address.split(",")[0]}</span>
@@ -57,9 +61,11 @@ export function Header() {
         <div className="desktop-actions">
           <Link className="utility-button" href={utilityNavigation[0].href}>Patient Portal</Link>
           <Link className="utility-button" href={utilityNavigation[1].href}>Online Pharmacy</Link>
-          <Link className="nav-cta" href="/contact/">
-            Book Appointment
-          </Link>
+          {showBookingButton && (
+            <Link className="nav-cta" href={ctaHref}>
+              Book Appointment
+            </Link>
+          )}
         </div>
 
         <button className="menu-button" type="button" aria-expanded={open} aria-controls="mobile-menu" onClick={() => setOpen((value) => !value)}>
@@ -91,11 +97,13 @@ export function Header() {
           </Link>
         </nav>
         <div className="mobile-actions">
-          <Link className="mobile-action-primary" href="/contact/" onClick={() => setOpen(false)}>
-            <CalendarDays aria-hidden="true" size={18} />
-            Book Appointment
-          </Link>
-          <a href={`tel:${site.locations[0].tel}`}>
+          {showBookingButton && (
+            <Link className="mobile-action-primary" href={ctaHref} onClick={() => setOpen(false)}>
+              <CalendarDays aria-hidden="true" size={18} />
+              Book Appointment
+            </Link>
+          )}
+          <a href={`tel:${publicLocations[0]?.tel || site.locations[0].tel}`}>
             <Phone aria-hidden="true" size={18} />
             Call Us Now
           </a>
@@ -110,7 +118,7 @@ export function Header() {
         </div>
         <div className="mobile-locations">
           <p>Our Locations</p>
-          {site.locations.map((location) => (
+          {publicLocations.map((location) => (
             <Link className="mobile-location" href={`/locations/vet-in-${location.id}-ky/`} key={location.id} onClick={() => setOpen(false)}>
               <MapPin aria-hidden="true" size={24} />
               <div>

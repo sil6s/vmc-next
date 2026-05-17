@@ -14,6 +14,7 @@ import { locations } from "@/data/locations";
 import { pages } from "@/data/pages";
 import { site } from "@/data/site";
 import { pageMetadata } from "@/lib/metadata";
+import { getPublicSettings } from "@/lib/settings/public";
 import { breadcrumbSchema, faqSchema, JsonLd, locationVeterinaryCareSchema, webpageSchema } from "@/lib/schema";
 
 export const metadata = pageMetadata({ ...pages.home.seo, path: "/" });
@@ -143,6 +144,7 @@ function MapEmbed({ src, title }: { src: string; title: string }) {
 
 export default async function HomePage() {
   const hero = pages.home.hero;
+  const settings = await getPublicSettings();
 
   return (
     <>
@@ -281,7 +283,7 @@ export default async function HomePage() {
                   </a>
                   <p>
                     <Clock aria-hidden="true" size={17} />
-                    {site.locations[index].hours[0]}
+                    {settings.publicLocations[index]?.hours[0] || site.locations[index].hours[0]}
                   </p>
                 </div>
                 <p className="home-location-nearby">
@@ -290,11 +292,11 @@ export default async function HomePage() {
                     : "Serving Independence, Alexandria, Taylor Mill, Covington, Erlanger, and nearby Northern Kentucky pet owners."}
                 </p>
               </div>
-              <MapEmbed src={site.locations[index].mapEmbedUrl} title={`Map to ${officialLocationName(location.shortName)}`} />
+              <MapEmbed src={settings.publicLocations[index]?.mapEmbedUrl || site.locations[index].mapEmbedUrl} title={`Map to ${officialLocationName(location.shortName)}`} />
               <div className="inline-actions">
-                <a className="btn btn-primary" href={site.locations[index].mapUrl} target="_blank" rel="noopener noreferrer">Get Directions</a>
+                <a className="btn btn-primary" href={settings.publicLocations[index]?.mapUrl || site.locations[index].mapUrl} target="_blank" rel="noopener noreferrer">Get Directions</a>
                 <a className="btn btn-ghost" href={`tel:${location.tel}`}>Call This Location</a>
-                <Link className="btn btn-ghost" href="/contact/">Request Appointment</Link>
+                <Link className="btn btn-ghost" href={settings.externalLinks.bookAppointmentUrl || "/contact/"}>Request Appointment</Link>
               </div>
             </article>
           ))}
@@ -354,9 +356,9 @@ export default async function HomePage() {
           <h2>Ready to schedule a visit with your Northern Kentucky vet team?</h2>
           <p>Choose your location, request an appointment, or call our team. We’ll help you find the right next step for your dog or cat.</p>
           <div className="hero-actions">
-            <Button href="/contact/" variant="secondary">Request an Appointment</Button>
+            <Button href={settings.externalLinks.bookAppointmentUrl || "/contact/"} variant="secondary">Request an Appointment</Button>
             <Button href="/contact/#chat-support" variant="ghost">Message Our Team</Button>
-            <Button href={`tel:${site.locations[0].tel}`} variant="ghost">Call the Clinic</Button>
+            <Button href={`tel:${settings.publicLocations[0]?.tel || site.locations[0].tel}`} variant="ghost">Call the Clinic</Button>
           </div>
         </div>
       </Section>

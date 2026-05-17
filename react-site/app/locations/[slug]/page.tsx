@@ -13,6 +13,7 @@ import { serviceHubServices } from "@/data/serviceHub";
 import { site } from "@/data/site";
 import { testimonials } from "@/data/testimonials";
 import { pageMetadata } from "@/lib/metadata";
+import { getPublicSettings } from "@/lib/settings/public";
 import { breadcrumbSchema, faqSchema, JsonLd, locationVeterinaryCareSchema, serviceListSchema, webpageSchema } from "@/lib/schema";
 
 type Params = { params: Promise<{ slug: string }> };
@@ -90,7 +91,11 @@ export default async function LocationPage({ params }: Params) {
   const location = getLocation(slug);
   if (!location) notFound();
 
-  const siteLocation = site.locations.find((item) => item.name === location.shortName) || site.locations[0];
+  const settings = await getPublicSettings();
+  const siteLocation =
+    settings.publicLocations.find((item) => item.name === location.shortName) ||
+    site.locations.find((item) => item.name === location.shortName) ||
+    site.locations[0];
   const relatedLocation = locations.find((item) => item.slug === location.crossLinkSlug);
   const locationServices = serviceLinks
     .map((serviceSlug) => serviceHubServices.find((service) => service.slug === serviceSlug))
@@ -127,7 +132,7 @@ export default async function LocationPage({ params }: Params) {
                 <strong>{location.shortName}</strong>
                 <span>{location.address}</span>
                 <a href={`tel:${location.tel}`}>{location.phone}</a>
-                <small>Open Mon-Fri 8:00 AM-6:00 PM</small>
+                <small>{siteLocation.hours[0]}</small>
               </div>
             </div>
           </div>

@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { trackEvent } from "@/lib/analytics";
 
 type FormState = "idle" | "submitting" | "success" | "error";
 
@@ -37,6 +38,7 @@ export function ContactForm() {
   const [statusMessage, setStatusMessage] = useState("");
   const [errors, setErrors] = useState<string[]>([]);
   const [form, setForm] = useState(initialForm);
+  const trackedStart = useRef(false);
 
   const helperText = useMemo(() => {
     if (form.reason === "Pharmacy or refill question") {
@@ -55,6 +57,10 @@ export function ContactForm() {
     setForm((current) => ({ ...current, [field]: value }));
     setErrors([]);
     setStatusMessage("");
+    if (!trackedStart.current && step === 1 && state === "idle") {
+      trackedStart.current = true;
+      trackEvent("contact_form_started");
+    }
   }
 
   function validate(targetStep = step) {
@@ -117,9 +123,11 @@ export function ContactForm() {
     });
 
     if (response.ok) {
+      trackEvent("contact_form_submitted");
       setState("success");
       setStatusMessage("Thank you. Your message has been sent. Our team will review it and follow up as soon as possible during regular business hours. For urgent pet health concerns, please call Fort Thomas or Independence directly.");
       setForm(initialForm);
+      trackedStart.current = false;
       setStep(1);
       return;
     }

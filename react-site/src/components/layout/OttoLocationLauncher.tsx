@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Mail, MapPin, MessageCircle, PawPrint, Phone, RotateCcw, UserRound, X } from "lucide-react";
+import { trackEvent } from "@/lib/analytics";
+import type { PublicLocation } from "@/lib/settings/public";
 
 type LocationKey = "fortThomas" | "independence";
 type RequestType =
@@ -40,7 +42,7 @@ const OTTO_CLINICS: Record<LocationKey, string> = {
     "REPLACE_WITH_INDEPENDENCE_CLINIC_ID"
 };
 
-const LOCATIONS: Record<
+const FALLBACK_LOCATIONS: Record<
   LocationKey,
   {
     name: string;
@@ -73,7 +75,7 @@ function isLocationKey(value: string | null): value is LocationKey {
   return value === "fortThomas" || value === "independence";
 }
 
-export function OttoLocationLauncher() {
+export function OttoLocationLauncher({ locations }: { locations?: PublicLocation[] }) {
   const [isSelectorOpen, setIsSelectorOpen] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<LocationKey | null>(null);
   const [isOttoReady, setIsOttoReady] = useState(false);
@@ -86,9 +88,29 @@ export function OttoLocationLauncher() {
   const lastFocusedElement = useRef<HTMLElement | null>(null);
 
   const savedLocationLabel = useMemo(
-    () => (selectedLocation ? LOCATIONS[selectedLocation].shortName : ""),
+    () => (selectedLocation ? (selectedLocation === "fortThomas" ? "Fort Thomas" : "Independence") : ""),
     [selectedLocation]
   );
+
+  const locationMap = useMemo(() => {
+    const fortThomas = locations?.find((location) => location.id === "fort-thomas");
+    const independence = locations?.find((location) => location.id === "independence");
+
+    return {
+      fortThomas: {
+        ...FALLBACK_LOCATIONS.fortThomas,
+        phone: fortThomas?.phone || FALLBACK_LOCATIONS.fortThomas.phone,
+        tel: fortThomas?.tel || FALLBACK_LOCATIONS.fortThomas.tel,
+        email: fortThomas?.email || FALLBACK_LOCATIONS.fortThomas.email
+      },
+      independence: {
+        ...FALLBACK_LOCATIONS.independence,
+        phone: independence?.phone || FALLBACK_LOCATIONS.independence.phone,
+        tel: independence?.tel || FALLBACK_LOCATIONS.independence.tel,
+        email: independence?.email || FALLBACK_LOCATIONS.independence.email
+      }
+    };
+  }, [locations]);
 
   useEffect(() => {
     const saved = window.localStorage.getItem(STORAGE_KEY);
@@ -153,9 +175,10 @@ export function OttoLocationLauncher() {
 
   const openOttoForLocation = useCallback((locationKey: LocationKey, requestType?: RequestType) => {
     const clinicId = OTTO_CLINICS[locationKey];
-    const locationName = LOCATIONS[locationKey].shortName;
+    const locationName = locationMap[locationKey].shortName;
 
     setIsLoading(true);
+    trackEvent("live_chat_opened", { location: locationKey, requestType: requestType || "open" });
     setErrorMessage("");
     setMockMessage("");
     setSelectedLocation(locationKey);
@@ -189,7 +212,7 @@ export function OttoLocationLauncher() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [locationMap]);
 
   const handleLauncherClick = () => {
     if (selectedLocation) {
@@ -240,7 +263,7 @@ export function OttoLocationLauncher() {
             ) : errorMessage ? (
               <>
                 <span>{errorMessage}</span>
-                {selectedLocation && <a href={`tel:${LOCATIONS[selectedLocation].tel}`}>Call {savedLocationLabel}</a>}
+                {selectedLocation && <a href={`tel:${locationMap[selectedLocation].tel}`}>Call {savedLocationLabel}</a>}
               </>
             ) : selectedLocation ? (
               <>
@@ -298,8 +321,8 @@ export function OttoLocationLauncher() {
             </p>
             <p className="otto-recommended-note">Chat support is now available and is the recommended option for quick, non-urgent questions.</p>
             <div className="otto-location-grid">
-              {(Object.keys(LOCATIONS) as LocationKey[]).map((locationKey) => {
-                const location = LOCATIONS[locationKey];
+              {(Object.keys(locationMap) as LocationKey[]).map((locationKey) => {
+                const location = locationMap[locationKey];
                 return (
                   <article className="otto-location-card" key={locationKey}>
                     <MapPin aria-hidden="true" size={21} />

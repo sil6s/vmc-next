@@ -9,6 +9,7 @@ import { locations } from "@/data/locations";
 import { pages } from "@/data/pages";
 import { site } from "@/data/site";
 import { pageMetadata } from "@/lib/metadata";
+import { getPublicSettings } from "@/lib/settings/public";
 import { breadcrumbSchema, faqSchema, JsonLd, locationVeterinaryCareSchema, webpageSchema } from "@/lib/schema";
 
 export const metadata = pageMetadata({ ...pages.contact.seo, path: "/contact/" });
@@ -114,7 +115,9 @@ const contactOptions = [
   }
 ];
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const settings = await getPublicSettings();
+
   return (
     <>
       <Hero
@@ -206,11 +209,11 @@ export default function ContactPage() {
                 <h3>{location.shortName} Veterinary Medical Center</h3>
                 <address>{location.address}</address>
                 <a className="services-phone" href={`tel:${location.tel}`}>{location.phone}</a>
-                <ul>{site.locations[index].hours.map((hour) => <li key={hour}>{hour}</li>)}</ul>
+                <ul>{(settings.publicLocations[index]?.hours || site.locations[index].hours).map((hour) => <li key={hour}>{hour}</li>)}</ul>
                 <p><strong>Nearby:</strong> {location.quickFacts.nearby}</p>
                 <div className="inline-actions">
                   <a className="btn btn-primary" href={`tel:${location.tel}`}>Call {location.shortName}</a>
-                  <a className="btn btn-ghost" href={site.locations[index].mapUrl} target="_blank" rel="noopener noreferrer">Get Directions</a>
+                  <a className="btn btn-ghost" href={settings.publicLocations[index]?.mapUrl || site.locations[index].mapUrl} target="_blank" rel="noopener noreferrer">Get Directions</a>
                   <Link className="text-link" href={`/locations/${location.slug}/`}>View {location.shortName} Location</Link>
                 </div>
               </div>

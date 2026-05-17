@@ -2,16 +2,20 @@ import type { FAQ } from "@/data/faqs";
 import type { LocationPage } from "@/data/locations";
 import type { ServiceDetail } from "@/data/serviceHub";
 import { absoluteUrl, site } from "@/data/site";
+import type { PublicSettings } from "@/lib/settings/public";
 
-export function organizationSchema() {
+export function organizationSchema(settings?: PublicSettings) {
+  const locations = settings?.publicLocations || site.locations;
+
   return {
     "@context": "https://schema.org",
     "@type": "VeterinaryCare",
     name: site.name,
-    url: site.siteUrl,
+    url: settings?.siteUrl || site.siteUrl,
     email: site.email,
     areaServed: ["Northern Kentucky", "Fort Thomas KY", "Independence KY", "Greater Cincinnati"],
-    address: site.locations.map((location) => ({
+    sameAs: settings?.seo.sameAsSocialLinks,
+    address: locations.map((location) => ({
       "@type": "PostalAddress",
       streetAddress: location.street,
       addressLocality: location.city,
@@ -19,16 +23,16 @@ export function organizationSchema() {
       postalCode: location.zip,
       addressCountry: "US"
     })),
-    telephone: site.locations.map((location) => location.tel)
+    telephone: locations.map((location) => location.tel)
   };
 }
 
-export function websiteSchema() {
+export function websiteSchema(siteUrl = site.siteUrl) {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: site.name,
-    url: site.siteUrl
+    url: siteUrl
   };
 }
 

@@ -1,12 +1,12 @@
 export const site = {
   name: "Veterinary Medical Center",
   shortName: "VMC",
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://vmcnky.com",
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://nky.vet",
   tagline: "Fort Thomas & Independence, Kentucky",
   legal: "Fear-Free Certified. Licensed in KY and OH.",
   email: "information@nky.vet",
   portalExternalUrl: "https://tvmcft.use1.ezyvet.com/external/portal/main/login?id=2",
-  pharmacyExternalUrl: "https://nky-vet.ourvet.com/",
+  pharmacyExternalUrl: "https://nky-vet.ourvet.com/pet/",
   googleTagManagerId: "GTM-K9VSFT44",
   socialImage: "/images/vmc-social-media.jpg",
   locations: [

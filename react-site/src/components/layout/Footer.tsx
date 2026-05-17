@@ -1,10 +1,14 @@
 import Link from "next/link";
+import { LockKeyhole } from "lucide-react";
 import { navigation, utilityNavigation } from "@/data/navigation";
 import { site } from "@/data/site";
 import { NewsletterForm } from "@/components/forms/NewsletterForm";
+import type { PublicLocation } from "@/lib/settings/public";
 import { Logo } from "./Logo";
 
-export function Footer() {
+type FooterLocation = Pick<PublicLocation, "id" | "name" | "address" | "phone" | "tel">;
+
+export function Footer({ locations = site.locations }: { locations?: ReadonlyArray<FooterLocation> }) {
   return (
     <footer className="site-footer">
       <div className="newsletter">
@@ -43,7 +47,7 @@ export function Footer() {
         </div>
         <div>
           <h2>Contact</h2>
-          {site.locations.map((location) => (
+          {locations.map((location) => (
             <address key={location.id}>
               <strong>{location.name}</strong>
               <span>{location.address}</span>
@@ -58,6 +62,10 @@ export function Footer() {
         <span className="footer-legal-links">
           <span>{site.legal}</span>
           <Link href="/privacy-policy/">Privacy Policy & SMS Terms</Link>
+          <Link className="footer-admin-link" href="/login/">
+            <LockKeyhole aria-hidden="true" size={13} />
+            Admin Portal
+          </Link>
         </span>
       </div>
     </footer>

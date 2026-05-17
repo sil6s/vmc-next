@@ -7,6 +7,7 @@ import { Section } from "@/components/ui/Section";
 import { locations } from "@/data/locations";
 import { site } from "@/data/site";
 import { pageMetadata } from "@/lib/metadata";
+import { getPublicSettings } from "@/lib/settings/public";
 import { breadcrumbSchema, JsonLd, locationVeterinaryCareSchema, webpageSchema } from "@/lib/schema";
 
 const seo = {
@@ -138,7 +139,9 @@ function MapEmbed({ src, title }: { src: string; title: string }) {
   );
 }
 
-export default function LocationsPage() {
+export default async function LocationsPage() {
+  const settings = await getPublicSettings();
+
   return (
     <>
       <Hero
@@ -214,19 +217,19 @@ export default function LocationsPage() {
                     </a>
                     <p>
                       <Clock aria-hidden="true" size={17} />
-                      {site.locations[index].hours[0]}
+                      {settings.publicLocations[index]?.hours[0] || site.locations[index].hours[0]}
                     </p>
                   </div>
 
                   <p className="home-location-nearby">{nearbyCopy(location.shortName)}</p>
 
-                  <MapEmbed src={site.locations[index].mapEmbedUrl} title={`Map to ${officialName}`} />
+                  <MapEmbed src={settings.publicLocations[index]?.mapEmbedUrl || site.locations[index].mapEmbedUrl} title={`Map to ${officialName}`} />
 
                   <div className="location-card-actions">
                     <a className="btn btn-primary" href={`tel:${location.tel}`}>
                       Call {location.shortName}
                     </a>
-                    <a className="btn btn-ghost" href={site.locations[index].mapUrl} target="_blank" rel="noopener noreferrer">
+                    <a className="btn btn-ghost" href={settings.publicLocations[index]?.mapUrl || site.locations[index].mapUrl} target="_blank" rel="noopener noreferrer">
                       Get Directions
                     </a>
                     <Link className="btn btn-ghost" href="/contact/">
