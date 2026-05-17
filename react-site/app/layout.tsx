@@ -2,9 +2,9 @@ import type { Metadata, Viewport } from "next";
 import { Instrument_Sans, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { AnnouncementBanner } from "@/components/layout/AnnouncementBanner";
+import { ChatSupportWidget } from "@/components/layout/ChatSupportWidget";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
-import { OttoLocationLauncher } from "@/components/layout/OttoLocationLauncher";
 import { UmamiTracker } from "@/components/layout/UmamiTracker";
 import { getPublicSettings } from "@/lib/settings/public";
 import { JsonLd, organizationSchema, websiteSchema } from "@/lib/schema";
@@ -58,7 +58,9 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <main id="main">{children}</main>
         <Footer locations={settings.publicLocations} />
         {/* TODO: Load the real Otto embed script once here with next/script when Otto provides the production script URL. */}
-        {settings.liveChat.liveChatEnabled && <OttoLocationLauncher locations={settings.publicLocations} />}
+        {settings.liveChat.liveChatEnabled && (
+          <ChatSupportWidget locations={settings.publicLocations} appointmentHref={settings.externalLinks.bookAppointmentUrl || settings.seo.sitewideCtaUrl} />
+        )}
         <JsonLd data={[organizationSchema(settings), websiteSchema(settings.siteUrl)]} />
         <UmamiTracker />
       </body>

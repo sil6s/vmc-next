@@ -117,6 +117,18 @@ export async function ensureSettingsTables() {
         created_at timestamptz not null default now(),
         updated_at timestamptz not null default now()
       );
+
+      create table if not exists new_patient_submissions (
+        id text primary key,
+        owner_email text not null,
+        owner_name text not null,
+        pet_name text not null,
+        preferred_location text not null,
+        reason_for_visit text not null,
+        payload jsonb not null,
+        uploaded_file_names text[] not null default '{}',
+        created_at timestamptz not null default now()
+      );
     `).then(() => undefined);
   }
 

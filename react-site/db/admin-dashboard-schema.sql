@@ -80,6 +80,18 @@ create table if not exists blog_posts (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists new_patient_submissions (
+  id text primary key,
+  owner_email text not null,
+  owner_name text not null,
+  pet_name text not null,
+  preferred_location text not null,
+  reason_for_visit text not null,
+  payload jsonb not null,
+  uploaded_file_names text[] not null default '{}',
+  created_at timestamptz not null default now()
+);
+
 -- Example:
 -- insert into admin_roles (email, role) values ('admin@nky.vet', 'owner')
 -- on conflict (email) do update set is_active = true, role = excluded.role, updated_at = now();
