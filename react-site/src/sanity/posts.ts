@@ -11,7 +11,10 @@ export type SanityBlogPost = {
   title: string;
   slug: string;
   publishedAt: string;
+  category?: string;
   excerpt?: string;
+  seoTitle?: string;
+  seoDescription?: string;
   image?: SanityImageSource;
   imageAlt?: string;
   author?: BlogAuthor;
@@ -85,7 +88,7 @@ function fromSanityPost(post: SanityBlogPost): BlogPost {
     title: post.title,
     slug: post.slug,
     date: post.publishedAt,
-    category: "Pet Care",
+    category: post.category || "Pet Care",
     excerpt,
     body: post.body,
     image: post.image,
@@ -93,8 +96,8 @@ function fromSanityPost(post: SanityBlogPost): BlogPost {
     featuredImageAlt: post.imageAlt || `${post.title} from Veterinary Medical Center`,
     author,
     seo: {
-      title: `${post.title} | Veterinary Medical Center`,
-      description: excerpt
+      title: post.seoTitle || `${post.title} | Veterinary Medical Center`,
+      description: post.seoDescription || excerpt
     }
   };
 }
@@ -146,21 +149,23 @@ async function fetchSanityPost(slug: string) {
 }
 
 export async function getBlogPosts(limit = 12) {
+  const sanityPosts = await fetchSanityPosts(limit);
+  if (sanityPosts.length) return sanityPosts;
+
   const managedPosts = await getManagedBlogPosts({ publicOnly: true });
   if (managedPosts.length) {
     return managedPosts.slice(0, limit).map(fromManagedPost);
   }
 
-  const sanityPosts = await fetchSanityPosts(limit);
-  return sanityPosts.length ? sanityPosts : staticPosts.slice(0, limit).map(fromStaticPost);
+  return staticPosts.slice(0, limit).map(fromStaticPost);
 }
 
 export async function getBlogPost(slug: string) {
-  const managedPost = await getManagedBlogPost(slug);
-  if (managedPost?.status === "published") return fromManagedPost(managedPost);
-
   const sanityPost = await fetchSanityPost(slug);
   if (sanityPost) return sanityPost;
+
+  const managedPost = await getManagedBlogPost(slug);
+  if (managedPost?.status === "published") return fromManagedPost(managedPost);
 
   const staticPost = staticPosts.find((post) => post.slug === slug);
   return staticPost ? fromStaticPost(staticPost) : null;

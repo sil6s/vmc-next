@@ -15,7 +15,7 @@ export default async function AnalyticsPage() {
       {!process.env.UMAMI_API_KEY && (
         <section className="dashboard-card">
           <h2>Connect Umami API</h2>
-          <p className="dashboard-muted">Add `UMAMI_API_KEY` in Vercel or your local environment to replace fallback metrics with live Umami data. Optional `UMAMI_SHARE_URL` can expose a read-only report link.</p>
+          <p className="dashboard-muted">Add `UMAMI_API_KEY` in Vercel or your local environment to populate live Umami metrics. Optional `UMAMI_SHARE_URL` can expose a read-only report link.</p>
         </section>
       )}
     </>

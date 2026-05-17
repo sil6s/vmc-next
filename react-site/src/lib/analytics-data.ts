@@ -24,51 +24,17 @@ export type AnalyticsOverview = {
 
 const fallbackAnalytics: AnalyticsOverview = {
   rangeLabel: "Last 30 days",
-  metrics: [
-    { label: "Website Visits", value: "18,742", change: "+18.6%" },
-    { label: "Appointment Clicks", value: "642", change: "+22.1%" },
-    { label: "Chat Conversations", value: "186", change: "+8.3%" },
-    { label: "Portal Clicks", value: "512", change: "+15.2%" },
-    { label: "Pharmacy Clicks", value: "298", change: "+12.7%" },
-    { label: "Form Submissions", value: "73", change: "+9.0%" }
-  ],
-  traffic: [
-    { label: "May 1", visits: 520 },
-    { label: "May 6", visits: 820 },
-    { label: "May 11", visits: 760 },
-    { label: "May 16", visits: 1420 },
-    { label: "May 21", visits: 960 },
-    { label: "May 26", visits: 1380 },
-    { label: "May 31", visits: 1210 }
-  ],
-  ctaClicks: [
-    { label: "Book Appointment", value: 642 },
-    { label: "Patient Portal", value: 512 },
-    { label: "Online Pharmacy", value: 298 },
-    { label: "New Patient Form", value: 73 }
-  ],
-  topPages: [
-    { path: "/", views: 8240 },
-    { path: "/services/", views: 3110 },
-    { path: "/locations/", views: 2260 },
-    { path: "/contact/", views: 1840 }
-  ],
-  sources: [
-    { source: "Google", visits: 9820 },
-    { source: "Direct", visits: 4120 },
-    { source: "Facebook", visits: 960 },
-    { source: "Referrals", visits: 720 }
-  ],
-  devices: [
-    { device: "Mobile", percent: 68 },
-    { device: "Desktop", percent: 26 },
-    { device: "Tablet", percent: 6 }
-  ],
+  metrics: [],
+  traffic: [],
+  ctaClicks: [],
+  topPages: [],
+  sources: [],
+  devices: [],
   health: {
-    uptime: "99.98%",
-    responseTime: "245 ms",
-    seoScore: "92",
-    deployment: "2h ago"
+    uptime: "No data",
+    responseTime: "No data",
+    seoScore: "No data",
+    deployment: "No data"
   },
   usesMockData: true,
   shareUrl: process.env.UMAMI_SHARE_URL || ""

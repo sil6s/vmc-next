@@ -127,8 +127,11 @@ export async function ensureSettingsTables() {
         reason_for_visit text not null,
         payload jsonb not null,
         uploaded_file_names text[] not null default '{}',
+        uploaded_file_objects jsonb not null default '[]'::jsonb,
         created_at timestamptz not null default now()
       );
+
+      alter table new_patient_submissions add column if not exists uploaded_file_objects jsonb not null default '[]'::jsonb;
     `).then(() => undefined);
   }
 

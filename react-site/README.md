@@ -21,7 +21,19 @@ npm run build
 
 ## Environment Variables
 
-Copy `.env.example` to `.env.local` for local secrets. The site builds without email provider keys. If `RESEND_API_KEY` is present, `/api/contact/` sends through Resend. Brevo or SendGrid can be added in the same route handler later.
+Copy `.env.example` to `.env.local` for local secrets. The site builds without email provider keys. If Gmail API variables are present, `/api/contact/` and `/api/new-patient-request/` send through Gmail API. If Gmail is not configured and `RESEND_API_KEY` is present, the same routes fall back to Resend.
+
+Gmail API email requires a refresh token for the mailbox that sends clinic mail:
+
+```bash
+GMAIL_CLIENT_ID=...
+GMAIL_CLIENT_SECRET=...
+GMAIL_REFRESH_TOKEN=...
+GMAIL_SEND_AS=information@nky.vet
+GMAIL_USER_ID=me
+```
+
+Enable the Gmail API in Google Cloud, generate the refresh token with the `https://www.googleapis.com/auth/gmail.send` scope and offline access, then store the token only in Vercel environment variables or `.env.local`. The `GMAIL_SEND_AS` address must be the Gmail account or a verified Gmail send-as alias.
 
 ## Private Admin Dashboard
 
@@ -107,9 +119,11 @@ Use `/dashboard/blog/new/` to save drafts, preview SEO, and publish. Activity is
 - `src/data/faqs.ts`: FAQ content and schema source
 - `src/data/posts.ts`: temporary static blog data
 
-## Future Sanity Blog
+## Sanity Blog Studio
 
-`src/sanity/` remains available for a future Sanity Studio workflow. If Sanity Studio is embedded later with `next-sanity`, protect the Studio route behind the same admin checks and add the hosted domain to Sanity CORS origins with authenticated requests enabled.
+Blog content is managed in the protected dashboard at `/dashboard/blog/studio`. The Studio is embedded with `next-sanity`, uses `NEXT_PUBLIC_SANITY_PROJECT_ID`, `NEXT_PUBLIC_SANITY_DATASET`, and `NEXT_PUBLIC_SANITY_API_VERSION`, and public blog pages read published Sanity posts before falling back to legacy content.
+
+In Sanity project settings, add `https://nky.vet` and `http://localhost:3001` to CORS origins with authenticated requests enabled so the embedded Studio can authenticate.
 
 ## Deployment
 

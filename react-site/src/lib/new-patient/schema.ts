@@ -5,9 +5,10 @@ export const appointmentTiming = ["As soon as available", "This week", "Next wee
 export const timeOfDayOptions = ["Morning", "Afternoon", "No preference"] as const;
 export const locationOptions = ["Fort Thomas", "Independence", "No preference"] as const;
 export const clientTypeOptions = ["New client", "Existing client"] as const;
-export const speciesOptions = ["Dog", "Cat"] as const;
+export const speciesOptions = ["Dog", "Cat", "Other"] as const;
 export const genderOptions = ["Male", "Neutered Male", "Female", "Spayed Female"] as const;
 export const indoorOutdoorOptions = ["Indoor", "Outdoor", "Both"] as const;
+export const coOwnerPermissionOptions = ["Scheduling only", "Medical updates", "Billing/payment", "Full authorization"] as const;
 
 const requiredText = z.string().trim().min(1, "This field is required.");
 const phone = z.string().trim().min(7, "Enter a valid phone number.");
@@ -32,9 +33,13 @@ export const newPatientRequestSchema = z.object({
   zipCode: requiredText,
   driversLicense: z.string().trim(),
   coOwnerName: z.string().trim(),
+  coOwnerRelationship: z.string().trim(),
   coOwnerPhone: z.string().trim(),
-  ownerEmployer: requiredText,
-  ownerEmployerPhone: phone,
+  coOwnerEmail: z.string().trim(),
+  coOwnerPermissionLevel: z.enum(coOwnerPermissionOptions),
+  coOwnerDecisionAuthorization: z.boolean(),
+  ownerEmployer: z.string().trim(),
+  ownerEmployerPhone: z.string().trim(),
   coOwnerEmployer: z.string().trim(),
   coOwnerEmployerPhone: z.string().trim(),
   alternativePhone: z.string().trim(),
@@ -80,7 +85,11 @@ export const newPatientDefaults: NewPatientRequest = {
   zipCode: "",
   driversLicense: "",
   coOwnerName: "",
+  coOwnerRelationship: "",
   coOwnerPhone: "",
+  coOwnerEmail: "",
+  coOwnerPermissionLevel: "Scheduling only",
+  coOwnerDecisionAuthorization: false,
   ownerEmployer: "",
   ownerEmployerPhone: "",
   coOwnerEmployer: "",

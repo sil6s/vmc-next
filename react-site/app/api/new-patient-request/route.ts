@@ -3,54 +3,11 @@ import { NextResponse } from "next/server";
 import { ensureSettingsTables, getPool, hasDatabase } from "@/lib/settings/db";
 import { allowedRecordTypes, maxRecordFileSize, maxRecordUploadTotal, newPatientRequestSchema } from "@/lib/new-patient/schema";
 import { generateNewPatientPdf } from "@/lib/new-patient/pdf";
-
-type EmailAttachment = {
-  filename: string;
-  content: string;
-};
+import { hasPrivateUploadStorage, safeObjectSegment, uploadPrivateObjects } from "@/lib/new-patient/r2-storage";
+import { sendEmail } from "@/lib/email/send-email";
 
 function htmlEscape(value: string) {
   return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-}
-
-async function sendResendEmail({
-  to,
-  subject,
-  html,
-  text,
-  attachments
-}: {
-  to: string;
-  subject: string;
-  html: string;
-  text: string;
-  attachments: EmailAttachment[];
-}) {
-  if (!process.env.RESEND_API_KEY) {
-    return { skipped: true };
-  }
-
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      to,
-      from: process.env.CONTACT_EMAIL_FROM || "website@vmcnky.com",
-      subject,
-      html,
-      text,
-      attachments
-    })
-  });
-
-  if (!response.ok) {
-    throw new Error("Email delivery failed.");
-  }
-
-  return { skipped: false };
 }
 
 function brandedEmail(title: string, body: string) {
@@ -70,18 +27,18 @@ function brandedEmail(title: string, body: string) {
   `;
 }
 
-async function readUpload(file: File): Promise<EmailAttachment> {
-  const buffer = Buffer.from(await file.arrayBuffer());
-  return {
-    filename: file.name,
-    content: buffer.toString("base64")
-  };
+async function uploadBuffer(file: File) {
+  return Buffer.from(await file.arrayBuffer());
 }
 
 export async function POST(request: Request) {
   const formData = await request.formData().catch(() => null);
   if (!formData) {
     return NextResponse.json({ error: "Invalid submission." }, { status: 400 });
+  }
+
+  if (typeof formData.get("company") === "string" && String(formData.get("company")).trim()) {
+    return NextResponse.json({ ok: true });
   }
 
   const rawPayload = formData.get("payload");
@@ -110,21 +67,40 @@ export async function POST(request: Request) {
   }
 
   const submission = parsed.data;
+  const submissionId = randomUUID();
   const uploadedFileNames = files.map((file) => file.name);
   const pdf = generateNewPatientPdf(submission, uploadedFileNames);
   const pdfAttachment = {
     filename: `new-patient-request-${submission.petName.toLowerCase().replace(/[^a-z0-9]+/g, "-") || "pet"}.pdf`,
     content: pdf.toString("base64")
   };
-  const uploadAttachments = await Promise.all(files.map(readUpload));
+  const uploadBuffers = await Promise.all(files.map(uploadBuffer));
+  const uploadAttachments = files.map((file, index) => ({
+    filename: file.name,
+    content: uploadBuffers[index].toString("base64")
+  }));
   const attachments = [pdfAttachment, ...uploadAttachments];
-  const submissionId = randomUUID();
+  const storagePrefix = `new-patient-submissions/${new Date().toISOString().slice(0, 10)}/${submissionId}`;
+  const storedObjects = await uploadPrivateObjects([
+    {
+      key: `${storagePrefix}/${safeObjectSegment(pdfAttachment.filename)}`,
+      filename: pdfAttachment.filename,
+      contentType: "application/pdf",
+      body: pdf
+    },
+    ...files.map((file, index) => ({
+      key: `${storagePrefix}/records/${index + 1}-${safeObjectSegment(file.name)}`,
+      filename: file.name,
+      contentType: file.type || "application/octet-stream",
+      body: uploadBuffers[index]
+    }))
+  ]);
 
   if (hasDatabase()) {
     await ensureSettingsTables();
     await getPool().query(
-      `insert into new_patient_submissions (id, owner_email, owner_name, pet_name, preferred_location, reason_for_visit, payload, uploaded_file_names)
-       values ($1, $2, $3, $4, $5, $6, $7::jsonb, $8)`,
+      `insert into new_patient_submissions (id, owner_email, owner_name, pet_name, preferred_location, reason_for_visit, payload, uploaded_file_names, uploaded_file_objects)
+       values ($1, $2, $3, $4, $5, $6, $7::jsonb, $8, $9::jsonb)`,
       [
         submissionId,
         submission.email,
@@ -133,13 +109,23 @@ export async function POST(request: Request) {
         submission.preferredLocation,
         submission.reasonForVisit,
         JSON.stringify(submission),
-        uploadedFileNames
+        uploadedFileNames,
+        JSON.stringify(storedObjects)
       ]
     );
     await getPool().query(
       `insert into activity_log (user_email, action, details, status, section, setting_key, new_value)
        values ($1, 'New patient request submitted', $2, 'success', 'new-patients', 'submission', $3::jsonb)`,
-      [submission.email, `${submission.petName} - ${submission.ownerLastName}`, JSON.stringify({ submissionId, preferredLocation: submission.preferredLocation })]
+      [
+        submission.email,
+        `${submission.petName} - ${submission.ownerLastName}`,
+        JSON.stringify({
+          submissionId,
+          preferredLocation: submission.preferredLocation,
+          privateStorageEnabled: hasPrivateUploadStorage(),
+          storedObjectCount: storedObjects.length
+        })
+      ]
     );
   }
 
@@ -154,6 +140,7 @@ export async function POST(request: Request) {
     `Reason: ${submission.reasonForVisit}`,
     `Notes: ${submission.schedulingNotes || "None"}`,
     `Uploaded records: ${uploadedFileNames.length ? uploadedFileNames.join(", ") : "None"}`,
+    `Private storage: ${storedObjects.length ? `${storedObjects.length} file(s) stored in R2` : "Not configured or no files stored"}`,
     "",
     "PDF summary is attached."
   ].join("\n");
@@ -168,6 +155,7 @@ export async function POST(request: Request) {
      <p><strong>Reason:</strong> ${htmlEscape(submission.reasonForVisit)}</p>
      <p><strong>Notes:</strong> ${htmlEscape(submission.schedulingNotes || "None")}</p>
      <p><strong>Uploaded records:</strong> ${uploadedFileNames.length ? htmlEscape(uploadedFileNames.join(", ")) : "None"}</p>
+     <p><strong>Private storage:</strong> ${storedObjects.length ? `${storedObjects.length} file(s) stored in R2.` : "Not configured or no files stored."}</p>
      <p>The signed PDF summary is attached.</p>`
   );
 
@@ -185,23 +173,28 @@ export async function POST(request: Request) {
   );
 
   try {
-    await sendResendEmail({
+    const clinicEmail = await sendEmail({
       to: process.env.CONTACT_EMAIL_TO || "information@nky.vet",
       subject: clinicSubject,
       html: clinicHtml,
       text: clinicText,
       attachments
     });
-    await sendResendEmail({
+    const clientEmail = await sendEmail({
       to: submission.email,
       subject: clientSubject,
       html: clientHtml,
       text: clientText,
       attachments: [pdfAttachment]
     });
+    return NextResponse.json({
+      ok: true,
+      submissionId,
+      emailSkipped: clinicEmail.skipped && clientEmail.skipped,
+      emailProvider: clinicEmail.provider !== "none" ? clinicEmail.provider : clientEmail.provider,
+      storedObjectCount: storedObjects.length
+    });
   } catch {
     return NextResponse.json({ error: "Your request was saved, but email delivery failed. Please call either clinic." }, { status: 502 });
   }
-
-  return NextResponse.json({ ok: true, submissionId, emailSkipped: !process.env.RESEND_API_KEY });
 }

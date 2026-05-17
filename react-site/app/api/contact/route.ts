@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { sendEmail } from "@/lib/email/send-email";
 
 type ContactPayload = {
   name?: unknown;
@@ -39,23 +40,15 @@ export async function POST(request: Request) {
   const emailBody = {
     to: process.env.CONTACT_EMAIL_TO || "information@nky.vet",
     from: process.env.CONTACT_EMAIL_FROM || "website@vmcnky.com",
+    replyTo: email,
     subject: `Website inquiry from ${name}`,
     text: [`Name: ${name}`, `Email: ${email}`, `Phone: ${phone}`, `Location: ${location}`, "", message].join("\n")
   };
 
-  if (process.env.RESEND_API_KEY) {
-    const response = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(emailBody)
-    });
-
-    if (!response.ok) {
-      return NextResponse.json({ error: "Your message could not be sent right now. Please call either clinic." }, { status: 502 });
-    }
+  try {
+    await sendEmail(emailBody);
+  } catch {
+    return NextResponse.json({ error: "Your message could not be sent right now. Please call either clinic." }, { status: 502 });
   }
 
   return NextResponse.json({ ok: true });

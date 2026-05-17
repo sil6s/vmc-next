@@ -25,6 +25,12 @@ function wrapLine(value: string, max = 92) {
   return lines.length ? lines : [""];
 }
 
+function signatureSummary(value: string) {
+  if (value.startsWith("typed:")) return `Typed signature: ${value.replace(/^typed:/, "")}`;
+  if (value.startsWith("data:image")) return "Drawn signature captured electronically.";
+  return value || "Not provided";
+}
+
 function textLines(data: NewPatientRequest, uploadedFileNames: string[]) {
   const submittedAt = new Date().toLocaleString("en-US", { timeZone: "America/New_York" });
   return [
@@ -48,9 +54,13 @@ function textLines(data: NewPatientRequest, uploadedFileNames: string[]) {
     `Address: ${data.streetAddress}${data.addressLine2 ? `, ${data.addressLine2}` : ""}, ${data.city}, ${data.state} ${data.zipCode}`,
     `Driver's License #: ${data.driversLicense || "Not provided"}`,
     `Co-Owner: ${data.coOwnerName || "Not provided"}`,
+    `Co-Owner Relationship: ${data.coOwnerRelationship || "Not provided"}`,
     `Co-Owner Phone: ${data.coOwnerPhone || "Not provided"}`,
-    `Owner's Employer: ${data.ownerEmployer}`,
-    `Owner Employer's Phone: ${data.ownerEmployerPhone}`,
+    `Co-Owner Email: ${data.coOwnerEmail || "Not provided"}`,
+    `Co-Owner Permission Level: ${data.coOwnerName ? data.coOwnerPermissionLevel : "Not provided"}`,
+    `Co-Owner Decision Authorization: ${data.coOwnerDecisionAuthorization ? "May make medical or financial decisions" : "Not selected"}`,
+    `Owner's Employer: ${data.ownerEmployer || "Not provided"}`,
+    `Owner Employer's Phone: ${data.ownerEmployerPhone || "Not provided"}`,
     `Co-Owner's Employer: ${data.coOwnerEmployer || "Not provided"}`,
     `Co-Owner Employer's Phone: ${data.coOwnerEmployerPhone || "Not provided"}`,
     `Alternative Phone: ${data.alternativePhone || "Not provided"}`,
@@ -74,7 +84,7 @@ function textLines(data: NewPatientRequest, uploadedFileNames: string[]) {
     "",
     "Authorization",
     "Consent: I have read and agree to the Financial & Treatment Authorization.",
-    `Digital Signature: ${data.digitalSignature}`,
+    `Digital Signature: ${signatureSummary(data.digitalSignature)}`,
     `Date Signed: ${data.dateSigned}`,
     "",
     "Clinic Contact",

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
-import { CircleCheck, Search } from "lucide-react";
-import { DashboardBrand, DashboardHelpCard, DashboardMobileNav, DashboardNav } from "@/components/dashboard/DashboardNav";
+import { Search } from "lucide-react";
+import { DashboardBrand, DashboardMobileNav, DashboardNav } from "@/components/dashboard/DashboardNav";
 import { SignOutButton } from "@/components/dashboard/SignOutButton";
 import { requireAdminSession } from "@/lib/admin-auth";
 
@@ -13,7 +13,16 @@ export default async function DashboardLayout({ children }: { children: ReactNod
       <aside className="dashboard-sidebar">
         <DashboardBrand />
         <DashboardNav />
-        <DashboardHelpCard />
+        <div className="dashboard-sidebar-profile">
+          <div className="dashboard-user">
+            {admin.image ? <Image src={admin.image} alt="" width={42} height={42} /> : <span className="dashboard-avatar-fallback">{admin.name.charAt(0)}</span>}
+            <span>
+              <strong>{admin.name}</strong>
+              <small>Administrator</small>
+            </span>
+          </div>
+          <SignOutButton />
+        </div>
         <p className="dashboard-sidebar-foot">Copyright {new Date().getFullYear()} Veterinary Medical Center</p>
       </aside>
       <div className="dashboard-main">
@@ -25,19 +34,6 @@ export default async function DashboardLayout({ children }: { children: ReactNod
             <input placeholder="Search settings, metrics, or pages..." />
             <kbd>⌘ K</kbd>
           </label>
-          <span className="dashboard-security-chip">
-            <CircleCheck aria-hidden="true" size={16} />
-            Secure Google Login
-          </span>
-          <div className="dashboard-user">
-            {admin.image ? <Image src={admin.image} alt="" width={42} height={42} /> : <span className="dashboard-avatar-fallback">{admin.name.charAt(0)}</span>}
-            <span>
-              <strong>{admin.name}</strong>
-              <small>{admin.email}</small>
-            </span>
-            <em>Administrator</em>
-          </div>
-          <SignOutButton />
         </header>
         <div className="dashboard-content">{children}</div>
       </div>

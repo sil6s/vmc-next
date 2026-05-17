@@ -14,10 +14,10 @@ const rows: {
   offLabel: string;
   icon: typeof MessageCircle;
 }[] = [
-  { key: "liveChatEnabled", label: "Live Chat", description: "Enable or disable the live chat widget on your site.", onLabel: "On", offLabel: "Off", icon: MessageCircle },
-  { key: "announcementEnabled", label: "Show Announcement Banner", description: "Display the announcement banner on homepage.", onLabel: "On", offLabel: "Off", icon: Megaphone },
-  { key: "emergencyAlertMode", label: "Emergency Alert Mode", description: "Show emergency alert banner across the site.", onLabel: "On", offLabel: "Off", icon: AlertTriangle },
-  { key: "websiteBookingButton", label: "Website Booking Button", description: "Show the book appointment button on site.", onLabel: "Enabled", offLabel: "Disabled", icon: CalendarDays }
+  { key: "liveChatEnabled", label: "Live Chat Widget", description: "Controls whether visitors can start a live chat.", onLabel: "Visible", offLabel: "Hidden", icon: MessageCircle },
+  { key: "announcementEnabled", label: "Homepage Announcement", description: "Displays a homepage-wide message.", onLabel: "Visible", offLabel: "Hidden", icon: Megaphone },
+  { key: "emergencyAlertMode", label: "Emergency Alert Banner", description: "Shows an emergency notice across the site.", onLabel: "On", offLabel: "Off", icon: AlertTriangle },
+  { key: "websiteBookingButton", label: "Book Appointment Button", description: "Shows or hides booking CTAs.", onLabel: "Visible", offLabel: "Hidden", icon: CalendarDays }
 ];
 
 export function QuickControls({ initialControls }: { initialControls: QuickControlsType }) {
@@ -30,7 +30,8 @@ export function QuickControls({ initialControls }: { initialControls: QuickContr
     setControls(next);
     startTransition(async () => {
       const result = await saveQuickControls(next);
-      setStatus(result);
+      const label = rows.find((row) => row.key === key)?.label || "Setting";
+      setStatus(result.ok ? { ok: true, message: `${label} is now ${value ? "visible" : "hidden"} for visitors.` } : result);
     });
   };
 

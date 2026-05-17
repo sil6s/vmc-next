@@ -1,17 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
 import {
+  AlertTriangle,
   CalendarClock,
   CheckCircle2,
-  Clock3,
+  EyeOff,
   ExternalLink,
   Link as LinkIcon,
-  Megaphone,
-  MessageCircle,
   Pill,
   UserRound
 } from "lucide-react";
 import { AnalyticsOverview } from "@/components/dashboard/AnalyticsOverview";
+import { CopyLinkButton } from "@/components/dashboard/CopyLinkButton";
 import { QuickControls } from "@/components/dashboard/QuickControls";
 import { getAnalyticsOverview } from "@/lib/analytics-data";
 import { getActivityLog, getDashboardSettings } from "@/lib/settings/settings";
@@ -28,8 +28,8 @@ function displayTime(value: string) {
 function todayPreview(location: ManagedLocation) {
   const today = new Date().toLocaleDateString("en-US", { weekday: "long", timeZone: "America/New_York" });
   const hours = location.hours.find((hour) => hour.day === today) || location.hours[0];
-  if (!hours.isOpen) return "Closed";
-  return `Open until ${displayTime(hours.closeTime)}`;
+  if (!hours.isOpen) return { label: "Office Closed Today", helper: hours.note || "Call for current availability", state: "warn" };
+  return { label: `Open until ${displayTime(hours.closeTime)}`, helper: `${displayTime(hours.openTime)} opening, Eastern Time`, state: "green" };
 }
 
 function locationShortName(location: ManagedLocation) {
@@ -39,63 +39,68 @@ function locationShortName(location: ManagedLocation) {
 export default async function DashboardPage() {
   const [settings, activity, analytics] = await Promise.all([getDashboardSettings(), getActivityLog(4), getAnalyticsOverview()]);
   const fortThomas = settings.locations.find((location) => location.id === "fort-thomas") || settings.locations[0];
+  const today = todayPreview(fortThomas);
   const visibleLinks = [
-    ["Patient Portal URL", settings.externalLinks.onlinePortalUrl],
-    ["Online Pharmacy URL", settings.externalLinks.pharmacyUrl],
-    ["Book Appointment URL", settings.externalLinks.bookAppointmentUrl],
-    ["New Patient Form URL", settings.externalLinks.newPatientFormUrl]
-  ];
-
-  const cards = [
-    {
-      label: "Live Chat Status",
-      value: settings.liveChat.liveChatEnabled ? "Enabled" : "Disabled",
-      helper: settings.liveChat.liveChatEnabled ? "Chat is active on your site" : "Chat is hidden from visitors",
-      icon: MessageCircle,
-      state: settings.liveChat.liveChatEnabled ? "green" : "red"
-    },
-    {
-      label: "Today’s Office Status",
-      value: todayPreview(fortThomas),
-      helper: settings.locations.map(locationShortName).join(" & "),
-      icon: Clock3,
-      state: "green"
-    },
-    { label: "Appointment Link", value: settings.externalLinks.bookAppointmentUrl ? "Healthy" : "Needs URL", helper: "All systems operational", icon: LinkIcon, state: settings.externalLinks.bookAppointmentUrl ? "green" : "red" },
-    { label: "Patient Portal", value: settings.externalLinks.onlinePortalUrl ? "Connected" : "Missing", helper: "Portal is reachable", icon: UserRound, state: settings.externalLinks.onlinePortalUrl ? "green" : "red" },
-    { label: "Pharmacy Link", value: settings.externalLinks.pharmacyUrl ? "Connected" : "Missing", helper: "External link active", icon: Pill, state: settings.externalLinks.pharmacyUrl ? "green" : "red" },
-    { label: "Announcement Banner", value: settings.announcement.announcementEnabled ? "On" : "Off", helper: settings.announcement.announcementEnabled ? "Banner is visible" : "Banner is not visible", icon: Megaphone, state: settings.announcement.announcementEnabled ? "green" : "red" }
-  ];
+    ["Patient Portal URL", settings.externalLinks.onlinePortalUrl, UserRound],
+    ["Online Pharmacy URL", settings.externalLinks.pharmacyUrl, Pill],
+    ["Book Appointment URL", settings.externalLinks.bookAppointmentUrl, LinkIcon],
+    ["New Patient Form URL", settings.externalLinks.newPatientFormUrl, LinkIcon]
+  ] as const;
+  const attentionItems = [
+    !settings.quickControls.liveChatEnabled && { label: "Live chat hidden", helper: "Visitors cannot start a live chat.", icon: EyeOff },
+    !settings.quickControls.websiteBookingButton && { label: "Booking CTAs hidden", helper: "Book appointment buttons are not visible.", icon: EyeOff },
+    settings.quickControls.emergencyAlertMode && { label: "Emergency alert active", helper: "Emergency banner is currently visible.", icon: AlertTriangle },
+    today.state === "warn" && { label: "Office closed today", helper: today.helper, icon: CalendarClock }
+  ].filter(Boolean) as { label: string; helper: string; icon: typeof AlertTriangle }[];
 
   return (
     <>
-      <section className="dashboard-status-grid" aria-label="Website status overview">
-        {cards.map(({ label, value, helper, icon: Icon, state }) => (
-          <article className={`dashboard-status-card is-${state}`} key={label}>
-            <span className="dashboard-status-icon"><Icon aria-hidden="true" size={24} /></span>
+      <AnalyticsOverview analytics={analytics} />
+
+      <div className="dashboard-priority-grid">
+        <section className="dashboard-card dashboard-attention-card">
+          <div className="dashboard-card-head compact">
             <div>
-              <p>{label}</p>
-              <strong>{value}</strong>
-              <small>{helper}</small>
+              <p className="dashboard-eyebrow">Needs Attention</p>
+              <h2>Action check</h2>
             </div>
-          </article>
-        ))}
-      </section>
+            <AlertTriangle aria-hidden="true" size={20} />
+          </div>
+          {attentionItems.length ? (
+            <ul className="dashboard-attention-list" aria-label="Dashboard items needing attention">
+              {attentionItems.map(({ label, helper, icon: Icon }) => (
+                <li key={label}>
+                  <span><Icon aria-hidden="true" size={16} /></span>
+                  <strong>{label}</strong>
+                  <small>{helper}</small>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="dashboard-ok-message"><CheckCircle2 aria-hidden="true" size={17} /> All critical systems look good.</p>
+          )}
+        </section>
 
-      <div className="dashboard-mockup-grid">
         <QuickControls initialControls={settings.quickControls} />
+      </div>
 
+      <div className="dashboard-support-grid">
         <section className="dashboard-card dashboard-important-links-card">
           <div className="dashboard-card-head compact">
-            <h2>Important Links</h2>
+            <div>
+              <p className="dashboard-eyebrow">Patient Tools</p>
+              <h2>Patient Tool Links</h2>
+            </div>
             <Link className="dashboard-test-link" href="/dashboard/links/">Edit All</Link>
           </div>
           <div className="dashboard-overview-links">
-            {visibleLinks.map(([label, href]) => (
+            {visibleLinks.map(([label, href, Icon]) => (
               <div className="dashboard-overview-link-row" key={label}>
-                <span><LinkIcon aria-hidden="true" size={17} /></span>
+                <span><Icon aria-hidden="true" size={17} /></span>
                 <strong>{label}</strong>
                 <code>{href || "Not configured"}</code>
+                <em className={`dashboard-link-status ${href ? "is-ok" : "is-warn"}`}>{href ? "Working" : "Needs Review"}</em>
+                <CopyLinkButton value={href} label={label} />
                 {href && (
                   <a className="dashboard-test-link" href={href} target={href.startsWith("http") ? "_blank" : undefined} rel={href.startsWith("http") ? "noopener noreferrer" : undefined}>
                     Test
@@ -108,8 +113,16 @@ export default async function DashboardPage() {
 
         <section className="dashboard-card dashboard-office-card">
           <div className="dashboard-card-head compact">
-            <h2>Office Hours</h2>
+            <div>
+              <p className="dashboard-eyebrow">Clinic Operations</p>
+              <h2>Office Hours</h2>
+            </div>
             <Link className="dashboard-test-link" href="/dashboard/location-hours/">Edit Hours</Link>
+          </div>
+          <div className={`dashboard-today-status is-${today.state}`}>
+            <CalendarClock aria-hidden="true" size={18} />
+            <strong>{today.label}</strong>
+            <span>{today.helper}</span>
           </div>
           <div className="dashboard-tabs" role="tablist" aria-label="Office locations">
             {settings.locations.map((location, index) => (
@@ -127,55 +140,49 @@ export default async function DashboardPage() {
           <small className="dashboard-timezone-note"><CalendarClock aria-hidden="true" size={15} /> Times are displayed in Eastern Time (ET)</small>
         </section>
 
-        <AnalyticsOverview analytics={analytics} compact />
+        <section className="dashboard-card dashboard-preview-site-card">
+          <div className="dashboard-card-head compact">
+            <div>
+              <p className="dashboard-eyebrow">Preview</p>
+              <h2>Public Site Preview</h2>
+            </div>
+            <Link className="dashboard-test-link" href="/" target="_blank">Open Site</Link>
+          </div>
+          <div className="dashboard-site-preview compact">
+            <Image src="/images/northern-kentucky-vet-hero.jpg" alt="Public website preview" width={420} height={220} />
+            <div>
+              <strong>nky.vet is live</strong>
+              <span><CheckCircle2 aria-hidden="true" size={14} /> Homepage, New Patients, and Contact are ready to preview.</span>
+              <nav aria-label="Preview pages">
+                <Link href="/" target="_blank">Homepage</Link>
+                <Link href="/new-patients/" target="_blank">New Patients</Link>
+                <Link href="/contact/" target="_blank">Contact</Link>
+              </nav>
+            </div>
+          </div>
+        </section>
 
         <section className="dashboard-card dashboard-activity-card">
           <div className="dashboard-card-head compact">
-            <h2>Recent Admin Activity</h2>
+            <div>
+              <p className="dashboard-eyebrow">Audit Trail</p>
+              <h2>Recent Admin Activity</h2>
+            </div>
+            <Link className="dashboard-view-all" href="/dashboard/activity/">View full log <ExternalLink aria-hidden="true" size={14} /></Link>
           </div>
           {activity.length ? (
-            <div className="dashboard-table-wrap">
-              <table className="dashboard-table compact">
-                <thead>
-                  <tr>
-                    <th>User</th>
-                    <th>Action</th>
-                    <th>Details</th>
-                    <th>Time</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {activity.map((entry) => (
-                    <tr key={entry.id}>
-                      <td>{entry.userEmail}</td>
-                      <td>{entry.action}</td>
-                      <td>{entry.details}</td>
-                      <td>{new Date(entry.createdAt).toLocaleString()}</td>
-                      <td><span className="dashboard-badge is-active">{entry.status}</span></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="dashboard-compact-activity">
+              {activity.map((entry) => (
+                <p key={entry.id}>
+                  <strong>{entry.action}</strong>
+                  <span>{entry.userEmail}</span>
+                  <time>{new Date(entry.createdAt).toLocaleString()}</time>
+                </p>
+              ))}
             </div>
           ) : (
             <p className="dashboard-muted">No dashboard activity has been recorded yet.</p>
           )}
-          <Link className="dashboard-view-all" href="/dashboard/activity/">View all activity log <ExternalLink aria-hidden="true" size={14} /></Link>
-        </section>
-
-        <section className="dashboard-card dashboard-preview-site-card">
-          <div className="dashboard-card-head compact">
-            <h2>Public Site Preview</h2>
-            <Link className="dashboard-test-link" href="/" target="_blank">Open Site</Link>
-          </div>
-          <div className="dashboard-site-preview">
-            <Image src="/images/northern-kentucky-vet-hero.jpg" alt="Public website preview" width={760} height={420} />
-            <div>
-              <strong>Northern Kentucky vet for dogs and cats</strong>
-              <span><CheckCircle2 aria-hidden="true" size={14} /> Live on nky.vet</span>
-            </div>
-          </div>
         </section>
       </div>
     </>
