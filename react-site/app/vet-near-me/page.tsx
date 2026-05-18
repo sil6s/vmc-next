@@ -20,7 +20,7 @@ export default function VetNearMePage() {
         body="Veterinary Medical Center is a locally owned veterinary practice with convenient offices in Fort Thomas and Independence, KY. We care for dogs and cats from Northern Kentucky, nearby Greater Cincinnati, and communities just across the river."
         image="/images/vmc-social-media.jpg"
         imageAlt="Vet near me at Veterinary Medical Center in Northern Kentucky"
-        primaryCta={{ label: "Request Appointment", href: "/contact/" }}
+        primaryCta={{ label: "Request Appointment", href: "/book-appointment/" }}
         secondaryCta={{ label: "Choose a Location", href: "/locations/" }}
       />
       <Section tone="white" eyebrow="Local Veterinary Care" title="A nearby vet should be easy to reach and easy to trust.">

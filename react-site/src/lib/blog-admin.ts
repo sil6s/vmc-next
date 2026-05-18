@@ -177,7 +177,7 @@ export async function saveManagedBlogPost(input: BlogPostInput, userEmail: strin
     await client.query(
       `insert into activity_log (user_email, action, details, status, section, setting_key, new_value)
        values ($1, $2, $3, 'success', 'blog', $4, $5::jsonb)`,
-      [userEmail, input.status === "published" ? "Blog post published" : "Blog draft saved", input.title, input.slug, JSON.stringify({ id, status: input.status })]
+      [userEmail, input.status === "published" ? "Resource published" : "Resource draft saved", input.title, input.slug, JSON.stringify({ id, status: input.status })]
     );
     await client.query("commit");
     return id;

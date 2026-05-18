@@ -1,6 +1,6 @@
-This folder contains Sanity integrations for blog posts and veterinary service pages.
+This folder contains Sanity integrations for resource articles and veterinary service pages.
 
-Sanity is used for blog posts and service detail pages. If Sanity is unreachable, empty, or not configured with a readable public dataset/token, the site falls back to static TypeScript content in `src/data/posts.ts` and `src/data/serviceHub.ts`.
+Sanity is used for resources, blog articles, education guides, clinic news, and service detail pages. If Sanity is unreachable, empty, or not configured with a readable public dataset/token, the site falls back to static TypeScript content in `src/data/posts.ts` and `src/data/serviceHub.ts`.
 
 Environment variables:
 

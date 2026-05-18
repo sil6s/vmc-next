@@ -48,6 +48,9 @@ export async function getDashboardSettings(): Promise<DashboardSettings> {
     ...defaultDashboardSettings.seo,
     ...(settingsRows.get(sectionKeys.seo)?.value || {})
   } as SeoSettings;
+  if (seo.sitewideCtaUrl === "/contact/" || seo.sitewideCtaUrl === "/contact") {
+    seo.sitewideCtaUrl = defaultDashboardSettings.seo.sitewideCtaUrl;
+  }
   const savedQuickControls = {
     ...defaultDashboardSettings.quickControls,
     ...(settingsRows.get(sectionKeys.quickControls)?.value || {})
@@ -57,6 +60,9 @@ export async function getDashboardSettings(): Promise<DashboardSettings> {
   const externalLinks = Object.fromEntries(
     Object.entries(defaultExternalLinks).map(([key, value]) => [key, linkMap.get(key) ?? value])
   ) as ExternalLinks;
+  if (externalLinks.bookAppointmentUrl === "/contact/" || externalLinks.bookAppointmentUrl === "/contact") {
+    externalLinks.bookAppointmentUrl = defaultExternalLinks.bookAppointmentUrl;
+  }
 
   const hourRowsByLocation = new Map<string, typeof hoursResult.rows>();
   for (const row of hoursResult.rows) {

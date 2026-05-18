@@ -71,7 +71,7 @@ const resources = [
   {
     title: "Contact Veterinary Medical Center",
     description: "Call, request an appointment, ask a question, or choose the location closest to home.",
-    href: "/contact/"
+    href: "/book-appointment/"
   }
 ];
 
@@ -117,7 +117,7 @@ export default async function LocationPage({ params }: Params) {
               <h1>{location.h1}</h1>
               <p>{location.heroBody}</p>
               <div className="hero-actions">
-                <Button href="/contact/">Book Appointment</Button>
+                <Button href="/book-appointment/">Book Appointment</Button>
                 <Button href={`tel:${location.tel}`} variant="ghost">Call {location.shortName}</Button>
               </div>
               <div className="location-chip-row">
@@ -305,7 +305,7 @@ export default async function LocationPage({ params }: Params) {
           </div>
           <div className="hero-actions">
             <Button href="/new-patients/" variant="ghost">New Patients Start Here</Button>
-            <Button href="/contact/">Request Appointment</Button>
+            <Button href="/book-appointment/">Request Appointment</Button>
           </div>
         </Container>
       </section>
@@ -392,7 +392,7 @@ export default async function LocationPage({ params }: Params) {
       <CTASection
         title={`Ready to visit our ${location.shortName} vet clinic?`}
         body={`Call our ${location.shortName} team, request an appointment online, or complete your new patient form before your first visit.`}
-        primary={{ label: "Book Appointment", href: "/contact/" }}
+        primary={{ label: "Book Appointment", href: "/book-appointment/" }}
         secondary={{ label: "New Patients Start Here", href: "/new-patients/" }}
       />
       <JsonLd

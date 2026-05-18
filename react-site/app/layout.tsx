@@ -6,7 +6,7 @@ import { ChatSupportWidget } from "@/components/layout/ChatSupportWidget";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { UmamiTracker } from "@/components/layout/UmamiTracker";
-import { getPublicSettings } from "@/lib/settings/public";
+import { appointmentHref, getPublicSettings } from "@/lib/settings/public";
 import { JsonLd, organizationSchema, websiteSchema } from "@/lib/schema";
 
 const sans = Instrument_Sans({
@@ -49,17 +49,18 @@ export const viewport: Viewport = {
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const settings = await getPublicSettings();
+  const bookingHref = appointmentHref(settings.externalLinks.bookAppointmentUrl || settings.seo.sitewideCtaUrl);
 
   return (
     <html lang="en" className={`${sans.variable} ${serif.variable}`}>
       <body>
         <AnnouncementBanner announcement={settings.announcement} />
-        <Header ctaHref={settings.externalLinks.bookAppointmentUrl || settings.seo.sitewideCtaUrl} locations={settings.publicLocations} showBookingButton={settings.quickControls.websiteBookingButton} />
+        <Header ctaHref={bookingHref} locations={settings.publicLocations} showBookingButton={settings.quickControls.websiteBookingButton} />
         <main id="main">{children}</main>
         <Footer locations={settings.publicLocations} />
         {/* TODO: Load the real Otto embed script once here with next/script when Otto provides the production script URL. */}
         {settings.liveChat.liveChatEnabled && (
-          <ChatSupportWidget locations={settings.publicLocations} appointmentHref={settings.externalLinks.bookAppointmentUrl || settings.seo.sitewideCtaUrl} />
+          <ChatSupportWidget locations={settings.publicLocations} appointmentHref={bookingHref} />
         )}
         <JsonLd data={[organizationSchema(settings), websiteSchema(settings.siteUrl)]} />
         <UmamiTracker />

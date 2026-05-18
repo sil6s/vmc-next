@@ -160,11 +160,16 @@ export function ChatSupportWidget({
     };
   }, [expanded]);
 
-  const openPanel = () => {
+  const openPanel = useCallback(() => {
     dismissTooltip();
     setStatusMessage("");
     setExpanded(true);
-  };
+  }, [dismissTooltip]);
+
+  useEffect(() => {
+    window.addEventListener("vmc:open-chat-support", openPanel);
+    return () => window.removeEventListener("vmc:open-chat-support", openPanel);
+  }, [openPanel]);
 
   const closePanel = () => {
     setExpanded(false);

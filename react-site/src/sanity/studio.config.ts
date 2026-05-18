@@ -8,7 +8,7 @@ export default defineConfig({
   title: "Veterinary Medical Center",
   projectId: sanityConfig.projectId,
   dataset: sanityConfig.dataset,
-  basePath: "/dashboard/blog/studio",
+  basePath: "/dashboard/resources/studio",
   plugins: [structureTool()],
   schema: {
     types: schemaTypes

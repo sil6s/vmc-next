@@ -154,7 +154,7 @@ export default function AboutPage() {
         imageAlt="Veterinary Medical Center Fort Thomas KY veterinary clinic location"
         badgeTitle="Licensed in KY & OH"
         badgeSub="Led by Dr. Kristi Baker"
-        primaryCta={{ label: "Book Appointment", href: "/contact/" }}
+        primaryCta={{ label: "Book Appointment", href: "/book-appointment/" }}
         secondaryCta={{ label: "Choose a Location", href: "/locations/" }}
         tertiaryCta={{ label: "Meet Our Team", href: "#team" }}
       />
@@ -227,7 +227,7 @@ export default function AboutPage() {
                 <address>{location.address}</address>
                 <a className="text-link" href={`tel:${location.tel}`}>{location.phone}</a>
                 <div className="inline-actions">
-                  <Link className="btn btn-primary" href="/contact/">Book at this location</Link>
+                  <Link className="btn btn-primary" href="/book-appointment/">Book at this location</Link>
                   <a className="btn btn-ghost" href={site.locations[index].mapUrl} target="_blank" rel="noopener noreferrer">Get directions</a>
                   <Link className="text-link" href={`/locations/${location.slug}/`}>View location page</Link>
                 </div>
@@ -290,7 +290,7 @@ export default function AboutPage() {
           <h2>Ready for veterinary care that feels more personal?</h2>
           <p>Whether your pet needs a first visit, a wellness exam, dental care, surgery, or help with a health concern, VMC is here to make the next step clear.</p>
           <div className="hero-actions">
-            <Link className="btn btn-secondary" href="/contact/">Book Appointment</Link>
+            <Link className="btn btn-secondary" href="/book-appointment/">Book Appointment</Link>
             <a className="btn btn-ghost" href={`tel:${site.locations[0].tel}`}>Call Fort Thomas</a>
             <a className="btn btn-ghost" href={`tel:${site.locations[1].tel}`}>Call Independence</a>
             <Link className="btn btn-ghost" href="/services/">View Services</Link>

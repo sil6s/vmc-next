@@ -150,7 +150,7 @@ export default async function LocationsPage() {
         body="Choose the Veterinary Medical Center location that fits your day. Both clinics provide full-service veterinary care for dogs and cats with the same relationship-based approach, clear communication, and practical care planning."
         image="/images/fort-thomas-clinic.jpg"
         imageAlt="Veterinary Medical Center Fort Thomas veterinary clinic exterior"
-        primaryCta={{ label: "Book Appointment", href: "/contact/" }}
+        primaryCta={{ label: "Book Appointment", href: "/book-appointment/" }}
         secondaryCta={{ label: "New Patients", href: "/new-patients/" }}
         tertiaryCta={{ label: "View Locations", href: "#locations" }}
       />
@@ -232,7 +232,7 @@ export default async function LocationsPage() {
                     <a className="btn btn-ghost" href={settings.publicLocations[index]?.mapUrl || site.locations[index].mapUrl} target="_blank" rel="noopener noreferrer">
                       Get Directions
                     </a>
-                    <Link className="btn btn-ghost" href="/contact/">
+                    <Link className="btn btn-ghost" href="/book-appointment/">
                       Request Appointment
                     </Link>
                   </div>
@@ -273,7 +273,7 @@ export default async function LocationsPage() {
           <h2>Ready to schedule with your Northern Kentucky vet team?</h2>
           <p>Call either clinic, request an appointment online, or send a message and our team will help you choose the right next step.</p>
           <div className="hero-actions">
-            <Button href="/contact/" variant="secondary">Book Appointment</Button>
+            <Button href="/book-appointment/" variant="secondary">Book Appointment</Button>
             <Button href="/new-patients/" variant="ghost">New Patients</Button>
             <Button href="/contact/#chat-support" variant="ghost">Contact the Team</Button>
           </div>

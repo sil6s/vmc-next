@@ -24,7 +24,7 @@ const navItems = [
   { label: "Location & Hours", href: "/dashboard/location-hours/", icon: MapPinned, group: "Site Controls" },
   { label: "Important Links", href: "/dashboard/links/", icon: LinkIcon, group: "Site Controls" },
   { label: "Announcement Banner", href: "/dashboard/announcement/", icon: Bell, group: "Site Controls" },
-  { label: "Blog", href: "/dashboard/blog/studio/", icon: BookOpenText, group: "Content" },
+  { label: "Resources", href: "/dashboard/resources/studio/", icon: BookOpenText, group: "Content" },
   { label: "SEO Settings", href: "/dashboard/seo/", icon: Search, group: "Content" },
   { label: "Integrations", href: "/dashboard/integrations/", icon: Plug, group: "System" }
 ];

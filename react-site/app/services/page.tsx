@@ -132,7 +132,7 @@ const resourceLinks = [
   {
     title: "Contact Veterinary Medical Center",
     description: "Call, request an appointment, or choose the VMC location that is closest to home.",
-    href: "/contact/"
+    href: "/book-appointment/"
   }
 ];
 
@@ -202,7 +202,7 @@ export default async function ServicesPage() {
                 Thomas, Independence, and nearby NKY communities.
               </p>
               <div className="hero-actions">
-                <Button href="/contact/">Book an Appointment</Button>
+                <Button href="/book-appointment/">Book an Appointment</Button>
                 <Button href={`tel:${site.locations[0].tel}`} variant="ghost">Call Our Team</Button>
               </div>
               <ul className="services-trust-list" aria-label="Veterinary Medical Center service highlights">
@@ -310,7 +310,7 @@ export default async function ServicesPage() {
             </p>
           </div>
           <div className="services-help-actions">
-            <Button href="/contact/" variant="secondary">Request an Appointment</Button>
+            <Button href="/book-appointment/" variant="secondary">Request an Appointment</Button>
             <Button href={`tel:${site.locations[0].tel}`} variant="ghost">Call Fort Thomas</Button>
             <Button href={`tel:${site.locations[1].tel}`} variant="ghost">Call Independence</Button>
           </div>
@@ -418,7 +418,7 @@ export default async function ServicesPage() {
       <CTASection
         title="Schedule veterinary care for your dog or cat."
         body="Whether your pet is due for a checkup, needs dental care, or is showing new symptoms, Veterinary Medical Center of Northern Kentucky is here to help."
-        primary={{ label: "Book an Appointment", href: "/contact/" }}
+        primary={{ label: "Book an Appointment", href: "/book-appointment/" }}
         secondary={{ label: "Call Our Team", href: `tel:${site.locations[0].tel}` }}
       />
       <JsonLd

@@ -2,6 +2,8 @@
 
 import { useState, useTransition } from "react";
 import { Copy, ExternalLink } from "lucide-react";
+import { ShadButton } from "@/components/ui/Button";
+import { Input } from "@/components/ui/input";
 import { saveExternalLinks } from "@/lib/dashboard-actions";
 import type { ExternalLinks } from "@/lib/settings/types";
 import { StatusMessage } from "./StatusMessage";
@@ -45,7 +47,7 @@ export function ExternalLinksForm({ initialLinks }: { initialLinks: ExternalLink
             <div className="dashboard-link-row" key={field.key}>
               <label className="dashboard-field">
                 <span>{field.label}</span>
-                <input value={value} onChange={(event) => setLinks((current) => ({ ...current, [field.key]: event.target.value }))} />
+                <Input value={value} onChange={(event) => setLinks((current) => ({ ...current, [field.key]: event.target.value }))} />
                 <small>{field.helper}</small>
               </label>
               <button
@@ -78,9 +80,9 @@ export function ExternalLinksForm({ initialLinks }: { initialLinks: ExternalLink
         })}
       </div>
       <div className="dashboard-actions">
-        <button className="dashboard-primary-button" type="button" disabled={isPending} onClick={save}>
+        <ShadButton type="button" disabled={isPending} onClick={save}>
           {isPending ? "Saving..." : "Save links"}
-        </button>
+        </ShadButton>
         <StatusMessage {...status} />
       </div>
     </section>

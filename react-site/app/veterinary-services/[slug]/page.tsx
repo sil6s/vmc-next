@@ -63,7 +63,7 @@ export default async function VeterinaryServicePage({ params }: Params) {
   const heroImage = service.heroImageSource
     ? urlFor(service.heroImageSource).width(1100).height(760).fit("crop").url()
     : service.heroImage || "/images/veterinary-care-hero.jpg";
-  const primaryCTA = service.primaryCTA || { label: "Book an Appointment", href: "/contact/" };
+  const primaryCTA = service.primaryCTA || { label: "Book an Appointment", href: "/book-appointment/" };
   const secondaryCTA = service.secondaryCTA || { label: "Call Our Team", href: `tel:${site.locations[0].tel}` };
 
   const crumbs = [
@@ -268,7 +268,7 @@ export default async function VeterinaryServicePage({ params }: Params) {
       <CTASection
         title={`Schedule ${service.title} in Northern Kentucky.`}
         body="Our team is here to help your dog or cat get the care they need with clear communication, compassionate handling, and practical next steps."
-        primary={{ label: "Book an Appointment", href: "/contact/" }}
+        primary={{ label: "Book an Appointment", href: "/book-appointment/" }}
         secondary={{ label: "Call Our Team", href: `tel:${site.locations[0].tel}` }}
       />
       <JsonLd

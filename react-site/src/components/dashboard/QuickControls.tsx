@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { AlertTriangle, CalendarDays, Megaphone, MessageCircle } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 import { saveQuickControls } from "@/lib/dashboard-actions";
 import type { QuickControls as QuickControlsType } from "@/lib/settings/types";
 import { StatusMessage } from "./StatusMessage";
@@ -55,7 +56,7 @@ export function QuickControls({ initialControls }: { initialControls: QuickContr
                 <small>{description}</small>
               </span>
               <span className="dashboard-control-state">{checked ? onLabel : offLabel}</span>
-              <input aria-label={label} checked={checked} type="checkbox" disabled={isPending} onChange={(event) => update(key, event.target.checked)} />
+              <Switch aria-label={label} checked={checked} disabled={isPending} onCheckedChange={(value) => update(key, value)} />
             </label>
           );
         })}

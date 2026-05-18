@@ -38,9 +38,16 @@ export async function getPublicSettings() {
 export type PublicSettings = Awaited<ReturnType<typeof getPublicSettings>>;
 export type PublicLocation = PublicSettings["publicLocations"][number];
 
+export function appointmentHref(value?: string | null) {
+  if (!value || value === "/contact/" || value === "/contact") {
+    return "/book-appointment/";
+  }
+  return value;
+}
+
 export function sitewideCta(settings: DashboardSettings) {
   return {
     label: settings.seo.sitewideCtaLabel,
-    href: settings.externalLinks.bookAppointmentUrl || settings.seo.sitewideCtaUrl || "/contact/"
+    href: appointmentHref(settings.externalLinks.bookAppointmentUrl || settings.seo.sitewideCtaUrl)
   };
 }

@@ -247,7 +247,7 @@ export default async function NewPatientsPage() {
           <div>
             <h3>A little preparation makes the first visit easier.</h3>
             <p>Submitting your request ahead of time gives our team a chance to review your information, understand your pet’s needs, and make your first visit smoother.</p>
-            <Button href="#start-new-patient-request">Start New Patient Request</Button>
+            <Button href="/book-appointment/?type=new">Start New Patient Request</Button>
           </div>
           <ul className="np-benefit-list">
           {prepCards.map(({ title, text, Icon }) => (
@@ -323,8 +323,8 @@ export default async function NewPatientsPage() {
           <h2>Ready to get your pet’s first visit started?</h2>
           <p>Complete the new patient request form, and our team will follow up to help schedule your visit at the location that works best for you.</p>
           <div className="hero-actions">
-            <Button href="#start-new-patient-request" variant="secondary">Start New Patient Request</Button>
-            <Button href="#existing-patient-options" variant="ghost">Existing Client Options</Button>
+            <Button href="/book-appointment/?type=new" variant="secondary">Start New Patient Request</Button>
+            <Button href="/book-appointment/?type=existing" variant="ghost">Existing Client Options</Button>
           </div>
         </div>
       </Section>

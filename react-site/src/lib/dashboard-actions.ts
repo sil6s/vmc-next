@@ -35,7 +35,7 @@ function revalidateDashboard() {
   revalidatePath("/dashboard/links/");
   revalidatePath("/dashboard/seo/");
   revalidatePath("/dashboard/analytics/");
-  revalidatePath("/dashboard/blog/");
+  revalidatePath("/dashboard/resources/");
   revalidatePath("/dashboard/activity/");
 }
 

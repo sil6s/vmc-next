@@ -34,12 +34,12 @@ export async function saveBlogPost(input: unknown) {
 
   try {
     const id = await saveManagedBlogPost(parsed, admin.email);
-    revalidatePath("/blog/");
-    revalidatePath(`/blog/${parsed.slug}/`);
+    revalidatePath("/resources/");
+    revalidatePath(`/resources/${parsed.slug}/`);
     revalidatePath("/dashboard/");
-    revalidatePath("/dashboard/blog/");
+    revalidatePath("/dashboard/resources/");
     revalidatePath("/dashboard/activity/");
-    return { ok: true, message: parsed.status === "published" ? "Blog post published successfully." : "Blog post saved successfully.", id };
+    return { ok: true, message: parsed.status === "published" ? "Resource published successfully." : "Resource saved successfully.", id };
   } catch (error) {
     return { ok: false, message: error instanceof Error ? error.message : "Unable to save blog post." };
   }

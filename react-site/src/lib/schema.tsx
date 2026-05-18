@@ -157,15 +157,16 @@ export function locationVeterinaryCareSchema(location: LocationPage, path: strin
   };
 }
 
-export function articleSchema(post: { title: string; slug: string; date: string; excerpt: string }) {
+export function articleSchema(post: { title: string; slug: string; date: string; updatedAt?: string; excerpt: string; featuredImage?: string }) {
   return {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
     headline: post.title,
     datePublished: post.date,
-    dateModified: post.date,
+    dateModified: post.updatedAt || post.date,
     description: post.excerpt,
-    url: absoluteUrl(`/blog/${post.slug}/`),
+    url: absoluteUrl(`/resources/${post.slug}/`),
+    image: post.featuredImage ? absoluteUrl(post.featuredImage) : undefined,
     author: {
       "@type": "Organization",
       name: site.name

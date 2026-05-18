@@ -1,6 +1,11 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
+import { ShadButton } from "@/components/ui/Button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import { trackEvent } from "@/lib/analytics";
 
 type FormState = "idle" | "submitting" | "success" | "error";
@@ -31,6 +36,21 @@ const initialForm = {
   company: "",
   nonUrgent: false
 };
+
+function ContactSelect({ value, options, placeholder, onChange }: { value: string; options: string[]; placeholder?: string; onChange: (value: string) => void }) {
+  return (
+    <Select value={value || "__empty"} onValueChange={(next) => onChange(next === "__empty" ? "" : next)}>
+      <SelectTrigger>
+        <SelectValue placeholder={placeholder || "Choose an option"} />
+      </SelectTrigger>
+      <SelectContent>
+        {options.map((option) => (
+          <SelectItem key={option || "__empty"} value={option || "__empty"}>{option || placeholder || "Choose an option"}</SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
+  );
+}
 
 export function ContactForm() {
   const [step, setStep] = useState(1);
@@ -156,16 +176,12 @@ export function ContactForm() {
           <legend>Step 1 of 4: Your information</legend>
           <p>We will use this information to follow up during regular business hours.</p>
           <div className="form-grid">
-            <label>First name<input value={form.firstName} onChange={(event) => updateField("firstName", event.target.value)} autoComplete="given-name" /></label>
-            <label>Last name<input value={form.lastName} onChange={(event) => updateField("lastName", event.target.value)} autoComplete="family-name" /></label>
-            <label>Email<input value={form.email} onChange={(event) => updateField("email", event.target.value)} type="email" autoComplete="email" /></label>
-            <label>Phone<input value={form.phone} onChange={(event) => updateField("phone", event.target.value)} type="tel" autoComplete="tel" /></label>
+            <label>First name<Input value={form.firstName} onChange={(event) => updateField("firstName", event.target.value)} autoComplete="given-name" /></label>
+            <label>Last name<Input value={form.lastName} onChange={(event) => updateField("lastName", event.target.value)} autoComplete="family-name" /></label>
+            <label>Email<Input value={form.email} onChange={(event) => updateField("email", event.target.value)} type="email" autoComplete="email" /></label>
+            <label>Phone<Input value={form.phone} onChange={(event) => updateField("phone", event.target.value)} type="tel" autoComplete="tel" /></label>
             <label>Preferred contact method
-              <select value={form.contactMethod} onChange={(event) => updateField("contactMethod", event.target.value)}>
-                <option>Message/email</option>
-                <option>Phone call</option>
-                <option>No preference</option>
-              </select>
+              <ContactSelect value={form.contactMethod} options={["Message/email", "Phone call", "No preference"]} onChange={(value) => updateField("contactMethod", value)} />
             </label>
           </div>
         </fieldset>
@@ -176,27 +192,15 @@ export function ContactForm() {
           <legend>Step 2 of 4: Your pet</legend>
           <p>Not sure which location to choose? Select Not sure or use chat support for help.</p>
           <div className="form-grid">
-            <label>Pet name<input value={form.petName} onChange={(event) => updateField("petName", event.target.value)} /></label>
+            <label>Pet name<Input value={form.petName} onChange={(event) => updateField("petName", event.target.value)} /></label>
             <label>Pet type
-              <select value={form.petType} onChange={(event) => updateField("petType", event.target.value)}>
-                <option>Dog</option>
-                <option>Cat</option>
-                <option>Other</option>
-              </select>
+              <ContactSelect value={form.petType} options={["Dog", "Cat", "Other"]} onChange={(value) => updateField("petType", value)} />
             </label>
             <label>Are you a current client?
-              <select value={form.currentClient} onChange={(event) => updateField("currentClient", event.target.value)}>
-                <option>Yes</option>
-                <option>No</option>
-                <option>Not sure</option>
-              </select>
+              <ContactSelect value={form.currentClient} options={["Yes", "No", "Not sure"]} onChange={(value) => updateField("currentClient", value)} />
             </label>
             <label>Preferred location
-              <select value={form.location} onChange={(event) => updateField("location", event.target.value)}>
-                <option>Fort Thomas</option>
-                <option>Independence</option>
-                <option>Not sure</option>
-              </select>
+              <ContactSelect value={form.location} options={["Fort Thomas", "Independence", "Not sure"]} onChange={(value) => updateField("location", value)} />
             </label>
           </div>
         </fieldset>
@@ -207,14 +211,11 @@ export function ContactForm() {
           <legend>Step 3 of 4: How can we help?</legend>
           <div className="form-grid">
             <label>Reason for contact
-              <select value={form.reason} onChange={(event) => updateField("reason", event.target.value)}>
-                <option value="">Choose a reason</option>
-                {reasons.map((reason) => <option key={reason}>{reason}</option>)}
-              </select>
+              <ContactSelect value={form.reason} options={["", ...reasons]} placeholder="Choose a reason" onChange={(value) => updateField("reason", value)} />
             </label>
           </div>
           {helperText && <p className="form-helper">{helperText}</p>}
-          <label>Message<textarea value={form.message} onChange={(event) => updateField("message", event.target.value)} rows={6} /></label>
+          <label>Message<Textarea value={form.message} onChange={(event) => updateField("message", event.target.value)} rows={6} /></label>
         </fieldset>
       )}
 
@@ -230,7 +231,7 @@ export function ContactForm() {
             <p><strong>Message:</strong> {form.message}</p>
           </div>
           <label className="checkbox-label">
-            <input type="checkbox" checked={form.nonUrgent} onChange={(event) => updateField("nonUrgent", event.target.checked)} />
+            <Checkbox checked={form.nonUrgent} onCheckedChange={(checked) => updateField("nonUrgent", checked === true)} />
             I understand this form is for non-urgent messages only. For urgent pet health concerns, I should call the clinic directly.
           </label>
         </fieldset>
@@ -238,17 +239,17 @@ export function ContactForm() {
 
       <label className="hp-field" aria-hidden="true">
         Leave this field blank
-        <input value={form.company} onChange={(event) => updateField("company", event.target.value)} tabIndex={-1} autoComplete="off" />
+        <Input value={form.company} onChange={(event) => updateField("company", event.target.value)} tabIndex={-1} autoComplete="off" />
       </label>
 
       <div className="form-actions">
-        {step > 1 && <button type="button" className="btn btn-ghost" onClick={() => setStep((current) => current - 1)}>Back</button>}
+        {step > 1 && <ShadButton type="button" variant="ghost" onClick={() => setStep((current) => current - 1)}>Back</ShadButton>}
         {step < 4 ? (
-          <button type="button" className="btn btn-primary" onClick={goNext}>Continue</button>
+          <ShadButton type="button" onClick={goNext}>Continue</ShadButton>
         ) : (
-          <button type="submit" className="btn btn-primary" disabled={state === "submitting"}>
+          <ShadButton type="submit" disabled={state === "submitting"}>
             {state === "submitting" ? "Sending..." : "Send Message"}
-          </button>
+          </ShadButton>
         )}
       </div>
 

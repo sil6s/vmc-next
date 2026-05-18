@@ -36,7 +36,7 @@ export const defaultLiveChatSettings: LiveChatSettings = {
 export const defaultExternalLinks: ExternalLinks = {
   onlinePortalUrl: "https://tvmcft.use1.ezyvet.com/external/portal/main/login?id=2",
   pharmacyUrl: "https://nky-vet.ourvet.com/pet/",
-  bookAppointmentUrl: "/contact/",
+  bookAppointmentUrl: "/book-appointment/",
   newPatientFormUrl: "/new-patient-registration-form/",
   existingClientFormUrl: "",
   smsPrivacyPolicyUrl: "/privacy-policy/",
@@ -63,7 +63,7 @@ export const defaultSeoSettings: SeoSettings = {
   localBusinessSchemaAddress: "2000 Memorial Parkway, Fort Thomas, KY 41075",
   sameAsSocialLinks: [],
   sitewideCtaLabel: "Book Appointment",
-  sitewideCtaUrl: "/contact/"
+  sitewideCtaUrl: "/book-appointment/"
 };
 
 export const defaultQuickControls: QuickControls = {

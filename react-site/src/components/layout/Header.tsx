@@ -11,7 +11,7 @@ import { Logo } from "./Logo";
 
 type HeaderLocation = Pick<PublicLocation, "id" | "name" | "address" | "phone" | "tel">;
 
-export function Header({ ctaHref = "/contact/", locations, showBookingButton = true }: { ctaHref?: string; locations?: ReadonlyArray<HeaderLocation>; showBookingButton?: boolean }) {
+export function Header({ ctaHref = "/book-appointment/", locations, showBookingButton = true }: { ctaHref?: string; locations?: ReadonlyArray<HeaderLocation>; showBookingButton?: boolean }) {
   const [open, setOpen] = useState(false);
   const publicLocations = locations || site.locations;
 

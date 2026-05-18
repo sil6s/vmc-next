@@ -68,7 +68,7 @@ export function HomeTestimonials() {
           <p>Start with an appointment or message our team with questions about the right next step.</p>
         </div>
         <div className="hero-actions">
-          <Button href="/contact/">Request an Appointment</Button>
+          <Button href="/book-appointment/">Request an Appointment</Button>
           <Button href="/contact/#chat-support" variant="ghost">Message Our Team</Button>
         </div>
       </div>

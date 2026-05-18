@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Search } from "lucide-react";
 import { DashboardBrand, DashboardMobileNav, DashboardNav } from "@/components/dashboard/DashboardNav";
 import { SignOutButton } from "@/components/dashboard/SignOutButton";
+import { Input } from "@/components/ui/input";
 import { requireAdminSession } from "@/lib/admin-auth";
 
 export default async function DashboardLayout({ children }: { children: ReactNode }) {
@@ -31,7 +32,7 @@ export default async function DashboardLayout({ children }: { children: ReactNod
           <label className="dashboard-search">
             <Search aria-hidden="true" size={18} />
             <span className="sr-only">Search dashboard</span>
-            <input placeholder="Search settings, metrics, or pages..." />
+            <Input placeholder="Search settings, metrics, or pages..." />
             <kbd>⌘ K</kbd>
           </label>
         </header>

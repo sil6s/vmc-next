@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { ShadButton } from "@/components/ui/Button";
+import { Input } from "@/components/ui/input";
 
 export function NewsletterForm() {
   const [email, setEmail] = useState("");
@@ -17,8 +19,8 @@ export function NewsletterForm() {
       <label className="sr-only" htmlFor="newsletter-email">
         Email address
       </label>
-      <input id="newsletter-email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Your email address" />
-      <button type="submit">Subscribe</button>
+      <Input id="newsletter-email" type="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="Your email address" />
+      <ShadButton type="submit">Subscribe</ShadButton>
       {message && <p role="status">{message}</p>}
     </form>
   );

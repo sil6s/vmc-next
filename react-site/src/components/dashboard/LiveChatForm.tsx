@@ -2,6 +2,10 @@
 
 import { useState, useTransition } from "react";
 import { MessageCircle } from "lucide-react";
+import { ShadButton } from "@/components/ui/Button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { saveLiveChatSettings } from "@/lib/dashboard-actions";
 import type { LiveChatSettings } from "@/lib/settings/types";
 import { StatusMessage } from "./StatusMessage";
@@ -34,36 +38,39 @@ export function LiveChatForm({ initialSettings }: { initialSettings: LiveChatSet
             <strong>Show live chat on public website</strong>
             <small>Disabling live chat removes the floating widget from public pages.</small>
           </span>
-          <input
+          <Switch
             checked={settings.liveChatEnabled}
-            type="checkbox"
-            onChange={(event) =>
+            aria-label="Show live chat on public website"
+            onCheckedChange={(checked) =>
               setSettings((current) => ({
                 ...current,
-                liveChatEnabled: event.target.checked,
-                liveChatStatusLabel: event.target.checked ? "Active" : "Disabled"
+                liveChatEnabled: checked,
+                liveChatStatusLabel: checked ? "Active" : "Disabled"
               }))
             }
           />
         </label>
         <label className="dashboard-field">
           <span>Provider</span>
-          <input readOnly value={settings.liveChatProvider} />
+          <Input readOnly value={settings.liveChatProvider} />
         </label>
         <label className="dashboard-field">
           <span>Placement</span>
-          <select
+          <Select
             value={settings.liveChatPlacement}
-            onChange={(event) => setSettings((current) => ({ ...current, liveChatPlacement: event.target.value as LiveChatSettings["liveChatPlacement"] }))}
+            onValueChange={(value) => setSettings((current) => ({ ...current, liveChatPlacement: value as LiveChatSettings["liveChatPlacement"] }))}
           >
-            <option value="floating">Floating</option>
-            <option value="inline">Inline</option>
-          </select>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="floating">Floating</SelectItem>
+              <SelectItem value="inline">Inline</SelectItem>
+            </SelectContent>
+          </Select>
         </label>
         <div className="dashboard-actions">
-          <button className="dashboard-primary-button" type="button" disabled={isPending} onClick={save}>
+          <ShadButton type="button" disabled={isPending} onClick={save}>
             {isPending ? "Saving..." : "Save live chat"}
-          </button>
+          </ShadButton>
           <StatusMessage {...status} />
         </div>
       </section>

@@ -4,7 +4,7 @@ export default function IntegrationsPage() {
   const integrations = [
     ["Google OAuth", "Secure admin login through approved Google accounts.", "Connected", Bot],
     ["Umami Analytics", "Public site tracking and dashboard metrics.", process.env.UMAMI_API_KEY ? "API Connected" : "Tracking Enabled", BarChart3],
-    ["Postgres Storage", "Persistent settings, links, hours, blog posts, and activity logs.", process.env.DATABASE_URL || process.env.POSTGRES_URL ? "Connected" : "Needs DATABASE_URL", Database],
+    ["Postgres Storage", "Persistent settings, links, hours, resources, and activity logs.", process.env.DATABASE_URL || process.env.POSTGRES_URL ? "Connected" : "Needs DATABASE_URL", Database],
     ["Sanity Studio", "Optional long-term embedded editorial studio path.", "Ready later", PenTool]
   ] as const;
 

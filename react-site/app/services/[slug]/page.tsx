@@ -44,7 +44,7 @@ export default async function ServicePage({ params }: Params) {
         imageAlt={`${service.title} at Veterinary Medical Center`}
         badgeTitle="Serving Northern Kentucky"
         badgeSub="Fort Thomas and Independence"
-        primaryCta={{ label: "Request Appointment", href: "/contact/" }}
+        primaryCta={{ label: "Request Appointment", href: "/book-appointment/" }}
         secondaryCta={{ label: "New Patients", href: "/new-patients/" }}
       />
       <Breadcrumbs items={crumbs.map((item) => ({ label: item.name, href: item.path }))} />

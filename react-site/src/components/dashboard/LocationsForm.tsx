@@ -2,6 +2,10 @@
 
 import { useMemo, useState, useTransition } from "react";
 import { Building2, Clock, MapPin } from "lucide-react";
+import { ShadButton } from "@/components/ui/Button";
+import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 import { saveLocationSettings } from "@/lib/dashboard-actions";
 import { formatBusinessHour } from "@/lib/settings/defaults";
 import type { ManagedLocation } from "@/lib/settings/types";
@@ -58,35 +62,35 @@ export function LocationsForm({ initialLocations }: { initialLocations: ManagedL
             <div className="dashboard-form-grid">
               <label className="dashboard-field">
                 <span>Clinic name</span>
-                <input value={location.clinicName} onChange={(event) => updateLocation(locationIndex, "clinicName", event.target.value)} />
+                <Input value={location.clinicName} onChange={(event) => updateLocation(locationIndex, "clinicName", event.target.value)} />
               </label>
               <label className="dashboard-field">
                 <span>Email address</span>
-                <input value={location.email} onChange={(event) => updateLocation(locationIndex, "email", event.target.value)} />
+                <Input value={location.email} onChange={(event) => updateLocation(locationIndex, "email", event.target.value)} />
               </label>
               <label className="dashboard-field">
                 <span>Street address</span>
-                <input value={location.streetAddress} onChange={(event) => updateLocation(locationIndex, "streetAddress", event.target.value)} />
+                <Input value={location.streetAddress} onChange={(event) => updateLocation(locationIndex, "streetAddress", event.target.value)} />
               </label>
               <label className="dashboard-field">
                 <span>City</span>
-                <input value={location.city} onChange={(event) => updateLocation(locationIndex, "city", event.target.value)} />
+                <Input value={location.city} onChange={(event) => updateLocation(locationIndex, "city", event.target.value)} />
               </label>
               <label className="dashboard-field">
                 <span>State</span>
-                <input value={location.state} onChange={(event) => updateLocation(locationIndex, "state", event.target.value.toUpperCase())} />
+                <Input value={location.state} onChange={(event) => updateLocation(locationIndex, "state", event.target.value.toUpperCase())} />
               </label>
               <label className="dashboard-field">
                 <span>ZIP code</span>
-                <input value={location.zipCode} onChange={(event) => updateLocation(locationIndex, "zipCode", event.target.value)} />
+                <Input value={location.zipCode} onChange={(event) => updateLocation(locationIndex, "zipCode", event.target.value)} />
               </label>
               <label className="dashboard-field">
                 <span>Main phone number</span>
-                <input value={location.mainPhone} onChange={(event) => updateLocation(locationIndex, "mainPhone", event.target.value)} />
+                <Input value={location.mainPhone} onChange={(event) => updateLocation(locationIndex, "mainPhone", event.target.value)} />
               </label>
               <label className="dashboard-field">
                 <span>Appointment phone number</span>
-                <input value={location.appointmentPhone} onChange={(event) => updateLocation(locationIndex, "appointmentPhone", event.target.value)} />
+                <Input value={location.appointmentPhone} onChange={(event) => updateLocation(locationIndex, "appointmentPhone", event.target.value)} />
               </label>
             </div>
           </div>
@@ -95,16 +99,16 @@ export function LocationsForm({ initialLocations }: { initialLocations: ManagedL
             <div className="dashboard-form-grid">
               <label className="dashboard-field">
                 <span>Google Maps URL</span>
-                <input value={location.googleMapsUrl} onChange={(event) => updateLocation(locationIndex, "googleMapsUrl", event.target.value)} />
+                <Input value={location.googleMapsUrl} onChange={(event) => updateLocation(locationIndex, "googleMapsUrl", event.target.value)} />
               </label>
               <label className="dashboard-field">
                 <span>Google Maps embed URL</span>
-                <input value={location.mapEmbedUrl} onChange={(event) => updateLocation(locationIndex, "mapEmbedUrl", event.target.value)} />
+                <Input value={location.mapEmbedUrl} onChange={(event) => updateLocation(locationIndex, "mapEmbedUrl", event.target.value)} />
               </label>
             </div>
             <label className="dashboard-field">
               <span>Emergency/after-hours message</span>
-              <textarea value={location.emergencyMessage} onChange={(event) => updateLocation(locationIndex, "emergencyMessage", event.target.value)} />
+              <Textarea value={location.emergencyMessage} onChange={(event) => updateLocation(locationIndex, "emergencyMessage", event.target.value)} />
             </label>
           </div>
 
@@ -119,11 +123,11 @@ export function LocationsForm({ initialLocations }: { initialLocations: ManagedL
                   <span className="dashboard-hour-day">{hour.day}</span>
                   <label className="dashboard-open-toggle">
                     <span>{hour.isOpen ? "Open" : "Closed"}</span>
-                    <input checked={hour.isOpen} type="checkbox" onChange={(event) => updateHour(locationIndex, hourIndex, "isOpen", event.target.checked)} />
+                    <Switch checked={hour.isOpen} aria-label={`${hour.day} open status`} onCheckedChange={(checked) => updateHour(locationIndex, hourIndex, "isOpen", checked)} />
                   </label>
-                  <input aria-label={`${hour.day} open time`} disabled={!hour.isOpen} value={hour.openTime} onChange={(event) => updateHour(locationIndex, hourIndex, "openTime", event.target.value)} />
-                  <input aria-label={`${hour.day} close time`} disabled={!hour.isOpen} value={hour.closeTime} onChange={(event) => updateHour(locationIndex, hourIndex, "closeTime", event.target.value)} />
-                  <input aria-label={`${hour.day} note`} value={hour.note} onChange={(event) => updateHour(locationIndex, hourIndex, "note", event.target.value)} placeholder="Note" />
+                  <Input aria-label={`${hour.day} open time`} disabled={!hour.isOpen} value={hour.openTime} onChange={(event) => updateHour(locationIndex, hourIndex, "openTime", event.target.value)} />
+                  <Input aria-label={`${hour.day} close time`} disabled={!hour.isOpen} value={hour.closeTime} onChange={(event) => updateHour(locationIndex, hourIndex, "closeTime", event.target.value)} />
+                  <Input aria-label={`${hour.day} note`} value={hour.note} onChange={(event) => updateHour(locationIndex, hourIndex, "note", event.target.value)} placeholder="Note" />
                 </div>
               ))}
             </div>
@@ -135,9 +139,9 @@ export function LocationsForm({ initialLocations }: { initialLocations: ManagedL
         </section>
       ))}
       <div className="dashboard-actions">
-        <button className="dashboard-primary-button" type="button" disabled={isPending} onClick={save}>
+        <ShadButton type="button" disabled={isPending} onClick={save}>
           {isPending ? "Saving..." : "Save location settings"}
-        </button>
+        </ShadButton>
         <StatusMessage {...status} />
       </div>
     </div>

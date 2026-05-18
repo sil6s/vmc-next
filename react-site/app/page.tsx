@@ -14,7 +14,7 @@ import { locations } from "@/data/locations";
 import { pages } from "@/data/pages";
 import { site } from "@/data/site";
 import { pageMetadata } from "@/lib/metadata";
-import { getPublicSettings } from "@/lib/settings/public";
+import { appointmentHref, getPublicSettings } from "@/lib/settings/public";
 import { breadcrumbSchema, faqSchema, JsonLd, locationVeterinaryCareSchema, webpageSchema } from "@/lib/schema";
 
 export const metadata = pageMetadata({ ...pages.home.seo, path: "/" });
@@ -67,7 +67,7 @@ const newClientSteps = [
 ];
 
 const toolLinks = [
-  { title: "Schedule an Appointment", text: "Request a visit with your local vet team.", href: "/contact/", icon: CalendarCheck },
+  { title: "Schedule an Appointment", text: "Request a visit with your local vet team.", href: "/book-appointment/", icon: CalendarCheck },
   { title: "Request a Refill", text: "Use the pharmacy path for eligible medication support.", href: "/online-vet-pharmacy-northern-kentucky-cincinnati/", icon: Stethoscope },
   { title: "Access Pet Records", text: "Use the patient portal for records and online booking.", href: "/patient-portal-online-booking/", icon: FileText },
   { title: "Online Pharmacy", text: "Shop trusted products and refill options online.", href: "/online-vet-pharmacy-northern-kentucky-cincinnati/", icon: PawPrint },
@@ -145,6 +145,7 @@ function MapEmbed({ src, title }: { src: string; title: string }) {
 export default async function HomePage() {
   const hero = pages.home.hero;
   const settings = await getPublicSettings();
+  const bookingHref = appointmentHref(settings.externalLinks.bookAppointmentUrl);
 
   return (
     <>
@@ -166,7 +167,7 @@ export default async function HomePage() {
               <p>New to Northern Kentucky Veterinary Medical Center? Start with a wellness visit, request an appointment, or message our team with questions.</p>
             </div>
             <div className="hero-actions">
-              <Button href="/contact/">Request an Appointment</Button>
+              <Button href="/book-appointment/">Request an Appointment</Button>
               <Button href="/contact/#chat-support" variant="ghost">Message Our Team</Button>
               <Button href="/services/" variant="ghost">Explore Services</Button>
             </div>
@@ -296,7 +297,7 @@ export default async function HomePage() {
               <div className="inline-actions">
                 <a className="btn btn-primary" href={settings.publicLocations[index]?.mapUrl || site.locations[index].mapUrl} target="_blank" rel="noopener noreferrer">Get Directions</a>
                 <a className="btn btn-ghost" href={`tel:${location.tel}`}>Call This Location</a>
-                <Link className="btn btn-ghost" href={settings.externalLinks.bookAppointmentUrl || "/contact/"}>Request Appointment</Link>
+                <Link className="btn btn-ghost" href={bookingHref}>Request Appointment</Link>
               </div>
             </article>
           ))}
@@ -356,7 +357,7 @@ export default async function HomePage() {
           <h2>Ready to schedule a visit with your Northern Kentucky vet team?</h2>
           <p>Choose your location, request an appointment, or call our team. We’ll help you find the right next step for your dog or cat.</p>
           <div className="hero-actions">
-            <Button href={settings.externalLinks.bookAppointmentUrl || "/contact/"} variant="secondary">Request an Appointment</Button>
+            <Button href={bookingHref} variant="secondary">Request an Appointment</Button>
             <Button href="/contact/#chat-support" variant="ghost">Message Our Team</Button>
             <Button href={`tel:${settings.publicLocations[0]?.tel || site.locations[0].tel}`} variant="ghost">Call the Clinic</Button>
           </div>

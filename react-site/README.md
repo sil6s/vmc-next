@@ -81,9 +81,7 @@ Dashboard sections:
 - `/dashboard/links/` portal, pharmacy, forms, social, and Google links
 - `/dashboard/announcement/` announcement banner
 - `/dashboard/analytics/` Umami analytics overview and local fallback metrics
-- `/dashboard/blog/` built-in blog list and editor
-- `/dashboard/blog/new/` new blog draft
-- `/dashboard/blog/[id]/edit/` edit, preview, publish, or unpublish a blog post
+- `/dashboard/resources/studio/` embedded Sanity Studio for resources, blog articles, education guides, and clinic news
 - `/dashboard/settings/` admin settings hub
 - `/dashboard/seo/` sitewide SEO fallbacks and schema fields
 - `/dashboard/activity/` most recent 25 changes
@@ -103,11 +101,11 @@ UMAMI_SHARE_URL=
 
 `UMAMI_API_KEY` is server-only and must be set in Vercel or `.env.local`, not committed. If it is missing, `/dashboard/analytics/` shows polished local fallback data. The public site tracks important CTA clicks through `trackEvent(...)` and safe delegated link tracking.
 
-## Built-In Blog Workflow
+## Resource Content Workflow
 
-The dashboard includes a simple internal blog builder for clinic staff. Posts are stored in the `blog_posts` table when `DATABASE_URL` or `POSTGRES_URL` is configured. Public `/blog/` and `/blog/[slug]/` only show posts with `status = published` and a publish date that is not in the future.
+Public content now lives under `/resources/`. Legacy `/blog/` URLs redirect to the matching resources pages.
 
-Use `/dashboard/blog/new/` to save drafts, preview SEO, and publish. Activity is recorded when drafts are saved or posts are published.
+Sanity is the preferred editor for resources. The `Resource Article` schema supports blog articles, education guides, clinic news, FAQ resources, featured images, author photos, reviewer details, SEO fields, Open Graph images, internal links, external references, tags, and Portable Text article content.
 
 ## Content Structure
 
@@ -117,11 +115,11 @@ Use `/dashboard/blog/new/` to save drafts, preview SEO, and publish. Activity is
 - `src/data/locations.ts`: location pages replacing WordPress location CPT and ACF fields
 - `src/data/pages.ts`: static page SEO and hero content
 - `src/data/faqs.ts`: FAQ content and schema source
-- `src/data/posts.ts`: temporary static blog data
+- `src/data/posts.ts`: temporary static resource/blog fallback data
 
-## Sanity Blog Studio
+## Sanity Resources Studio
 
-Blog content is managed in the protected dashboard at `/dashboard/blog/studio`. The Studio is embedded with `next-sanity`, uses `NEXT_PUBLIC_SANITY_PROJECT_ID`, `NEXT_PUBLIC_SANITY_DATASET`, and `NEXT_PUBLIC_SANITY_API_VERSION`, and public blog pages read published Sanity posts before falling back to legacy content.
+Resource content is managed in the protected dashboard at `/dashboard/resources/studio`. The Studio is embedded with `next-sanity`, uses `NEXT_PUBLIC_SANITY_PROJECT_ID`, `NEXT_PUBLIC_SANITY_DATASET`, and `NEXT_PUBLIC_SANITY_API_VERSION`, and public resource pages read published Sanity posts before falling back to legacy content.
 
 In Sanity project settings, add `https://nky.vet` and `http://localhost:3001` to CORS origins with authenticated requests enabled so the embedded Studio can authenticate.
 

@@ -42,7 +42,7 @@ const serviceGroups = [
     services: [
       ["Soft Tissue Surgery", "Selected procedures with careful preparation, monitoring, pain control, and recovery guidance.", "/veterinary-services/soft-tissue-surgery/"],
       ["Spay & Neuter", "Surgery planning for puppies, kittens, newly adopted pets, and preventive care needs.", "/veterinary-services/spay-neuter-surgery/"],
-      ["Surgical Consultations", "Clear guidance before procedures so you know what to expect and how to prepare.", "/contact/"]
+      ["Surgical Consultations", "Clear guidance before procedures so you know what to expect and how to prepare.", "/book-appointment/"]
     ]
   },
   {
@@ -104,7 +104,7 @@ export function HomeServiceTabs() {
             <p>{text}</p>
             <div className="home-service-card-actions">
               <Link href={href}>Learn more</Link>
-              <Link href="/contact/">Book this service</Link>
+              <Link href="/book-appointment/">Book this service</Link>
             </div>
           </article>
         ))}

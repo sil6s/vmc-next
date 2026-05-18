@@ -21,6 +21,15 @@ import {
   UserRound,
   X
 } from "lucide-react";
+import { ShadButton } from "@/components/ui/Button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 import {
   appointmentTiming,
   clientTypeOptions,
@@ -135,6 +144,31 @@ function Field({
       {helper && !error && <small className="np-helper">{helper}</small>}
       {error && <small role="alert">{error}</small>}
     </label>
+  );
+}
+
+function SelectControl({
+  value,
+  options,
+  placeholder,
+  onChange
+}: {
+  value: string;
+  options: readonly string[];
+  placeholder?: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <Select value={value} onValueChange={onChange}>
+      <SelectTrigger>
+        <SelectValue placeholder={placeholder || "Choose an option"} />
+      </SelectTrigger>
+      <SelectContent>
+        {options.map((option) => (
+          <SelectItem key={option} value={option}>{option}</SelectItem>
+        ))}
+      </SelectContent>
+    </Select>
   );
 }
 
@@ -272,7 +306,7 @@ function SignaturePad({
       ) : (
         <div className="np-typed-signature">
           <Field label="Type your full legal name" required error={error}>
-            <input
+            <Input
               value={typed}
               onChange={(event) => {
                 setTyped(event.target.value);
@@ -285,7 +319,7 @@ function SignaturePad({
       )}
       <div className="np-signature-footer">
         <p>Use your mouse, finger, trackpad, or keyboard to sign.</p>
-        <button className="btn btn-ghost" type="button" onClick={clear}>Clear signature</button>
+        <ShadButton variant="ghost" type="button" onClick={clear}>Clear signature</ShadButton>
       </div>
       {error && mode === "draw" && <p className="np-field-error" role="alert">{error}</p>}
     </div>
@@ -437,10 +471,7 @@ export function NewPatientsExperience({
   });
 
   const openWizard = () => {
-    setSubmitted(false);
-    setSubmitMessage("");
-    setStep(0);
-    setIsOpen(true);
+    window.location.href = "/book-appointment/?type=new";
   };
 
   useEffect(() => {
@@ -448,16 +479,16 @@ export function NewPatientsExperience({
   }, [step, isOpen]);
 
   const scrollToExistingOptions = () => {
-    window.setTimeout(() => document.getElementById("existing-patient-options")?.scrollIntoView({ block: "nearest", behavior: "smooth" }), 0);
+    window.location.href = "/book-appointment/?type=existing";
   };
 
   useEffect(() => {
     const handleHash = () => {
       if (window.location.hash === "#start-new-patient-request") {
-        openWizard();
+        window.location.href = "/book-appointment/?type=new";
       }
       if (window.location.hash === "#existing-patient-options") {
-        document.getElementById("existing-patient-options")?.scrollIntoView({ block: "nearest" });
+        window.location.href = "/book-appointment/?type=existing";
       }
     };
 
@@ -507,8 +538,8 @@ export function NewPatientsExperience({
             <h1>New to Veterinary Medical Center? Let’s get your <span className="np-accent">first visit started.</span></h1>
             <p>Tell us about you and your pet, then our team will follow up to help schedule your first visit at our Fort Thomas or Independence location.</p>
             <div className="np-hero-actions">
-              <button className="btn btn-primary" type="button" ref={triggerRef} onClick={openWizard}>Start New Patient Request</button>
-              <button className="btn btn-ghost" type="button" onClick={scrollToExistingOptions}>Existing Client Options</button>
+              <ShadButton type="button" ref={triggerRef} onClick={openWizard}>Start New Patient Request</ShadButton>
+              <ShadButton variant="ghost" type="button" onClick={scrollToExistingOptions}>Existing Client Options</ShadButton>
             </div>
           </div>
           <figure className="np-hero-media">
@@ -540,7 +571,7 @@ export function NewPatientsExperience({
             <div>
               <h3>Start as a new patient</h3>
               <p>If your pet has not visited Veterinary Medical Center before, complete this short request so our team can learn about you, your pet, and your preferred location before your first visit.</p>
-              <button className="btn btn-primary" type="button" onClick={openWizard}>Start New Patient Request</button>
+              <ShadButton type="button" onClick={openWizard}>Start New Patient Request</ShadButton>
               <small>Takes about 5 minutes. Please do not use this form for emergencies.</small>
               <p className="np-process-line">Submit your request <span aria-hidden="true">→</span> Our team reviews it <span aria-hidden="true">→</span> We contact you to schedule</p>
             </div>
@@ -557,9 +588,14 @@ export function NewPatientsExperience({
         </div>
       </section>
 
-      {isOpen && (
-        <div className="np-modal-backdrop" role="presentation">
-          <div className="np-modal" role="dialog" aria-modal="true" aria-labelledby="np-modal-title" ref={modalRef}>
+      <Dialog
+        open={isOpen}
+        onOpenChange={(open) => {
+          if (open) setIsOpen(true);
+          else requestClose();
+        }}
+      >
+        <DialogContent className="np-modal" showClose={false} ref={modalRef} onEscapeKeyDown={(event) => event.preventDefault()} onPointerDownOutside={(event) => event.preventDefault()}>
             {submitted ? (
               <div className="np-success-screen">
                 <CheckCircle2 aria-hidden="true" size={46} />
@@ -568,7 +604,7 @@ export function NewPatientsExperience({
                 <div className="np-modal-actions">
                   <a className="btn btn-ghost" href="tel:+18594424420">Call Fort Thomas</a>
                   <a className="btn btn-ghost" href="tel:+18593562242">Call Independence</a>
-                  <button className="btn btn-primary" type="button" onClick={requestClose}>Return to New Patients page</button>
+                  <ShadButton type="button" onClick={requestClose}>Return to New Patients page</ShadButton>
                 </div>
               </div>
             ) : (
@@ -576,11 +612,11 @@ export function NewPatientsExperience({
                 <header className="np-modal-header">
                   <div>
                     <p className="eyebrow">New patient request · Step {step + 1} of {steps.length}</p>
-                    <h2 id="np-modal-title" ref={stepHeadingRef} tabIndex={-1}><ActiveStepIcon aria-hidden="true" size={30} /> {steps[step].label}</h2>
-                    <p className="np-modal-reassurance">About {Math.max(1, steps.length - step)} minutes left. Your information stays on this page until submitted.</p>
+                    <DialogTitle id="np-modal-title" className="np-modal-title" ref={stepHeadingRef} tabIndex={-1}><ActiveStepIcon aria-hidden="true" size={30} /> {steps[step].label}</DialogTitle>
+                    <DialogDescription className="np-modal-reassurance">About {Math.max(1, steps.length - step)} minutes left. Your information stays on this page until submitted.</DialogDescription>
                   </div>
-                  <button type="button" aria-label="Close new patient request" onClick={requestClose}><X aria-hidden="true" size={21} /></button>
-                  <div className="np-progress" aria-label={`Step ${step + 1} of ${steps.length}`}><span style={{ width: `${progress}%` }} /></div>
+                  <ShadButton type="button" aria-label="Close new patient request" variant="ghost" size="icon" onClick={requestClose}><X aria-hidden="true" size={21} /></ShadButton>
+                  <Progress value={progress} aria-label={`Step ${step + 1} of ${steps.length}`} />
                   <ol className="np-step-list" aria-label="New patient request progress">
                     {steps.map(({ label, Icon }, index) => (
                       <li className={index === step ? "is-current" : index < step ? "is-complete" : undefined} aria-current={index === step ? "step" : undefined} key={label}>
@@ -594,7 +630,7 @@ export function NewPatientsExperience({
                 <div className="np-modal-body">
                   <label className="np-honeypot" aria-hidden="true">
                     Company
-                    <input tabIndex={-1} autoComplete="off" value={company} onChange={(event) => setCompany(event.target.value)} />
+                    <Input tabIndex={-1} autoComplete="off" value={company} onChange={(event) => setCompany(event.target.value)} />
                   </label>
                   {Object.keys(errors).length > 0 && Object.values(errors).some(Boolean) && (
                     <div className="np-error-summary" role="alert">Please review the highlighted fields before continuing.</div>
@@ -602,41 +638,38 @@ export function NewPatientsExperience({
                   {step === 0 && (
                     <div className="np-step-stack">
                       <FormSectionCard icon={<MapPin aria-hidden="true" size={20} />} title="Choose a preferred location" helper="Select the clinic that works best for your family.">
-                        <div className="np-location-choice" role="radiogroup" aria-label="Preferred location">
+                        <RadioGroup className="np-location-choice" value={data.preferredLocation} onValueChange={(value) => update("preferredLocation", value)} aria-label="Preferred location">
                           {locationOptions.map((option) => {
                             const details = locationDetails[option];
                             const selected = data.preferredLocation === option;
                             return (
-                              <button
-                                aria-checked={selected}
+                              <div
                                 className={selected ? "is-selected" : undefined}
                                 key={option}
-                                role="radio"
-                                type="button"
                                 onClick={() => update("preferredLocation", option)}
                               >
-                                <span className="np-choice-check">{selected && <Check aria-hidden="true" size={15} />}</span>
+                                <RadioGroupItem className="np-choice-check" value={option} aria-label={option} />
                                 <MapPin aria-hidden="true" size={18} />
                                 <strong>{option}</strong>
                                 <small>{details.descriptor}</small>
                                 <em>{details.address}</em>
                                 <em>{details.phone}</em>
                                 <small>{details.helper}</small>
-                              </button>
+                              </div>
                             );
                           })}
-                        </div>
+                        </RadioGroup>
                         {errors.preferredLocation && <small className="np-field-error" role="alert">{errors.preferredLocation}</small>}
                       </FormSectionCard>
 
                       <FormSectionCard icon={<CalendarClock aria-hidden="true" size={20} />} title="Tell us what you need" helper="This helps our team route your request and follow up with the right next step.">
                         <div className="np-form-grid">
-                          <Field label="Are you a new or existing client?" required error={errors.clientType}><select value={data.clientType} onChange={(event) => update("clientType", event.target.value)}>{clientTypeOptions.map((option) => <option key={option}>{option}</option>)}</select></Field>
-                          <Field label="Reason for visit" required error={errors.reasonForVisit}><select value={data.reasonForVisit} onChange={(event) => update("reasonForVisit", event.target.value)}>{visitReasons.map((option) => <option key={option}>{option}</option>)}</select></Field>
-                          <Field label="Preferred appointment timing" required error={errors.preferredTiming}><select value={data.preferredTiming} onChange={(event) => update("preferredTiming", event.target.value)}>{appointmentTiming.map((option) => <option key={option}>{option}</option>)}</select></Field>
-                          <Field label="Preferred date" error={errors.preferredDate} helper={data.preferredTiming === "Specific date preferred" ? "Choose the date that works best." : "Optional unless you choose a specific date."}><input type="date" value={data.preferredDate} onChange={(event) => update("preferredDate", event.target.value)} /></Field>
-                          <Field label="Preferred time of day" required error={errors.preferredTimeOfDay}><select value={data.preferredTimeOfDay} onChange={(event) => update("preferredTimeOfDay", event.target.value)}>{timeOfDayOptions.map((option) => <option key={option}>{option}</option>)}</select></Field>
-                          <Field label="Notes for scheduling"><textarea value={data.schedulingNotes} onChange={(event) => update("schedulingNotes", event.target.value)} /></Field>
+                          <Field label="Are you a new or existing client?" required error={errors.clientType}><SelectControl value={data.clientType} options={clientTypeOptions} onChange={(value) => update("clientType", value)} /></Field>
+                          <Field label="Reason for visit" required error={errors.reasonForVisit}><SelectControl value={data.reasonForVisit} options={visitReasons} onChange={(value) => update("reasonForVisit", value)} /></Field>
+                          <Field label="Preferred appointment timing" required error={errors.preferredTiming}><SelectControl value={data.preferredTiming} options={appointmentTiming} onChange={(value) => update("preferredTiming", value)} /></Field>
+                          <Field label="Preferred date" error={errors.preferredDate} helper={data.preferredTiming === "Specific date preferred" ? "Choose the date that works best." : "Optional unless you choose a specific date."}><Input type="date" value={data.preferredDate} onChange={(event) => update("preferredDate", event.target.value)} /></Field>
+                          <Field label="Preferred time of day" required error={errors.preferredTimeOfDay}><SelectControl value={data.preferredTimeOfDay} options={timeOfDayOptions} onChange={(value) => update("preferredTimeOfDay", value)} /></Field>
+                          <Field label="Notes for scheduling"><Textarea value={data.schedulingNotes} onChange={(event) => update("schedulingNotes", event.target.value)} /></Field>
                         </div>
                       </FormSectionCard>
 
@@ -647,40 +680,40 @@ export function NewPatientsExperience({
                     <div className="np-step-stack">
                       <FormSectionCard icon={<UserRound aria-hidden="true" size={20} />} title="Contact information" helper="Tell us who our team should contact about this request.">
                         <div className="np-form-grid">
-                          <Field label="Owner first name" required error={errors.ownerFirstName}><input value={data.ownerFirstName} onChange={(event) => updateText("ownerFirstName", event.target.value)} /></Field>
-                          <Field label="Owner last name" required error={errors.ownerLastName}><input value={data.ownerLastName} onChange={(event) => updateText("ownerLastName", event.target.value)} /></Field>
-                          <Field label="Phone" required error={errors.phone}><input inputMode="tel" value={data.phone} onChange={(event) => updateText("phone", event.target.value)} /></Field>
-                          <Field label="Email" required error={errors.email}><input type="email" value={data.email} onChange={(event) => updateText("email", event.target.value)} /></Field>
-                          <Field label="Alternative phone" helper="Optional. Use this if there is another number we should try."><input inputMode="tel" value={data.alternativePhone} onChange={(event) => updateText("alternativePhone", event.target.value)} /></Field>
-                          <Field label="Driver's license #" helper="Optional. Bring a photo ID to your first visit if requested."><input value={data.driversLicense} onChange={(event) => updateText("driversLicense", event.target.value)} /></Field>
+                          <Field label="Owner first name" required error={errors.ownerFirstName}><Input value={data.ownerFirstName} onChange={(event) => updateText("ownerFirstName", event.target.value)} /></Field>
+                          <Field label="Owner last name" required error={errors.ownerLastName}><Input value={data.ownerLastName} onChange={(event) => updateText("ownerLastName", event.target.value)} /></Field>
+                          <Field label="Phone" required error={errors.phone}><Input inputMode="tel" value={data.phone} onChange={(event) => updateText("phone", event.target.value)} /></Field>
+                          <Field label="Email" required error={errors.email}><Input type="email" value={data.email} onChange={(event) => updateText("email", event.target.value)} /></Field>
+                          <Field label="Alternative phone" helper="Optional. Use this if there is another number we should try."><Input inputMode="tel" value={data.alternativePhone} onChange={(event) => updateText("alternativePhone", event.target.value)} /></Field>
+                          <Field label="Driver's license #" helper="Optional. Bring a photo ID to your first visit if requested."><Input value={data.driversLicense} onChange={(event) => updateText("driversLicense", event.target.value)} /></Field>
                         </div>
                       </FormSectionCard>
 
                       <FormSectionCard icon={<MapPin aria-hidden="true" size={20} />} title="Home address">
                         <div className="np-form-grid">
-                          <Field label="Street address" required error={errors.streetAddress}><input value={data.streetAddress} onChange={(event) => updateText("streetAddress", event.target.value)} /></Field>
-                          <Field label="Address line 2"><input value={data.addressLine2} onChange={(event) => updateText("addressLine2", event.target.value)} /></Field>
-                          <Field label="City" required error={errors.city}><input value={data.city} onChange={(event) => updateText("city", event.target.value)} /></Field>
-                          <Field label="State" required error={errors.state}><input value={data.state} onChange={(event) => updateText("state", event.target.value.toUpperCase())} /></Field>
-                          <Field label="ZIP code" required error={errors.zipCode}><input inputMode="numeric" value={data.zipCode} onChange={(event) => updateText("zipCode", event.target.value)} /></Field>
+                          <Field label="Street address" required error={errors.streetAddress}><Input value={data.streetAddress} onChange={(event) => updateText("streetAddress", event.target.value)} /></Field>
+                          <Field label="Address line 2"><Input value={data.addressLine2} onChange={(event) => updateText("addressLine2", event.target.value)} /></Field>
+                          <Field label="City" required error={errors.city}><Input value={data.city} onChange={(event) => updateText("city", event.target.value)} /></Field>
+                          <Field label="State" required error={errors.state}><Input value={data.state} onChange={(event) => updateText("state", event.target.value.toUpperCase())} /></Field>
+                          <Field label="ZIP code" required error={errors.zipCode}><Input inputMode="numeric" value={data.zipCode} onChange={(event) => updateText("zipCode", event.target.value)} /></Field>
                         </div>
                       </FormSectionCard>
 
                       <FormSectionCard icon={<Phone aria-hidden="true" size={20} />} title="Co-owner or secondary contact" helper="Optional. Add this only if another person is allowed to discuss care, scheduling, or billing for this pet.">
                         <label className="np-toggle-row">
                           <span>Add a co-owner or secondary contact</span>
-                          <input type="checkbox" checked={addCoOwner} onChange={(event) => setCoOwnerEnabled(event.target.checked)} />
+                          <Switch checked={addCoOwner} onCheckedChange={setCoOwnerEnabled} aria-label="Add a co-owner or secondary contact" />
                         </label>
                         {addCoOwner && (
                           <div className="np-form-grid">
-                            <Field label="Co-owner full name" required error={errors.coOwnerName}><input value={data.coOwnerName} onChange={(event) => updateText("coOwnerName", event.target.value)} /></Field>
-                            <Field label="Relationship to pet or owner"><input value={data.coOwnerRelationship} onChange={(event) => updateText("coOwnerRelationship", event.target.value)} /></Field>
-                            <Field label="Co-owner phone"><input inputMode="tel" value={data.coOwnerPhone} onChange={(event) => updateText("coOwnerPhone", event.target.value)} /></Field>
-                            <Field label="Co-owner email" error={errors.coOwnerEmail}><input type="email" value={data.coOwnerEmail} onChange={(event) => updateText("coOwnerEmail", event.target.value)} /></Field>
+                            <Field label="Co-owner full name" required error={errors.coOwnerName}><Input value={data.coOwnerName} onChange={(event) => updateText("coOwnerName", event.target.value)} /></Field>
+                            <Field label="Relationship to pet or owner"><Input value={data.coOwnerRelationship} onChange={(event) => updateText("coOwnerRelationship", event.target.value)} /></Field>
+                            <Field label="Co-owner phone"><Input inputMode="tel" value={data.coOwnerPhone} onChange={(event) => updateText("coOwnerPhone", event.target.value)} /></Field>
+                            <Field label="Co-owner email" error={errors.coOwnerEmail}><Input type="email" value={data.coOwnerEmail} onChange={(event) => updateText("coOwnerEmail", event.target.value)} /></Field>
                             <Field label="Permission level" helper="This helps our team know what information we can discuss with this person.">
-                              <select value={data.coOwnerPermissionLevel} onChange={(event) => update("coOwnerPermissionLevel", event.target.value)}>{coOwnerPermissionOptions.map((option) => <option key={option}>{option}</option>)}</select>
+                              <SelectControl value={data.coOwnerPermissionLevel} options={coOwnerPermissionOptions} onChange={(value) => update("coOwnerPermissionLevel", value)} />
                             </Field>
-                            <label className="np-checkbox np-span-all"><input type="checkbox" checked={data.coOwnerDecisionAuthorization} onChange={(event) => update("coOwnerDecisionAuthorization", event.target.checked)} /> This person may make medical or financial decisions for my pet.</label>
+                            <label className="np-checkbox np-span-all"><Checkbox checked={data.coOwnerDecisionAuthorization} onCheckedChange={(checked) => update("coOwnerDecisionAuthorization", checked === true)} /> This person may make medical or financial decisions for my pet.</label>
                             {data.coOwnerDecisionAuthorization && <p className="np-inline-note np-span-all">You may be asked to confirm this authorization during your visit.</p>}
                           </div>
                         )}
@@ -688,12 +721,12 @@ export function NewPatientsExperience({
 
                       <FormSectionCard icon={<FileText aria-hidden="true" size={20} />} title="Optional employment information" helper="These fields are optional and only used if the clinic needs billing or account details.">
                         <div className="np-form-grid">
-                          <Field label="Owner employer"><input value={data.ownerEmployer} onChange={(event) => updateText("ownerEmployer", event.target.value)} /></Field>
-                          <Field label="Owner employer phone"><input inputMode="tel" value={data.ownerEmployerPhone} onChange={(event) => updateText("ownerEmployerPhone", event.target.value)} /></Field>
+                          <Field label="Owner employer"><Input value={data.ownerEmployer} onChange={(event) => updateText("ownerEmployer", event.target.value)} /></Field>
+                          <Field label="Owner employer phone"><Input inputMode="tel" value={data.ownerEmployerPhone} onChange={(event) => updateText("ownerEmployerPhone", event.target.value)} /></Field>
                           {addCoOwner && (
                             <>
-                              <Field label="Co-owner employer"><input value={data.coOwnerEmployer} onChange={(event) => updateText("coOwnerEmployer", event.target.value)} /></Field>
-                              <Field label="Co-owner employer phone"><input inputMode="tel" value={data.coOwnerEmployerPhone} onChange={(event) => updateText("coOwnerEmployerPhone", event.target.value)} /></Field>
+                              <Field label="Co-owner employer"><Input value={data.coOwnerEmployer} onChange={(event) => updateText("coOwnerEmployer", event.target.value)} /></Field>
+                              <Field label="Co-owner employer phone"><Input inputMode="tel" value={data.coOwnerEmployerPhone} onChange={(event) => updateText("coOwnerEmployerPhone", event.target.value)} /></Field>
                             </>
                           )}
                         </div>
@@ -704,40 +737,41 @@ export function NewPatientsExperience({
                     <div className="np-step-stack">
                       <FormSectionCard icon={<PawPrint aria-hidden="true" size={20} />} title="Pet basics" helper="Tell us about the pet we will be seeing.">
                         <div className="np-form-grid">
-                          <Field label="Pet name" required error={errors.petName}><input value={data.petName} onChange={(event) => updateText("petName", event.target.value)} /></Field>
-                          <Field label="Pet age or date of birth" required error={errors.ageOrDateOfBirth}><input value={data.ageOrDateOfBirth} onChange={(event) => updateText("ageOrDateOfBirth", event.target.value)} /></Field>
+                          <Field label="Pet name" required error={errors.petName}><Input value={data.petName} onChange={(event) => updateText("petName", event.target.value)} /></Field>
+                          <Field label="Pet age or date of birth" required error={errors.ageOrDateOfBirth}><Input value={data.ageOrDateOfBirth} onChange={(event) => updateText("ageOrDateOfBirth", event.target.value)} /></Field>
                           <div className="np-field np-span-all">
                             <span>Species <em aria-label="required">*</em></span>
-                            <div className="np-species-cards" role="radiogroup" aria-label="Species">
+                            <RadioGroup className="np-species-cards" value={data.species} onValueChange={(value) => update("species", value)} aria-label="Species">
                               {speciesOptions.map((option) => (
-                                <button className={data.species === option ? "is-selected" : undefined} aria-checked={data.species === option} role="radio" type="button" key={option} onClick={() => update("species", option)}>
+                                <div className={data.species === option ? "is-selected" : undefined} key={option} onClick={() => update("species", option)}>
+                                  <RadioGroupItem value={option} aria-label={option} />
                                   <PawPrint aria-hidden="true" size={18} />
                                   <strong>{option}</strong>
                                   {data.species === option && <Check aria-hidden="true" size={16} />}
-                                </button>
+                                </div>
                               ))}
-                            </div>
+                            </RadioGroup>
                           </div>
-                          <Field label="Gender" required error={errors.gender}><select value={data.gender} onChange={(event) => update("gender", event.target.value)}>{genderOptions.map((option) => <option key={option}>{option}</option>)}</select></Field>
-                          <Field label="Breed" required error={errors.breed}><input value={data.breed} onChange={(event) => updateText("breed", event.target.value)} /></Field>
-                          <Field label="Color / markings" required error={errors.colorMarkings}><input value={data.colorMarkings} onChange={(event) => updateText("colorMarkings", event.target.value)} /></Field>
-                          <Field label="Primarily indoor or outdoor?" required error={errors.indoorOutdoor}><select value={data.indoorOutdoor} onChange={(event) => update("indoorOutdoor", event.target.value)}>{indoorOutdoorOptions.map((option) => <option key={option}>{option}</option>)}</select></Field>
-                          <Field label="Microchip number" helper="Optional. Add it if you have it handy."><input value={data.microchipNumber} onChange={(event) => updateText("microchipNumber", event.target.value)} /></Field>
+                          <Field label="Gender" required error={errors.gender}><SelectControl value={data.gender} options={genderOptions} onChange={(value) => update("gender", value)} /></Field>
+                          <Field label="Breed" required error={errors.breed}><Input value={data.breed} onChange={(event) => updateText("breed", event.target.value)} /></Field>
+                          <Field label="Color / markings" required error={errors.colorMarkings}><Input value={data.colorMarkings} onChange={(event) => updateText("colorMarkings", event.target.value)} /></Field>
+                          <Field label="Primarily indoor or outdoor?" required error={errors.indoorOutdoor}><SelectControl value={data.indoorOutdoor} options={indoorOutdoorOptions} onChange={(value) => update("indoorOutdoor", value)} /></Field>
+                          <Field label="Microchip number" helper="Optional. Add it if you have it handy."><Input value={data.microchipNumber} onChange={(event) => updateText("microchipNumber", event.target.value)} /></Field>
                         </div>
                       </FormSectionCard>
 
                       <FormSectionCard icon={<Upload aria-hidden="true" size={20} />} title="Records and notes" helper="No worries if you do not have records right now. You can reply to your confirmation email with records later.">
                         <div className="np-form-grid">
-                          <Field label="Vaccination history" required error={errors.vaccinationHistory}><textarea value={data.vaccinationHistory} onChange={(event) => updateText("vaccinationHistory", event.target.value)} /></Field>
+                          <Field label="Vaccination history" required error={errors.vaccinationHistory}><Textarea value={data.vaccinationHistory} onChange={(event) => updateText("vaccinationHistory", event.target.value)} /></Field>
                           <div className="np-upload-box">
                             <Upload aria-hidden="true" size={24} />
                             <strong>Upload previous health records</strong>
                             <p>PDF, JPG, PNG, DOC, or DOCX. Maximum 8 MB per file.</p>
-                            <input aria-label="Upload previous health records" type="file" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" onChange={(event) => chooseFiles(event.target.files)} />
+                            <Input aria-label="Upload previous health records" type="file" multiple accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" onChange={(event) => chooseFiles(event.target.files)} />
                             {files.length > 0 && <small>{files.length} file{files.length === 1 ? "" : "s"} selected.</small>}
                             {errors.records && <small className="np-field-error" role="alert">{errors.records}</small>}
                           </div>
-                          <Field label="How did you hear about us?" required error={errors.referralSource} helper="This helps us thank the person, clinic, or search source that sent you our way."><input value={data.referralSource} onChange={(event) => updateText("referralSource", event.target.value)} /></Field>
+                          <Field label="How did you hear about us?" required error={errors.referralSource} helper="This helps us thank the person, clinic, or search source that sent you our way."><Input value={data.referralSource} onChange={(event) => updateText("referralSource", event.target.value)} /></Field>
                         </div>
                       </FormSectionCard>
                     </div>
@@ -771,7 +805,7 @@ export function NewPatientsExperience({
                       </section>
 
                       <label className="np-checkbox np-agreement">
-                        <input type="checkbox" checked={data.authorizationConsent} onChange={(event) => update("authorizationConsent", event.target.checked)} />
+                        <Checkbox checked={data.authorizationConsent} onCheckedChange={(checked) => update("authorizationConsent", checked === true)} />
                         <span>I have read and agree to the Financial &amp; Treatment Authorization.<em aria-label="required">*</em></span>
                       </label>
                       {errors.authorizationConsent && <p className="np-field-error" role="alert">{errors.authorizationConsent}</p>}
@@ -788,7 +822,7 @@ export function NewPatientsExperience({
                             <small>Automatically filled for today.</small>
                           </span>
                         </div>
-                        <input aria-label="Date signed" type="date" value={data.dateSigned} readOnly onChange={(event) => update("dateSigned", event.target.value)} />
+                        <Input aria-label="Date signed" type="date" value={data.dateSigned} readOnly onChange={(event) => update("dateSigned", event.target.value)} />
                       </section>
                       {errors.dateSigned && <p className="np-field-error" role="alert">{errors.dateSigned}</p>}
 
@@ -868,7 +902,7 @@ export function NewPatientsExperience({
                         <h3>Ready to submit</h3>
                         <p>By submitting, you are sending this request to Veterinary Medical Center. A team member will follow up to confirm availability and next steps.</p>
                         <label className="np-checkbox">
-                          <input type="checkbox" checked={data.finalConfirmation} onChange={(event) => update("finalConfirmation", event.target.checked)} />
+                          <Checkbox checked={data.finalConfirmation} onCheckedChange={(checked) => update("finalConfirmation", checked === true)} />
                           <span>I confirm this information is accurate to the best of my knowledge.<em aria-label="required">*</em></span>
                         </label>
                         {errors.finalConfirmation && <p className="np-field-error" role="alert">{errors.finalConfirmation}</p>}
@@ -879,18 +913,17 @@ export function NewPatientsExperience({
                 </div>
 
                 <footer className="np-modal-actions">
-                  {step > 0 && <button className="btn btn-ghost" type="button" onClick={() => setStep((current) => current - 1)}><ArrowLeft aria-hidden="true" size={16} /> Back</button>}
+                  {step > 0 && <ShadButton variant="ghost" type="button" onClick={() => setStep((current) => current - 1)}><ArrowLeft aria-hidden="true" size={16} /> Back</ShadButton>}
                   {step < steps.length - 1 ? (
-                    <button className="btn btn-primary" type="button" disabled={!isStepComplete()} onClick={() => validateStep() && setStep((current) => current + 1)}>Continue <ArrowRight aria-hidden="true" size={16} /></button>
+                    <ShadButton type="button" disabled={!isStepComplete()} onClick={() => validateStep() && setStep((current) => current + 1)}>Continue <ArrowRight aria-hidden="true" size={16} /></ShadButton>
                   ) : (
-                    <button className="btn btn-primary" type="button" disabled={isPending || !isStepComplete(4)} onClick={submit}>{isPending ? "Submitting..." : "Submit request"}</button>
+                    <ShadButton type="button" disabled={isPending || !isStepComplete(4)} onClick={submit}>{isPending ? "Submitting..." : "Submit request"}</ShadButton>
                   )}
                 </footer>
               </>
             )}
-          </div>
-        </div>
-      )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

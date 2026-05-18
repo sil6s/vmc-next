@@ -36,7 +36,7 @@ const careOptions = [
       ["Vaccines", "/veterinary-services/dog-cat-vaccinations/"],
       ["Parasite prevention", "/veterinary-services/parasite-prevention/"]
     ],
-    cta: ["Schedule a wellness visit", "/contact/"],
+    cta: ["Schedule a wellness visit", "/book-appointment/"],
     icon: ShieldCheck
   },
   {
@@ -70,7 +70,7 @@ const careOptions = [
       ["Sick pet visits", "/veterinary-services/sick-pet-visits/"],
       ["Diagnostics", "/veterinary-services/veterinary-diagnostics/"]
     ],
-    cta: ["Get skin or ear help", "/contact/"],
+    cta: ["Get skin or ear help", "/book-appointment/"],
     icon: Ear
   },
   {
@@ -87,7 +87,7 @@ const careOptions = [
       ["Spay and neuter", "/veterinary-services/spay-neuter-surgery/"],
       ["Diagnostics", "/veterinary-services/veterinary-diagnostics/"]
     ],
-    cta: ["Talk about surgery", "/contact/"],
+    cta: ["Talk about surgery", "/book-appointment/"],
     icon: Scissors
   },
   {
@@ -104,7 +104,7 @@ const careOptions = [
       ["Diagnostics", "/veterinary-services/veterinary-diagnostics/"],
       ["Skin, ear, and allergy care", "/veterinary-services/skin-ear-allergy-care/"]
     ],
-    cta: ["Schedule a sick visit", "/contact/"],
+    cta: ["Schedule a sick visit", "/book-appointment/"],
     icon: HeartPulse
   }
 ];

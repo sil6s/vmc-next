@@ -13,13 +13,31 @@ export const authorType = defineType({
     }),
     defineField({
       name: "title",
-      title: "Title",
+      title: "Role or title",
       type: "string",
       initialValue: "Veterinary Medical Center Team"
     }),
     defineField({
+      name: "slug",
+      title: "Author slug",
+      type: "slug",
+      options: { source: "name", maxLength: 80 }
+    }),
+    defineField({
+      name: "credentials",
+      title: "Credentials",
+      type: "string",
+      description: "Example: DVM, Veterinary Medical Center medical team, or client education team."
+    }),
+    defineField({
+      name: "bio",
+      title: "Short bio",
+      type: "text",
+      rows: 3
+    }),
+    defineField({
       name: "image",
-      title: "Image",
+      title: "Author photo",
       type: "image",
       options: { hotspot: true },
       fields: [

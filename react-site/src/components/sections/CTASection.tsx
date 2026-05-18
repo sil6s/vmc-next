@@ -5,7 +5,7 @@ export function CTASection({
   eyebrow = "Next Steps",
   title = "Ready to schedule an appointment?",
   body = "Call either clinic, request an appointment online, or send a message and our team will help you choose the right next step.",
-  primary = { label: "Book Appointment", href: "/contact/" },
+  primary = { label: "Book Appointment", href: "/book-appointment/" },
   secondary = { label: "New Patients", href: "/new-patients/" }
 }: {
   eyebrow?: string;

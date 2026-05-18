@@ -1,11 +1,5 @@
-import { SanityStudioClient } from "@/components/dashboard/SanityStudioClient";
+import { redirect } from "next/navigation";
 
-export const dynamic = "force-dynamic";
-
-export default function SanityStudioPage() {
-  return (
-    <div className="dashboard-studio-shell">
-      <SanityStudioClient />
-    </div>
-  );
+export default function OldBlogStudioRedirectPage() {
+  redirect("/dashboard/resources/studio/");
 }
