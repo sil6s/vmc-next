@@ -34,6 +34,7 @@ import {
 import type { Value as E164Number } from "react-phone-number-input";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ShadButton } from "@/components/ui/Button";
+import { RecaptchaField } from "@/components/forms/RecaptchaField";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -802,6 +803,8 @@ export function BookAppointmentExperience({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitMessage, setSubmitMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [recaptchaToken, setRecaptchaToken] = useState("");
+  const [recaptchaReset, setRecaptchaReset] = useState(0);
   const [isPending, startTransition] = useTransition();
   const bodyRef = useRef<HTMLDivElement>(null);
 
@@ -1011,11 +1014,16 @@ export function BookAppointmentExperience({
 
   const submit = () => {
     if (!validate(4)) return;
+    if (process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && !recaptchaToken) {
+      setSubmitMessage("Please complete the spam protection check before submitting.");
+      return;
+    }
     startTransition(async () => {
       const payload = buildPayload();
       const formData = new FormData();
       formData.append("payload", JSON.stringify(payload));
       formData.append("company", "");
+      formData.append("recaptchaToken", recaptchaToken);
       files.forEach((f) => formData.append("records", f));
       const response = await fetch("/api/new-patient-request/", { method: "POST", body: formData });
       const result = (await response.json().catch(() => null)) as { error?: string } | null;
@@ -1023,6 +1031,8 @@ export function BookAppointmentExperience({
         setSubmitMessage(result?.error || "Your request could not be submitted. Please call either clinic.");
         return;
       }
+      setRecaptchaToken("");
+      setRecaptchaReset((current) => current + 1);
       setSubmitted(true);
     });
   };
@@ -1531,6 +1541,7 @@ export function BookAppointmentExperience({
                   {errors.finalConfirmation && (
                     <span className="book-error" role="alert">{errors.finalConfirmation}</span>
                   )}
+                  <RecaptchaField value={recaptchaToken} onChange={setRecaptchaToken} resetSignal={recaptchaReset} />
                   {submitMessage && (
                     <Alert tone="danger" role="alert">
                       <AlertTitle>Request not submitted</AlertTitle>

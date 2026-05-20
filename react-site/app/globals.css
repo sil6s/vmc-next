@@ -11865,6 +11865,27 @@ textarea {
   display: none;
 }
 
+.recaptcha-field {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+}
+
+.recaptcha-helper,
+.recaptcha-error {
+  font-size: 12px;
+  font-weight: 750;
+  line-height: 1.4;
+}
+
+.recaptcha-helper {
+  color: var(--muted);
+}
+
+.recaptcha-error {
+  color: var(--red);
+}
+
 .contact-option-card.is-featured {
   border-color: rgba(169, 27, 27, 0.32);
   background:

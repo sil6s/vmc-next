@@ -22,6 +22,7 @@ import {
   X
 } from "lucide-react";
 import { ShadButton } from "@/components/ui/Button";
+import { RecaptchaField } from "@/components/forms/RecaptchaField";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -341,6 +342,8 @@ export function NewPatientsExperience({
   const [submitMessage, setSubmitMessage] = useState("");
   const [company, setCompany] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [recaptchaToken, setRecaptchaToken] = useState("");
+  const [recaptchaReset, setRecaptchaReset] = useState(0);
   const [addCoOwner, setAddCoOwner] = useState(false);
   const [isPending, startTransition] = useTransition();
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -510,11 +513,16 @@ export function NewPatientsExperience({
 
   const submit = () => {
     if (!validateStep(4)) return;
+    if (process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && !recaptchaToken) {
+      setSubmitMessage("Please complete the spam protection check before submitting.");
+      return;
+    }
 
     startTransition(async () => {
       const formData = new FormData();
       formData.append("payload", JSON.stringify(data));
       formData.append("company", company);
+      formData.append("recaptchaToken", recaptchaToken);
       files.forEach((file) => formData.append("records", file));
       const response = await fetch("/api/new-patient-request/", { method: "POST", body: formData });
       const result = (await response.json().catch(() => null)) as { error?: string } | null;
@@ -526,6 +534,8 @@ export function NewPatientsExperience({
 
       setSubmitted(true);
       setSubmitMessage("");
+      setRecaptchaToken("");
+      setRecaptchaReset((current) => current + 1);
     });
   };
 
@@ -906,6 +916,7 @@ export function NewPatientsExperience({
                           <span>I confirm this information is accurate to the best of my knowledge.<em aria-label="required">*</em></span>
                         </label>
                         {errors.finalConfirmation && <p className="np-field-error" role="alert">{errors.finalConfirmation}</p>}
+                        <RecaptchaField value={recaptchaToken} onChange={setRecaptchaToken} resetSignal={recaptchaReset} />
                         {submitMessage && <p className="np-field-error" role="alert">{submitMessage}</p>}
                       </section>
                     </div>

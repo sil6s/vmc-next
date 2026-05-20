@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { sendEmail } from "@/lib/email/send-email";
+import { verifyRecaptchaToken } from "@/lib/recaptcha";
 
 type ContactPayload = {
   name?: unknown;
@@ -8,6 +9,7 @@ type ContactPayload = {
   location?: unknown;
   message?: unknown;
   company?: unknown;
+  recaptchaToken?: unknown;
 };
 
 function text(value: unknown) {
@@ -25,6 +27,11 @@ export async function POST(request: Request) {
 
   if (text(payload.company)) {
     return NextResponse.json({ ok: true });
+  }
+
+  const recaptcha = await verifyRecaptchaToken(payload.recaptchaToken, request, "contact");
+  if (!recaptcha.ok) {
+    return NextResponse.json({ error: recaptcha.error || "Please complete the spam protection check." }, { status: 403 });
   }
 
   const name = text(payload.name);

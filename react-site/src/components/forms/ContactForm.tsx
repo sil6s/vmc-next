@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ShadButton } from "@/components/ui/Button";
+import { RecaptchaField } from "@/components/forms/RecaptchaField";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -68,6 +69,8 @@ export function ContactForm() {
   const [statusMessage, setStatusMessage] = useState("");
   const [errors, setErrors] = useState<string[]>([]);
   const [form, setForm] = useState(initialForm);
+  const [recaptchaToken, setRecaptchaToken] = useState("");
+  const [recaptchaReset, setRecaptchaReset] = useState(0);
   const trackedStart = useRef(false);
 
   function updateField(field: keyof typeof initialForm, value: string) {
@@ -90,6 +93,7 @@ export function ContactForm() {
     if (!form.email.includes("@")) nextErrors.push("Please enter a valid email address.");
     if (!form.phone.trim()) nextErrors.push("Please enter your phone number.");
     if (form.message.trim().length < 10) nextErrors.push("Please add a message with at least 10 characters.");
+    if (process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && !recaptchaToken) nextErrors.push("Please complete the spam protection check.");
 
     setErrors(nextErrors);
     return nextErrors.length === 0;
@@ -119,7 +123,8 @@ export function ContactForm() {
         phone: form.phone,
         location: form.location,
         message: combinedMessage,
-        company: form.company
+        company: form.company,
+        recaptchaToken
       })
     });
 
@@ -128,6 +133,8 @@ export function ContactForm() {
       setState("success");
       setStatusMessage("Thank you. Your message has been sent. Our team will follow up as soon as possible during business hours.");
       setForm(initialForm);
+      setRecaptchaToken("");
+      setRecaptchaReset((current) => current + 1);
       trackedStart.current = false;
       return;
     }
@@ -208,6 +215,8 @@ export function ContactForm() {
         Leave this field blank
         <Input value={form.company} onChange={(event) => updateField("company", event.target.value)} tabIndex={-1} autoComplete="off" />
       </label>
+
+      <RecaptchaField value={recaptchaToken} onChange={setRecaptchaToken} resetSignal={recaptchaReset} />
 
       <div className="form-actions">
         <ShadButton type="submit" disabled={state === "submitting"}>

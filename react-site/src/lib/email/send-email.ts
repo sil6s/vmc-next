@@ -21,6 +21,10 @@ type SendEmailResult = {
   skipped: boolean;
 };
 
+function testRecipient() {
+  return process.env.EMAIL_TEST_RECIPIENT?.trim();
+}
+
 function hasGmailConfig() {
   return Boolean(
     (process.env.GMAIL_CLIENT_ID || process.env.GOOGLE_CLIENT_ID) &&
@@ -102,6 +106,19 @@ function buildMimeMessage({ to, from, replyTo, subject, text, html, attachments 
   return parts.join("\r\n");
 }
 
+function withTestRecipient(input: SendEmailInput): SendEmailInput {
+  const recipient = testRecipient();
+  if (!recipient) return input;
+
+  return {
+    ...input,
+    to: recipient,
+    subject: `[TEST] ${input.subject}`,
+    text: [`Original recipient: ${input.to}`, "", input.text].join("\n"),
+    html: [`<p><strong>Original recipient:</strong> ${sanitizeHeader(input.to)}</p>`, input.html || input.text.replace(/\n/g, "<br />")].join("")
+  };
+}
+
 async function getGmailAccessToken() {
   const response = await fetch("https://oauth2.googleapis.com/token", {
     method: "POST",
@@ -176,12 +193,14 @@ async function sendResendEmail(input: SendEmailInput): Promise<SendEmailResult> 
 }
 
 export async function sendEmail(input: SendEmailInput): Promise<SendEmailResult> {
+  const deliveryInput = withTestRecipient(input);
+
   if (hasGmailConfig()) {
     return sendGmailEmail({
-      ...input,
-      from: input.from || process.env.GMAIL_SEND_AS || process.env.CONTACT_EMAIL_FROM
+      ...deliveryInput,
+      from: deliveryInput.from || process.env.GMAIL_SEND_AS || process.env.CONTACT_EMAIL_FROM
     });
   }
 
-  return sendResendEmail(input);
+  return sendResendEmail(deliveryInput);
 }
