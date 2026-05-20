@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
     : service.heroImage;
 
   return pageMetadata({
-    title: service.metaTitle || `${service.title} in Northern Kentucky | Veterinary Medical Center`,
+    title: service.metaTitle || `${service.title} in Northern Kentucky | Veterinary Medical Centers`,
     description: service.metaDescription || service.shortDescription,
     path: `/veterinary-services/${service.slug}/`,
     image
@@ -91,7 +91,7 @@ export default async function VeterinaryServicePage({ params }: Params) {
                 ))}
               </div>
               <div className="service-byline">
-                <p>Written by {service.author?.name || "Veterinary Medical Center of Northern Kentucky"}</p>
+                <p>Written by {service.author?.name || "Veterinary Medical Centers of Northern Kentucky"}</p>
                 {service.reviewedBy?.name && <p>Reviewed by {service.reviewedBy.name}</p>}
                 {updatedDate && <p>Last updated {updatedDate}</p>}
               </div>
@@ -99,7 +99,7 @@ export default async function VeterinaryServicePage({ params }: Params) {
             <div className="service-page-image">
               <Image
                 src={heroImage}
-                alt={service.heroImageAlt || `${service.title} at Veterinary Medical Center in Northern Kentucky`}
+                alt={service.heroImageAlt || `${service.title} at Veterinary Medical Centers in Northern Kentucky`}
                 width={1100}
                 height={760}
                 sizes="(max-width: 900px) 100vw, 48vw"
@@ -193,7 +193,7 @@ export default async function VeterinaryServicePage({ params }: Params) {
                   {locations.map((location) => (
                     <article className="services-location-card compact-location-card" key={location.slug}>
                       <MapPin aria-hidden="true" size={22} />
-                      <h3>{location.slug === "fort-thomas" ? "Fort Thomas Veterinary Medical Center" : "Independence Veterinary Medical Center"}</h3>
+                      <h3>{location.slug === "fort-thomas" ? "Fort Thomas Veterinary Medical Centers" : "Independence Veterinary Medical Centers"}</h3>
                       <address>{location.address}</address>
                       <a className="services-phone" href={`tel:${location.tel}`}>
                         <Phone aria-hidden="true" size={16} />

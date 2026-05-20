@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { getServerSession } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
@@ -7,6 +8,14 @@ import { GoogleSignInButton } from "@/components/dashboard/GoogleSignInButton";
 import { Logo } from "@/components/layout/Logo";
 import { isApprovedAdmin } from "@/lib/admin-auth";
 import { authOptions } from "@/lib/auth";
+
+export const metadata: Metadata = {
+  title: "Admin Login | Veterinary Medical Centers",
+  robots: {
+    index: false,
+    follow: false
+  }
+};
 
 export default async function LoginPage({
   searchParams
@@ -39,7 +48,7 @@ export default async function LoginPage({
           <div className="admin-login-content">
             <div className="admin-login-copy">
               <p className="dashboard-eyebrow">Private Admin Portal</p>
-              <h1>Sign in to manage Veterinary Medical Center</h1>
+              <h1>Sign in to manage Veterinary Medical Centers</h1>
               <p>
                 Dashboard access is limited to approved clinic administrators. Use the authorized Google account for website settings, content tools, and clinic management controls.
               </p>
@@ -73,7 +82,7 @@ export default async function LoginPage({
             </div>
           </div>
 
-          <aside className="admin-login-visual" aria-label="Veterinary Medical Center admin portal">
+          <aside className="admin-login-visual" aria-label="Veterinary Medical Centers admin portal">
             <Image
               src="/images/northern-kentucky-vet-hero.jpg"
               alt="Calm veterinary care environment with a cat and clinician"

@@ -125,12 +125,12 @@ const resourceLinks = [
     href: "/veterinary-services/soft-tissue-surgery/"
   },
   {
-    title: "About Veterinary Medical Center",
+    title: "About Veterinary Medical Centers",
     description: "Meet the locally owned team behind VMC's relationship-based veterinary care.",
     href: "/about/"
   },
   {
-    title: "Contact Veterinary Medical Center",
+    title: "Contact Veterinary Medical Centers",
     description: "Call, request an appointment, or choose the VMC location that is closest to home.",
     href: "/book-appointment/"
   }
@@ -144,7 +144,7 @@ const servicesFaqs = [
   },
   {
     question: "Do you care for both dogs and cats?",
-    answer: "Yes. Veterinary Medical Center provides veterinary care for dogs, cats, puppies, and kittens."
+    answer: "Yes. Veterinary Medical Centers provide veterinary care for dogs, cats, puppies, and kittens."
   },
   {
     question: "How often should my pet see a veterinarian?",
@@ -198,14 +198,14 @@ export default async function ServicesPage() {
               <h1>Veterinary Care for Dogs & Cats in Northern Kentucky</h1>
               <p>
                 From routine wellness exams and vaccines to dental care, diagnostics, surgery, and sick visits,
-                Veterinary Medical Center of Northern Kentucky provides relationship-based care for pets across Fort
+                Veterinary Medical Centers of Northern Kentucky provides relationship-based care for pets across Fort
                 Thomas, Independence, and nearby NKY communities.
               </p>
               <div className="hero-actions">
                 <Button href="/book-appointment/">Book an Appointment</Button>
                 <Button href={`tel:${site.locations[0].tel}`} variant="ghost">Call Our Team</Button>
               </div>
-              <ul className="services-trust-list" aria-label="Veterinary Medical Center service highlights">
+              <ul className="services-trust-list" aria-label="Veterinary Medical Centers service highlights">
                 <li>Locally owned veterinary care</li>
                 <li>Two convenient NKY locations</li>
                 <li>Dogs, cats, puppies, and kittens</li>
@@ -348,13 +348,13 @@ export default async function ServicesPage() {
           <div className="section-heading">
             <p className="eyebrow">Northern Kentucky Locations</p>
             <h2>Veterinary services near you in Northern Kentucky.</h2>
-            <p>With two Northern Kentucky locations, Veterinary Medical Center makes it easier to choose care close to home.</p>
+            <p>With two Northern Kentucky locations, Veterinary Medical Centers make it easier to choose care close to home.</p>
           </div>
           <div className="services-location-grid">
             {locations.map((location) => (
               <article className="services-location-card" key={location.slug}>
                 <MapPin aria-hidden="true" size={24} />
-                <h3>{location.slug === "fort-thomas" ? "Fort Thomas Veterinary Medical Center" : "Independence Veterinary Medical Center"}</h3>
+                <h3>{location.slug === "fort-thomas" ? "Fort Thomas Veterinary Medical Centers" : "Independence Veterinary Medical Centers"}</h3>
                 <p>
                   {location.slug === "fort-thomas"
                     ? "Convenient for families in Fort Thomas, Newport, Highland Heights, Bellevue, Dayton, Cold Spring, Southgate, and nearby Cincinnati neighborhoods."
@@ -417,7 +417,7 @@ export default async function ServicesPage() {
       <FAQSection faqs={servicesFaqs} title="Common questions about veterinary services in Northern Kentucky." />
       <CTASection
         title="Schedule veterinary care for your dog or cat."
-        body="Whether your pet is due for a checkup, needs dental care, or is showing new symptoms, Veterinary Medical Center of Northern Kentucky is here to help."
+        body="Whether your pet is due for a checkup, needs dental care, or is showing new symptoms, Veterinary Medical Centers of Northern Kentucky is here to help."
         primary={{ label: "Book an Appointment", href: "/book-appointment/" }}
         secondary={{ label: "Call Our Team", href: `tel:${site.locations[0].tel}` }}
       />

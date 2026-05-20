@@ -9,7 +9,7 @@ const pawstimonials = [
     community: "Northern Kentucky",
     quote: "The team made Edith’s visit feel calm and easy. I left knowing exactly what was going on and what to do next.",
     image: "/images/edith-testo.jpg",
-    alt: "Edith, a Veterinary Medical Center pet patient in Northern Kentucky"
+    alt: "Edith, a Veterinary Medical Centers pet patient in Northern Kentucky"
   },
   {
     pet: "Ezra",
@@ -17,7 +17,7 @@ const pawstimonials = [
     community: "Fort Thomas",
     quote: "They took time to answer every question and explain the plan in a way that made sense.",
     image: "/images/ezra-testo.jpg",
-    alt: "Ezra, a Veterinary Medical Center pet patient near Fort Thomas"
+    alt: "Ezra, a Veterinary Medical Centers pet patient near Fort Thomas"
   },
   {
     pet: "Marshall",
@@ -25,7 +25,7 @@ const pawstimonials = [
     community: "Independence",
     quote: "From the front desk to the exam room, everyone was kind, patient, and helpful.",
     image: "/images/marshall-testo.jpg",
-    alt: "Marshall, a Veterinary Medical Center pet patient near Independence"
+    alt: "Marshall, a Veterinary Medical Centers pet patient near Independence"
   },
   {
     pet: "Wilson",
@@ -33,7 +33,7 @@ const pawstimonials = [
     community: "NKY",
     quote: "I appreciate having a local vet team that remembers my pet and treats us like neighbors.",
     image: "/images/wilson-testo.jpg",
-    alt: "Wilson, a Veterinary Medical Center pet patient receiving local Northern Kentucky vet care"
+    alt: "Wilson, a Veterinary Medical Centers pet patient receiving local Northern Kentucky vet care"
   }
 ];
 

@@ -1,5 +1,5 @@
 export const site = {
-  name: "Veterinary Medical Center",
+  name: "Veterinary Medical Centers",
   shortName: "VMC",
   siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://nky.vet",
   tagline: "Fort Thomas & Independence, Kentucky",

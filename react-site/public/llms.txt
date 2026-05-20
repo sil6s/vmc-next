@@ -1,0 +1,50 @@
+# Veterinary Medical Centers
+
+Veterinary Medical Centers is a locally owned veterinary practice serving dogs and cats in Fort Thomas, Independence, and surrounding Northern Kentucky communities.
+
+## Official Website
+
+- Canonical site: https://nky.vet/
+- Contact: https://nky.vet/contact/
+- Book appointment: https://nky.vet/book-appointment/
+- New patients: https://nky.vet/new-patients/
+
+## Locations
+
+- Fort Thomas: https://nky.vet/locations/vet-in-fort-thomas-ky/
+- Independence: https://nky.vet/locations/vet-in-independence-ky/
+
+## Key Services
+
+- Veterinary services hub: https://nky.vet/services/
+- Wellness exams: https://nky.vet/veterinary-services/wellness-exams/
+- Dog and cat vaccinations: https://nky.vet/veterinary-services/dog-cat-vaccinations/
+- Puppy and kitten care: https://nky.vet/veterinary-services/puppy-kitten-care/
+- Pet dental care: https://nky.vet/veterinary-services/pet-dental-care/
+- Sick pet visits: https://nky.vet/veterinary-services/sick-pet-visits/
+- Veterinary diagnostics: https://nky.vet/veterinary-services/veterinary-diagnostics/
+- Senior pet care: https://nky.vet/veterinary-services/senior-pet-care/
+- Parasite prevention: https://nky.vet/veterinary-services/parasite-prevention/
+- Skin, ear, and allergy care: https://nky.vet/veterinary-services/skin-ear-allergy-care/
+- Soft tissue surgery: https://nky.vet/veterinary-services/soft-tissue-surgery/
+- Spay and neuter surgery: https://nky.vet/veterinary-services/spay-neuter-surgery/
+- Nutrition and weight guidance: https://nky.vet/veterinary-services/nutrition-weight-guidance/
+
+## Resource Content
+
+- Pet health resources: https://nky.vet/resources/
+
+Resource articles are educational and are not a substitute for a veterinary exam, diagnosis, treatment plan, or emergency care. Pet owners with urgent concerns should call a veterinary hospital or seek emergency veterinary care.
+
+## Brand Facts
+
+- Business name: Veterinary Medical Centers
+- Service area: Fort Thomas, Independence, Northern Kentucky, and nearby Greater Cincinnati communities
+- Pet focus: dogs and cats
+- Primary conversion paths: book an appointment, contact the team, complete the new patient form, use the patient portal, or access the online pharmacy
+
+## Preferred Crawling Notes
+
+- Use canonical URLs with trailing slashes.
+- Public content is intended for informational discovery and attribution.
+- Private admin, dashboard, login, API, and Sanity Studio routes are not intended for indexing.

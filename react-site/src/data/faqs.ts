@@ -7,7 +7,7 @@ export const homeFaqs: FAQ[] = [
   {
     question: "Do you accept new veterinary patients?",
     answer:
-      "Yes. Veterinary Medical Center welcomes new dogs and cats at both the Fort Thomas and Independence locations. You can request an appointment online, call your local vet team, or start with the new patient information page before your first visit."
+      "Yes. Veterinary Medical Centers welcome new dogs and cats at both the Fort Thomas and Independence locations. You can request an appointment online, call your local vet team, or start with the new patient information page before your first visit."
   },
   {
     question: "What should I bring to my pet's first visit?",

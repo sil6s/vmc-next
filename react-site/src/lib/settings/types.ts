@@ -70,6 +70,38 @@ export type QuickControls = {
   websiteBookingButton: boolean;
 };
 
+export type ManagedDoctorProfile = {
+  id: string;
+  name: string;
+  role: string;
+  bio: string;
+  imageUrl: string;
+  imageAlt: string;
+  education: string[];
+  isVisible: boolean;
+};
+
+export type ManagedStaffMember = {
+  id: string;
+  name: string;
+  role: string;
+  bio: string;
+  imageUrl: string;
+  imageAlt: string;
+  isVisible: boolean;
+};
+
+export type StaffSettings = {
+  sectionEyebrow: string;
+  sectionTitle: string;
+  sectionIntro: string;
+  staffEyebrow: string;
+  staffTitle: string;
+  staffIntro: string;
+  doctors: ManagedDoctorProfile[];
+  staffMembers: ManagedStaffMember[];
+};
+
 export type ActivityLogEntry = {
   id: number;
   userEmail: string;
@@ -90,5 +122,6 @@ export type DashboardSettings = {
   announcement: AnnouncementSettings;
   seo: SeoSettings;
   quickControls: QuickControls;
+  staff: StaffSettings;
   lastUpdatedAt: string | null;
 };

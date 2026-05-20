@@ -16,24 +16,17 @@ import { QuickControls } from "@/components/dashboard/QuickControls";
 import { getAnalyticsOverview } from "@/lib/analytics-data";
 import { getActivityLog, getDashboardSettings } from "@/lib/settings/settings";
 import type { ManagedLocation } from "@/lib/settings/types";
-
-function displayTime(value: string) {
-  if (!value) return "";
-  const [hours, minutes] = value.split(":").map(Number);
-  const date = new Date();
-  date.setHours(hours || 0, minutes || 0, 0, 0);
-  return date.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
-}
+import { formatClinicTime, formatEasternDateTime } from "@/lib/time-format";
 
 function todayPreview(location: ManagedLocation) {
   const today = new Date().toLocaleDateString("en-US", { weekday: "long", timeZone: "America/New_York" });
   const hours = location.hours.find((hour) => hour.day === today) || location.hours[0];
   if (!hours.isOpen) return { label: "Office Closed Today", helper: hours.note || "Call for current availability", state: "warn" };
-  return { label: `Open until ${displayTime(hours.closeTime)}`, helper: `${displayTime(hours.openTime)} opening, Eastern Time`, state: "green" };
+  return { label: `Open until ${formatClinicTime(hours.closeTime)}`, helper: `${formatClinicTime(hours.openTime)} opening, Eastern Time`, state: "green" };
 }
 
 function locationShortName(location: ManagedLocation) {
-  return location.clinicName.replace("Veterinary Medical Center of ", "");
+  return location.clinicName.replace("Veterinary Medical Centers of ", "");
 }
 
 export default async function DashboardPage() {
@@ -133,7 +126,7 @@ export default async function DashboardPage() {
             {fortThomas.hours.map((hour) => (
               <p key={hour.day}>
                 <span>{hour.day}</span>
-                <strong>{hour.isOpen ? `${displayTime(hour.openTime)} - ${displayTime(hour.closeTime)}` : hour.note || "Closed"}</strong>
+                <strong>{hour.isOpen ? `${formatClinicTime(hour.openTime)} - ${formatClinicTime(hour.closeTime)}` : hour.note || "Closed"}</strong>
               </p>
             ))}
           </div>
@@ -176,7 +169,7 @@ export default async function DashboardPage() {
                 <p key={entry.id}>
                   <strong>{entry.action}</strong>
                   <span>{entry.userEmail}</span>
-                  <time>{new Date(entry.createdAt).toLocaleString()}</time>
+                  <time dateTime={entry.createdAt}>{formatEasternDateTime(entry.createdAt)}</time>
                 </p>
               ))}
             </div>

@@ -5,9 +5,9 @@ import { site } from "@/data/site";
 import { pageMetadata } from "@/lib/metadata";
 
 export const metadata = pageMetadata({
-  title: "Privacy Policy & SMS Terms | Veterinary Medical Center",
+  title: "Privacy Policy & SMS Terms | Veterinary Medical Centers",
   description:
-    "Read Veterinary Medical Center’s privacy policy, contact form policy, Google Analytics notice, and SMS terms for Fort Thomas and Independence, KY clients.",
+    "Read Veterinary Medical Centers’ privacy policy, contact form policy, Google Analytics notice, and SMS terms for Fort Thomas and Independence, KY clients.",
   path: "/privacy-policy/"
 });
 
@@ -76,7 +76,7 @@ export default function PrivacyPolicyPage() {
           <p className="eyebrow">Legal & Privacy</p>
           <h1>Privacy Policy & SMS Terms</h1>
           <p>
-            How Veterinary Medical Center collects, uses, and protects information from our website, contact forms,
+            How Veterinary Medical Centers collect, uses, and protects information from our website, contact forms,
             analytics tools, phone and email communications, and Otto SMS/text messaging.
           </p>
         </Container>
@@ -90,12 +90,12 @@ export default function PrivacyPolicyPage() {
               <p className="policy-date"><strong>Last Updated:</strong> May 12, 2026</p>
             </div>
             <p>
-              Veterinary Medical Center respects your privacy. This Privacy Policy explains how we collect, use, and
+              Veterinary Medical Centers respect your privacy. This Privacy Policy explains how we collect, use, and
               protect information submitted through our website, contact forms, appointment requests, phone calls, emails,
               SMS/text messages, analytics tools, and other client communication systems.
             </p>
             <p>
-              This policy applies to Veterinary Medical Center locations in Fort Thomas, Kentucky and Independence,
+              This policy applies to Veterinary Medical Centers locations in Fort Thomas, Kentucky and Independence,
               Kentucky, as well as our website and related online services.
             </p>
           </div>
@@ -113,7 +113,7 @@ export default function PrivacyPolicyPage() {
 
           <PolicySection id="website-privacy" title="Website Privacy">
             <h3>Information We Collect</h3>
-            <p>Veterinary Medical Center may collect information that you voluntarily provide to us, including:</p>
+            <p>Veterinary Medical Centers may collect information that you voluntarily provide to us, including:</p>
             <ul>
               {collectedInformation.map((item) => (
                 <li key={item}>{item}</li>
@@ -126,13 +126,13 @@ export default function PrivacyPolicyPage() {
             </p>
 
             <h3>How We Use Your Information</h3>
-            <p>Veterinary Medical Center may use the information we collect to:</p>
+            <p>Veterinary Medical Centers may use the information we collect to:</p>
             <ul>
               {usageItems.map((item) => (
                 <li key={item}>{item}</li>
               ))}
             </ul>
-            <p>Veterinary Medical Center does not sell personal information submitted through our website or contact forms.</p>
+            <p>Veterinary Medical Centers do not sell personal information submitted through our website or contact forms.</p>
           </PolicySection>
 
           <PolicySection id="contact-forms" title="Contact Forms and Appointment Requests">
@@ -141,17 +141,17 @@ export default function PrivacyPolicyPage() {
               website, the information you provide is used to respond to your inquiry and help coordinate veterinary care.
             </p>
             <p>
-              By submitting a form, you authorize Veterinary Medical Center to contact you using the information you
+              By submitting a form, you authorize Veterinary Medical Centers to contact you using the information you
               provide. This may include phone calls, emails, or text messages related to your inquiry, appointment
               request, pet’s care, or client service needs.
             </p>
             <p>
               Please do not use the website contact form for urgent emergencies. If your pet is experiencing a medical
-              emergency, call the appropriate Veterinary Medical Center location directly or contact a nearby emergency
+              emergency, call the appropriate Veterinary Medical Centers location directly or contact a nearby emergency
               veterinary hospital.
             </p>
             <p>
-              Information submitted through website forms may be reviewed by Veterinary Medical Center team members and
+              Information submitted through website forms may be reviewed by Veterinary Medical Centers team members and
               may be stored in our website, email system, scheduling system, client communication tools, or veterinary
               practice management systems as needed to respond to your request.
             </p>
@@ -159,7 +159,7 @@ export default function PrivacyPolicyPage() {
 
           <PolicySection id="analytics-cookies" title="Google Analytics, Cookies, and Website Tracking">
             <p>
-              Veterinary Medical Center uses Google Analytics and similar website tools to understand how visitors use our
+              Veterinary Medical Centers use Google Analytics and similar website tools to understand how visitors use our
               website, improve website performance, and evaluate the effectiveness of our online content.
             </p>
             <p>
@@ -179,7 +179,7 @@ export default function PrivacyPolicyPage() {
 
           <PolicySection title="Email and Phone Communications">
             <p>
-              If you provide your email address or phone number, Veterinary Medical Center may use that information to
+              If you provide your email address or phone number, Veterinary Medical Centers may use that information to
               respond to inquiries, provide appointment-related information, communicate about your pet’s care, send client
               service messages, or share clinic updates when appropriate.
             </p>
@@ -191,7 +191,7 @@ export default function PrivacyPolicyPage() {
 
           <PolicySection title="Third-Party Services">
             <p>
-              Veterinary Medical Center may use trusted third-party service providers to help operate our website, manage
+              Veterinary Medical Centers may use trusted third-party service providers to help operate our website, manage
               communications, support scheduling, provide online forms, send SMS/text messages, host our website, analyze
               website performance, or provide client-facing tools.
             </p>
@@ -209,7 +209,7 @@ export default function PrivacyPolicyPage() {
 
           <PolicySection title="How We Protect Information">
             <p>
-              Veterinary Medical Center takes reasonable administrative, technical, and physical measures to help protect
+              Veterinary Medical Centers take reasonable administrative, technical, and physical measures to help protect
               personal information from unauthorized access, loss, misuse, disclosure, or alteration.
             </p>
             <p>
@@ -221,7 +221,7 @@ export default function PrivacyPolicyPage() {
 
           <PolicySection title="Data Retention">
             <p>
-              Veterinary Medical Center retains information only as long as reasonably necessary for the purposes described
+              Veterinary Medical Centers retain information only as long as reasonably necessary for the purposes described
               in this policy, including client communication, appointment management, veterinary care, business operations,
               legal compliance, recordkeeping, dispute resolution, and security.
             </p>
@@ -233,7 +233,7 @@ export default function PrivacyPolicyPage() {
 
           <PolicySection id="sms-privacy" title="SMS Privacy Policy" featured>
             <p>
-              Veterinary Medical Center uses SMS/text messaging, including through Otto, to help with appointment
+              Veterinary Medical Centers use SMS/text messaging, including through Otto, to help with appointment
               reminders, scheduled services, follow-up communications, and general customer care.
             </p>
             <p>
@@ -249,7 +249,7 @@ export default function PrivacyPolicyPage() {
 
           <PolicySection id="sms-terms" title="SMS Terms of Use" featured>
             <p>
-              By opting into SMS messages from Veterinary Medical Center, you agree to receive text messages related to
+              By opting into SMS messages from Veterinary Medical Centers, you agree to receive text messages related to
               upcoming appointments, scheduled services, follow-up care, and general customer care.
             </p>
             <TermsBlock title="Types of Messages">
@@ -262,13 +262,13 @@ export default function PrivacyPolicyPage() {
             <TermsBlock title="Message Frequency">
               <p>
                 Message frequency varies depending on your appointments, services, communication needs, and interactions
-                with Veterinary Medical Center.
+                with Veterinary Medical Centers.
               </p>
             </TermsBlock>
             <TermsBlock title="Opting Out">
               <p>
                 You can cancel the SMS service at any time. Text STOP to the number you received messages from. After you
-                send STOP, Veterinary Medical Center will send a confirmation message that you have been unsubscribed.
+                send STOP, Veterinary Medical Centers will send a confirmation message that you have been unsubscribed.
                 After this, you will no longer receive SMS messages from that number unless you opt back in.
               </p>
             </TermsBlock>
@@ -283,8 +283,8 @@ export default function PrivacyPolicyPage() {
             </TermsBlock>
             <TermsBlock title="Message and Data Rates">
               <p>
-                Message and data rates may apply for messages sent to you from Veterinary Medical Center and messages sent
-                from you to Veterinary Medical Center. Contact your wireless provider with questions about your text or
+                Message and data rates may apply for messages sent to you from Veterinary Medical Centers and messages sent
+                from you to Veterinary Medical Centers. Contact your wireless provider with questions about your text or
                 data plan.
               </p>
             </TermsBlock>
@@ -320,7 +320,7 @@ export default function PrivacyPolicyPage() {
 
           <PolicySection title="Updates to This Policy">
             <p>
-              Veterinary Medical Center may update this Privacy Policy & SMS Terms page from time to time to reflect
+              Veterinary Medical Centers may update this Privacy Policy & SMS Terms page from time to time to reflect
               changes in our services, technology, legal requirements, or business practices.
             </p>
             <p>When we update this page, we will revise the “Last Updated” date at the top of the page.</p>
@@ -333,7 +333,7 @@ export default function PrivacyPolicyPage() {
             </p>
             <div className="policy-contact-grid">
               <div className="policy-contact-card">
-                <h3>Veterinary Medical Center</h3>
+                <h3>Veterinary Medical Centers</h3>
                 <p>Fort Thomas & Independence, Kentucky</p>
                 <p>
                   Website: <Link href={site.siteUrl}>{site.siteUrl}</Link>

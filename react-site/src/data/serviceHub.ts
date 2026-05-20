@@ -81,7 +81,7 @@ export type ServiceDetail = ServiceCard & {
 };
 
 const defaultAuthor = {
-  name: "Veterinary Medical Center of Northern Kentucky",
+  name: "Veterinary Medical Centers of Northern Kentucky",
   title: "Local veterinary care team",
   slug: "veterinary-medical-center-nky"
 };
@@ -100,16 +100,16 @@ export const serviceHubServices: ServiceDetail[] = [
     featured: true,
     metaTitle: "Pet Wellness Exams in Northern Kentucky | VMC",
     metaDescription:
-      "Schedule pet wellness exams for dogs and cats in Northern Kentucky at Veterinary Medical Center in Fort Thomas and Independence.",
+      "Schedule pet wellness exams for dogs and cats in Northern Kentucky at Veterinary Medical Centers in Fort Thomas and Independence.",
     focusKeyword: "pet wellness exams Northern Kentucky",
     heroEyebrow: "Preventive Veterinary Care",
     heroTitle: "Pet Wellness Exams in Northern Kentucky",
     heroDescription:
       "Wellness visits help dogs and cats stay healthier through every life stage with clear recommendations, vaccines, prevention planning, and time to talk through your questions.",
     heroImage: "/images/veterinary-care-hero.jpg",
-    heroImageAlt: "Pet wellness exam at Veterinary Medical Center in Northern Kentucky",
+    heroImageAlt: "Pet wellness exam at Veterinary Medical Centers in Northern Kentucky",
     overviewText: [
-      "A wellness exam at Veterinary Medical Center is a practical, relationship-based visit built around your pet's age, lifestyle, behavior, medical history, and home routine. These appointments help our veterinarians establish a baseline, notice subtle changes, and make preventive recommendations that fit your dog or cat.",
+      "A wellness exam at Veterinary Medical Centers is a practical, relationship-based visit built around your pet's age, lifestyle, behavior, medical history, and home routine. These appointments help our veterinarians establish a baseline, notice subtle changes, and make preventive recommendations that fit your dog or cat.",
       "Families from Fort Thomas, Independence, and nearby Northern Kentucky communities use wellness visits to stay current on vaccines, parasite prevention, nutrition guidance, dental recommendations, and age-appropriate screening. We keep the conversation clear so you understand what matters now and what can be monitored over time."
     ],
     symptomsOrReasons: [
@@ -251,7 +251,7 @@ export const serviceHubServices: ServiceDetail[] = [
     heroTitle: "Pet Dental Care in Northern Kentucky",
     heroDescription: "Dental disease can affect comfort, breath, eating, and overall health, so our team helps families understand oral findings and treatment options clearly.",
     heroImage: "/images/veterinary-care-hero.jpg",
-    heroImageAlt: "Pet dental care at Veterinary Medical Center in Northern Kentucky",
+    heroImageAlt: "Pet dental care at Veterinary Medical Centers in Northern Kentucky",
     overviewText: [
       "Pet dental care at VMC starts with an oral evaluation and a conversation about what you are noticing at home. Bad breath, tartar, red gums, drooling, and chewing changes can all point to oral discomfort or disease.",
       "When professional dental cleaning or treatment is recommended, we explain preparation, anesthesia, monitoring, dental X-rays when appropriate, recovery, and home-care steps so you know what to expect."
@@ -293,7 +293,7 @@ export const serviceHubServices: ServiceDetail[] = [
     cta: "Learn about spay & neuter",
     cardIcon: "shieldCheck",
     metaTitle: "Spay & Neuter Surgery in Northern Kentucky | VMC",
-    metaDescription: "Spay and neuter surgery planning for dogs and cats at Veterinary Medical Center in Northern Kentucky.",
+    metaDescription: "Spay and neuter surgery planning for dogs and cats at Veterinary Medical Centers in Northern Kentucky.",
     heroTitle: "Spay & Neuter Surgery in Northern Kentucky",
     heroDescription: "Our team helps families understand spay and neuter timing, preparation, anesthesia, monitoring, pain control, and recovery for dogs and cats.",
     heroImage: "/images/veterinary-care-hero.jpg",
@@ -482,7 +482,7 @@ export const serviceHubServices: ServiceDetail[] = [
     heroTitle: "Senior Pet Care in Northern Kentucky",
     heroDescription: "Older dogs and cats benefit from attentive monitoring, practical communication, and care plans that support comfort and quality of life.",
     heroImage: "/images/veterinary-care-hero.jpg",
-    heroImageAlt: "Senior pet care at Veterinary Medical Center in Northern Kentucky",
+    heroImageAlt: "Senior pet care at Veterinary Medical Centers in Northern Kentucky",
     overviewText: [
       "Senior pet care focuses on early detection, comfort, mobility, dental health, nutrition, and chronic condition support. Subtle changes in thirst, appetite, weight, behavior, or movement can matter more as pets age.",
       "Our veterinarians help families understand what is normal aging, what deserves attention, and how to make practical choices for comfort and quality of life."
@@ -616,11 +616,11 @@ export const serviceHubServices: ServiceDetail[] = [
     cta: "Talk about nutrition",
     cardIcon: "apple",
     metaTitle: "Pet Nutrition & Weight Guidance in Northern Kentucky | VMC",
-    metaDescription: "Nutrition and weight guidance for dogs and cats at Veterinary Medical Center in Northern Kentucky.",
+    metaDescription: "Nutrition and weight guidance for dogs and cats at Veterinary Medical Centers in Northern Kentucky.",
     heroTitle: "Pet Nutrition & Weight Guidance in Northern Kentucky",
     heroDescription: "Food choices, weight changes, and feeding routines can affect long-term health, and our team helps families make practical nutrition decisions.",
     heroImage: "/images/veterinary-care-hero.jpg",
-    heroImageAlt: "Pet nutrition guidance at Veterinary Medical Center in Northern Kentucky",
+    heroImageAlt: "Pet nutrition guidance at Veterinary Medical Centers in Northern Kentucky",
     overviewText: [
       "Nutrition advice should be tied to your pet's age, breed, activity level, body condition, medical needs, and home routine. There is rarely one perfect answer for every dog or cat.",
       "At VMC, we help families talk through food choices, feeding amounts, weight changes, treats, life-stage transitions, and nutrition questions connected to medical care."

@@ -105,7 +105,11 @@ UMAMI_SHARE_URL=
 
 Public content now lives under `/resources/`. Legacy `/blog/` URLs redirect to the matching resources pages.
 
-Sanity is the preferred editor for resources. The `Resource Article` schema supports blog articles, education guides, clinic news, FAQ resources, featured images, author photos, reviewer details, SEO fields, Open Graph images, internal links, external references, tags, and Portable Text article content.
+Sanity is the preferred editor for resources. The `Resource Article` schema supports blog articles, education guides, clinic news, FAQ resources, featured images, author photos, reviewer details, SEO fields, Open Graph images, internal links, external references, tags, Standard rich text content, and optional Advanced Markdown content for faster AI-assisted publishing.
+
+Use `contentMode: standard` with `body` for most public article bodies. Use `contentMode: advanced` with `bodyMarkdown` or a `.md` file upload, plus optional `faqMarkdown` and `sourcesMarkdown`, only when a Markdown workflow is faster. The repeatable AI article packet workflow lives in `docs/sanity-ai-resource-workflow.md`.
+
+The dashboard Resources page also includes an AI Packet Import tool for uploading one packet-style `.md` file and creating the Sanity article automatically. Set `SANITY_API_WRITE_TOKEN` with a Sanity write token before using the importer.
 
 ## Content Structure
 

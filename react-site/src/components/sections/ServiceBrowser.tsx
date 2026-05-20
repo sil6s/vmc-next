@@ -16,6 +16,7 @@ import {
   Syringe
 } from "lucide-react";
 import { serviceCategoryLabels, type ServiceCard, type ServiceCategory } from "@/data/serviceHub";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type ServiceTab = "all" | ServiceCategory;
 
@@ -49,23 +50,19 @@ export function ServiceBrowser({ services }: { services: ServiceCard[] }) {
   );
 
   return (
-    <div className="service-browser" id="service-browser">
-      <div className="service-tabs" role="tablist" aria-label="Filter veterinary services by care type">
+    <Tabs className="service-browser" id="service-browser" value={activeTab} onValueChange={(value) => setActiveTab(value as ServiceTab)}>
+      <TabsList className="service-tabs" aria-label="Filter veterinary services by care type">
         {tabs.map((tab) => (
-          <button
+          <TabsTrigger
             aria-controls="service-browser-panel"
-            aria-selected={activeTab === tab.id}
-            className={activeTab === tab.id ? "is-active" : undefined}
             id={`service-tab-${tab.id}`}
             key={tab.id}
-            role="tab"
-            type="button"
-            onClick={() => setActiveTab(tab.id)}
+            value={tab.id}
           >
             {tab.label}
-          </button>
+          </TabsTrigger>
         ))}
-      </div>
+      </TabsList>
       <p className="service-browser-count" aria-live="polite">
         Showing {visibleCount} {visibleCount === 1 ? "service" : "services"}
       </p>
@@ -103,6 +100,6 @@ export function ServiceBrowser({ services }: { services: ServiceCard[] }) {
           );
         })}
       </div>
-    </div>
+    </Tabs>
   );
 }

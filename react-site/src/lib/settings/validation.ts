@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isGoogleMapsEmbedUrl, isGoogleMapsUrl } from "@/lib/google-maps";
 import { dayNames } from "./defaults";
 
 const optionalUrl = z
@@ -6,10 +7,22 @@ const optionalUrl = z
   .trim()
   .refine((value) => !value || value.startsWith("/") || /^https?:\/\//i.test(value), "Use a full https:// URL or a site path that starts with /.");
 
+const imageSource = z
+  .string()
+  .trim()
+  .refine(
+    (value) => !value || value.startsWith("/") || /^https?:\/\//i.test(value) || /^data:image\/(png|jpe?g|webp|gif);base64,/i.test(value),
+    "Use a full https:// URL, a site path that starts with /, or upload an image."
+  );
+
 const externalUrl = z
   .string()
   .trim()
   .refine((value) => !value || /^https?:\/\//i.test(value), "Use a full https:// URL.");
+
+const googleMapsUrl = externalUrl.refine((value) => !value || isGoogleMapsUrl(value), "Use a valid Google Maps directions, place, search, or share URL.");
+
+const googleMapsEmbedUrl = externalUrl.refine((value) => !value || isGoogleMapsEmbedUrl(value), "Use a valid Google Maps embed URL that starts with https://www.google.com/maps/embed.");
 
 const phone = z.string().trim().min(7, "Enter a phone number.");
 
@@ -38,8 +51,8 @@ export const locationSchema = z.object({
   mainPhone: phone,
   appointmentPhone: z.string().trim(),
   email: z.string().trim().email(),
-  googleMapsUrl: externalUrl,
-  mapEmbedUrl: externalUrl,
+  googleMapsUrl,
+  mapEmbedUrl: googleMapsEmbedUrl,
   emergencyMessage: z.string().trim().max(500),
   hours: z.array(businessHourSchema).length(7)
 });
@@ -86,4 +99,38 @@ export const quickControlsSchema = z.object({
   announcementEnabled: z.boolean(),
   emergencyAlertMode: z.boolean(),
   websiteBookingButton: z.boolean()
+});
+
+const safeId = z.string().trim().min(1).max(80).regex(/^[a-z0-9-]+$/, "Use lowercase letters, numbers, and hyphens.");
+
+export const doctorProfileSchema = z.object({
+  id: safeId,
+  name: z.string().trim().min(2).max(90),
+  role: z.string().trim().min(2).max(120),
+  bio: z.string().trim().min(20).max(1200),
+  imageUrl: optionalUrl,
+  imageAlt: z.string().trim().max(180),
+  education: z.array(z.string().trim().min(2).max(220)).max(8),
+  isVisible: z.boolean()
+});
+
+export const staffMemberSchema = z.object({
+  id: safeId,
+  name: z.string().trim().min(2).max(80),
+  role: z.string().trim().min(2).max(90),
+  bio: z.string().trim().max(320),
+  imageUrl: imageSource,
+  imageAlt: z.string().trim().max(180),
+  isVisible: z.boolean()
+});
+
+export const staffSchema = z.object({
+  sectionEyebrow: z.string().trim().min(2).max(60),
+  sectionTitle: z.string().trim().min(4).max(120),
+  sectionIntro: z.string().trim().min(20).max(500),
+  staffEyebrow: z.string().trim().min(2).max(60),
+  staffTitle: z.string().trim().min(4).max(120),
+  staffIntro: z.string().trim().min(20).max(500),
+  doctors: z.array(doctorProfileSchema).min(1).max(6),
+  staffMembers: z.array(staffMemberSchema).max(24)
 });

@@ -5,9 +5,9 @@ import { breadcrumbSchema, JsonLd, webpageSchema } from "@/lib/schema";
 import { getPublicSettings } from "@/lib/settings/public";
 
 export const metadata = pageMetadata({
-  title: "Book a Vet Appointment | Veterinary Medical Center",
+  title: "Book a Vet Appointment | Veterinary Medical Centers",
   description:
-    "Book a veterinary appointment at Veterinary Medical Center. New patients can complete registration, and existing clients can use portal, phone, live chat, pharmacy, or contact options.",
+    "Book a veterinary appointment at Veterinary Medical Centers. New patients can complete registration, and existing clients can use portal, phone, live chat, pharmacy, or contact options.",
   path: "/book-appointment/"
 });
 
@@ -34,8 +34,8 @@ export default async function BookAppointmentPage({ searchParams }: PageProps) {
         data={[
           webpageSchema(
             "/book-appointment/",
-            "Book a Vet Appointment | Veterinary Medical Center",
-            "Book a veterinary appointment with Veterinary Medical Center in Fort Thomas or Independence, Kentucky."
+            "Book a Vet Appointment | Veterinary Medical Centers",
+            "Book a veterinary appointment with Veterinary Medical Centers in Fort Thomas or Independence, Kentucky."
           ),
           breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Book Appointment", path: "/book-appointment/" }])
         ]}

@@ -1,24 +1,93 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, CalendarDays, MapPin, Phone, ShoppingBag, UserRound } from "lucide-react";
-import { useEffect, useState } from "react";
-import { navigation, utilityNavigation } from "@/data/navigation";
+import { ArrowRight, CalendarDays, Menu, Phone, ShoppingBag, UserRound } from "lucide-react";
+import { useState } from "react";
+import { navigation } from "@/data/navigation";
 import { locations as locationPages } from "@/data/locations";
 import { site } from "@/data/site";
 import type { PublicLocation } from "@/lib/settings/public";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle
+} from "@/components/ui/navigation-menu";
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Logo } from "./Logo";
 
 type HeaderLocation = Pick<PublicLocation, "id" | "name" | "address" | "phone" | "tel">;
 
-export function Header({ ctaHref = "/book-appointment/", locations, showBookingButton = true }: { ctaHref?: string; locations?: ReadonlyArray<HeaderLocation>; showBookingButton?: boolean }) {
+function AboutLocationsDropdown() {
+  return (
+    <NavigationMenuItem>
+      <NavigationMenuTrigger>About</NavigationMenuTrigger>
+      <NavigationMenuContent>
+        <div className="nav-dropdown-menu nav-dropdown-menu-compact" aria-label="About and location pages">
+          <NavigationMenuLink asChild>
+            <Link href="/about/">
+              <strong>About VMC</strong>
+              <span>Locally owned veterinary care</span>
+            </Link>
+          </NavigationMenuLink>
+          <NavigationMenuLink asChild>
+            <Link href="/locations/">
+              <strong>Locations</strong>
+              <span>Fort Thomas and Independence</span>
+            </Link>
+          </NavigationMenuLink>
+          {locationPages.map((location) => (
+            <NavigationMenuLink asChild key={location.slug}>
+              <Link href={`/locations/${location.slug}/`}>
+                <strong>{location.shortName}</strong>
+                <span>{location.address.split(",")[0]}</span>
+              </Link>
+            </NavigationMenuLink>
+          ))}
+        </div>
+      </NavigationMenuContent>
+    </NavigationMenuItem>
+  );
+}
+
+function isExternalHref(href: string) {
+  return href.startsWith("http://") || href.startsWith("https://");
+}
+
+function HeaderUtilityLink({ className, href, children }: { className?: string; href: string; children: React.ReactNode }) {
+  if (isExternalHref(href)) {
+    return (
+      <a className={className} href={href} target="_blank" rel="noopener noreferrer">
+        {children}
+      </a>
+    );
+  }
+
+  return (
+    <Link className={className} href={href}>
+      {children}
+    </Link>
+  );
+}
+
+export function Header({
+  ctaHref = "/book-appointment/",
+  locations,
+  onlinePortalUrl = "/patient-portal-online-booking/",
+  pharmacyUrl = "/online-vet-pharmacy-northern-kentucky-cincinnati/",
+  showBookingButton = true
+}: {
+  ctaHref?: string;
+  locations?: ReadonlyArray<HeaderLocation>;
+  onlinePortalUrl?: string;
+  pharmacyUrl?: string;
+  showBookingButton?: boolean;
+}) {
   const [open, setOpen] = useState(false);
   const publicLocations = locations || site.locations;
-
-  useEffect(() => {
-    document.body.classList.toggle("mobile-menu-open", open);
-    return () => document.body.classList.remove("mobile-menu-open");
-  }, [open]);
 
   return (
     <header className="site-header">
@@ -28,39 +97,25 @@ export function Header({ ctaHref = "/book-appointment/", locations, showBookingB
       <div className="nav-shell">
         <Logo />
 
-        <nav className="desktop-nav" aria-label="Primary navigation">
-          {navigation.map((item) =>
-            item.label === "About" ? (
-              <div className="nav-dropdown" key={item.href}>
-                <Link href={item.href}>{item.label}</Link>
-                <div className="nav-dropdown-menu" aria-label="About and location pages">
-                  <Link href="/about/">
-                    <strong>About VMC</strong>
-                    <span>Our story and care approach</span>
-                  </Link>
-                  <Link href="/locations/">
-                    <strong>Locations</strong>
-                    <span>Fort Thomas & Independence</span>
-                  </Link>
-                  {locationPages.map((location) => (
-                    <Link href={`/locations/${location.slug}/`} key={location.slug}>
-                      <strong>{location.shortName}</strong>
-                      <span>{location.address.split(",")[0]}</span>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            ) : (
-              <Link href={item.href} key={item.href}>
-                {item.label}
-              </Link>
-            )
-          )}
-        </nav>
+        <NavigationMenu className="desktop-nav" aria-label="Primary navigation">
+          <NavigationMenuList>
+            {navigation.map((item) =>
+              item.label === "About" ? (
+                <AboutLocationsDropdown key={item.href} />
+              ) : (
+                <NavigationMenuItem key={item.href}>
+                  <NavigationMenuLink asChild className={navigationMenuTriggerStyle()}>
+                    <Link href={item.href}>{item.label}</Link>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              )
+            )}
+          </NavigationMenuList>
+        </NavigationMenu>
 
         <div className="desktop-actions">
-          <Link className="utility-button" href={utilityNavigation[0].href}>Patient Portal</Link>
-          <Link className="utility-button" href={utilityNavigation[1].href}>Online Pharmacy</Link>
+          <HeaderUtilityLink className="utility-button" href={onlinePortalUrl}>Patient Portal</HeaderUtilityLink>
+          <HeaderUtilityLink className="utility-button" href={pharmacyUrl}>Online Pharmacy</HeaderUtilityLink>
           {showBookingButton && (
             <Link className="nav-cta" href={ctaHref}>
               Book Appointment
@@ -68,68 +123,58 @@ export function Header({ ctaHref = "/book-appointment/", locations, showBookingB
           )}
         </div>
 
-        <button className="menu-button" type="button" aria-expanded={open} aria-controls="mobile-menu" onClick={() => setOpen((value) => !value)}>
-          <span className="sr-only">Open menu</span>
-          <span />
-          <span />
-          <span />
-        </button>
-      </div>
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger asChild>
+            <button className="menu-button" type="button" aria-expanded={open} aria-controls="mobile-menu">
+              <Menu aria-hidden="true" size={26} />
+              <span className="sr-only">Open menu</span>
+            </button>
+          </SheetTrigger>
+          <SheetContent className="mobile-menu-sheet" side="right" id="mobile-menu">
+            <SheetHeader>
+              <Logo />
+              <SheetTitle>Veterinary Medical Centers menu</SheetTitle>
+              <SheetDescription>Navigate the main Veterinary Medical Centers website links.</SheetDescription>
+            </SheetHeader>
 
-      <div id="mobile-menu" className={open ? "mobile-menu is-open" : "mobile-menu"}>
-        <div className="mobile-menu-head">
-          <Logo />
-          <button className="mobile-close" type="button" aria-label="Close menu" onClick={() => setOpen(false)}>
-            <span />
-            <span />
-          </button>
-        </div>
-        <nav aria-label="Mobile navigation">
-          {navigation.map((item) => (
-            <Link href={item.href} key={item.href} onClick={() => setOpen(false)}>
-              <span>{item.label}</span>
-              <ArrowRight aria-hidden="true" size={18} strokeWidth={2.2} />
-            </Link>
-          ))}
-          <Link href="/locations/" onClick={() => setOpen(false)}>
-            <span>Locations</span>
-            <ArrowRight aria-hidden="true" size={18} strokeWidth={2.2} />
-          </Link>
-        </nav>
-        <div className="mobile-actions">
-          {showBookingButton && (
-            <Link className="mobile-action-primary" href={ctaHref} onClick={() => setOpen(false)}>
-              <CalendarDays aria-hidden="true" size={18} />
-              Book Appointment
-            </Link>
-          )}
-          <a href={`tel:${publicLocations[0]?.tel || site.locations[0].tel}`}>
-            <Phone aria-hidden="true" size={18} />
-            Call Us Now
-          </a>
-          <Link href={utilityNavigation[0].href} onClick={() => setOpen(false)}>
-            <UserRound aria-hidden="true" size={18} />
-            Patient Portal
-          </Link>
-          <Link className="mobile-pharmacy" href={utilityNavigation[1].href} onClick={() => setOpen(false)}>
-            <ShoppingBag aria-hidden="true" size={18} />
-            Online Pharmacy
-          </Link>
-        </div>
-        <div className="mobile-locations">
-          <p>Our Locations</p>
-          {publicLocations.map((location) => (
-            <Link className="mobile-location" href={`/locations/vet-in-${location.id}-ky/`} key={location.id} onClick={() => setOpen(false)}>
-              <MapPin aria-hidden="true" size={24} />
+            <nav className="mobile-menu-nav" aria-label="Mobile navigation">
               <div>
-                <strong>{location.name}</strong>
-                <span>
-                  {location.address.split(",")[0]} · {location.phone}
-                </span>
+                <p>Main menu</p>
+                {navigation.map((link) => (
+                  <SheetClose asChild key={link.href}>
+                    <Link href={link.href}>
+                      <span>{link.label}</span>
+                      <ArrowRight aria-hidden="true" size={17} />
+                    </Link>
+                  </SheetClose>
+                ))}
               </div>
-            </Link>
-          ))}
-        </div>
+            </nav>
+
+            <div className="mobile-actions">
+              {showBookingButton && (
+                <SheetClose asChild>
+                  <Link className="mobile-action-primary" href={ctaHref}>
+                    <CalendarDays aria-hidden="true" size={18} />
+                    Book Appointment
+                  </Link>
+                </SheetClose>
+              )}
+              <a href={`tel:${publicLocations[0]?.tel || site.locations[0].tel}`}>
+                <Phone aria-hidden="true" size={18} />
+                Call Us Now
+              </a>
+              <a href={onlinePortalUrl} target={isExternalHref(onlinePortalUrl) ? "_blank" : undefined} rel={isExternalHref(onlinePortalUrl) ? "noopener noreferrer" : undefined}>
+                <UserRound aria-hidden="true" size={18} />
+                Patient Portal
+              </a>
+              <a className="mobile-pharmacy" href={pharmacyUrl} target={isExternalHref(pharmacyUrl) ? "_blank" : undefined} rel={isExternalHref(pharmacyUrl) ? "noopener noreferrer" : undefined}>
+                <ShoppingBag aria-hidden="true" size={18} />
+                Online Pharmacy
+              </a>
+            </div>
+          </SheetContent>
+        </Sheet>
       </div>
     </header>
   );

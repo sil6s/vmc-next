@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Baby, CalendarCheck, Clock, Clock3, ClipboardList, FileText, HandHeart, HeartHandshake, MapPin, MessageSquareText, PawPrint, Phone, ShieldCheck, SmilePlus, Stethoscope, Syringe } from "lucide-react";
+import { BookOpenText, CalendarCheck, Clock, Clock3, FileText, HandHeart, HeartHandshake, MapPin, MessageSquareText, PawPrint, Phone, ShieldCheck, Stethoscope } from "lucide-react";
 import { FAQSection } from "@/components/sections/FAQSection";
 import { Hero } from "@/components/sections/Hero";
 import { HomeCareFinder } from "@/components/sections/HomeCareFinder";
@@ -14,8 +14,10 @@ import { locations } from "@/data/locations";
 import { pages } from "@/data/pages";
 import { site } from "@/data/site";
 import { pageMetadata } from "@/lib/metadata";
-import { appointmentHref, getPublicSettings } from "@/lib/settings/public";
+import { getPublicSettings } from "@/lib/settings/public";
 import { breadcrumbSchema, faqSchema, JsonLd, locationVeterinaryCareSchema, webpageSchema } from "@/lib/schema";
+import { fetchHomepagePersonProfiles } from "@/sanity/personProfiles";
+import { getBlogPosts } from "@/sanity/posts";
 
 export const metadata = pageMetadata({ ...pages.home.seo, path: "/" });
 
@@ -74,45 +76,6 @@ const toolLinks = [
   { title: "New Client Forms", text: "Start your first visit paperwork before you arrive.", href: "/new-patient-registration-form/", icon: ShieldCheck }
 ];
 
-const guideCards = [
-  {
-    title: "First Vet Visit in Northern Kentucky",
-    text: "What to bring, how to prepare, and how your first VMC visit should feel.",
-    href: "/new-patients/",
-    icon: ClipboardList
-  },
-  {
-    title: "Puppy & Kitten Vaccine Guide",
-    text: "Understand early vaccine timing, parasite prevention, and first-year care planning.",
-    href: "/veterinary-services/puppy-kitten-care/",
-    icon: Baby
-  },
-  {
-    title: "When to Schedule a Dental Cleaning",
-    text: "Learn signs that your dog or cat may need a dental exam or professional cleaning.",
-    href: "/veterinary-services/pet-dental-care/",
-    icon: SmilePlus
-  },
-  {
-    title: "Senior Pet Wellness Checklist",
-    text: "Know what to watch for as pets age, from mobility and dental changes to appetite shifts.",
-    href: "/veterinary-services/senior-pet-care/",
-    icon: ShieldCheck
-  },
-  {
-    title: "Signs Your Pet Should See a Vet",
-    text: "A practical guide to symptoms, behavior changes, and when to call your local vet team.",
-    href: "/veterinary-services/sick-pet-visits/",
-    icon: Stethoscope
-  },
-  {
-    title: "Parasite Prevention in Kentucky",
-    text: "Learn why heartworm, flea, tick, and intestinal parasite prevention matters year-round.",
-    href: "/veterinary-services/parasite-prevention/",
-    icon: Syringe
-  }
-];
-
 const firstVisitCards = [
   ["Before your appointment", "Bring vaccine records, medication details, and any questions you want to discuss."],
   ["During the exam", "We’ll review your pet’s lifestyle, health history, symptoms, and complete a thorough physical exam."],
@@ -122,7 +85,7 @@ const firstVisitCards = [
 const serviceAreaChips = ["Fort Thomas", "Independence", "Newport", "Bellevue", "Dayton", "Highland Heights", "Alexandria", "Cold Spring", "Cincinnati-area pet owners"];
 
 function officialLocationName(shortName: string) {
-  return shortName === "Fort Thomas" ? "Veterinary Medical Center of Fort Thomas" : "Veterinary Medical Center of Independence";
+  return shortName === "Fort Thomas" ? "Veterinary Medical Centers of Fort Thomas" : "Veterinary Medical Centers of Independence";
 }
 
 function MapEmbed({ src, title }: { src: string; title: string }) {
@@ -145,7 +108,7 @@ function MapEmbed({ src, title }: { src: string; title: string }) {
 export default async function HomePage() {
   const hero = pages.home.hero;
   const settings = await getPublicSettings();
-  const bookingHref = appointmentHref(settings.externalLinks.bookAppointmentUrl);
+  const [resourceGuides, staffProfiles] = await Promise.all([getBlogPosts(6), fetchHomepagePersonProfiles()]);
 
   return (
     <>
@@ -164,11 +127,11 @@ export default async function HomePage() {
           <div className="home-hero-new-here" aria-label="New client next steps">
             <div>
               <strong>New here?</strong>
-              <p>New to Northern Kentucky Veterinary Medical Center? Start with a wellness visit, request an appointment, or message our team with questions.</p>
+              <p>New to Northern Kentucky Veterinary Medical Centers? Start with a wellness visit, request an appointment, or message our team with questions.</p>
             </div>
             <div className="hero-actions">
               <Button href="/book-appointment/">Request an Appointment</Button>
-              <Button href="/contact/#chat-support" variant="ghost">Message Our Team</Button>
+              <Button href="/contact/#message-form" variant="ghost">Message Our Team</Button>
               <Button href="/services/" variant="ghost">Explore Services</Button>
             </div>
           </div>
@@ -189,7 +152,7 @@ export default async function HomePage() {
         tone="cream"
         eyebrow="Local Vet Center"
         title="A locally owned vet center that treats you like neighbors"
-        intro="Veterinary Medical Center is rooted in Northern Kentucky. Our care is personal, calm, practical, and relationship-based, whether your pet needs everyday wellness or help with more complex health needs."
+        intro="Veterinary Medical Centers is rooted in Northern Kentucky. Our care is personal, calm, practical, and relationship-based, whether your pet needs everyday wellness or help with more complex health needs."
       >
         <div className="card-grid">
           {localCards.map(({ title, text, icon: Icon }) => (
@@ -254,7 +217,7 @@ export default async function HomePage() {
         tone="white"
         eyebrow="Northern Kentucky Locations"
         title="Choose your Northern Kentucky veterinary location"
-        intro="With two convenient Veterinary Medical Center locations in Northern Kentucky, our team is here to support dogs, cats, and the people who love them."
+        intro="With two convenient Veterinary Medical Centers locations in Northern Kentucky, our team is here to support dogs, cats, and the people who love them."
         className="home-locations-section"
       >
         <div className="home-location-grid">
@@ -270,8 +233,8 @@ export default async function HomePage() {
                 </h3>
                 <p>
                   {location.shortName === "Fort Thomas"
-                    ? "Veterinary Medical Center of Fort Thomas provides local veterinary care for dogs and cats in Fort Thomas and nearby Northern Kentucky communities, including wellness visits, preventive care, dental care, diagnostics, surgery support, and everyday guidance."
-                    : "Veterinary Medical Center of Independence provides trusted veterinary care for dogs and cats in Independence, KY and nearby Northern Kentucky communities, including wellness visits, preventive care, dental care, diagnostics, surgery, and ongoing health guidance."}
+                    ? "Veterinary Medical Centers of Fort Thomas provides local veterinary care for dogs and cats in Fort Thomas and nearby Northern Kentucky communities, including wellness visits, preventive care, dental care, diagnostics, surgery support, and everyday guidance."
+                    : "Veterinary Medical Centers of Independence provides trusted veterinary care for dogs and cats in Independence, KY and nearby Northern Kentucky communities, including wellness visits, preventive care, dental care, diagnostics, surgery, and ongoing health guidance."}
                 </p>
                 <div className="home-location-details">
                   <address>
@@ -297,7 +260,7 @@ export default async function HomePage() {
               <div className="inline-actions">
                 <a className="btn btn-primary" href={settings.publicLocations[index]?.mapUrl || site.locations[index].mapUrl} target="_blank" rel="noopener noreferrer">Get Directions</a>
                 <a className="btn btn-ghost" href={`tel:${location.tel}`}>Call This Location</a>
-                <Link className="btn btn-ghost" href={bookingHref}>Request Appointment</Link>
+                <Link className="btn btn-ghost" href="/book-appointment/">Request Appointment</Link>
               </div>
             </article>
           ))}
@@ -315,7 +278,7 @@ export default async function HomePage() {
         </div>
       </Section>
 
-      <TeamSection />
+      <TeamSection staffSettings={settings.staff} personProfiles={staffProfiles} />
 
       <Section tone="white" eyebrow="Pawstimonials" title="Pawstimonials from pets and their people">
         <HomeTestimonials />
@@ -323,14 +286,14 @@ export default async function HomePage() {
 
       <Section tone="cream" eyebrow="Pet Care Guides" title="Helpful pet care guides from your local vet team">
         <div className="resource-card-grid">
-          {guideCards.map(({ title, text, href, icon: Icon }) => (
-            <article className="resource-card" key={title}>
-              <Icon aria-hidden="true" size={22} />
-              <p className="eyebrow">Guide</p>
-              <h3>{title}</h3>
-              <p>{text}</p>
-              <small>3 min read</small>
-              <Link href={href}>Read guide</Link>
+          {resourceGuides.map((post) => (
+            <article className="resource-card" key={post.slug}>
+              <BookOpenText aria-hidden="true" size={22} />
+              <p className="eyebrow">{post.category}</p>
+              <h3>{post.title}</h3>
+              <p>{post.excerpt}</p>
+              <small>{post.readingTime || "Pet care resource"}</small>
+              <Link href={`/resources/${post.slug}/`}>Read guide</Link>
             </article>
           ))}
         </div>
@@ -357,8 +320,8 @@ export default async function HomePage() {
           <h2>Ready to schedule a visit with your Northern Kentucky vet team?</h2>
           <p>Choose your location, request an appointment, or call our team. We’ll help you find the right next step for your dog or cat.</p>
           <div className="hero-actions">
-            <Button href={bookingHref} variant="secondary">Request an Appointment</Button>
-            <Button href="/contact/#chat-support" variant="ghost">Message Our Team</Button>
+            <Button href="/book-appointment/" variant="secondary">Request an Appointment</Button>
+            <Button href="/contact/#message-form" variant="ghost">Message Our Team</Button>
             <Button href={`tel:${settings.publicLocations[0]?.tel || site.locations[0].tel}`} variant="ghost">Call the Clinic</Button>
           </div>
         </div>

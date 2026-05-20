@@ -1,4 +1,5 @@
 import { site } from "@/data/site";
+import { isGoogleMapsEmbedUrl, isGoogleMapsUrl } from "@/lib/google-maps";
 import { formatBusinessHour, formatPhoneForTel } from "./defaults";
 import { getDashboardSettings } from "./settings";
 import type { DashboardSettings, ManagedLocation } from "./types";
@@ -8,6 +9,8 @@ export function managedAddress(location: ManagedLocation) {
 }
 
 export function publicLocation(location: ManagedLocation) {
+  const fallbackLocation = site.locations.find((item) => item.id === location.id);
+
   return {
     id: location.id,
     name: location.id === "fort-thomas" ? "Fort Thomas" : "Independence",
@@ -19,8 +22,8 @@ export function publicLocation(location: ManagedLocation) {
     phone: location.mainPhone,
     tel: formatPhoneForTel(location.mainPhone),
     hours: location.hours.map(formatBusinessHour),
-    mapUrl: location.googleMapsUrl,
-    mapEmbedUrl: location.mapEmbedUrl,
+    mapUrl: isGoogleMapsUrl(location.googleMapsUrl) ? location.googleMapsUrl : fallbackLocation?.mapUrl || "",
+    mapEmbedUrl: isGoogleMapsEmbedUrl(location.mapEmbedUrl) ? location.mapEmbedUrl : fallbackLocation?.mapEmbedUrl || "",
     email: location.email,
     emergencyMessage: location.emergencyMessage
   };

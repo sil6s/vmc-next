@@ -103,7 +103,7 @@ export async function ensureSettingsTables() {
         excerpt text not null default '',
         featured_image_url text not null default '',
         featured_image_alt text not null default '',
-        author text not null default 'Veterinary Medical Center Team',
+        author text not null default 'Veterinary Medical Centers Team',
         category text not null default 'Pet Care',
         tags text[] not null default '{}',
         body text not null default '',

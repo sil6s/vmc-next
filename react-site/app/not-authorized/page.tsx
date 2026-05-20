@@ -1,8 +1,17 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { LockKeyhole } from "lucide-react";
 import { SignOutButton } from "@/components/dashboard/SignOutButton";
 import { authOptions } from "@/lib/auth";
+
+export const metadata: Metadata = {
+  title: "Not Authorized | Veterinary Medical Centers",
+  robots: {
+    index: false,
+    follow: false
+  }
+};
 
 export default async function NotAuthorizedPage() {
   const session = await getServerSession(authOptions);

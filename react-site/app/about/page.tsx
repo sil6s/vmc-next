@@ -17,15 +17,17 @@ import { locations } from "@/data/locations";
 import { pages } from "@/data/pages";
 import { site } from "@/data/site";
 import { pageMetadata } from "@/lib/metadata";
-import { JsonLd, breadcrumbSchema, faqSchema, locationVeterinaryCareSchema, webpageSchema } from "@/lib/schema";
+import { getPublicSettings } from "@/lib/settings/public";
+import { JsonLd, breadcrumbSchema, faqSchema, locationVeterinaryCareSchema, personSchema, webpageSchema } from "@/lib/schema";
+import { fetchAboutPersonProfiles, profileImageAlt, profileImageUrl } from "@/sanity/personProfiles";
 
 export const metadata = pageMetadata({ ...pages.about.seo, path: "/about/" });
 
 const aboutFaqs = [
   {
-    question: "Is Veterinary Medical Center independently owned?",
+    question: "Is Veterinary Medical Centers independently owned?",
     answer:
-      "Yes. Veterinary Medical Center is an independently owned vet in Northern Kentucky led by Dr. Kristi Baker. Care decisions are made locally by a team that knows the Fort Thomas and Independence communities."
+      "Yes. Veterinary Medical Centers is an independently owned vet in Northern Kentucky led by Dr. Kristi Baker. Care decisions are made locally by a team that knows the Fort Thomas and Independence communities."
   },
   {
     question: "Where are your veterinary clinics located?",
@@ -40,7 +42,7 @@ const aboutFaqs = [
   {
     question: "What animals do you care for?",
     answer:
-      "Veterinary Medical Center focuses on dogs and cats, including puppies, kittens, adult pets, and senior pets."
+      "Veterinary Medical Centers focus on dogs and cats, including puppies, kittens, adult pets, and senior pets."
   },
   {
     question: "What services do you offer?",
@@ -133,7 +135,7 @@ const resourceLinks = [
   ["Soft tissue surgery", "/veterinary-services/soft-tissue-surgery/"],
   ["Online pharmacy", "/online-vet-pharmacy-northern-kentucky-cincinnati/"],
   ["Patient portal", "/patient-portal-online-booking/"],
-  ["Contact Veterinary Medical Center", "/contact/"]
+  ["Contact Veterinary Medical Centers", "/contact/"]
 ];
 
 const externalResources = [
@@ -143,15 +145,19 @@ const externalResources = [
   ["Cat Friendly Homes", "https://catfriendly.com/"]
 ];
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const [settings, personProfiles] = await Promise.all([getPublicSettings(), fetchAboutPersonProfiles()]);
+  const sanityDoctors = personProfiles.filter((profile) => profile.profileType === "doctor" && profile.visible !== false);
+  const visibleDoctors = sanityDoctors.length ? sanityDoctors : settings.staff.doctors.filter((doctor) => doctor.isVisible);
+
   return (
     <>
       <Hero
-        eyebrow="About Veterinary Medical Center"
+        eyebrow="About Veterinary Medical Centers"
         title="Independently Owned Veterinary Care in Northern Kentucky"
-        body="Veterinary Medical Center is an independently owned vet in Northern Kentucky serving dogs and cats from Fort Thomas, Independence, and nearby communities with compassionate full-service care."
+        body="Veterinary Medical Centers is an independently owned vet in Northern Kentucky serving dogs and cats from Fort Thomas, Independence, and nearby communities with compassionate full-service care."
         image="/images/fort-thomas-clinic.jpg"
-        imageAlt="Veterinary Medical Center Fort Thomas KY veterinary clinic location"
+        imageAlt="Veterinary Medical Centers Fort Thomas KY veterinary clinic location"
         badgeTitle="Licensed in KY & OH"
         badgeSub="Led by Dr. Kristi Baker"
         primaryCta={{ label: "Book Appointment", href: "/book-appointment/" }}
@@ -159,13 +165,13 @@ export default function AboutPage() {
         tertiaryCta={{ label: "Meet Our Team", href: "#team" }}
       />
 
-      <div className="home-trust-row" aria-label="About Veterinary Medical Center highlights">
+      <div className="home-trust-row" aria-label="About Veterinary Medical Centers highlights">
         {["Independently owned", "Two Northern Kentucky locations", "Dogs and cats", "Fear Free approach", "Licensed in KY & OH"].map((item) => (
           <span key={item}>{item}</span>
         ))}
       </div>
 
-      <Section tone="white" eyebrow="Why VMC" title="Why families choose Veterinary Medical Center">
+      <Section tone="white" eyebrow="Why VMC" title="Why families choose Veterinary Medical Centers">
         <div className="card-grid">
           {whyCards.map(({ title, text, icon: Icon }) => (
             <article className="card" key={title}>
@@ -180,7 +186,7 @@ export default function AboutPage() {
       <Section tone="cream" eyebrow="Our Story" title="Built for families who want care that feels personal.">
         <div className="about-story-grid">
           <div className="about-story-copy">
-            <p>Veterinary Medical Center exists for pet owners who want more than a quick transaction. Independent ownership allows the team to focus on steady relationships, clear communication, and care plans that make sense for each pet and family.</p>
+            <p>Veterinary Medical Centers exist for pet owners who want more than a quick transaction. Independent ownership allows the team to focus on steady relationships, clear communication, and care plans that make sense for each pet and family.</p>
             <p>When a vet team knows your dog or cat over time, the small details matter more. Changes in appetite, mobility, behavior, dental health, or comfort are easier to understand when they are part of an ongoing story instead of a one-time appointment.</p>
             <p>That is why VMC combines medical care with emotional comfort. The team supports wellness exams, sick visits, dentistry, surgery, and senior care while helping pets feel safer and owners feel more informed.</p>
           </div>
@@ -197,18 +203,31 @@ export default function AboutPage() {
 
       <Section id="team" tone="white" eyebrow="Our Team" title="Meet Dr. Baker and the care team">
         <div className="about-team-grid">
-          <article className="about-doctor-card">
-            <div>
-              <p className="eyebrow">Owner & DVM</p>
-              <h3>Dr. Kristi Baker</h3>
-              <p>Dr. Baker leads Veterinary Medical Center with a community-rooted approach to dog and cat care. She is licensed in Kentucky and Ohio and built VMC around practical medicine, client education, and long-term trust.</p>
-              <blockquote>Better care starts with listening carefully, explaining clearly, and knowing the pet and family in front of us.</blockquote>
-            </div>
-          </article>
-          <article className="about-team-card">
-            <h3>Dr. Becky Golatzki</h3>
-            <p>Dr. Golatzki supports the same thoughtful standard of care across wellness, medical visits, communication, and pet comfort.</p>
-          </article>
+          {visibleDoctors.map((doctor) => {
+            const id = "_id" in doctor ? doctor._id : doctor.id;
+            const imageUrl = "_id" in doctor ? profileImageUrl(doctor) : doctor.imageUrl;
+            const imageAlt = "_id" in doctor ? profileImageAlt(doctor) : doctor.imageAlt || `${doctor.name}, ${doctor.role} at Veterinary Medical Centers`;
+            const bio = "_id" in doctor ? doctor.bio || doctor.briefDescription || "" : doctor.bio;
+            return (
+            <article className="about-doctor-card" key={id}>
+              <figure className={imageUrl ? "about-doctor-photo" : "about-doctor-photo about-doctor-photo-placeholder"} aria-hidden={imageUrl ? undefined : "true"}>
+                {imageUrl ? (
+                  <Image src={imageUrl} alt={imageAlt} fill sizes="(max-width: 760px) 100vw, 50vw" />
+                ) : (
+                  <PawPrint size={42} />
+                )}
+              </figure>
+              <div>
+                <p className="eyebrow">{doctor.role}</p>
+                <h3>{doctor.name}</h3>
+                <p>{bio}</p>
+                {doctor.name.toLowerCase().includes("kristi") && (
+                  <blockquote>Better care starts with listening carefully, explaining clearly, and knowing the pet and family in front of us.</blockquote>
+                )}
+              </div>
+            </article>
+            );
+          })}
           <article className="about-team-card">
             <h3>Care team, RVTs, and client support</h3>
             <p>Office leadership, registered veterinary technicians, assistants, and client service team members help make each visit organized, calmer, and easier to understand.</p>
@@ -282,7 +301,7 @@ export default function AboutPage() {
         </div>
       </Section>
 
-      <FAQSection faqs={aboutFaqs} title="Questions about Veterinary Medical Center" />
+      <FAQSection faqs={aboutFaqs} title="Questions about Veterinary Medical Centers" />
 
       <Section tone="red">
         <div className="cta-panel">
@@ -312,6 +331,18 @@ export default function AboutPage() {
           webpageSchema("/about/", pages.about.seo.title, pages.about.seo.description),
           breadcrumbSchema([{ name: "Home", path: "/" }, { name: "About", path: "/about/" }]),
           faqSchema(aboutFaqs),
+          ...visibleDoctors.map((doctor) => {
+            const isSanityProfile = "_id" in doctor;
+            const education = isSanityProfile ? doctor.education?.split("\n").filter(Boolean) || [] : doctor.education;
+            return personSchema({
+              name: doctor.name,
+              jobTitle: doctor.role,
+              credentials: isSanityProfile ? doctor.credentials : education.find((item) => item.toLowerCase().includes("doctor")) || undefined,
+              path: "/about/",
+              image: isSanityProfile ? profileImageUrl(doctor) || undefined : doctor.imageUrl || undefined,
+              description: isSanityProfile ? doctor.bio || doctor.briefDescription : doctor.bio
+            });
+          }),
           ...locations.map((location) => locationVeterinaryCareSchema(location, `/locations/${location.slug}/`))
         ]}
       />

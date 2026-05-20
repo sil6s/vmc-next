@@ -6,20 +6,23 @@ type SeoInput = {
   description: string;
   path?: string;
   image?: string;
+  canonicalUrl?: string;
+  type?: "website" | "article";
 };
 
-export function pageMetadata({ title, description, path = "/", image = site.socialImage }: SeoInput): Metadata {
+export function pageMetadata({ title, description, path = "/", image = site.socialImage, canonicalUrl, type = "website" }: SeoInput): Metadata {
   const url = absoluteUrl(path);
+  const canonical = canonicalUrl || url;
   const imageUrl = absoluteUrl(image);
 
   return {
     title,
     description,
     alternates: {
-      canonical: url
+      canonical
     },
     openGraph: {
-      type: "website",
+      type,
       url,
       title,
       description,

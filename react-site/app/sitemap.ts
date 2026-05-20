@@ -1,6 +1,5 @@
 import type { MetadataRoute } from "next";
 import { locations } from "@/data/locations";
-import { services } from "@/data/services";
 import { site } from "@/data/site";
 import { staticRoutes } from "@/lib/routes";
 import { getBlogPosts } from "@/sanity/posts";
@@ -11,7 +10,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const serviceSlugs = await getServiceDetailSlugs();
   const routes = [
     ...staticRoutes,
-    ...services.map((service) => `/services/${service.slug}/`),
     ...serviceSlugs.map((slug) => `/veterinary-services/${slug}/`),
     ...locations.map((location) => `/locations/${location.slug}/`),
     ...posts.map((post) => `/resources/${post.slug}/`)

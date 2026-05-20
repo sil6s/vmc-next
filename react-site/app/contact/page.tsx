@@ -1,268 +1,344 @@
 import Image from "next/image";
 import Link from "next/link";
-import { AlertTriangle, CalendarCheck, FileText, MessageCircle, Phone, Pill, Stethoscope } from "lucide-react";
+import { AlertTriangle, CalendarCheck, Clock, FileText, MapPin, MessageSquareText, PawPrint, Phone } from "lucide-react";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { FAQSection } from "@/components/sections/FAQSection";
-import { Hero } from "@/components/sections/Hero";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { ShadButton } from "@/components/ui/Button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
+import { Separator } from "@/components/ui/separator";
 import { locations } from "@/data/locations";
 import { pages } from "@/data/pages";
 import { site } from "@/data/site";
 import { pageMetadata } from "@/lib/metadata";
-import { getPublicSettings } from "@/lib/settings/public";
 import { breadcrumbSchema, faqSchema, JsonLd, locationVeterinaryCareSchema, webpageSchema } from "@/lib/schema";
+import { getPublicSettings, type PublicLocation } from "@/lib/settings/public";
 
 export const metadata = pageMetadata({ ...pages.contact.seo, path: "/contact/" });
 
 const contactFaqs = [
   {
-    question: "What is the easiest way to contact Veterinary Medical Center?",
-    answer:
-      "For most general questions, chat support is the easiest and most convenient way to get started. You can use it for appointment guidance, location questions, patient portal help, pharmacy direction, and new patient next steps. For urgent pet health concerns, please call the clinic directly."
-  },
-  {
-    question: "Can I use chat support for medical emergencies?",
-    answer:
-      "No. Chat support is for general questions and guidance. If your pet is sick, injured, having trouble breathing, bleeding, in severe pain, or experiencing anything urgent, call the clinic directly or seek emergency veterinary care."
-  },
-  {
     question: "Which location should I contact?",
     answer:
-      "Fort Thomas is convenient for families near Fort Thomas, Highland Heights, Bellevue, Newport, Dayton, and Cold Spring. Independence is convenient for families near Independence, Covington, Taylor Mill, Latonia, Erlanger, and Florence. If you are not sure which location is best, chat support can help point you in the right direction."
+      "Choose Fort Thomas if that clinic is closer to your home or easier for your schedule. Choose Independence if that location is more convenient. If you are not sure, call either clinic and our team can help you decide."
   },
   {
-    question: "Do you accept new patients?",
+    question: "Can I request an appointment online?",
     answer:
-      "Yes. Veterinary Medical Center welcomes new dog and cat patients at both the Fort Thomas and Independence locations. You can book an appointment, complete the new patient form, or use chat support for help getting started."
+      "Yes. You can request an appointment online. New clients will be guided through the new-patient steps, and existing clients can choose the best contact option for their need."
   },
   {
-    question: "Can I use the contact form for urgent pet health concerns?",
+    question: "Can I send medical records before my appointment?",
     answer:
-      "No. The contact form is for non-urgent messages only. If your pet needs same-day care or you are concerned about a possible emergency, call the clinic directly."
+      "Yes. You can use the non-urgent message form for records questions, or call your clinic if records are needed for a visit happening soon."
   },
   {
-    question: "How do I request medication refills?",
+    question: "Do you accept new pets?",
     answer:
-      "Existing clients can use the online pharmacy for approved medications, preventives, and refill support. You can also contact the clinic if you need help choosing the right next step."
+      "Yes. Veterinary Medical Centers welcomes new dog and cat patients at both the Fort Thomas and Independence locations."
   },
   {
-    question: "Where are your veterinary clinics located?",
+    question: "What should I do if my pet is having an emergency?",
     answer:
-      "Veterinary Medical Center has two Northern Kentucky locations: Fort Thomas at 2000 Memorial Parkway and Independence at 4147 Madison Pike."
+      "Call the clinic directly or contact an emergency veterinary hospital. Do not use the contact form for urgent medical concerns, trouble breathing, injury, collapse, severe pain, or sudden behavior changes."
   },
   {
-    question: "Are you open on Saturdays?",
+    question: "How quickly will you respond to messages?",
     answer:
-      "The Fort Thomas location has a rotating Saturday schedule, so please call ahead. The Independence location is closed on Saturdays."
+      "Our team reviews non-urgent messages during business hours. If your concern is time-sensitive, please call your preferred location directly."
   },
   {
-    question: "Can I access my pet's records online?",
+    question: "Can I request prescription refills online?",
     answer:
-      "Existing clients can use the patient portal for available records, appointment tools, and account resources."
-  },
-  {
-    question: "What should I do if I am not sure whether my pet needs an appointment?",
-    answer:
-      "For general guidance, chat support can help you choose the right next step. If your pet seems sick, injured, or needs same-day help, call the clinic directly."
+      "Existing clients can use the online pharmacy for eligible refills and preventives. If a medication concern cannot wait, please call your clinic directly."
   }
 ];
 
-const contactOptions = [
-  {
-    title: "Start with chat support",
-    badge: "Recommended",
-    text: "The easiest way to ask a quick question, get help choosing a location, find the right form, or understand your next step.",
-    micro: "Best for general questions, appointment guidance, portal help, pharmacy questions, and new patient next steps.",
-    cta: "Start Chat Support",
-    href: "#chat-support",
-    icon: MessageCircle,
-    featured: true
-  },
-  {
-    title: "Book an appointment",
-    text: "Ready to schedule care for wellness, vaccines, sick visits, dental concerns, surgery consults, or new pet appointments?",
-    cta: "Book Appointment",
-    href: "/contact/#message-form",
-    icon: CalendarCheck
-  },
-  {
-    title: "Call Fort Thomas",
-    text: "Best for families near Fort Thomas, Highland Heights, Bellevue, Newport, Dayton, Cold Spring, and nearby river city communities.",
-    cta: "Call (859) 442-4420",
-    href: `tel:${site.locations[0].tel}`,
-    icon: Phone
-  },
-  {
-    title: "Call Independence",
-    text: "Best for families near Independence, Covington, Taylor Mill, Latonia, Erlanger, Florence, and central Northern Kentucky.",
-    cta: "Call (859) 356-2242",
-    href: `tel:${site.locations[1].tel}`,
-    icon: Phone
-  },
-  {
-    title: "Patient portal",
-    text: "Access existing client tools, pet records, appointment information, and account resources.",
-    cta: "Open Patient Portal",
-    href: "/patient-portal-online-booking/",
-    icon: FileText
-  },
-  {
-    title: "Online pharmacy",
-    text: "Order approved medications, preventives, food, and refills through the online pharmacy.",
-    cta: "Visit Online Pharmacy",
-    href: "/online-vet-pharmacy-northern-kentucky-cincinnati/",
-    icon: Pill
-  }
+const urgentReasons = [
+  "Your pet is having urgent symptoms",
+  "You need same-day guidance",
+  "You have a time-sensitive surgery or appointment question",
+  "You are unsure whether your pet needs urgent care"
 ];
+
+function publicLocationById(publicLocations: PublicLocation[], id: string) {
+  return publicLocations.find((location) => location.id === id);
+}
+
+function ActionButton({
+  href,
+  children,
+  variant = "primary",
+  className
+}: {
+  href: string;
+  children: React.ReactNode;
+  variant?: "primary" | "secondary" | "ghost";
+  className?: string;
+}) {
+  if (href.startsWith("/") || href.startsWith("#")) {
+    return (
+      <ShadButton asChild className={className} variant={variant}>
+        <Link href={href}>{children}</Link>
+      </ShadButton>
+    );
+  }
+
+  return (
+    <ShadButton asChild className={className} variant={variant}>
+      <a href={href} target={href.startsWith("http") ? "_blank" : undefined} rel={href.startsWith("http") ? "noopener noreferrer" : undefined}>
+        {children}
+      </a>
+    </ShadButton>
+  );
+}
+
+function ContactHero({ fortThomas, independence }: { fortThomas: PublicLocation; independence: PublicLocation }) {
+  return (
+    <section className="contact-hero">
+      <Container>
+        <div className="contact-hero-grid">
+          <div className="contact-hero-copy">
+            <p className="eyebrow">Contact Veterinary Medical Centers</p>
+            <h1>Contact Veterinary Medical Center</h1>
+            <p>
+              Have a question, need records, or want to schedule care? Choose the best way to reach our Fort Thomas or Independence teams.
+            </p>
+            <div className="contact-hero-actions">
+              <ActionButton href={`tel:${fortThomas.tel}`}>Call Fort Thomas</ActionButton>
+              <ActionButton href={`tel:${independence.tel}`} variant="secondary">Call Independence</ActionButton>
+              <ActionButton href="/book-appointment/" variant="secondary">Request an Appointment</ActionButton>
+            </div>
+          </div>
+          <div className="contact-hero-media">
+            <Image
+              src="/images/vet-stock2.jpg"
+              alt="Veterinarian and pet owner reviewing appointment information with a dog"
+              width={960}
+              height={640}
+              priority
+              sizes="(max-width: 900px) 100vw, 48vw"
+            />
+            <Card className="contact-hero-location-card">
+              <CardContent>
+                <span><PawPrint aria-hidden="true" size={16} /> Two Northern Kentucky clinics</span>
+                <strong>Fort Thomas & Independence</strong>
+                <small>Call, request an appointment, or send a non-urgent message.</small>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </Container>
+    </section>
+  );
+}
+
+function NeedHelpCard({
+  icon: Icon,
+  title,
+  description,
+  children,
+  featured = false
+}: {
+  icon: typeof Phone;
+  title: string;
+  description: string;
+  children: React.ReactNode;
+  featured?: boolean;
+}) {
+  return (
+    <Card className={`contact-need-card${featured ? " is-featured" : ""}`}>
+      <CardHeader>
+        <Icon aria-hidden="true" size={24} />
+        <CardTitle>{title}</CardTitle>
+        <CardDescription>{description}</CardDescription>
+      </CardHeader>
+      <CardContent>{children}</CardContent>
+    </Card>
+  );
+}
+
+function LocationContactCard({
+  location,
+  publicLocation
+}: {
+  location: (typeof locations)[number];
+  publicLocation: PublicLocation;
+}) {
+  const hours = publicLocation.hours.length ? publicLocation.hours : site.locations.find((item) => item.name.includes(location.shortName))?.hours || [];
+
+  return (
+    <Card className="contact-location-card contact-clinic-card">
+      <Image
+        src={location.image}
+        alt={location.imageAlt}
+        width={720}
+        height={420}
+        loading="eager"
+        sizes="(max-width: 720px) calc(100vw - 48px), 50vw"
+      />
+      <CardContent>
+        <div className="contact-clinic-card-head">
+          <h3>{location.shortName}</h3>
+          <span>Northern Kentucky clinic</span>
+        </div>
+        <div className="contact-clinic-details">
+          <address><MapPin aria-hidden="true" size={17} /> {publicLocation.address || location.address}</address>
+          <a href={`tel:${publicLocation.tel || location.tel}`}><Phone aria-hidden="true" size={17} /> {publicLocation.phone || location.phone}</a>
+          <div><Clock aria-hidden="true" size={17} /> <span>{hours[0] || "Call for current hours."}</span></div>
+        </div>
+        <Separator />
+        <ul>{hours.map((hour) => <li key={hour}>{hour}</li>)}</ul>
+        <div className="contact-clinic-actions">
+          <ActionButton className="contact-location-button" href={`tel:${publicLocation.tel || location.tel}`}>Call This Location</ActionButton>
+          <ActionButton className="contact-location-button" href={publicLocation.mapUrl || site.locations[0].mapUrl} variant="secondary">Get Directions</ActionButton>
+          <ActionButton className="contact-location-button" href="/book-appointment/" variant="secondary">Request Appointment</ActionButton>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
 
 export default async function ContactPage() {
   const settings = await getPublicSettings();
+  const fortThomas = publicLocationById(settings.publicLocations, "fort-thomas") || settings.publicLocations[0] || site.locations[0];
+  const independence = publicLocationById(settings.publicLocations, "independence") || settings.publicLocations[1] || site.locations[1];
 
   return (
     <>
-      <Hero
-        eyebrow="Contact Veterinary Medical Center"
-        title="Contact Your Northern Kentucky Vet Team"
-        body="Need to schedule a visit, ask a quick question, choose the right location, or get help with your pet's care? Chat support is the easiest way to get started, and our Fort Thomas and Independence teams are here to help you find the right next step."
-        image="/images/independence-clinic.jpg"
-        imageAlt="Northern Kentucky veterinary contact options for dog and cat owners"
-        badgeTitle="Message-first support"
-        badgeSub="Non-urgent help made easier"
-        primaryCta={{ label: "Start Chat Support", href: "#chat-support" }}
-        secondaryCta={{ label: "Book Appointment", href: "#message-form" }}
-        tertiaryCta={{ label: "Call a Location", href: "#locations" }}
-      />
+      <ContactHero fortThomas={fortThomas} independence={independence} />
 
-      <div className="home-trust-row" aria-label="Contact page highlights">
-        {["Easiest way to ask a quick question", "Two Northern Kentucky locations", "Dogs and cats", "Independently owned", "Patient portal and pharmacy help"].map((item) => (
-          <span key={item}>{item}</span>
-        ))}
-      </div>
+      <Section
+        tone="white"
+        eyebrow="Contact Options"
+        title="What do you need help with?"
+        intro="Start with the option that best matches your need. For urgent or same-day concerns, calling is the safest path."
+        className="contact-section-tight"
+      >
+        <div className="contact-need-grid">
+          <NeedHelpCard
+            featured
+            icon={CalendarCheck}
+            title="Schedule care"
+            description="Best for wellness visits, vaccines, exams, and new patient appointments."
+          >
+            <ActionButton className="contact-card-button" href="/book-appointment/">Request Appointment</ActionButton>
+          </NeedHelpCard>
 
-      <Section tone="white" eyebrow="Contact Options" title="What do you need help with?" intro="Choose the option that fits best. For most general questions, chat support is the fastest and most convenient place to start.">
-        <div className="contact-option-grid">
-          {contactOptions.map(({ title, badge, text, micro, cta, href, icon: Icon, featured }) => (
-            <article className={featured ? "contact-option-card is-featured" : "contact-option-card"} key={title}>
-              {badge && <span className="contact-badge">{badge}</span>}
-              <Icon aria-hidden="true" size={22} />
-              <h3>{title}</h3>
-              <p>{text}</p>
-              {micro && <small>{micro}</small>}
-              <Link className={featured ? "btn btn-primary" : "btn btn-ghost"} href={href}>{cta}</Link>
-            </article>
-          ))}
-        </div>
-      </Section>
-
-      <Section id="chat-support" tone="cream" eyebrow="Recommended" title="The easiest way to get help: chat support">
-        <div className="contact-support-grid">
-          <div className="contact-support-card">
-            <MessageCircle aria-hidden="true" size={30} />
-            <h3>Have a quick question? Start here.</h3>
-            <p>Not every question needs a phone call. Chat support is a convenient way to ask general questions, get pointed to the right location, find the right form, or understand what to do next.</p>
-            <ul>
-              {["Choosing Fort Thomas vs. Independence", "Appointment guidance", "New patient questions", "Patient portal help", "Online pharmacy and refill direction", "General clinic information"].map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-            <Link className="btn btn-primary" href="#message-form">Start Chat Support</Link>
-          </div>
-          <div className="contact-call-card">
-            <AlertTriangle aria-hidden="true" size={24} />
-            <h3>Please call directly for urgent concerns.</h3>
-            <p>Call the clinic for same-day illness questions, medication reactions, severe pain, breathing concerns, collapse, bleeding, or anything that feels time-sensitive.</p>
-            <div className="inline-actions">
-              <a className="btn btn-ghost" href={`tel:${site.locations[0].tel}`}>Call Fort Thomas</a>
-              <a className="btn btn-ghost" href={`tel:${site.locations[1].tel}`}>Call Independence</a>
+          <NeedHelpCard
+            icon={Phone}
+            title="Call a location"
+            description="Best for same-day questions, urgent concerns, or time-sensitive needs."
+          >
+            <div className="contact-card-split-actions">
+              <ActionButton className="contact-card-button" href={`tel:${fortThomas.tel}`}>Fort Thomas</ActionButton>
+              <ActionButton className="contact-card-button" href={`tel:${independence.tel}`} variant="secondary">Independence</ActionButton>
             </div>
-          </div>
+          </NeedHelpCard>
+
+          <NeedHelpCard
+            icon={MessageSquareText}
+            title="Send a message"
+            description="Best for non-urgent questions, follow-ups, records, or general requests."
+          >
+            <ActionButton className="contact-card-button" href="#message-form" variant="secondary">Start Message</ActionButton>
+          </NeedHelpCard>
+
+          <NeedHelpCard
+            icon={FileText}
+            title="Patient portal"
+            description="Best for accessing records, reminders, and account information."
+          >
+            <ActionButton className="contact-card-button" href={settings.externalLinks.onlinePortalUrl} variant="secondary">Open Portal</ActionButton>
+          </NeedHelpCard>
         </div>
       </Section>
 
-      <Section id="message-form" tone="white" eyebrow="Non-Urgent Messages" title="Send a non-urgent message" intro="Prefer a form? Tell us what you need in a few quick steps. For the fastest help with general questions, chat support is usually the most convenient option.">
-        <div className="contact-form-layout">
-          <div className="form-panel">
-            <div className="form-callout">
-              <strong>Need help deciding what to do?</strong>
-              <span>Start with chat support instead.</span>
-              <Link href="#chat-support">Start Chat Support</Link>
-            </div>
-            <ContactForm />
-          </div>
-          <aside className="contact-sticky-card">
-            <Stethoscope aria-hidden="true" size={24} />
-            <h3>Need faster help?</h3>
-            <p>For quick questions, chat support is usually the easiest option. For urgent or same-day pet health concerns, call the clinic directly.</p>
-            <Link className="btn btn-primary" href="#chat-support">Start Chat Support</Link>
-            <a className="btn btn-ghost" href={`tel:${site.locations[0].tel}`}>Call Fort Thomas</a>
-            <a className="btn btn-ghost" href={`tel:${site.locations[1].tel}`}>Call Independence</a>
-          </aside>
-        </div>
-      </Section>
-
-      <Section id="locations" tone="cream" eyebrow="Locations" title="Choose the location closest to you" intro="Both VMC locations share the same independently owned, relationship-focused approach to veterinary care for dogs and cats.">
+      <Section
+        id="locations"
+        tone="cream"
+        eyebrow="Clinic Locations"
+        title="Choose your clinic location"
+        intro="Both Veterinary Medical Centers locations support dogs and cats with relationship-based care for Northern Kentucky families."
+        className="contact-section-tight"
+      >
         <div className="contact-location-grid">
-          {locations.map((location, index) => (
-            <article className="contact-location-card" key={location.slug}>
-              <Image src={location.image} alt={location.imageAlt} width={720} height={420} />
+          {locations.map((location) => {
+            const id = location.shortName === "Fort Thomas" ? "fort-thomas" : "independence";
+            const publicLocation = publicLocationById(settings.publicLocations, id) || (id === "fort-thomas" ? fortThomas : independence);
+
+            return <LocationContactCard key={location.slug} location={location} publicLocation={publicLocation} />;
+          })}
+        </div>
+      </Section>
+
+      <Section
+        id="message-form"
+        tone="white"
+        eyebrow="Non-Urgent Support"
+        title="Send us a non-urgent message"
+        intro="For urgent concerns, please call your preferred location directly. This form is for general questions, records requests, follow-ups, and non-urgent care needs."
+        className="contact-section-tight"
+      >
+        <Card className="contact-message-panel contact-intake-card">
+          <CardContent>
+            <ContactForm />
+          </CardContent>
+        </Card>
+      </Section>
+
+      <Section tone="cream" eyebrow="Urgent Needs" title="Please call directly if..." className="contact-section-tight">
+        <Card className="contact-urgent-card">
+          <CardContent>
+            <div className="contact-urgent-head">
+              <AlertTriangle aria-hidden="true" size={26} />
               <div>
-                <h3>{location.shortName} Veterinary Medical Center</h3>
-                <address>{location.address}</address>
-                <a className="services-phone" href={`tel:${location.tel}`}>{location.phone}</a>
-                <ul>{(settings.publicLocations[index]?.hours || site.locations[index].hours).map((hour) => <li key={hour}>{hour}</li>)}</ul>
-                <p><strong>Nearby:</strong> {location.quickFacts.nearby}</p>
-                <div className="inline-actions">
-                  <a className="btn btn-primary" href={`tel:${location.tel}`}>Call {location.shortName}</a>
-                  <a className="btn btn-ghost" href={settings.publicLocations[index]?.mapUrl || site.locations[index].mapUrl} target="_blank" rel="noopener noreferrer">Get Directions</a>
-                  <Link className="text-link" href={`/locations/${location.slug}/`}>View {location.shortName} Location</Link>
-                </div>
+                <h3>Phone is the best path for urgent or time-sensitive concerns.</h3>
+                <p>If you are unsure whether your pet needs urgent care, call and our team can help you decide the safest next step.</p>
               </div>
-            </article>
-          ))}
-        </div>
-      </Section>
-
-      <Section tone="white" eyebrow="Urgent Questions" title="When to call the clinic directly">
-        <div className="contact-call-list">
-          <p>Chat support and the contact form are helpful for general questions, but some situations need a phone call. For the fastest help with time-sensitive pet health concerns, call Fort Thomas or Independence directly.</p>
-          <ul>
-            {["Your pet seems sick or injured", "You need same-day guidance", "Your pet may have eaten something unsafe", "Your pet is having medication side effects", "You need to change or cancel an appointment soon", "You are unsure whether your pet needs to be seen", "The issue feels urgent or time-sensitive"].map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-          <div className="inline-actions">
-            <a className="btn btn-primary" href={`tel:${site.locations[0].tel}`}>Call Fort Thomas</a>
-            <a className="btn btn-ghost" href={`tel:${site.locations[1].tel}`}>Call Independence</a>
-          </div>
-        </div>
-      </Section>
-
-      <Section tone="cream" eyebrow="New Patients" title="New to Veterinary Medical Center?">
-        <div className="contact-new-patient-card">
-          <p>We would love to welcome you and your pet. Start with our new patient resources, request an appointment, or use chat support if you are not sure which location or next step is right for you.</p>
-          <div className="inline-actions">
-            <Link className="btn btn-primary" href="/new-patient-registration-form/">New Patient Form</Link>
-            <Link className="btn btn-ghost" href="#message-form">Book Appointment</Link>
-            <Link className="text-link" href="#chat-support">Start Chat Support</Link>
-          </div>
-        </div>
+            </div>
+            <ul>
+              {urgentReasons.map((reason) => <li key={reason}>{reason}</li>)}
+            </ul>
+            <div className="contact-urgent-actions">
+              <ActionButton href={`tel:${fortThomas.tel}`}>Call Fort Thomas</ActionButton>
+              <ActionButton href={`tel:${independence.tel}`} variant="secondary">Call Independence</ActionButton>
+            </div>
+          </CardContent>
+        </Card>
       </Section>
 
       <FAQSection faqs={contactFaqs} title="Contact questions" />
 
       <Section tone="red">
-        <div className="cta-panel">
+        <div className="cta-panel contact-final-cta">
           <p className="eyebrow">Next Steps</p>
           <h2>Not sure where to start?</h2>
-          <p>Chat support is the easiest way to ask a quick question, choose the right location, or find the right next step. For urgent pet health concerns, call Fort Thomas or Independence directly.</p>
+          <p>Call the location closest to you, or request an appointment and our team will help guide you.</p>
           <div className="hero-actions">
-            <Link className="btn btn-secondary" href="#chat-support">Start Chat Support</Link>
-            <Link className="btn btn-ghost" href="#message-form">Book Appointment</Link>
-            <a className="btn btn-ghost" href={`tel:${site.locations[0].tel}`}>Call Fort Thomas</a>
-            <a className="btn btn-ghost" href={`tel:${site.locations[1].tel}`}>Call Independence</a>
+            <ActionButton href={`tel:${fortThomas.tel}`} variant="secondary">Call Fort Thomas</ActionButton>
+            <ActionButton href={`tel:${independence.tel}`} variant="ghost">Call Independence</ActionButton>
+            <ActionButton href="/book-appointment/" variant="ghost">Request Appointment</ActionButton>
           </div>
         </div>
       </Section>
+
+      <div className="contact-mobile-actions" aria-label="Quick contact actions">
+        <a href={`tel:${fortThomas.tel}`}>
+          <Phone aria-hidden="true" size={16} />
+          Call
+        </a>
+        <Link href="/book-appointment/">
+          <CalendarCheck aria-hidden="true" size={16} />
+          Appointment
+        </Link>
+        <Link href="#message-form">
+          <MessageSquareText aria-hidden="true" size={16} />
+          Message
+        </Link>
+      </div>
 
       <JsonLd
         data={[

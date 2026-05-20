@@ -1,14 +1,16 @@
 "use client";
 
 import { useMemo, useState, useTransition } from "react";
-import { Building2, Clock, MapPin } from "lucide-react";
+import { AlertTriangle, Building2, CheckCircle2, Clock, ExternalLink, MapPin } from "lucide-react";
 import { ShadButton } from "@/components/ui/Button";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { saveLocationSettings } from "@/lib/dashboard-actions";
+import { googleMapsStatus } from "@/lib/google-maps";
 import { formatBusinessHour } from "@/lib/settings/defaults";
 import type { ManagedLocation } from "@/lib/settings/types";
+import { formatClinicTime } from "@/lib/time-format";
 import { StatusMessage } from "./StatusMessage";
 
 export function LocationsForm({ initialLocations }: { initialLocations: ManagedLocation[] }) {
@@ -44,7 +46,11 @@ export function LocationsForm({ initialLocations }: { initialLocations: ManagedL
 
   return (
     <div className="dashboard-stack">
-      {locations.map((location, locationIndex) => (
+      {locations.map((location, locationIndex) => {
+        const directionsStatus = googleMapsStatus(location.googleMapsUrl, "link");
+        const embedStatus = googleMapsStatus(location.mapEmbedUrl, "embed");
+
+        return (
         <section className="dashboard-card dashboard-location-card" key={location.id}>
           <div className="dashboard-card-head">
             <div>
@@ -100,12 +106,39 @@ export function LocationsForm({ initialLocations }: { initialLocations: ManagedL
               <label className="dashboard-field">
                 <span>Google Maps URL</span>
                 <Input value={location.googleMapsUrl} onChange={(event) => updateLocation(locationIndex, "googleMapsUrl", event.target.value)} />
+                <small>Use a Google Maps place, directions, search, or share link.</small>
               </label>
               <label className="dashboard-field">
                 <span>Google Maps embed URL</span>
                 <Input value={location.mapEmbedUrl} onChange={(event) => updateLocation(locationIndex, "mapEmbedUrl", event.target.value)} />
+                <small>Use the Google Maps embed URL from Share &gt; Embed a map.</small>
               </label>
             </div>
+            <div className="dashboard-map-check-grid">
+              <div className={`dashboard-map-check ${directionsStatus.ok ? "is-ok" : "is-warn"}`}>
+                {directionsStatus.ok ? <CheckCircle2 aria-hidden="true" size={17} /> : <AlertTriangle aria-hidden="true" size={17} />}
+                <span><strong>Directions link: {directionsStatus.label}</strong><small>{directionsStatus.message}</small></span>
+                {directionsStatus.ok && (
+                  <a className="dashboard-test-link" href={location.googleMapsUrl} target="_blank" rel="noopener noreferrer">
+                    Test link <ExternalLink aria-hidden="true" size={13} />
+                  </a>
+                )}
+              </div>
+              <div className={`dashboard-map-check ${embedStatus.ok ? "is-ok" : "is-warn"}`}>
+                {embedStatus.ok ? <CheckCircle2 aria-hidden="true" size={17} /> : <AlertTriangle aria-hidden="true" size={17} />}
+                <span><strong>Map embed: {embedStatus.label}</strong><small>{embedStatus.message}</small></span>
+                {embedStatus.ok && (
+                  <a className="dashboard-test-link" href={location.mapEmbedUrl} target="_blank" rel="noopener noreferrer">
+                    Test embed <ExternalLink aria-hidden="true" size={13} />
+                  </a>
+                )}
+              </div>
+            </div>
+            {embedStatus.ok && (
+              <div className="dashboard-map-preview">
+                <iframe src={location.mapEmbedUrl} title={`${location.clinicName} Google Maps preview`} loading="lazy" referrerPolicy="no-referrer-when-downgrade" />
+              </div>
+            )}
             <label className="dashboard-field">
               <span>Emergency/after-hours message</span>
               <Textarea value={location.emergencyMessage} onChange={(event) => updateLocation(locationIndex, "emergencyMessage", event.target.value)} />
@@ -125,8 +158,8 @@ export function LocationsForm({ initialLocations }: { initialLocations: ManagedL
                     <span>{hour.isOpen ? "Open" : "Closed"}</span>
                     <Switch checked={hour.isOpen} aria-label={`${hour.day} open status`} onCheckedChange={(checked) => updateHour(locationIndex, hourIndex, "isOpen", checked)} />
                   </label>
-                  <Input aria-label={`${hour.day} open time`} disabled={!hour.isOpen} value={hour.openTime} onChange={(event) => updateHour(locationIndex, hourIndex, "openTime", event.target.value)} />
-                  <Input aria-label={`${hour.day} close time`} disabled={!hour.isOpen} value={hour.closeTime} onChange={(event) => updateHour(locationIndex, hourIndex, "closeTime", event.target.value)} />
+                  <Input aria-label={`${hour.day} open time`} disabled={!hour.isOpen} value={formatClinicTime(hour.openTime)} onChange={(event) => updateHour(locationIndex, hourIndex, "openTime", event.target.value)} placeholder="8:00 AM" />
+                  <Input aria-label={`${hour.day} close time`} disabled={!hour.isOpen} value={formatClinicTime(hour.closeTime)} onChange={(event) => updateHour(locationIndex, hourIndex, "closeTime", event.target.value)} placeholder="6:00 PM" />
                   <Input aria-label={`${hour.day} note`} value={hour.note} onChange={(event) => updateHour(locationIndex, hourIndex, "note", event.target.value)} placeholder="Note" />
                 </div>
               ))}
@@ -137,7 +170,8 @@ export function LocationsForm({ initialLocations }: { initialLocations: ManagedL
             </div>
           </div>
         </section>
-      ))}
+      );
+      })}
       <div className="dashboard-actions">
         <ShadButton type="button" disabled={isPending} onClick={save}>
           {isPending ? "Saving..." : "Save location settings"}

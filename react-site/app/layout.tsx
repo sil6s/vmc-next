@@ -1,12 +1,13 @@
 import type { Metadata, Viewport } from "next";
 import { Instrument_Sans, Playfair_Display } from "next/font/google";
+import "easymde/dist/easymde.min.css";
 import "./globals.css";
 import { AnnouncementBanner } from "@/components/layout/AnnouncementBanner";
 import { ChatSupportWidget } from "@/components/layout/ChatSupportWidget";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { UmamiTracker } from "@/components/layout/UmamiTracker";
-import { appointmentHref, getPublicSettings } from "@/lib/settings/public";
+import { getPublicSettings } from "@/lib/settings/public";
 import { JsonLd, organizationSchema, websiteSchema } from "@/lib/schema";
 
 const sans = Instrument_Sans({
@@ -32,10 +33,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     description: settings.seo.defaultMetaDescription,
     icons: {
-      icon: [
-        { url: "/favicon.png", type: "image/png" },
-        { url: "/icon.svg", type: "image/svg+xml" }
-      ],
+      icon: [{ url: "/favicon.png", type: "image/png" }],
       shortcut: "/favicon.png",
       apple: "/favicon.png"
     }
@@ -49,15 +47,25 @@ export const viewport: Viewport = {
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const settings = await getPublicSettings();
-  const bookingHref = appointmentHref(settings.externalLinks.bookAppointmentUrl || settings.seo.sitewideCtaUrl);
+  const bookingHref = "/book-appointment/";
 
   return (
     <html lang="en" className={`${sans.variable} ${serif.variable}`}>
       <body>
         <AnnouncementBanner announcement={settings.announcement} />
-        <Header ctaHref={bookingHref} locations={settings.publicLocations} showBookingButton={settings.quickControls.websiteBookingButton} />
+        <Header
+          ctaHref={bookingHref}
+          locations={settings.publicLocations}
+          onlinePortalUrl={settings.externalLinks.onlinePortalUrl}
+          pharmacyUrl={settings.externalLinks.pharmacyUrl}
+          showBookingButton={settings.quickControls.websiteBookingButton}
+        />
         <main id="main">{children}</main>
-        <Footer locations={settings.publicLocations} />
+        <Footer
+          locations={settings.publicLocations}
+          onlinePortalUrl={settings.externalLinks.onlinePortalUrl}
+          pharmacyUrl={settings.externalLinks.pharmacyUrl}
+        />
         {/* TODO: Load the real Otto embed script once here with next/script when Otto provides the production script URL. */}
         {settings.liveChat.liveChatEnabled && (
           <ChatSupportWidget locations={settings.publicLocations} appointmentHref={bookingHref} />

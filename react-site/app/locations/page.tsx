@@ -12,7 +12,7 @@ import { breadcrumbSchema, JsonLd, locationVeterinaryCareSchema, webpageSchema }
 
 const seo = {
   title: "Veterinary Locations in Fort Thomas & Independence | VMC",
-  description: "Visit Veterinary Medical Center in Fort Thomas or Independence, KY for locally owned dog and cat care in Northern Kentucky."
+  description: "Visit Veterinary Medical Centers in Fort Thomas or Independence, KY for locally owned dog and cat care in Northern Kentucky."
 };
 
 const chooseCards = [
@@ -91,13 +91,13 @@ const serviceAreaChips = [
 export const metadata = pageMetadata({ ...seo, path: "/locations/" });
 
 function officialLocationName(shortName: string) {
-  return shortName === "Fort Thomas" ? "Veterinary Medical Center of Fort Thomas" : "Veterinary Medical Center of Independence";
+  return shortName === "Fort Thomas" ? "Veterinary Medical Centers of Fort Thomas" : "Veterinary Medical Centers of Independence";
 }
 
 function locationSummary(shortName: string) {
   return shortName === "Fort Thomas"
-    ? "Veterinary Medical Center of Fort Thomas provides local veterinary care for dogs and cats in Fort Thomas and nearby Northern Kentucky communities."
-    : "Veterinary Medical Center of Independence provides trusted veterinary care for dogs and cats in Independence, KY and surrounding Northern Kentucky communities.";
+    ? "Veterinary Medical Centers of Fort Thomas provides local veterinary care for dogs and cats in Fort Thomas and nearby Northern Kentucky communities."
+    : "Veterinary Medical Centers of Independence provides trusted veterinary care for dogs and cats in Independence, KY and surrounding Northern Kentucky communities.";
 }
 
 function nearbyCopy(shortName: string) {
@@ -118,8 +118,8 @@ function townImage(shortName: string) {
 
 function townImageAlt(shortName: string) {
   return shortName === "Fort Thomas"
-    ? "Fort Thomas Kentucky community near Veterinary Medical Center of Fort Thomas"
-    : "Independence Kentucky community near Veterinary Medical Center of Independence";
+    ? "Fort Thomas Kentucky community near Veterinary Medical Centers of Fort Thomas"
+    : "Independence Kentucky community near Veterinary Medical Centers of Independence";
 }
 
 function MapEmbed({ src, title }: { src: string; title: string }) {
@@ -147,9 +147,9 @@ export default async function LocationsPage() {
       <Hero
         eyebrow="Our Locations"
         title="Veterinary care in Fort Thomas and Independence"
-        body="Choose the Veterinary Medical Center location that fits your day. Both clinics provide full-service veterinary care for dogs and cats with the same relationship-based approach, clear communication, and practical care planning."
+        body="Choose the Veterinary Medical Centers location that fits your day. Both clinics provide full-service veterinary care for dogs and cats with the same relationship-based approach, clear communication, and practical care planning."
         image="/images/fort-thomas-clinic.jpg"
-        imageAlt="Veterinary Medical Center Fort Thomas veterinary clinic exterior"
+        imageAlt="Veterinary Medical Centers Fort Thomas veterinary clinic exterior"
         primaryCta={{ label: "Book Appointment", href: "/book-appointment/" }}
         secondaryCta={{ label: "New Patients", href: "/new-patients/" }}
         tertiaryCta={{ label: "View Locations", href: "#locations" }}
@@ -159,7 +159,7 @@ export default async function LocationsPage() {
         tone="white"
         eyebrow="Locations"
         title="Two convenient Northern Kentucky veterinary clinics"
-        intro="Both Veterinary Medical Center locations care for dogs and cats with the same standard of practical, relationship-based medicine. Choose the clinic closest to you, then call, request an appointment, or get directions."
+        intro="Both Veterinary Medical Centers locations care for dogs and cats with the same standard of practical, relationship-based medicine. Choose the clinic closest to you, then call, request an appointment, or get directions."
         className="locations-intro-section"
       >
         <div className="locations-choose-heading">
@@ -179,7 +179,7 @@ export default async function LocationsPage() {
         </div>
       </Section>
 
-      <Section id="locations" tone="cream" eyebrow="Compare Locations" title="Choose your Veterinary Medical Center location" className="locations-feature-section">
+      <Section id="locations" tone="cream" eyebrow="Compare Locations" title="Choose your Veterinary Medical Centers location" className="locations-feature-section">
         <div className="locations-feature-list">
           {locations.map((location, index) => {
             const officialName = officialLocationName(location.shortName);

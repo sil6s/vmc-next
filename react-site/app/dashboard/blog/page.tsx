@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
 export default function BlogDashboardPage() {
-  redirect("/dashboard/resources/studio/");
+  redirect("/dashboard/resources/");
 }

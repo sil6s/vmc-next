@@ -10,9 +10,11 @@ export function organizationSchema(settings?: PublicSettings) {
   return {
     "@context": "https://schema.org",
     "@type": "VeterinaryCare",
+    "@id": `${settings?.siteUrl || site.siteUrl}/#organization`,
     name: site.name,
     url: settings?.siteUrl || site.siteUrl,
     email: site.email,
+    image: absoluteUrl(site.socialImage),
     areaServed: ["Northern Kentucky", "Fort Thomas KY", "Independence KY", "Greater Cincinnati"],
     sameAs: settings?.seo.sameAsSocialLinks,
     address: locations.map((location) => ({
@@ -31,18 +33,27 @@ export function websiteSchema(siteUrl = site.siteUrl) {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
+    "@id": `${siteUrl}/#website`,
     name: site.name,
-    url: siteUrl
+    url: siteUrl,
+    publisher: {
+      "@id": `${siteUrl}/#organization`
+    }
   };
 }
 
 export function webpageSchema(path: string, name: string, description: string) {
+  const url = absoluteUrl(path);
   return {
     "@context": "https://schema.org",
     "@type": "WebPage",
+    "@id": `${url}#webpage`,
     name,
     description,
-    url: absoluteUrl(path)
+    url,
+    isPartOf: {
+      "@id": `${site.siteUrl}/#website`
+    }
   };
 }
 
@@ -88,10 +99,11 @@ export function serviceListSchema(items: { name: string; description: string; pa
         serviceType: "Veterinary care",
         areaServed: ["Northern Kentucky", "Fort Thomas KY", "Independence KY", "Greater Cincinnati"],
         url: absoluteUrl(item.path || "/services/"),
-        provider: {
-          "@type": "VeterinaryCare",
-          name: site.name,
-          url: site.siteUrl
+    provider: {
+      "@type": "VeterinaryCare",
+      "@id": `${site.siteUrl}/#organization`,
+      name: site.name,
+      url: site.siteUrl
         }
       }
     }))
@@ -109,6 +121,7 @@ export function veterinaryServiceSchema(service: ServiceDetail, path: string) {
     url: absoluteUrl(path),
     provider: {
       "@type": "VeterinaryCare",
+      "@id": `${site.siteUrl}/#organization`,
       name: site.name,
       url: site.siteUrl,
       telephone: site.locations.map((location) => location.tel),
@@ -127,16 +140,20 @@ export function veterinaryServiceSchema(service: ServiceDetail, path: string) {
 export function locationVeterinaryCareSchema(location: LocationPage, path: string) {
   const officialName =
     location.shortName === "Fort Thomas"
-      ? "Veterinary Medical Center of Fort Thomas"
-      : "Veterinary Medical Center of Independence";
+      ? "Veterinary Medical Centers of Fort Thomas"
+      : "Veterinary Medical Centers of Independence";
 
   return {
     "@context": "https://schema.org",
     "@type": "VeterinaryCare",
+    "@id": `${absoluteUrl(path)}#location`,
     name: officialName,
     url: absoluteUrl(path),
     image: absoluteUrl(location.image),
     telephone: location.tel,
+    parentOrganization: {
+      "@id": `${site.siteUrl}/#organization`
+    },
     address: {
       "@type": "PostalAddress",
       streetAddress: location.address.split(",")[0],
@@ -153,11 +170,47 @@ export function locationVeterinaryCareSchema(location: LocationPage, path: strin
         closes: "18:00"
       }
     ],
-    areaServed: location.communities
+    areaServed: location.communities,
+    hasMap: site.locations.find((siteLocation) => siteLocation.name === location.shortName)?.mapUrl
   };
 }
 
-export function articleSchema(post: { title: string; slug: string; date: string; updatedAt?: string; excerpt: string; featuredImage?: string }) {
+export function personSchema(person: {
+  name: string;
+  jobTitle: string;
+  path: string;
+  image?: string;
+  credentials?: string;
+  description?: string;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": `${absoluteUrl(person.path)}#${person.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`,
+    name: person.name,
+    jobTitle: person.jobTitle,
+    image: person.image,
+    description: person.description,
+    honorificSuffix: person.credentials,
+    worksFor: {
+      "@id": `${site.siteUrl}/#organization`
+    }
+  };
+}
+
+export function articleSchema(post: {
+  title: string;
+  slug: string;
+  date: string;
+  updatedAt?: string;
+  excerpt: string;
+  featuredImage?: string;
+  schemaImage?: string;
+  canonicalUrl?: string;
+  author?: { name?: string };
+  category?: string;
+  tags?: string[];
+}) {
   return {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -165,15 +218,27 @@ export function articleSchema(post: { title: string; slug: string; date: string;
     datePublished: post.date,
     dateModified: post.updatedAt || post.date,
     description: post.excerpt,
-    url: absoluteUrl(`/resources/${post.slug}/`),
-    image: post.featuredImage ? absoluteUrl(post.featuredImage) : undefined,
+    url: post.canonicalUrl || absoluteUrl(`/resources/${post.slug}/`),
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": post.canonicalUrl || absoluteUrl(`/resources/${post.slug}/`)
+    },
+    image: post.schemaImage || (post.featuredImage ? absoluteUrl(post.featuredImage) : undefined),
+    articleSection: post.category,
+    keywords: post.tags?.join(", "),
     author: {
-      "@type": "Organization",
-      name: site.name
+      "@type": post.author?.name ? "Person" : "Organization",
+      name: post.author?.name || site.name
     },
     publisher: {
       "@type": "Organization",
-      name: site.name
+      "@id": `${site.siteUrl}/#organization`,
+      name: site.name,
+      url: site.siteUrl,
+      logo: {
+        "@type": "ImageObject",
+        url: absoluteUrl("/favicon.png")
+      }
     }
   };
 }

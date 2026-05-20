@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { BookOpenText, GraduationCap, Newspaper } from "lucide-react";
 import { Hero } from "@/components/sections/Hero";
+import { ResourceBrowser, type ResourceCardItem } from "@/components/sections/ResourceBrowser";
 import { Section } from "@/components/ui/Section";
 import { pageMetadata } from "@/lib/metadata";
 import { breadcrumbSchema, JsonLd, webpageSchema } from "@/lib/schema";
@@ -9,8 +10,8 @@ import { urlFor } from "@/sanity/image";
 import { getBlogPosts, type BlogPost, type ResourceType } from "@/sanity/posts";
 
 const seo = {
-  title: "Pet Health Resources | Veterinary Medical Center",
-  description: "Pet health articles, education guides, and clinic resources from Veterinary Medical Center for dog and cat owners in Northern Kentucky."
+  title: "Pet Health Resources in Northern Kentucky | VMC",
+  description: "Read pet health articles, education guides, and clinic resources from Veterinary Medical Centers for dog and cat owners in Northern Kentucky."
 };
 
 const resourceTypeLabels: Record<ResourceType, string> = {
@@ -37,15 +38,29 @@ export default async function ResourcesPage() {
   const posts = await getBlogPosts(24);
   const featured = posts[0];
   const rest = posts.slice(1);
+  const browserResources: ResourceCardItem[] = (featured ? rest : posts).map((post) => ({
+    slug: post.slug,
+    title: post.title,
+    excerpt: post.excerpt,
+    category: post.category,
+    resourceTypeLabel: resourceTypeLabels[post.resourceType],
+    imageUrl: featuredImageUrl(post),
+    imageAlt: post.featuredImageAlt,
+    authorName: post.author.name,
+    authorImage: post.author.image,
+    authorImageAlt: post.author.imageAlt,
+    readingTime: post.readingTime || post.author.title,
+    tags: post.tags
+  }));
 
   return (
     <>
       <Hero
         eyebrow="Resources"
         title="Pet health education, clinic updates, and practical care guides."
-        body="Explore articles from Veterinary Medical Center for Northern Kentucky dog and cat owners, including wellness guidance, first-visit education, dental care, puppy and kitten care, senior pet support, and clinic updates."
+        body="Explore articles from Veterinary Medical Centers for Northern Kentucky dog and cat owners, including wellness guidance, first-visit education, dental care, puppy and kitten care, senior pet support, and clinic updates."
         image="/images/northern-kentucky-vet-hero.jpg"
-        imageAlt="Veterinary Medical Center team providing dog and cat care in Northern Kentucky"
+        imageAlt="Veterinary Medical Centers team providing dog and cat care in Northern Kentucky"
         primaryCta={{ label: "Book Appointment", href: "/book-appointment/" }}
         secondaryCta={{ label: "Explore Services", href: "/services/" }}
       />
@@ -70,6 +85,32 @@ export default async function ResourcesPage() {
         </Section>
       )}
 
+      <Section
+        tone="cream"
+        eyebrow="Core Content"
+        title="Start with the essentials for dogs and cats."
+        intro="These resource areas help pet owners quickly find practical education before a visit, after a diagnosis, or while planning routine preventive care."
+      >
+        <div className="resource-core-grid">
+          <Link href="/new-patients/">
+            <strong>New patient guide</strong>
+            <span>What to expect, what to bring, and how to start your first appointment request.</span>
+          </Link>
+          <Link href="/services/">
+            <strong>Services library</strong>
+            <span>Explore wellness, dental care, surgery, diagnostics, vaccines, and sick visits.</span>
+          </Link>
+          <Link href="/patient-portal-online-booking/">
+            <strong>Patient portal</strong>
+            <span>Access existing client tools, records, and available online account options.</span>
+          </Link>
+          <Link href="/online-vet-pharmacy-northern-kentucky-cincinnati/">
+            <strong>Online pharmacy</strong>
+            <span>Use the trusted pharmacy link for eligible products and refill support.</span>
+          </Link>
+        </div>
+      </Section>
+
       <Section tone="cream" eyebrow="Browse Resources" title="Articles and education for pet owners.">
         <div className="resource-type-strip" aria-label="Resource types">
           {Object.entries(resourceTypeLabels).map(([type, label]) => {
@@ -82,32 +123,7 @@ export default async function ResourcesPage() {
             );
           })}
         </div>
-        <div className="blog-card-grid">
-          {(featured ? rest : posts).map((post) => (
-            <article className="blog-card" key={post.slug}>
-              <Link className="blog-card-image" href={`/resources/${post.slug}/`} aria-label={`Read ${post.title}`}>
-                <Image src={featuredImageUrl(post)} alt={post.featuredImageAlt} fill sizes="(max-width: 720px) 100vw, (max-width: 1100px) 50vw, 380px" />
-              </Link>
-              <div className="blog-card-body">
-                <p className="eyebrow">{resourceTypeLabels[post.resourceType]} · {post.category}</p>
-                <h3>
-                  <Link href={`/resources/${post.slug}/`}>{post.title}</Link>
-                </h3>
-                <p>{post.excerpt}</p>
-                <div className="blog-author-row">
-                  <Image src={post.author.image} alt={post.author.imageAlt} width={42} height={42} />
-                  <div>
-                    <strong>{post.author.name}</strong>
-                    <span>{post.readingTime || post.author.title}</span>
-                  </div>
-                </div>
-                <Link className="text-link" href={`/resources/${post.slug}/`}>
-                  Read guide
-                </Link>
-              </div>
-            </article>
-          ))}
-        </div>
+        <ResourceBrowser resources={browserResources} />
       </Section>
       <JsonLd data={[webpageSchema("/resources/", seo.title, seo.description), breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Resources", path: "/resources/" }])]} />
     </>

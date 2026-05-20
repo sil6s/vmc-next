@@ -1,18 +1,18 @@
 export const pages = {
   home: {
-    title: "Veterinary Medical Center",
+    title: "Veterinary Medical Centers",
     seo: {
       title: "Northern Kentucky Vet for Dogs & Cats | Fort Thomas & Independence",
       description: "Locally owned Northern Kentucky vet care for dogs and cats, with convenient Fort Thomas and Independence locations. Schedule your pet's visit today."
     },
     hero: {
-      eyebrow: "Veterinary Medical Center",
+      eyebrow: "Veterinary Medical Centers",
       title: "Northern Kentucky vet for dogs and cats,",
       emphasis: "built around real relationships",
       body:
-        "Veterinary Medical Center is a locally owned Northern Kentucky vet center for dogs and cats, with convenient Fort Thomas and Independence locations, relationship-based care, and easy appointment scheduling.",
+        "Veterinary Medical Centers is a locally owned Northern Kentucky veterinary practice for dogs and cats, with convenient Fort Thomas and Independence locations, relationship-based care, and easy appointment scheduling.",
       image: "/images/cat-closeup-hero.png",
-      imageAlt: "Cat receiving a gentle veterinary exam at Veterinary Medical Center",
+      imageAlt: "Cat receiving a gentle veterinary exam at Veterinary Medical Centers",
       badgeTitle: "Same-week appointments",
       badgeSub: "New patients welcome"
     },
@@ -21,31 +21,31 @@ export const pages = {
   about: {
     seo: {
       title: "Independently Owned Vet in Northern Kentucky | VMC",
-      description: "Meet Veterinary Medical Center, an independently owned vet in Northern Kentucky serving Fort Thomas and Independence with caring dog and cat care."
+      description: "Meet Veterinary Medical Centers, an independently owned vet in Northern Kentucky serving Fort Thomas and Independence with caring dog and cat care."
     }
   },
   contact: {
     seo: {
-      title: "Contact VMC | Vet in Fort Thomas & Independence KY",
-      description: "Contact Veterinary Medical Center in Northern Kentucky. Use chat support, call Fort Thomas or Independence, book a vet appointment, or access patient tools."
+      title: "Contact Veterinary Medical Center | Fort Thomas & Independence KY Vets",
+      description: "Contact Veterinary Medical Center in Fort Thomas or Independence, KY. Call your nearest clinic, request an appointment, send a message, or get directions."
     }
   },
   newPatients: {
     seo: {
-      title: "New Patients | Veterinary Medical Center",
-      description: "New patients are welcome at Veterinary Medical Center in Fort Thomas and Independence, KY. Learn what to bring and how to get started."
+      title: "New Vet Patients in Northern Kentucky | VMC",
+      description: "New dog and cat patients are welcome at Veterinary Medical Centers in Fort Thomas and Independence, KY. Learn what to bring and request a visit."
     }
   },
   portal: {
     seo: {
-      title: "Patient Portal & Online Booking | Northern Kentucky & Cincinnati",
-      description: "Access the VMC patient portal and online booking page for Fort Thomas, Independence, Northern Kentucky, and Cincinnati pet families."
+      title: "Vet Patient Portal | Fort Thomas & Independence KY",
+      description: "Access the Veterinary Medical Centers patient portal and online booking tools for Fort Thomas, Independence, and Northern Kentucky pet families."
     }
   },
   pharmacy: {
     seo: {
-      title: "Northern Kentucky & Cincinnati Online Vet Pharmacy",
-      description: "Use the VMC online vet pharmacy page to request eligible refills, browse trusted products, and coordinate medication support."
+      title: "Online Vet Pharmacy in Northern Kentucky | VMC",
+      description: "Use the Veterinary Medical Centers online pharmacy for eligible refills, preventives, food, and medication support in Northern Kentucky."
     }
   },
   nearMe: {
@@ -56,8 +56,8 @@ export const pages = {
   },
   form: {
     seo: {
-      title: "New Patient Registration Form | Veterinary Medical Center",
-      description: "Complete the new patient registration form before your first VMC visit in Fort Thomas or Independence."
+      title: "New Patient Registration Form | VMC Northern Kentucky",
+      description: "Complete the new patient registration form before your first Veterinary Medical Centers visit in Fort Thomas or Independence."
     }
   }
 } as const;

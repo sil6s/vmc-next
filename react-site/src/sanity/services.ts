@@ -102,7 +102,7 @@ function normalizeDetail(service: SanityServiceDetail): ServiceDetail {
     heroDescription: service.heroDescription || card.shortDescription,
     heroImage: fallback?.heroImage,
     heroImageSource: service.heroImage,
-    heroImageAlt: service.heroImageAlt || fallback?.heroImageAlt || `${service.title} at Veterinary Medical Center in Northern Kentucky`,
+    heroImageAlt: service.heroImageAlt || fallback?.heroImageAlt || `${service.title} at Veterinary Medical Centers in Northern Kentucky`,
     primaryCTA: normalizeCta(service.primaryCTA) || fallback?.primaryCTA,
     secondaryCTA: normalizeCta(service.secondaryCTA) || fallback?.secondaryCTA,
     overview: service.overview,

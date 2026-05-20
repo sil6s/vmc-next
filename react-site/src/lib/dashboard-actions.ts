@@ -9,7 +9,8 @@ import {
   liveChatSchema,
   locationsSchema,
   quickControlsSchema,
-  seoSchema
+  seoSchema,
+  staffSchema
 } from "@/lib/settings/validation";
 
 type ActionResult = {
@@ -36,7 +37,9 @@ function revalidateDashboard() {
   revalidatePath("/dashboard/seo/");
   revalidatePath("/dashboard/analytics/");
   revalidatePath("/dashboard/resources/");
+  revalidatePath("/dashboard/staff/");
   revalidatePath("/dashboard/activity/");
+  revalidatePath("/about/");
 }
 
 export async function saveLiveChatSettings(input: unknown): Promise<ActionResult> {
@@ -58,9 +61,9 @@ export async function saveLiveChatSettings(input: unknown): Promise<ActionResult
 
 export async function saveLocationSettings(input: unknown): Promise<ActionResult> {
   const admin = await requireAdminSession();
-  const parsed = locationsSchema.parse(input);
 
   try {
+    const parsed = locationsSchema.parse(input);
     await updateSettingSection("locations", parsed, admin.email);
     revalidateDashboard();
     return { ok: true, message: "Location and hours settings saved successfully." };
@@ -116,6 +119,19 @@ export async function saveQuickControls(input: unknown): Promise<ActionResult> {
     await updateSettingSection("quickControls", parsed, admin.email);
     revalidateDashboard();
     return { ok: true, message: "Quick controls saved successfully." };
+  } catch (error) {
+    return { ok: false, message: errorMessage(error) };
+  }
+}
+
+export async function saveStaffSettings(input: unknown): Promise<ActionResult> {
+  const admin = await requireAdminSession();
+  const parsed = staffSchema.parse(input);
+
+  try {
+    await updateSettingSection("staff", parsed, admin.email);
+    revalidateDashboard();
+    return { ok: true, message: "Staff profiles saved successfully." };
   } catch (error) {
     return { ok: false, message: errorMessage(error) };
   }

@@ -8,16 +8,18 @@ import type {
   LiveChatSettings,
   ManagedLocation,
   QuickControls,
-  SeoSettings
+  SeoSettings,
+  StaffSettings
 } from "./types";
 
-type SettingSection = "liveChat" | "locations" | "externalLinks" | "announcement" | "seo" | "quickControls";
+type SettingSection = "liveChat" | "locations" | "externalLinks" | "announcement" | "seo" | "quickControls" | "staff";
 
 const sectionKeys = {
   liveChat: "live_chat",
   announcement: "announcement",
   seo: "seo",
-  quickControls: "quick_controls"
+  quickControls: "quick_controls",
+  staff: "staff"
 } as const;
 
 export async function getDashboardSettings(): Promise<DashboardSettings> {
@@ -29,7 +31,7 @@ export async function getDashboardSettings(): Promise<DashboardSettings> {
   const pool = getPool();
   const [settingsResult, hoursResult, linksResult] = await Promise.all([
     pool.query("select key, value, updated_at from site_settings where key = any($1)", [
-      [sectionKeys.liveChat, "locations", sectionKeys.announcement, sectionKeys.seo, sectionKeys.quickControls]
+      [sectionKeys.liveChat, "locations", sectionKeys.announcement, sectionKeys.seo, sectionKeys.quickControls, sectionKeys.staff]
     ]),
     pool.query("select * from business_hours order by location_id, array_position($1::text[], day_of_week)", [dayNames]),
     pool.query("select key, url, updated_at from external_links")
@@ -55,6 +57,19 @@ export async function getDashboardSettings(): Promise<DashboardSettings> {
     ...defaultDashboardSettings.quickControls,
     ...(settingsRows.get(sectionKeys.quickControls)?.value || {})
   } as QuickControls;
+  const savedStaff = settingsRows.get(sectionKeys.staff)?.value || {};
+  const staff = {
+    ...defaultDashboardSettings.staff,
+    ...savedStaff,
+    doctors: (savedStaff.doctors || defaultDashboardSettings.staff.doctors).map((doctor: StaffSettings["doctors"][number], index: number) => ({
+      ...defaultDashboardSettings.staff.doctors[index],
+      ...doctor
+    })),
+    staffMembers: (savedStaff.staffMembers || defaultDashboardSettings.staff.staffMembers).map((member: StaffSettings["staffMembers"][number], index: number) => ({
+      ...defaultDashboardSettings.staff.staffMembers[index],
+      ...member
+    }))
+  } as StaffSettings;
 
   const linkMap = new Map<string, string>(linksResult.rows.map((row) => [row.key, row.url]));
   const externalLinks = Object.fromEntries(
@@ -107,6 +122,7 @@ export async function getDashboardSettings(): Promise<DashboardSettings> {
     externalLinks,
     announcement,
     seo,
+    staff,
     quickControls: {
       ...savedQuickControls,
       liveChatEnabled: liveChat.liveChatEnabled,

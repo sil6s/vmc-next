@@ -7,9 +7,11 @@ import type {
   ExternalLinks,
   LiveChatSettings,
   ManagedLocation,
+  StaffSettings,
   QuickControls,
   SeoSettings
 } from "./types";
+import { formatClinicTime } from "@/lib/time-format";
 
 export const dayNames: DayName[] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -55,7 +57,7 @@ export const defaultAnnouncementSettings: AnnouncementSettings = {
 };
 
 export const defaultSeoSettings: SeoSettings = {
-  defaultSeoTitle: "Veterinary Medical Center | Fort Thomas & Independence KY Vet",
+  defaultSeoTitle: "Veterinary Medical Centers | Fort Thomas & Independence KY Vet",
   defaultMetaDescription:
     "Trusted Northern Kentucky vet for dogs and cats. Fear-Free visits and thoughtful care in Fort Thomas and Independence.",
   defaultOpenGraphImageUrl: "/images/vmc-social-media.jpg",
@@ -73,9 +75,57 @@ export const defaultQuickControls: QuickControls = {
   websiteBookingButton: true
 };
 
+export const defaultStaffSettings: StaffSettings = {
+  sectionEyebrow: "Meet Your Vet Team",
+  sectionTitle: "Meet the veterinarians behind your pet’s care",
+  sectionIntro:
+    "Our doctors combine years of clinical experience with a practical, relationship-based approach to veterinary medicine. We take time to explain what we find, answer your questions, and help you make confident decisions for your pet.",
+  staffEyebrow: "The Whole Team",
+  staffTitle: "People who love what they do.",
+  staffIntro:
+    "From the front desk to the treatment room, every person on the VMC team is here because they genuinely care about animals.",
+  doctors: [
+    {
+      id: "kristi-baker",
+      name: "Dr. Kristi Baker",
+      role: "Practice Owner & Veterinarian",
+      bio:
+        "Dr. Kristi brings more than two decades of veterinary experience to pets and families across Northern Kentucky. Her background includes general practice, emergency veterinary medicine, and long-term leadership at Veterinary Medical Centers of Independence and Veterinary Medical Centers of Fort Thomas. She is known for combining practical medical guidance with a calm, approachable style that helps pet owners understand their options and feel confident about next steps.",
+      imageUrl:
+        "https://cdn.sanity.io/images/zk507aly/production/3f868e8d10d91a3688f4b171dedb29def4fc73ca-1122x1402.jpg?w=1100&h=620&fit=crop&auto=format",
+      imageAlt: "Dr. Kristi Baker, practice owner and veterinarian at Veterinary Medical Centers",
+      education: [
+        "Ross University School of Veterinary Medicine, Doctorate Veterinary Medicine, 2000 to 2003",
+        "Purdue University, Clinical Rotation, Veterinary Medicine, 2003 to 2004"
+      ],
+      isVisible: true
+    },
+    {
+      id: "becky-golatzki",
+      name: "Dr. Becky Golatzki",
+      role: "Veterinarian",
+      bio:
+        "Dr. Golatzki supports the same thoughtful standard of care across wellness visits, sick pet appointments, preventive medicine, and client education. Her approach reflects the VMC commitment to clear communication, practical recommendations, and comfort-focused veterinary visits for dogs and cats.",
+      imageUrl: "",
+      imageAlt: "Dr. Becky Golatzki, veterinarian at Veterinary Medical Centers",
+      education: ["Doctor of Veterinary Medicine"],
+      isVisible: true
+    }
+  ],
+  staffMembers: ["Cara", "April", "Jess", "Taiyler", "Kari", "Kendall", "Josh", "Megan", "Sydney", "Kelsie", "Sara"].map((name) => ({
+    id: name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+    name,
+    role: "VMC Team",
+    bio: "A caring member of the Veterinary Medical Centers team.",
+    imageUrl: "",
+    imageAlt: `${name}, Veterinary Medical Centers team member`,
+    isVisible: true
+  }))
+};
+
 export const defaultLocations: ManagedLocation[] = site.locations.map((location, index) => ({
   id: location.id,
-  clinicName: `Veterinary Medical Center of ${location.name}`,
+  clinicName: `Veterinary Medical Centers of ${location.name}`,
   streetAddress: location.street,
   city: location.city,
   state: location.state,
@@ -99,6 +149,7 @@ export const defaultDashboardSettings: DashboardSettings = {
   announcement: defaultAnnouncementSettings,
   seo: defaultSeoSettings,
   quickControls: defaultQuickControls,
+  staff: defaultStaffSettings,
   lastUpdatedAt: null
 };
 
@@ -107,7 +158,7 @@ export function formatBusinessHour(hour: BusinessHour) {
     return `${hour.day}: ${hour.note || "Closed"}`;
   }
 
-  const range = hour.openTime && hour.closeTime ? `${hour.openTime} - ${hour.closeTime}` : "Open";
+  const range = hour.openTime && hour.closeTime ? `${formatClinicTime(hour.openTime)} - ${formatClinicTime(hour.closeTime)}` : "Open";
   return `${hour.day}: ${hour.note ? `${hour.note} (${range})` : range}`;
 }
 

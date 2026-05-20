@@ -26,7 +26,7 @@ function newPost(): ManagedBlogPost {
     excerpt: "",
     featuredImageUrl: "/images/veterinary-care-hero.jpg",
     featuredImageAlt: "",
-    author: "Veterinary Medical Center Team",
+    author: "Veterinary Medical Centers Team",
     category: "Pet Care",
     tags: [],
     body: "",
@@ -57,7 +57,7 @@ export function BlogEditor({ post }: { post?: ManagedBlogPost | null }) {
       const next = { ...current, [key]: value };
       if (key === "title" && !current.id && !current.slug) {
         next.slug = slugify(String(value));
-        next.seoTitle = `${value} | Veterinary Medical Center`;
+        next.seoTitle = `${value} | Veterinary Medical Centers`;
       }
       if (key === "excerpt" && !current.seoMetaDescription) {
         next.seoMetaDescription = String(value).slice(0, 180);

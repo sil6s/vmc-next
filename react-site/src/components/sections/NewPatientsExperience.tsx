@@ -535,7 +535,7 @@ export function NewPatientsExperience({
         <div className="np-hero-inner">
           <div className="np-hero-copy">
             <p className="eyebrow">NEW PATIENTS · FORT THOMAS &amp; INDEPENDENCE</p>
-            <h1>New to Veterinary Medical Center? Let’s get your <span className="np-accent">first visit started.</span></h1>
+            <h1>New to Veterinary Medical Centers? Let’s get your <span className="np-accent">first visit started.</span></h1>
             <p>Tell us about you and your pet, then our team will follow up to help schedule your first visit at our Fort Thomas or Independence location.</p>
             <div className="np-hero-actions">
               <ShadButton type="button" ref={triggerRef} onClick={openWizard}>Start New Patient Request</ShadButton>
@@ -570,7 +570,7 @@ export function NewPatientsExperience({
             <PawPrint aria-hidden="true" size={28} />
             <div>
               <h3>Start as a new patient</h3>
-              <p>If your pet has not visited Veterinary Medical Center before, complete this short request so our team can learn about you, your pet, and your preferred location before your first visit.</p>
+              <p>If your pet has not visited Veterinary Medical Centers before, complete this short request so our team can learn about you, your pet, and your preferred location before your first visit.</p>
               <ShadButton type="button" onClick={openWizard}>Start New Patient Request</ShadButton>
               <small>Takes about 5 minutes. Please do not use this form for emergencies.</small>
               <p className="np-process-line">Submit your request <span aria-hidden="true">→</span> Our team reviews it <span aria-hidden="true">→</span> We contact you to schedule</p>
@@ -578,7 +578,7 @@ export function NewPatientsExperience({
           </div>
           <div className="np-secondary-path" id="existing-patient-options">
             <h3>Already a client?</h3>
-            <p>If your pet is already established with Veterinary Medical Center, you usually do not need to fill this out again. Use our Contact page for the fastest options to call, book, access the portal, request refills, or ask a question.</p>
+            <p>If your pet is already established with Veterinary Medical Centers, you usually do not need to fill this out again. Use our Contact page for the fastest options to call, book, access the portal, request refills, or ask a question.</p>
             <a className="btn btn-ghost" href="/contact/">View Contact Options</a>
             <div className="np-secondary-links" aria-label="Existing client quick links">
               <a href={portalUrl} target={portalUrl.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer">Patient Portal <ExternalLink aria-hidden="true" size={14} /></a>
@@ -789,7 +789,7 @@ export function NewPatientsExperience({
                       <section className="np-authorization-summary" aria-labelledby="authorization-summary-heading">
                         <h3 id="authorization-summary-heading">What you are agreeing to</h3>
                         <div>
-                          <p><CheckCircle2 aria-hidden="true" size={18} /> You authorize Veterinary Medical Center to examine and treat your pet.</p>
+                          <p><CheckCircle2 aria-hidden="true" size={18} /> You authorize Veterinary Medical Centers to examine and treat your pet.</p>
                           <p><CheckCircle2 aria-hidden="true" size={18} /> You understand payment is due when services are provided.</p>
                           <p><CheckCircle2 aria-hidden="true" size={18} /> You understand unpaid balances over 30 days may include a finance charge.</p>
                         </div>
@@ -798,7 +798,7 @@ export function NewPatientsExperience({
                       <section className="np-consent-card" tabIndex={0} aria-label="Read authorization">
                         <p className="eyebrow">Read authorization</p>
                         <h3>Financial &amp; Treatment Authorization</h3>
-                        <p>I, the undersigned owner or authorized agent of the above admitted patient, hereby authorize the doctors of Veterinary Medical Center of Independence / Ft Thomas to administer such treatment as is necessary and to perform procedures therapeutically and/or diagnostically.</p>
+                        <p>I, the undersigned owner or authorized agent of the above admitted patient, hereby authorize the doctors of Veterinary Medical Centers of Independence / Ft Thomas to administer such treatment as is necessary and to perform procedures therapeutically and/or diagnostically.</p>
                         <p>I further understand that no guarantee of successful treatment is made. I also assume financial responsibility for all charges incurred, and agree to pay all such charges at the time of release.</p>
                         <p>I understand that unpaid balances over 30 days are subject to a monthly 1.5% finance charge.</p>
                         <p><strong>Payment is expected at the time services are rendered.</strong></p>
@@ -900,7 +900,7 @@ export function NewPatientsExperience({
 
                       <section className="np-final-consent">
                         <h3>Ready to submit</h3>
-                        <p>By submitting, you are sending this request to Veterinary Medical Center. A team member will follow up to confirm availability and next steps.</p>
+                        <p>By submitting, you are sending this request to Veterinary Medical Centers. A team member will follow up to confirm availability and next steps.</p>
                         <label className="np-checkbox">
                           <Checkbox checked={data.finalConfirmation} onCheckedChange={(checked) => update("finalConfirmation", checked === true)} />
                           <span>I confirm this information is accurate to the best of my knowledge.<em aria-label="required">*</em></span>

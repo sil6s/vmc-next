@@ -15,7 +15,7 @@ function brandedEmail(title: string, body: string) {
     <div style="margin:0;background:#f7f2ea;padding:28px;font-family:Arial,sans-serif;color:#211b1a">
       <div style="max-width:680px;margin:0 auto;background:#fffdf9;border:1px solid #eadfd2;border-radius:10px;overflow:hidden">
         <div style="padding:22px 26px;background:#a91b1b;color:#fff">
-          <div style="font-family:Georgia,serif;font-size:28px;font-weight:700">Veterinary Medical Center</div>
+          <div style="font-family:Georgia,serif;font-size:28px;font-weight:700">Veterinary Medical Centers</div>
           <div style="font-size:13px;margin-top:5px">Fort Thomas & Independence, Kentucky</div>
         </div>
         <div style="padding:26px">
@@ -156,20 +156,22 @@ export async function POST(request: Request) {
      <p><strong>Notes:</strong> ${htmlEscape(submission.schedulingNotes || "None")}</p>
      <p><strong>Uploaded records:</strong> ${uploadedFileNames.length ? htmlEscape(uploadedFileNames.join(", ")) : "None"}</p>
      <p><strong>Private storage:</strong> ${storedObjects.length ? `${storedObjects.length} file(s) stored in R2.` : "Not configured or no files stored."}</p>
-     <p>The signed PDF summary is attached.</p>`
+     <p>The signed PDF summary is attached.</p>
+     ${submission.digitalSignature?.startsWith("data:image") ? `<div><strong>Client signature:</strong><br /><img src="${submission.digitalSignature}" style="max-width:360px;border:1px solid #eadfd2;border-radius:6px;margin-top:8px" alt="Client signature" /></div>` : ""}`
   );
 
-  const clientSubject = "We received your Veterinary Medical Center new patient request";
+  const clientSubject = "We received your Veterinary Medical Centers new patient request";
   const clientText =
-    `Thank you for submitting your new patient request for Veterinary Medical Center. Our team will review your information and follow up as needed to help schedule your visit.\n\n` +
+    `Thank you for submitting your new patient request for Veterinary Medical Centers. Our team will review your information and follow up as needed to help schedule your visit.\n\n` +
     `A copy of your completed registration is attached for your records. If you find previous health records, vaccine records, or other documents later, no worries. You can reply directly to this email and attach them whenever you have them.\n\n` +
     `Requested location: ${submission.preferredLocation}\nPet: ${submission.petName}\n\nFort Thomas: (859) 442-4420\nIndependence: (859) 356-2242`;
   const clientHtml = brandedEmail(
     "We received your new patient request",
-    `<p>Thank you for submitting your new patient request for Veterinary Medical Center. Our team will review your information and follow up as needed to help schedule your visit.</p>
+    `<p>Thank you for submitting your new patient request for Veterinary Medical Centers. Our team will review your information and follow up as needed to help schedule your visit.</p>
      <p>A copy of your completed registration is attached for your records. If you find previous health records, vaccine records, or other documents later, no worries. You can reply directly to this email and attach them whenever you have them.</p>
      <p><strong>Requested location:</strong> ${htmlEscape(submission.preferredLocation)}<br /><strong>Pet:</strong> ${htmlEscape(submission.petName)}</p>
-     <p><strong>Fort Thomas:</strong> (859) 442-4420<br /><strong>Independence:</strong> (859) 356-2242</p>`
+     <p><strong>Fort Thomas:</strong> (859) 442-4420<br /><strong>Independence:</strong> (859) 356-2242</p>
+     ${submission.digitalSignature?.startsWith("data:image") ? `<div><strong>Your signature on file:</strong><br /><img src="${submission.digitalSignature}" style="max-width:360px;border:1px solid #eadfd2;border-radius:6px;margin-top:8px" alt="Client signature" /></div>` : ""}`
   );
 
   try {

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LockKeyhole } from "lucide-react";
+import { BookOpenText, LockKeyhole } from "lucide-react";
 import { navigation, utilityNavigation } from "@/data/navigation";
 import { site } from "@/data/site";
 import { NewsletterForm } from "@/components/forms/NewsletterForm";
@@ -8,7 +8,37 @@ import { Logo } from "./Logo";
 
 type FooterLocation = Pick<PublicLocation, "id" | "name" | "address" | "phone" | "tel">;
 
-export function Footer({ locations = site.locations }: { locations?: ReadonlyArray<FooterLocation> }) {
+function isExternalHref(href: string) {
+  return href.startsWith("http://") || href.startsWith("https://");
+}
+
+function FooterLink({ href, label }: { href: string; label: string }) {
+  if (isExternalHref(href)) {
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer">
+        {label}
+      </a>
+    );
+  }
+
+  return <Link href={href}>{label}</Link>;
+}
+
+export function Footer({
+  locations = site.locations,
+  onlinePortalUrl,
+  pharmacyUrl
+}: {
+  locations?: ReadonlyArray<FooterLocation>;
+  onlinePortalUrl?: string;
+  pharmacyUrl?: string;
+}) {
+  const utilityLinks = [
+    { label: "Patient Portal", href: onlinePortalUrl || utilityNavigation[0].href },
+    { label: "Online Pharmacy", href: pharmacyUrl || utilityNavigation[1].href },
+    utilityNavigation[2]
+  ];
+
   return (
     <footer className="site-footer">
       <div className="newsletter">
@@ -38,9 +68,9 @@ export function Footer({ locations = site.locations }: { locations?: ReadonlyArr
         <div>
           <h2>Online Tools</h2>
           <ul>
-            {utilityNavigation.map((item) => (
+            {utilityLinks.map((item) => (
               <li key={item.href}>
-                <Link href={item.href}>{item.label}</Link>
+                <FooterLink href={item.href} label={item.label} />
               </li>
             ))}
           </ul>
@@ -62,6 +92,10 @@ export function Footer({ locations = site.locations }: { locations?: ReadonlyArr
         <span className="footer-legal-links">
           <span>{site.legal}</span>
           <Link href="/privacy-policy/">Privacy Policy & SMS Terms</Link>
+          <Link className="footer-admin-link" href="/studio/">
+            <BookOpenText aria-hidden="true" size={13} />
+            Content Portal
+          </Link>
           <Link className="footer-admin-link" href="/login/">
             <LockKeyhole aria-hidden="true" size={13} />
             Admin Portal

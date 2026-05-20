@@ -50,11 +50,11 @@ export async function getAdminSession(): Promise<AdminSession | null> {
   };
 }
 
-export async function requireAdminSession() {
+export async function requireAdminSession(callbackUrl = "/dashboard/") {
   const session = await getServerSession(authOptions);
 
   if (!session?.user?.email) {
-    redirect(`/login/?callbackUrl=${encodeURIComponent("/dashboard/")}`);
+    redirect(`/login/?callbackUrl=${encodeURIComponent(callbackUrl)}`);
   }
 
   if (!(await isApprovedAdmin(session.user.email))) {

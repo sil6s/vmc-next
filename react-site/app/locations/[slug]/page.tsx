@@ -55,7 +55,7 @@ const resources = [
   },
   {
     title: "First Vet Visit in Northern Kentucky",
-    description: "A detailed guide to what your first visit should feel like at Veterinary Medical Center.",
+    description: "A detailed guide to what your first visit should feel like at Veterinary Medical Centers.",
     href: "/new-patients/"
   },
   {
@@ -69,7 +69,7 @@ const resources = [
     href: "/veterinary-services/soft-tissue-surgery/"
   },
   {
-    title: "Contact Veterinary Medical Center",
+    title: "Contact Veterinary Medical Centers",
     description: "Call, request an appointment, ask a question, or choose the location closest to home.",
     href: "/book-appointment/"
   }
@@ -265,7 +265,7 @@ export default async function LocationPage({ params }: Params) {
             <aside className="location-quote-card">
               <Award aria-hidden="true" size={28} />
               <h3>Care should feel personal, clear, and rooted in a team that knows your pet over time.</h3>
-              <p>Veterinary Medical Center</p>
+              <p>Veterinary Medical Centers</p>
             </aside>
           </div>
         </Container>
@@ -325,7 +325,7 @@ export default async function LocationPage({ params }: Params) {
             <div className="location-map-embed">
               <iframe
                 src={siteLocation.mapEmbedUrl}
-                title={`Google Map for Veterinary Medical Center ${location.shortName}`}
+                title={`Google Map for Veterinary Medical Centers ${location.shortName}`}
                 loading="lazy"
                 allowFullScreen
                 referrerPolicy="no-referrer-when-downgrade"
@@ -340,7 +340,7 @@ export default async function LocationPage({ params }: Params) {
           <div className="section-heading">
             <p className="eyebrow">Trust</p>
             <h2>Trusted by Northern Kentucky pet families.</h2>
-            <p>Pet owners choose Veterinary Medical Center because they want local care that feels personal, clear, and consistent. Our team focuses on long-term relationships, practical recommendations, and a calmer experience for dogs, cats, and their families.</p>
+            <p>Pet owners choose Veterinary Medical Centers because they want local care that feels personal, clear, and consistent. Our team focuses on long-term relationships, practical recommendations, and a calmer experience for dogs, cats, and their families.</p>
           </div>
           <div className="new-patient-card-grid three">
             {testimonials.slice(0, 3).map((review) => (

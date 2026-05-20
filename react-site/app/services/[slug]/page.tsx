@@ -20,7 +20,13 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const service = getService(slug);
   if (!service) return {};
-  return pageMetadata({ ...service.seo, path: `/services/${service.slug}/` });
+  return {
+    ...pageMetadata({ ...service.seo, path: `/services/${service.slug}/` }),
+    robots: {
+      index: false,
+      follow: true
+    }
+  };
 }
 
 export default async function ServicePage({ params }: Params) {
@@ -41,7 +47,7 @@ export default async function ServicePage({ params }: Params) {
         title={service.title}
         body={service.intro}
         image="/images/veterinary-care-hero.jpg"
-        imageAlt={`${service.title} at Veterinary Medical Center`}
+        imageAlt={`${service.title} at Veterinary Medical Centers`}
         badgeTitle="Serving Northern Kentucky"
         badgeSub="Fort Thomas and Independence"
         primaryCta={{ label: "Request Appointment", href: "/book-appointment/" }}

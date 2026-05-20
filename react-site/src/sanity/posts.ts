@@ -3,7 +3,7 @@ import type { PortableTextBlock } from "next-sanity";
 import { posts as staticPosts, type Post } from "@/data/posts";
 import { getManagedBlogPost, getManagedBlogPosts, type ManagedBlogPost } from "@/lib/blog-admin";
 import { client } from "./client";
-import { POSTS_QUERY, POST_QUERY } from "./queries";
+import { POSTS_QUERY, POST_QUERY, RELATED_POSTS_QUERY } from "./queries";
 import { sanityEnabled } from "./env";
 
 export type SanityBlogPost = {
@@ -14,8 +14,10 @@ export type SanityBlogPost = {
   updatedAt?: string;
   lastReviewedAt?: string;
   resourceType?: ResourceType;
+  contentMode?: ContentMode;
   category?: string;
   tags?: string[];
+  secondaryKeywords?: string[];
   readingTime?: string;
   excerpt?: string;
   seoTitle?: string;
@@ -25,16 +27,23 @@ export type SanityBlogPost = {
   image?: SanityImageSource;
   imageAlt?: string;
   imageCaption?: string;
+  ogImageAlt?: string;
   openGraphImage?: SanityImageSource;
   openGraphImageAlt?: string;
   author?: BlogAuthor;
   reviewedBy?: BlogAuthor;
   internalLinks?: ResourceLink[];
   externalLinks?: ResourceLink[];
+  bodyMarkdown?: string;
+  bodyMarkdownFileUrl?: string;
+  bodyMarkdownFileName?: string;
+  faqMarkdown?: string;
+  sourcesMarkdown?: string;
   body?: PortableTextBlock[];
 };
 
 export type ResourceType = "blog" | "education" | "clinic-news" | "faq";
+export type ContentMode = "standard" | "advanced";
 
 export type BlogAuthor = {
   name: string;
@@ -53,8 +62,10 @@ export type ResourceLink = {
 };
 
 export type BlogPost = {
+  id?: string;
   source: "sanity" | "static";
   resourceType: ResourceType;
+  contentMode: ContentMode;
   title: string;
   slug: string;
   date: string;
@@ -62,9 +73,14 @@ export type BlogPost = {
   lastReviewedAt?: string;
   category: string;
   tags: string[];
+  secondaryKeywords: string[];
   readingTime?: string;
   excerpt: string;
   content?: string[];
+  bodyMarkdown?: string;
+  bodyMarkdownFileUrl?: string;
+  bodyMarkdownFileName?: string;
+  faqMarkdown?: string;
   body?: PortableTextBlock[];
   image?: SanityImageSource;
   featuredImage?: string;
@@ -76,6 +92,7 @@ export type BlogPost = {
   reviewedBy?: BlogAuthor;
   internalLinks: ResourceLink[];
   externalLinks: ResourceLink[];
+  sourcesMarkdown?: string;
   seo: {
     title: string;
     description: string;
@@ -87,21 +104,23 @@ export type BlogPost = {
 const options = { next: { revalidate: 30 } };
 
 export const defaultBlogAuthor: BlogAuthor = {
-  name: "Veterinary Medical Center Team",
+  name: "Veterinary Medical Centers Team",
   title: "Northern Kentucky dog and cat care team",
   image: "/images/vet-stock2.jpg",
-  imageAlt: "Veterinary Medical Center team member with a pet"
+  imageAlt: "Veterinary Medical Centers team member with a pet"
 };
 
 function fromStaticPost(post: Post): BlogPost {
   return {
     source: "static",
     resourceType: "blog",
+    contentMode: "standard",
     title: post.title,
     slug: post.slug,
     date: post.date,
     category: post.category,
     tags: [],
+    secondaryKeywords: [],
     excerpt: post.excerpt,
     content: post.content,
     featuredImage: post.featuredImage,
@@ -114,7 +133,7 @@ function fromStaticPost(post: Post): BlogPost {
 }
 
 function fromSanityPost(post: SanityBlogPost): BlogPost {
-  const excerpt = post.excerpt || "Veterinary Medical Center pet health article.";
+  const excerpt = post.excerpt || "Veterinary Medical Centers pet health article.";
   const author = post.author
     ? {
         name: post.author.name || defaultBlogAuthor.name,
@@ -139,8 +158,10 @@ function fromSanityPost(post: SanityBlogPost): BlogPost {
     : undefined;
 
   return {
+    id: post._id,
     source: "sanity",
     resourceType: post.resourceType || "blog",
+    contentMode: post.contentMode || ((post.bodyMarkdown || post.bodyMarkdownFileUrl) && !post.body?.length ? "advanced" : "standard"),
     title: post.title,
     slug: post.slug,
     date: post.publishedAt,
@@ -148,12 +169,17 @@ function fromSanityPost(post: SanityBlogPost): BlogPost {
     lastReviewedAt: post.lastReviewedAt,
     category: post.category || "Pet Care",
     tags: post.tags || [],
+    secondaryKeywords: post.secondaryKeywords || [],
     readingTime: post.readingTime,
     excerpt,
+    bodyMarkdown: post.bodyMarkdown,
+    bodyMarkdownFileUrl: post.bodyMarkdownFileUrl,
+    bodyMarkdownFileName: post.bodyMarkdownFileName,
+    faqMarkdown: post.faqMarkdown,
     body: post.body,
     image: post.image,
     featuredImage: "/images/veterinary-care-hero.jpg",
-    featuredImageAlt: post.imageAlt || `${post.title} from Veterinary Medical Center`,
+    featuredImageAlt: post.imageAlt || `${post.title} from Veterinary Medical Centers`,
     featuredImageCaption: post.imageCaption,
     openGraphImage: post.openGraphImage,
     openGraphImageAlt: post.openGraphImageAlt,
@@ -161,8 +187,9 @@ function fromSanityPost(post: SanityBlogPost): BlogPost {
     reviewedBy,
     internalLinks: post.internalLinks || [],
     externalLinks: post.externalLinks || [],
+    sourcesMarkdown: post.sourcesMarkdown,
     seo: {
-      title: post.seoTitle || `${post.title} | Veterinary Medical Center`,
+      title: post.seoTitle || `${post.title} | Veterinary Medical Centers`,
       description: post.seoDescription || excerpt,
       canonicalUrl: post.canonicalUrl
     }
@@ -173,25 +200,28 @@ function fromManagedPost(post: ManagedBlogPost): BlogPost {
   return {
     source: "static",
     resourceType: "blog",
+    contentMode: "advanced",
     title: post.title,
     slug: post.slug,
     date: post.publishDate || post.updatedAt,
     category: post.category,
     tags: [],
+    secondaryKeywords: [],
     excerpt: post.excerpt,
     content: post.body.split(/\n{2,}/).filter(Boolean),
+    bodyMarkdown: post.body,
     featuredImage: post.featuredImageUrl || "/images/veterinary-care-hero.jpg",
-    featuredImageAlt: post.featuredImageAlt || `${post.title} from Veterinary Medical Center`,
+    featuredImageAlt: post.featuredImageAlt || `${post.title} from Veterinary Medical Centers`,
     author: {
       name: post.author,
-      title: "Veterinary Medical Center Team",
+      title: "Veterinary Medical Centers Team",
       image: "/images/vet-stock2.jpg",
-      imageAlt: "Veterinary Medical Center team member with a pet"
+      imageAlt: "Veterinary Medical Centers team member with a pet"
     },
     internalLinks: [],
     externalLinks: [],
     seo: {
-      title: post.seoTitle || `${post.title} | Veterinary Medical Center`,
+      title: post.seoTitle || `${post.title} | Veterinary Medical Centers`,
       description: post.seoMetaDescription || post.excerpt
     }
   };
@@ -219,6 +249,21 @@ async function fetchSanityPost(slug: string) {
   }
 }
 
+async function fetchRelatedSanityPosts(post: BlogPost, limit = 3) {
+  if (!sanityEnabled) return [];
+
+  try {
+    const posts = await client.fetch<SanityBlogPost[]>(
+      RELATED_POSTS_QUERY,
+      { slug: post.slug, category: post.category, tags: post.tags || [], limit },
+      options
+    );
+    return posts.map(fromSanityPost);
+  } catch {
+    return [];
+  }
+}
+
 export async function getBlogPosts(limit = 12) {
   const sanityPosts = await fetchSanityPosts(limit);
   if (sanityPosts.length) return sanityPosts;
@@ -240,6 +285,23 @@ export async function getBlogPost(slug: string) {
 
   const staticPost = staticPosts.find((post) => post.slug === slug);
   return staticPost ? fromStaticPost(staticPost) : null;
+}
+
+export async function getRelatedBlogPosts(post: BlogPost, limit = 3) {
+  const relatedSanityPosts = await fetchRelatedSanityPosts(post, limit);
+  if (relatedSanityPosts.length >= limit) return relatedSanityPosts.slice(0, limit);
+
+  const latestPosts = await getBlogPosts(24);
+  const seen = new Set([post.slug, ...relatedSanityPosts.map((item) => item.slug)]);
+  const fallbackPosts = latestPosts
+    .filter((item) => !seen.has(item.slug))
+    .sort((a, b) => {
+      const aScore = (a.category === post.category ? 2 : 0) + (a.tags.some((tag) => post.tags.includes(tag)) ? 1 : 0);
+      const bScore = (b.category === post.category ? 2 : 0) + (b.tags.some((tag) => post.tags.includes(tag)) ? 1 : 0);
+      return bScore - aScore;
+    });
+
+  return [...relatedSanityPosts, ...fallbackPosts].slice(0, limit);
 }
 
 export async function getBlogSlugs() {

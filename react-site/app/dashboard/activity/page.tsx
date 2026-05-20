@@ -1,4 +1,5 @@
 import { getActivityLog } from "@/lib/settings/settings";
+import { formatEasternDateTime } from "@/lib/time-format";
 
 function summarize(value: unknown) {
   const text = typeof value === "string" ? value : JSON.stringify(value);
@@ -37,7 +38,7 @@ export default async function ActivityPage() {
                     <td>{entry.userEmail}</td>
                     <td>{entry.action}</td>
                     <td>{entry.details}</td>
-                    <td>{new Date(entry.createdAt).toLocaleString()}</td>
+                    <td><time dateTime={entry.createdAt}>{formatEasternDateTime(entry.createdAt)}</time></td>
                     <td><span className={entry.status === "success" ? "dashboard-badge is-active" : "dashboard-badge"}>{entry.status}</span></td>
                     <td><span className="dashboard-badge is-active">{entry.section}</span></td>
                     <td>{summarize(entry.previousValue)}</td>
