@@ -19,7 +19,7 @@ import {
   UserRound
 } from "lucide-react";
 import { ShadButton } from "@/components/ui/Button";
-import { RecaptchaField } from "@/components/forms/RecaptchaField";
+import { executeRecaptcha, RecaptchaField } from "@/components/forms/RecaptchaField";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
@@ -329,8 +329,6 @@ export function NewPatientRegistrationForm() {
   const [submitMessage, setSubmitMessage] = useState("");
   const [company, setCompany] = useState("");
   const [submitted, setSubmitted] = useState(false);
-  const [recaptchaToken, setRecaptchaToken] = useState("");
-  const [recaptchaReset, setRecaptchaReset] = useState(0);
   const [addCoOwner, setAddCoOwner] = useState(false);
   const [isPending, startTransition] = useTransition();
   const stepBodyRef = useRef<HTMLDivElement>(null);
@@ -439,10 +437,14 @@ export function NewPatientRegistrationForm() {
     goToStep(step - 1);
   };
 
-  const submit = () => {
+  const submit = async () => {
     if (!validateStep(4)) return;
-    if (process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && !recaptchaToken) {
-      setSubmitMessage("Please complete the spam protection check before submitting.");
+
+    let recaptchaToken = "";
+    try {
+      recaptchaToken = await executeRecaptcha("new_patient_request");
+    } catch {
+      setSubmitMessage("Spam protection could not be verified. Please refresh and try again.");
       return;
     }
 
@@ -462,8 +464,6 @@ export function NewPatientRegistrationForm() {
 
       setSubmitted(true);
       setSubmitMessage("");
-      setRecaptchaToken("");
-      setRecaptchaReset((current) => current + 1);
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
   };
@@ -820,7 +820,7 @@ export function NewPatientRegistrationForm() {
                 <span>I confirm this information is accurate to the best of my knowledge.<em aria-label="required">*</em></span>
               </label>
               {errors.finalConfirmation && <p className="np-field-error" role="alert">{errors.finalConfirmation}</p>}
-              <RecaptchaField value={recaptchaToken} onChange={setRecaptchaToken} resetSignal={recaptchaReset} />
+              <RecaptchaField action="new_patient_request" />
               {submitMessage && <p className="np-field-error" role="alert">{submitMessage}</p>}
             </section>
           </div>

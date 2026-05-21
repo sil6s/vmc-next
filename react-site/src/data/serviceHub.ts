@@ -115,26 +115,38 @@ export const serviceHubServices: ServiceDetail[] = [
     symptomsOrReasons: [
       { title: "Your pet is due for an annual checkup", description: "Most adult dogs and cats benefit from a yearly physical exam and prevention review." },
       { title: "You adopted a new pet", description: "A first visit helps confirm records, discuss risk factors, and create a care plan." },
-      { title: "Your pet is entering a new life stage", description: "Puppies, kittens, adults, and seniors need different prevention and screening plans." }
+      { title: "Your pet is entering a new life stage", description: "Puppies, kittens, adults, and seniors need different prevention and screening plans." },
+      { title: "You want vaccine or parasite guidance", description: "Wellness visits are a good time to review vaccines, heartworm prevention, fleas, ticks, and intestinal parasites." },
+      { title: "You have diet, weight, or behavior questions", description: "Routine visits give you time to ask practical questions before small concerns become harder to manage." },
+      { title: "Your senior pet needs closer monitoring", description: "Older pets often benefit from more frequent checkups, screening conversations, and mobility or comfort planning." }
     ],
     whatToExpect: [
       { stepTitle: "Review history and lifestyle", stepDescription: "We ask about diet, behavior, travel, home routine, medications, and prior records." },
       { stepTitle: "Complete a nose-to-tail exam", stepDescription: "Your veterinarian checks weight, teeth, skin, ears, eyes, heart, lungs, joints, and comfort." },
-      { stepTitle: "Discuss prevention and next steps", stepDescription: "We review vaccines, parasite prevention, screening, dental care, and follow-up timing." }
+      { stepTitle: "Discuss prevention and next steps", stepDescription: "We review vaccines, parasite prevention, screening, dental care, and follow-up timing." },
+      { stepTitle: "Build a personalized care plan", stepDescription: "You leave with recommendations that match your pet's age, lifestyle, medical history, and home routine." },
+      { stepTitle: "Answer your questions", stepDescription: "Bring questions about food, behavior, weight, travel, medications, senior changes, or anything you are noticing at home." }
     ],
     includedCare: [
       { title: "Physical exam", description: "A full exam helps us identify changes that may not be obvious at home." },
       { title: "Vaccine planning", description: "Recommendations are based on age, lifestyle, exposure risk, and local requirements." },
       { title: "Parasite prevention review", description: "We discuss heartworm, fleas, ticks, intestinal parasites, and year-round options." },
-      { title: "Nutrition and dental guidance", description: "We talk through practical next steps for long-term comfort and health." }
+      { title: "Nutrition and weight guidance", description: "We talk through practical food, feeding, body condition, and weight-management questions." },
+      { title: "Dental health check", description: "Your veterinarian can look for signs of tartar, gum changes, bad breath, or oral discomfort." },
+      { title: "Screening recommendations", description: "Senior pets or pets with health changes may benefit from lab work or additional monitoring." }
     ],
     whenToScheduleText: [
       "Schedule a wellness exam once a year for most healthy adult pets. Puppies, kittens, senior pets, and pets with ongoing conditions may need more frequent visits."
     ],
-    relatedServiceSlugs: ["dog-cat-vaccinations", "parasite-prevention", "senior-pet-care"],
+    relatedServiceSlugs: ["dog-cat-vaccinations", "parasite-prevention", "senior-pet-care", "pet-dental-care", "puppy-kitten-care"],
     faqs: [
       { question: "How often should my pet have a wellness exam?", answer: "Most adult pets should be examined once a year. Seniors, puppies, kittens, and pets with chronic conditions may need more frequent visits." },
-      { question: "Will you tell me which vaccines my pet needs?", answer: "Yes. We build vaccine recommendations around species, age, lifestyle, exposure risk, and local requirements." }
+      { question: "Will you tell me which vaccines my pet needs?", answer: "Yes. We build vaccine recommendations around species, age, lifestyle, exposure risk, and local requirements." },
+      { question: "Do indoor cats still need wellness exams?", answer: "Yes. Indoor cats still need physical exams, dental checks, vaccine review, parasite conversations, nutrition guidance, and senior screening as they age." },
+      { question: "Should senior pets visit more often?", answer: "Many senior pets benefit from checkups more than once a year because mobility, dental health, weight, appetite, and chronic conditions can change faster with age." },
+      { question: "What should I bring to my pet's wellness appointment?", answer: "Bring vaccine records, medication details, diet information, previous medical records if available, and any questions or symptoms you want to discuss." },
+      { question: "Can I ask about behavior, diet, or weight during a wellness exam?", answer: "Yes. Wellness visits are a good time to discuss behavior changes, nutrition, weight, dental care, parasite prevention, and daily routines." },
+      { question: "Do you offer wellness exams at both locations?", answer: "Yes. Veterinary Medical Centers provides wellness exams for dogs and cats at both our Fort Thomas and Independence, Kentucky locations." }
     ],
     author: defaultAuthor,
     updatedAt: "2026-05-11",

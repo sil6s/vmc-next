@@ -1,9 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { AlertTriangle, CalendarCheck, Clock, FileText, MapPin, MessageSquareText, PawPrint, Phone } from "lucide-react";
+import { AlertTriangle, CalendarCheck, Clock, Mail, MapPin, MessageSquareText, PawPrint, Phone, UserRound } from "lucide-react";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { FAQSection } from "@/components/sections/FAQSection";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ShadButton } from "@/components/ui/Button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Container } from "@/components/ui/Container";
@@ -139,23 +138,40 @@ function NeedHelpCard({
   icon: Icon,
   title,
   description,
-  children,
+  href,
+  action,
   featured = false
 }: {
   icon: typeof Phone;
   title: string;
   description: string;
-  children: React.ReactNode;
+  href: string;
+  action: string;
   featured?: boolean;
 }) {
+  const linkContent = (
+    <>
+      {action}
+      <span aria-hidden="true">-&gt;</span>
+    </>
+  );
+
   return (
     <Card className={`contact-need-card${featured ? " is-featured" : ""}`}>
       <CardHeader>
-        <Icon aria-hidden="true" size={24} />
+        <span className="contact-need-icon"><Icon aria-hidden="true" size={28} /></span>
         <CardTitle>{title}</CardTitle>
         <CardDescription>{description}</CardDescription>
       </CardHeader>
-      <CardContent>{children}</CardContent>
+      <CardContent>
+        {href.startsWith("/") || href.startsWith("#") ? (
+          <Link className="contact-need-link" href={href}>{linkContent}</Link>
+        ) : (
+          <a className="contact-need-link" href={href} target={href.startsWith("http") ? "_blank" : undefined} rel={href.startsWith("http") ? "noopener noreferrer" : undefined}>
+            {linkContent}
+          </a>
+        )}
+      </CardContent>
     </Card>
   );
 }
@@ -222,37 +238,34 @@ export default async function ContactPage() {
             featured
             icon={CalendarCheck}
             title="Schedule care"
-            description="Best for wellness visits, vaccines, exams, and new patient appointments."
-          >
-            <ActionButton className="contact-card-button" href="/book-appointment/">Request Appointment</ActionButton>
-          </NeedHelpCard>
+            description="Wellness visits, vaccines, and follow-up appointments."
+            href="/book-appointment/"
+            action="Request Appointment"
+          />
 
           <NeedHelpCard
             icon={Phone}
             title="Call a location"
-            description="Best for same-day questions, urgent concerns, or time-sensitive needs."
-          >
-            <div className="contact-card-split-actions">
-              <ActionButton className="contact-card-button" href={`tel:${fortThomas.tel}`}>Fort Thomas</ActionButton>
-              <ActionButton className="contact-card-button" href={`tel:${independence.tel}`} variant="secondary">Independence</ActionButton>
-            </div>
-          </NeedHelpCard>
+            description="Speak directly with a team member at either clinic."
+            href="#locations"
+            action="Find a Number"
+          />
 
           <NeedHelpCard
-            icon={MessageSquareText}
+            icon={Mail}
             title="Send a message"
-            description="Best for non-urgent questions, follow-ups, records, or general requests."
-          >
-            <ActionButton className="contact-card-button" href="#message-form" variant="secondary">Start Message</ActionButton>
-          </NeedHelpCard>
+            description="Non-urgent questions, follow-ups, and record requests."
+            href="#message-form"
+            action="Start Message"
+          />
 
           <NeedHelpCard
-            icon={FileText}
+            icon={UserRound}
             title="Patient portal"
-            description="Best for accessing records, reminders, and account information."
-          >
-            <ActionButton className="contact-card-button" href={settings.externalLinks.onlinePortalUrl} variant="secondary">Open Portal</ActionButton>
-          </NeedHelpCard>
+            description="Access records, invoices, and appointment history."
+            href={settings.externalLinks.onlinePortalUrl}
+            action="Open Portal"
+          />
         </div>
       </Section>
 

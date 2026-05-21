@@ -57,22 +57,6 @@ function isExternalHref(href: string) {
   return href.startsWith("http://") || href.startsWith("https://");
 }
 
-function HeaderUtilityLink({ className, href, children }: { className?: string; href: string; children: React.ReactNode }) {
-  if (isExternalHref(href)) {
-    return (
-      <a className={className} href={href} target="_blank" rel="noopener noreferrer">
-        {children}
-      </a>
-    );
-  }
-
-  return (
-    <Link className={className} href={href}>
-      {children}
-    </Link>
-  );
-}
-
 export function Header({
   ctaHref = "/book-appointment/",
   locations,
@@ -114,8 +98,6 @@ export function Header({
         </NavigationMenu>
 
         <div className="desktop-actions">
-          <HeaderUtilityLink className="utility-button" href={onlinePortalUrl}>Patient Portal</HeaderUtilityLink>
-          <HeaderUtilityLink className="utility-button" href={pharmacyUrl}>Online Pharmacy</HeaderUtilityLink>
           {showBookingButton && (
             <Link className="nav-cta" href={ctaHref}>
               Book Appointment

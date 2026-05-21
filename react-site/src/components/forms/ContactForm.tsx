@@ -3,35 +3,24 @@
 import { useRef, useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ShadButton } from "@/components/ui/Button";
-import { RecaptchaField } from "@/components/forms/RecaptchaField";
+import { executeRecaptcha, RecaptchaField } from "@/components/forms/RecaptchaField";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 import { trackEvent } from "@/lib/analytics";
 
 type FormState = "idle" | "submitting" | "success" | "error";
 
-const messageReasons = [
-  "General question",
-  "Appointment request",
-  "Medical follow-up",
-  "Records request",
-  "Prescription or refill question",
-  "Billing question",
-  "Other"
-];
-
 const locationOptions = ["Fort Thomas", "Independence", "Not sure"];
 
 const initialForm = {
-  reason: "",
-  location: "Not sure",
-  name: "",
+  firstName: "",
+  lastName: "",
   email: "",
   phone: "",
   petName: "",
+  location: "",
   message: "",
   company: ""
 };
@@ -69,8 +58,6 @@ export function ContactForm() {
   const [statusMessage, setStatusMessage] = useState("");
   const [errors, setErrors] = useState<string[]>([]);
   const [form, setForm] = useState(initialForm);
-  const [recaptchaToken, setRecaptchaToken] = useState("");
-  const [recaptchaReset, setRecaptchaReset] = useState(0);
   const trackedStart = useRef(false);
 
   function updateField(field: keyof typeof initialForm, value: string) {
@@ -87,13 +74,12 @@ export function ContactForm() {
   function validate() {
     const nextErrors: string[] = [];
 
-    if (!form.reason) nextErrors.push("Please choose what we can help with.");
+    if (!form.firstName.trim()) nextErrors.push("Please enter your first name.");
+    if (!form.lastName.trim()) nextErrors.push("Please enter your last name.");
     if (!form.location) nextErrors.push("Please choose a preferred location.");
-    if (!form.name.trim()) nextErrors.push("Please enter your name.");
     if (!form.email.includes("@")) nextErrors.push("Please enter a valid email address.");
     if (!form.phone.trim()) nextErrors.push("Please enter your phone number.");
     if (form.message.trim().length < 10) nextErrors.push("Please add a message with at least 10 characters.");
-    if (process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && !recaptchaToken) nextErrors.push("Please complete the spam protection check.");
 
     setErrors(nextErrors);
     return nextErrors.length === 0;
@@ -106,8 +92,17 @@ export function ContactForm() {
     setState("submitting");
     setStatusMessage("");
 
+    let recaptchaToken = "";
+    try {
+      recaptchaToken = await executeRecaptcha("contact");
+    } catch {
+      setState("error");
+      setStatusMessage("Spam protection could not be verified. Please refresh and try again.");
+      return;
+    }
+
+    const fullName = `${form.firstName.trim()} ${form.lastName.trim()}`.trim();
     const combinedMessage = [
-      `Reason for message: ${form.reason}`,
       `Preferred location: ${form.location}`,
       `Pet name: ${form.petName || "Not provided"}`,
       "",
@@ -118,7 +113,7 @@ export function ContactForm() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        name: form.name.trim(),
+        name: fullName,
         email: form.email,
         phone: form.phone,
         location: form.location,
@@ -133,8 +128,6 @@ export function ContactForm() {
       setState("success");
       setStatusMessage("Thank you. Your message has been sent. Our team will follow up as soon as possible during business hours.");
       setForm(initialForm);
-      setRecaptchaToken("");
-      setRecaptchaReset((current) => current + 1);
       trackedStart.current = false;
       return;
     }
@@ -146,12 +139,7 @@ export function ContactForm() {
 
   return (
     <form className="contact-form contact-message-form" onSubmit={handleSubmit}>
-      <Alert tone="warning" role="note">
-        <AlertTitle>If your pet needs urgent care, call directly.</AlertTitle>
-        <AlertDescription>
-          Do not use this form for urgent medical concerns, trouble breathing, injury, sudden behavior changes, or same-day emergencies.
-        </AlertDescription>
-      </Alert>
+      <h3 className="contact-form-title">Contact form</h3>
 
       {errors.length > 0 && (
         <Alert tone="danger" role="alert">
@@ -162,53 +150,45 @@ export function ContactForm() {
 
       <div className="contact-form-grid">
         <div className="contact-form-field">
-          <Label htmlFor="contact-reason">What can we help with?</Label>
-          <span className="contact-field-helper">Choose the closest match so your message reaches the right team.</span>
-          <ContactSelect
-            id="contact-reason"
-            value={form.reason}
-            options={messageReasons}
-            placeholder="What can we help with?"
-            onChange={(value) => updateField("reason", value)}
-          />
+          <Label htmlFor="contact-first-name">First name</Label>
+          <Input id="contact-first-name" value={form.firstName} onChange={(event) => updateField("firstName", event.target.value)} autoComplete="given-name" placeholder="Jane" />
         </div>
         <div className="contact-form-field">
-          <Label htmlFor="contact-location">Preferred location</Label>
-          <span className="contact-field-helper">Pick the clinic you normally visit, or choose Not sure.</span>
-          <ContactSelect
-            id="contact-location"
-            value={form.location}
-            options={locationOptions}
-            placeholder="Choose a location"
-            onChange={(value) => updateField("location", value)}
-          />
+          <Label htmlFor="contact-last-name">Last name</Label>
+          <Input id="contact-last-name" value={form.lastName} onChange={(event) => updateField("lastName", event.target.value)} autoComplete="family-name" placeholder="Smith" />
         </div>
       </div>
 
-      <Separator />
-
       <div className="contact-form-grid">
         <div className="contact-form-field">
-          <Label htmlFor="contact-name">Name</Label>
-          <Input id="contact-name" value={form.name} onChange={(event) => updateField("name", event.target.value)} autoComplete="name" />
-        </div>
-        <div className="contact-form-field">
           <Label htmlFor="contact-email">Email</Label>
-          <Input id="contact-email" value={form.email} onChange={(event) => updateField("email", event.target.value)} type="email" autoComplete="email" />
+          <Input id="contact-email" value={form.email} onChange={(event) => updateField("email", event.target.value)} type="email" autoComplete="email" placeholder="jane@email.com" />
         </div>
         <div className="contact-form-field">
           <Label htmlFor="contact-phone">Phone</Label>
-          <Input id="contact-phone" value={form.phone} onChange={(event) => updateField("phone", event.target.value)} type="tel" autoComplete="tel" />
-        </div>
-        <div className="contact-form-field">
-          <Label htmlFor="contact-pet-name">Pet name</Label>
-          <Input id="contact-pet-name" value={form.petName} onChange={(event) => updateField("petName", event.target.value)} />
+          <Input id="contact-phone" value={form.phone} onChange={(event) => updateField("phone", event.target.value)} type="tel" autoComplete="tel" placeholder="(859) 555-0100" />
         </div>
       </div>
 
       <div className="contact-form-field">
-        <Label htmlFor="contact-message">Message</Label>
-        <Textarea id="contact-message" value={form.message} onChange={(event) => updateField("message", event.target.value)} rows={7} />
+        <Label htmlFor="contact-pet-name">Pet&apos;s name</Label>
+        <Input id="contact-pet-name" value={form.petName} onChange={(event) => updateField("petName", event.target.value)} placeholder="Biscuit" />
+      </div>
+
+      <div className="contact-form-field">
+        <Label htmlFor="contact-location">Preferred location</Label>
+        <ContactSelect
+          id="contact-location"
+          value={form.location}
+          options={locationOptions}
+          placeholder="Select a clinic"
+          onChange={(value) => updateField("location", value)}
+        />
+      </div>
+
+      <div className="contact-form-field">
+        <Label htmlFor="contact-message">How can we help?</Label>
+        <Textarea id="contact-message" value={form.message} onChange={(event) => updateField("message", event.target.value)} rows={7} placeholder="Tell us about your pet and how we can help..." />
       </div>
 
       <label className="hp-field" aria-hidden="true">
@@ -216,7 +196,9 @@ export function ContactForm() {
         <Input value={form.company} onChange={(event) => updateField("company", event.target.value)} tabIndex={-1} autoComplete="off" />
       </label>
 
-      <RecaptchaField value={recaptchaToken} onChange={setRecaptchaToken} resetSignal={recaptchaReset} />
+      <RecaptchaField action="contact" />
+
+      <p className="contact-form-note">This form is not monitored for emergencies. For urgent care, please call us directly.</p>
 
       <div className="form-actions">
         <ShadButton type="submit" disabled={state === "submitting"}>

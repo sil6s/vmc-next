@@ -1,103 +1,76 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect } from "react";
 
 type RecaptchaFieldProps = {
-  value: string;
-  onChange: (token: string) => void;
-  resetSignal?: number;
+  action: string;
 };
 
 type Grecaptcha = {
-  render: (
-    container: HTMLElement,
-    options: {
-      sitekey: string;
-      callback: (token: string) => void;
-      "expired-callback": () => void;
-      "error-callback": () => void;
-    }
-  ) => number;
-  reset: (widgetId?: number) => void;
+  ready: (callback: () => void) => void;
+  execute: (siteKey: string, options: { action: string }) => Promise<string>;
 };
 
 declare global {
   interface Window {
     grecaptcha?: Grecaptcha;
-    __vmcRecaptchaReady?: () => void;
   }
 }
 
 const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "";
-const SCRIPT_ID = "google-recaptcha-script";
+const SCRIPT_ID = "google-recaptcha-v3-script";
 
-function loadRecaptchaScript(onReady: () => void) {
-  if (!siteKey) return;
-  if (window.grecaptcha) {
-    onReady();
-    return;
-  }
+let scriptPromise: Promise<void> | null = null;
 
-  const existing = document.getElementById(SCRIPT_ID) as HTMLScriptElement | null;
-  const previousReady = window.__vmcRecaptchaReady;
-  window.__vmcRecaptchaReady = () => {
-    previousReady?.();
-    onReady();
-  };
+function loadRecaptchaScript() {
+  if (!siteKey || typeof window === "undefined") return Promise.resolve();
+  if (window.grecaptcha) return Promise.resolve();
+  if (scriptPromise) return scriptPromise;
 
-  if (existing) return;
+  scriptPromise = new Promise((resolve, reject) => {
+    const existing = document.getElementById(SCRIPT_ID) as HTMLScriptElement | null;
+    if (existing) {
+      existing.addEventListener("load", () => resolve(), { once: true });
+      existing.addEventListener("error", () => reject(new Error("reCAPTCHA script failed to load.")), { once: true });
+      return;
+    }
 
-  const script = document.createElement("script");
-  script.id = SCRIPT_ID;
-  script.src = "https://www.google.com/recaptcha/api.js?onload=__vmcRecaptchaReady&render=explicit";
-  script.async = true;
-  script.defer = true;
-  document.head.appendChild(script);
+    const script = document.createElement("script");
+    script.id = SCRIPT_ID;
+    script.src = `https://www.google.com/recaptcha/api.js?render=${encodeURIComponent(siteKey)}`;
+    script.async = true;
+    script.defer = true;
+    script.addEventListener("load", () => resolve(), { once: true });
+    script.addEventListener("error", () => reject(new Error("reCAPTCHA script failed to load.")), { once: true });
+    document.head.appendChild(script);
+  });
+
+  return scriptPromise;
 }
 
-export function RecaptchaField({ value, onChange, resetSignal = 0 }: RecaptchaFieldProps) {
-  const id = useId();
-  const containerRef = useRef<HTMLDivElement>(null);
-  const widgetIdRef = useRef<number | null>(null);
-  const onChangeRef = useRef(onChange);
-  const [ready, setReady] = useState(false);
-  const [error, setError] = useState("");
+export async function executeRecaptcha(action: string) {
+  if (!siteKey) return "";
+  await loadRecaptchaScript();
 
-  useEffect(() => {
-    onChangeRef.current = onChange;
-  }, [onChange]);
+  return new Promise<string>((resolve, reject) => {
+    if (!window.grecaptcha) {
+      reject(new Error("reCAPTCHA is not ready."));
+      return;
+    }
 
-  useEffect(() => {
-    if (!siteKey) return;
-    loadRecaptchaScript(() => setReady(true));
-  }, []);
-
-  useEffect(() => {
-    if (!ready || !siteKey || !window.grecaptcha || !containerRef.current || widgetIdRef.current !== null) return;
-
-    widgetIdRef.current = window.grecaptcha.render(containerRef.current, {
-      sitekey: siteKey,
-      callback: (token) => {
-        setError("");
-        onChangeRef.current(token);
-      },
-      "expired-callback": () => {
-        onChangeRef.current("");
-        setError("Please complete the spam check again.");
-      },
-      "error-callback": () => {
-        onChangeRef.current("");
-        setError("Spam protection did not load correctly. Please refresh and try again.");
-      }
+    window.grecaptcha.ready(() => {
+      window.grecaptcha
+        ?.execute(siteKey, { action })
+        .then(resolve)
+        .catch(() => reject(new Error("reCAPTCHA could not create a token.")));
     });
-  }, [ready]);
+  });
+}
 
+export function RecaptchaField({ action }: RecaptchaFieldProps) {
   useEffect(() => {
-    if (!ready || !window.grecaptcha || widgetIdRef.current === null) return;
-    window.grecaptcha.reset(widgetIdRef.current);
-    onChangeRef.current("");
-    setError("");
-  }, [ready, resetSignal]);
+    void loadRecaptchaScript();
+  }, []);
 
   if (!siteKey) {
     return process.env.NODE_ENV === "production" ? null : (
@@ -108,10 +81,10 @@ export function RecaptchaField({ value, onChange, resetSignal = 0 }: RecaptchaFi
   }
 
   return (
-    <div className="recaptcha-field">
-      <div id={id} ref={containerRef} />
-      {!value && <span className="recaptcha-helper">Complete the spam check before submitting.</span>}
-      {error && <span className="recaptcha-error" role="alert">{error}</span>}
+    <div className="recaptcha-field" data-recaptcha-action={action}>
+      <span className="recaptcha-helper">
+        This form is protected by reCAPTCHA and Google&apos;s Privacy Policy and Terms apply.
+      </span>
     </div>
   );
 }
