@@ -98,9 +98,14 @@ export function ChatSupportWidget({
   }, [locations]);
 
   useEffect(() => {
-    const checkOtto = () => setIsOttoReady(Boolean(window.otto?.widget));
+    const checkOtto = () => {
+      if (window.otto?.widget) {
+        setIsOttoReady(true);
+        window.clearInterval(interval);
+      }
+    };
     checkOtto();
-    const interval = window.setInterval(checkOtto, 1400);
+    const interval = window.setInterval(checkOtto, 400);
     return () => window.clearInterval(interval);
   }, []);
 
@@ -183,21 +188,18 @@ export function ChatSupportWidget({
     }
 
     setIsOpening(true);
+    setExpanded(false);
     try {
       window.otto.widget.destroy?.();
-      window.otto.widget.initialize?.(clinicId, {
-        isOpen: true,
-        showPreview: false,
-        selectRequestType: requestType
-      });
-      window.otto.widget.selectRequestType?.(requestType);
-      window.otto.widget.open?.();
-      setStatusMessage(`Opening ${location.name} live chat.`);
-      setExpanded(false);
+      window.otto.widget.initialize?.(clinicId);
+      // initialize() is async — give the iframe time to load before opening
+      window.setTimeout(() => {
+        window.otto?.widget?.open?.();
+        setIsOpening(false);
+      }, 800);
     } catch (error) {
       console.error("Failed to open Otto widget", error);
-      setStatusMessage("Live chat could not open. Please call your location or use the contact form.");
-    } finally {
+      setStatusMessage("Live chat could not open. Please call or use the contact form.");
       setIsOpening(false);
     }
   };
