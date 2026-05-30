@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ShadButton } from "@/components/ui/Button";
-import { executeRecaptcha, RecaptchaField } from "@/components/forms/RecaptchaField";
+import { TurnstileField } from "@/components/forms/TurnstileField";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -57,6 +57,7 @@ export function ContactForm() {
   const [state, setState] = useState<FormState>("idle");
   const [statusMessage, setStatusMessage] = useState("");
   const [errors, setErrors] = useState<string[]>([]);
+  const [turnstileToken, setTurnstileToken] = useState("");
   const [form, setForm] = useState(initialForm);
   const trackedStart = useRef(false);
 
@@ -92,14 +93,7 @@ export function ContactForm() {
     setState("submitting");
     setStatusMessage("");
 
-    let recaptchaToken = "";
-    try {
-      recaptchaToken = await executeRecaptcha("contact");
-    } catch {
-      setState("error");
-      setStatusMessage("Spam protection could not be verified. Please refresh and try again.");
-      return;
-    }
+    const recaptchaToken = turnstileToken;
 
     const fullName = `${form.firstName.trim()} ${form.lastName.trim()}`.trim();
     const combinedMessage = [
@@ -196,7 +190,7 @@ export function ContactForm() {
         <Input value={form.company} onChange={(event) => updateField("company", event.target.value)} tabIndex={-1} autoComplete="off" />
       </label>
 
-      <RecaptchaField action="contact" />
+      <TurnstileField onToken={setTurnstileToken} />
 
       <p className="contact-form-note">This form is not monitored for emergencies. For urgent care, please call us directly.</p>
 

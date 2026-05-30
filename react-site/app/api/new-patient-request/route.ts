@@ -5,7 +5,7 @@ import { allowedRecordTypes, maxRecordFileSize, maxRecordUploadTotal, newPatient
 import { generateNewPatientPdf } from "@/lib/new-patient/pdf";
 import { hasPrivateUploadStorage, safeObjectSegment, uploadPrivateObjects } from "@/lib/new-patient/r2-storage";
 import { sendEmail } from "@/lib/email/send-email";
-import { verifyRecaptchaToken } from "@/lib/recaptcha";
+import { verifyTurnstileToken } from "@/lib/turnstile";
 
 function htmlEscape(value: string) {
   return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -42,9 +42,9 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true });
   }
 
-  const recaptcha = await verifyRecaptchaToken(formData.get("recaptchaToken"), request, "new_patient_request");
-  if (!recaptcha.ok) {
-    return NextResponse.json({ error: recaptcha.error || "Please complete the spam protection check." }, { status: 403 });
+  const captcha = await verifyTurnstileToken(formData.get("recaptchaToken"), request);
+  if (!captcha.ok) {
+    return NextResponse.json({ error: captcha.error || "Please complete the spam protection check." }, { status: 403 });
   }
 
   const rawPayload = formData.get("payload");

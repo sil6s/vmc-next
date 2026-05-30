@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
-import { getServerSession } from "next-auth";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { ArrowLeft, BadgeCheck, LockKeyhole, ShieldCheck } from "lucide-react";
-import { GoogleSignInButton } from "@/components/dashboard/GoogleSignInButton";
+import { ArrowLeft, LockKeyhole, ShieldCheck } from "lucide-react";
+import { PasskeySignInForm } from "@/components/dashboard/PasskeySignInForm";
 import { Logo } from "@/components/layout/Logo";
 import { isApprovedAdmin } from "@/lib/admin-auth";
-import { authOptions } from "@/lib/auth";
+import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: "Admin Login | Veterinary Medical Centers",
@@ -20,14 +19,16 @@ export const metadata: Metadata = {
 export default async function LoginPage({
   searchParams
 }: {
-  searchParams: Promise<{ callbackUrl?: string }>;
+  searchParams: Promise<{ callbackUrl?: string; error?: string }>;
 }) {
   const params = await searchParams;
-  const session = await getServerSession(authOptions);
   const callbackUrl = params.callbackUrl || "/dashboard/";
 
-  if (session?.user?.email) {
-    if (await isApprovedAdmin(session.user.email)) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
+  if (user?.email) {
+    if (await isApprovedAdmin(user.email)) {
       redirect(callbackUrl);
     }
     redirect("/not-authorized/");
@@ -50,7 +51,7 @@ export default async function LoginPage({
               <p className="dashboard-eyebrow">Private Admin Portal</p>
               <h1>Sign in to manage Veterinary Medical Centers</h1>
               <p>
-                Dashboard access is limited to approved clinic administrators. Use the authorized Google account for website settings, content tools, and clinic management controls.
+                Dashboard access is limited to approved clinic administrators. Enter your admin email to receive a secure sign-in link, or use a saved passkey if your device supports it.
               </p>
             </div>
 
@@ -60,17 +61,18 @@ export default async function LoginPage({
                   <ShieldCheck aria-hidden="true" size={22} />
                 </span>
                 <div>
-                  <h2>Secure Google sign-in</h2>
-                  <p>Access is checked again after Google authentication.</p>
+                  <h2>Secure sign-in</h2>
+                  <p>Email link or passkey — no password required.</p>
                 </div>
               </div>
 
-              <GoogleSignInButton callbackUrl={callbackUrl} />
+              {params.error && (
+                <p className="admin-login-error" role="alert">
+                  Sign-in failed. Please try again or contact your administrator.
+                </p>
+              )}
 
-              <div className="admin-login-note">
-                <BadgeCheck aria-hidden="true" size={16} />
-                <span>Only approved administrators can open the dashboard.</span>
-              </div>
+              <PasskeySignInForm callbackUrl={callbackUrl} />
 
               <div className="admin-login-secondary-actions">
                 <Link className="dashboard-auth-link admin-return-link" href="/">

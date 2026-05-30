@@ -87,10 +87,17 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   return pageMetadata({ ...location.seo, path: `/locations/${location.slug}/`, image: location.image });
 }
 
+const OTTO_CLINIC_IDS: Record<string, string | undefined> = {
+  "vet-in-fort-thomas-ky": process.env.NEXT_PUBLIC_OTTO_FORT_THOMAS_CLINIC_ID,
+  "vet-in-independence-ky": process.env.NEXT_PUBLIC_OTTO_INDEPENDENCE_CLINIC_ID
+};
+
 export default async function LocationPage({ params }: Params) {
   const { slug } = await params;
   const location = getLocation(slug);
   if (!location) notFound();
+
+  const ottoClinicId = OTTO_CLINIC_IDS[location.slug];
 
   const settings = await getPublicSettings();
   const siteLocation =
@@ -336,15 +343,15 @@ export default async function LocationPage({ params }: Params) {
         </Container>
       </section>
 
-      {location.slug === "vet-in-independence-ky" && (
+      {ottoClinicId && (
         <section className="location-section location-section-cream">
           <Container>
             <div className="section-heading">
               <p className="eyebrow">Connect Online</p>
-              <h2>Reach our Independence team.</h2>
-              <p>Use the widget below to request an appointment, ask a question, or connect with our Independence team directly through Otto.</p>
+              <h2>Reach our {location.shortName} team.</h2>
+              <p>Use the widget below to request an appointment, ask a question, or connect with our {location.shortName} team directly through Otto.</p>
             </div>
-            <OttoInlineWidget />
+            <OttoInlineWidget clinicId={ottoClinicId} />
           </Container>
         </section>
       )}

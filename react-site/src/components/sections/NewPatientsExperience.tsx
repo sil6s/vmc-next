@@ -22,7 +22,7 @@ import {
   X
 } from "lucide-react";
 import { ShadButton } from "@/components/ui/Button";
-import { executeRecaptcha, RecaptchaField } from "@/components/forms/RecaptchaField";
+import { TurnstileField } from "@/components/forms/TurnstileField";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
@@ -341,6 +341,7 @@ export function NewPatientsExperience({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitMessage, setSubmitMessage] = useState("");
   const [company, setCompany] = useState("");
+  const [turnstileToken, setTurnstileToken] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [addCoOwner, setAddCoOwner] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -512,19 +513,11 @@ export function NewPatientsExperience({
   const submit = async () => {
     if (!validateStep(4)) return;
 
-    let recaptchaToken = "";
-    try {
-      recaptchaToken = await executeRecaptcha("new_patient_request");
-    } catch {
-      setSubmitMessage("Spam protection could not be verified. Please refresh and try again.");
-      return;
-    }
-
     startTransition(async () => {
       const formData = new FormData();
       formData.append("payload", JSON.stringify(data));
       formData.append("company", company);
-      formData.append("recaptchaToken", recaptchaToken);
+      formData.append("recaptchaToken", turnstileToken);
       files.forEach((file) => formData.append("records", file));
       const response = await fetch("/api/new-patient-request/", { method: "POST", body: formData });
       const result = (await response.json().catch(() => null)) as { error?: string } | null;
@@ -916,7 +909,7 @@ export function NewPatientsExperience({
                           <span>I confirm this information is accurate to the best of my knowledge.<em aria-label="required">*</em></span>
                         </label>
                         {errors.finalConfirmation && <p className="np-field-error" role="alert">{errors.finalConfirmation}</p>}
-                        <RecaptchaField action="new_patient_request" />
+                        <TurnstileField onToken={setTurnstileToken} />
                         {submitMessage && <p className="np-field-error" role="alert">{submitMessage}</p>}
                       </section>
                     </div>

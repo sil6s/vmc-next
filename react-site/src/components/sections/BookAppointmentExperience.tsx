@@ -32,7 +32,7 @@ import {
 import type { Value as E164Number } from "react-phone-number-input";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { ShadButton } from "@/components/ui/Button";
-import { executeRecaptcha, RecaptchaField } from "@/components/forms/RecaptchaField";
+import { TurnstileField } from "@/components/forms/TurnstileField";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
@@ -801,6 +801,7 @@ export function BookAppointmentExperience({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitMessage, setSubmitMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
   const [isPending, startTransition] = useTransition();
   const bodyRef = useRef<HTMLDivElement>(null);
 
@@ -1011,20 +1012,12 @@ export function BookAppointmentExperience({
   const submit = async () => {
     if (!validate(4)) return;
 
-    let recaptchaToken = "";
-    try {
-      recaptchaToken = await executeRecaptcha("new_patient_request");
-    } catch {
-      setSubmitMessage("Spam protection could not be verified. Please refresh and try again.");
-      return;
-    }
-
     startTransition(async () => {
       const payload = buildPayload();
       const formData = new FormData();
       formData.append("payload", JSON.stringify(payload));
       formData.append("company", "");
-      formData.append("recaptchaToken", recaptchaToken);
+      formData.append("recaptchaToken", turnstileToken);
       files.forEach((f) => formData.append("records", f));
       const response = await fetch("/api/new-patient-request/", { method: "POST", body: formData });
       const result = (await response.json().catch(() => null)) as { error?: string } | null;
@@ -1540,7 +1533,7 @@ export function BookAppointmentExperience({
                   {errors.finalConfirmation && (
                     <span className="book-error" role="alert">{errors.finalConfirmation}</span>
                   )}
-                  <RecaptchaField action="new_patient_request" />
+                  <TurnstileField onToken={setTurnstileToken} />
                   {submitMessage && (
                     <Alert tone="danger" role="alert">
                       <AlertTitle>Request not submitted</AlertTitle>

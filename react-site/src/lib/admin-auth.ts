@@ -1,7 +1,6 @@
-import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
+import { createClient } from "@/lib/supabase/server";
 import { ensureSettingsTables, getPool, hasDatabase } from "@/lib/settings/db";
-import { authOptions } from "@/lib/auth";
 
 export type AdminSession = {
   email: string;
@@ -17,53 +16,49 @@ function envAdminEmails() {
 }
 
 export async function isApprovedAdmin(email?: string | null) {
-  if (!email) {
-    return false;
-  }
+  if (!email) return false;
 
   const normalized = email.toLowerCase();
-  if (envAdminEmails().includes(normalized)) {
-    return true;
-  }
+  if (envAdminEmails().includes(normalized)) return true;
 
-  if (!hasDatabase()) {
-    return false;
-  }
+  if (!hasDatabase()) return false;
 
   await ensureSettingsTables();
-  const result = await getPool().query("select 1 from admin_roles where lower(email) = $1 and is_active = true limit 1", [normalized]);
+  const result = await getPool().query(
+    "select 1 from admin_roles where lower(email) = $1 and is_active = true limit 1",
+    [normalized]
+  );
   return Boolean(result.rowCount);
 }
 
 export async function getAdminSession(): Promise<AdminSession | null> {
-  const session = await getServerSession(authOptions);
-  const email = session?.user?.email;
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
 
-  if (!email || !(await isApprovedAdmin(email))) {
-    return null;
-  }
+  if (!user?.email || !(await isApprovedAdmin(user.email))) return null;
 
   return {
-    email,
-    name: session.user?.name || email,
-    image: session.user?.image
+    email: user.email,
+    name: user.user_metadata?.full_name || user.user_metadata?.name || user.email,
+    image: user.user_metadata?.avatar_url || user.user_metadata?.picture || null
   };
 }
 
 export async function requireAdminSession(callbackUrl = "/dashboard/") {
-  const session = await getServerSession(authOptions);
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
 
-  if (!session?.user?.email) {
+  if (!user?.email) {
     redirect(`/login/?callbackUrl=${encodeURIComponent(callbackUrl)}`);
   }
 
-  if (!(await isApprovedAdmin(session.user.email))) {
+  if (!(await isApprovedAdmin(user.email))) {
     redirect("/not-authorized/");
   }
 
   return {
-    email: session.user.email,
-    name: session.user.name || session.user.email,
-    image: session.user.image
+    email: user.email,
+    name: user.user_metadata?.full_name || user.user_metadata?.name || user.email,
+    image: user.user_metadata?.avatar_url || user.user_metadata?.picture || null
   };
 }

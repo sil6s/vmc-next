@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getServerSession } from "next-auth";
 import { LockKeyhole } from "lucide-react";
 import { SignOutButton } from "@/components/dashboard/SignOutButton";
-import { authOptions } from "@/lib/auth";
+import { createClient } from "@/lib/supabase/server";
 
 export const metadata: Metadata = {
   title: "Not Authorized | Veterinary Medical Centers",
@@ -14,8 +13,9 @@ export const metadata: Metadata = {
 };
 
 export default async function NotAuthorizedPage() {
-  const session = await getServerSession(authOptions);
-  const email = session?.user?.email;
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  const email = user?.email;
 
   return (
     <section className="admin-auth-page">
@@ -24,8 +24,8 @@ export default async function NotAuthorizedPage() {
         <p className="dashboard-eyebrow">Not authorized</p>
         <h1>This Google account does not have dashboard access.</h1>
         <p>
-          {email ? `You are currently signed in as ${email}.` : "No active Google session was found."}
-          {" "}Use an approved admin account or add that exact email to `ADMIN_EMAILS` or the `admin_roles` table.
+          {email ? `You are currently signed in as ${email}.` : "No active session was found."}
+          {" "}Use an approved admin account or add that exact email to <code>ADMIN_EMAILS</code> or the <code>admin_roles</code> table.
         </p>
         <div className="dashboard-actions">
           <SignOutButton />
