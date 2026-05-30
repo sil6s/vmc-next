@@ -1,14 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { KeyRound, Mail, Send } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { TurnstileField } from "@/components/forms/TurnstileField";
 import { createClient } from "@/lib/supabase/client";
 
 export function PasskeySignInForm({ callbackUrl }: { callbackUrl: string }) {
   const [email, setEmail] = useState("");
   const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const captchaToken = useRef("");
 
   const redirectTo = typeof window !== "undefined"
     ? `${window.location.origin}/api/auth/callback?next=${encodeURIComponent(callbackUrl)}`
@@ -24,7 +26,11 @@ export function PasskeySignInForm({ callbackUrl }: { callbackUrl: string }) {
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithOtp({
       email: email.trim().toLowerCase(),
-      options: { emailRedirectTo: redirectTo, shouldCreateUser: false }
+      options: {
+        emailRedirectTo: redirectTo,
+        shouldCreateUser: false,
+        ...(captchaToken.current ? { captchaToken: captchaToken.current } : {})
+      }
     });
 
     if (error) {
@@ -70,6 +76,8 @@ export function PasskeySignInForm({ callbackUrl }: { callbackUrl: string }) {
           disabled={state === "sending"}
         />
       </label>
+
+      <TurnstileField onToken={(token) => { captchaToken.current = token; }} />
 
       {errorMessage && (
         <p className="admin-signin-error" role="alert">{errorMessage}</p>
