@@ -193,7 +193,7 @@ export function generateNewPatientPdf(data: NewPatientRequest, uploadedFileNames
     const contentObjNum = pageObjNum + 1;
     pageRefs.push(pageObjNum);
 
-    let resources = "<< /Font << /F1 3 0 R /F2 4 0 R >> >>";
+    const resources = "<< /Font << /F1 3 0 R /F2 4 0 R >> >>";
     objects.push(
       `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources ${resources} /Contents ${contentObjNum} 0 R >>`
     );

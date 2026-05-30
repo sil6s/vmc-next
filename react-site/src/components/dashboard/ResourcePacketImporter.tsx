@@ -13,8 +13,7 @@ import {
   Image as ImageIcon,
   Loader2,
   PencilLine,
-  Sparkles,
-  UploadCloud
+  Sparkles
 } from "lucide-react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";

@@ -336,7 +336,10 @@ function ReviewBlock({ title, items, imageUrl, imageAlt }: { title: string; item
     <Card className="review-block-card">
       <CardHeader><CardTitle>{title}</CardTitle></CardHeader>
       <CardContent>
-        {imageUrl && <img className="review-image-preview" src={imageUrl} alt={imageAlt || "Featured image preview"} />}
+        {imageUrl && (
+          // eslint-disable-next-line @next/next/no-img-element -- Admin previews may use temporary or arbitrary packet image URLs.
+          <img className="review-image-preview" src={imageUrl} alt={imageAlt || "Featured image preview"} />
+        )}
         {items.map(([label, value]) => <p key={label}><strong>{label}</strong><span>{value || "Not found"}</span></p>)}
       </CardContent>
     </Card>

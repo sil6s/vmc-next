@@ -46,7 +46,7 @@ export async function POST(request: Request) {
 
   const emailBody = {
     to: process.env.CONTACT_EMAIL_TO || "information@nky.vet",
-    from: process.env.CONTACT_EMAIL_FROM || "website@vmcnky.com",
+    from: process.env.CONTACT_EMAIL_FROM || "Veterinary Medical Centers <information@nky.vet>",
     replyTo: email,
     subject: `Website inquiry from ${name}`,
     text: [`Name: ${name}`, `Email: ${email}`, `Phone: ${phone}`, `Location: ${location}`, "", message].join("\n")

@@ -18,7 +18,6 @@ import {
   Mail,
   MapPin,
   MessageCircle,
-  Moon,
   PawPrint,
   PenLine,
   Phone,
@@ -26,7 +25,6 @@ import {
   ShieldCheck,
   Sun,
   Sunrise,
-  Trash2,
   Upload,
   UserRound,
   X
@@ -1005,8 +1003,8 @@ export function BookAppointmentExperience({
       vaccinationHistory: firstPet.vaccinationHistory,
       schedulingNotes,
       digitalSignature: data.digitalSignature,
-      authorizationConsent: true as true,
-      finalConfirmation: true as true
+      authorizationConsent: true,
+      finalConfirmation: true
     };
   };
 

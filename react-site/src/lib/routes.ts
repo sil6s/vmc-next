@@ -18,6 +18,10 @@ export const staticRoutes = [
   "/privacy-policy/"
 ] as const;
 
+export const sitemapStaticRoutes = staticRoutes.filter(
+  (route) => !["/patient-portal-online-booking/", "/online-vet-pharmacy-northern-kentucky-cincinnati/"].includes(route)
+);
+
 export function allRoutes() {
   return [
     ...staticRoutes,

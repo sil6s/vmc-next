@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import nodemailer from "nodemailer";
 
 export type EmailAttachment = {
   filename: string;
@@ -17,9 +18,11 @@ export type SendEmailInput = {
 };
 
 type SendEmailResult = {
-  provider: "gmail" | "resend" | "none";
+  provider: "smtp" | "gmail" | "resend" | "none";
   skipped: boolean;
 };
+
+const defaultFrom = "Veterinary Medical Centers <information@nky.vet>";
 
 function testRecipient() {
   return process.env.EMAIL_TEST_RECIPIENT?.trim();
@@ -31,6 +34,10 @@ function hasGmailConfig() {
       (process.env.GMAIL_CLIENT_SECRET || process.env.GOOGLE_CLIENT_SECRET) &&
       process.env.GMAIL_REFRESH_TOKEN
   );
+}
+
+function hasSmtpConfig() {
+  return Boolean(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS);
 }
 
 function encodeHeader(value: string) {
@@ -176,7 +183,7 @@ async function sendResendEmail(input: SendEmailInput): Promise<SendEmailResult> 
     },
     body: JSON.stringify({
       to: input.to,
-      from: input.from || process.env.CONTACT_EMAIL_FROM || "website@vmcnky.com",
+      from: input.from || process.env.CONTACT_EMAIL_FROM || defaultFrom,
       reply_to: input.replyTo,
       subject: input.subject,
       html: input.html,
@@ -192,13 +199,50 @@ async function sendResendEmail(input: SendEmailInput): Promise<SendEmailResult> 
   return { provider: "resend", skipped: false };
 }
 
+async function sendSmtpEmail(input: SendEmailInput): Promise<SendEmailResult> {
+  if (!hasSmtpConfig()) {
+    return { provider: "none", skipped: true };
+  }
+
+  const port = Number(process.env.SMTP_PORT || 587);
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port,
+    secure: port === 465,
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS
+    }
+  });
+
+  await transporter.sendMail({
+    to: input.to,
+    from: input.from || process.env.CONTACT_EMAIL_FROM || defaultFrom,
+    replyTo: input.replyTo,
+    subject: input.subject,
+    text: input.text,
+    html: input.html,
+    attachments: input.attachments?.map((attachment) => ({
+      filename: attachment.filename,
+      content: Buffer.from(attachment.content, "base64"),
+      contentType: attachment.contentType
+    }))
+  });
+
+  return { provider: "smtp", skipped: false };
+}
+
 export async function sendEmail(input: SendEmailInput): Promise<SendEmailResult> {
   const deliveryInput = withTestRecipient(input);
+
+  if (hasSmtpConfig()) {
+    return sendSmtpEmail(deliveryInput);
+  }
 
   if (hasGmailConfig()) {
     return sendGmailEmail({
       ...deliveryInput,
-      from: deliveryInput.from || process.env.GMAIL_SEND_AS || process.env.CONTACT_EMAIL_FROM
+      from: deliveryInput.from || process.env.GMAIL_SEND_AS || process.env.CONTACT_EMAIL_FROM || defaultFrom
     });
   }
 

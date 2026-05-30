@@ -243,6 +243,7 @@ export function TeamSection({ staffSettings, personProfiles = [] }: { staffSetti
             <article className="staff-card" key={member.id}>
               <div className={member.imageUrl ? "staff-photo has-photo" : "staff-photo"}>
                 {member.imageUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- Staff images can be configured from arbitrary dashboard URLs.
                   <img src={member.imageUrl} alt={member.imageAlt || `${member.name}, Veterinary Medical Centers team member`} />
                 ) : (
                   <PawPrint aria-hidden="true" size={24} />

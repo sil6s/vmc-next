@@ -62,9 +62,15 @@ export function ChatSupportWidget({
 }) {
   const [expanded, setExpanded] = useState(false);
   const [tooltipVisible, setTooltipVisible] = useState(false);
-  const [tooltipDismissed, setTooltipDismissed] = useState(true);
+  const [tooltipDismissed, setTooltipDismissed] = useState(() =>
+    typeof window === "undefined" || window.sessionStorage.getItem(TOOLTIP_DISMISSED_KEY) === "true"
+  );
   const [isFooterVisible, setIsFooterVisible] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState<LocationKey | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState<LocationKey | null>(() => {
+    if (typeof window === "undefined") return null;
+    const savedLocation = window.localStorage.getItem(SELECTED_LOCATION_KEY);
+    return isLocationKey(savedLocation) ? savedLocation : null;
+  });
   const [isOttoReady, setIsOttoReady] = useState(false);
   const [isOpening, setIsOpening] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
@@ -92,13 +98,6 @@ export function ChatSupportWidget({
   }, [locations]);
 
   useEffect(() => {
-    setTooltipDismissed(window.sessionStorage.getItem(TOOLTIP_DISMISSED_KEY) === "true");
-
-    const savedLocation = window.localStorage.getItem(SELECTED_LOCATION_KEY);
-    if (isLocationKey(savedLocation)) {
-      setSelectedLocation(savedLocation);
-    }
-
     const checkOtto = () => setIsOttoReady(Boolean(window.otto?.widget));
     checkOtto();
     const interval = window.setInterval(checkOtto, 1400);
@@ -133,11 +132,6 @@ export function ChatSupportWidget({
       window.clearTimeout(hideTimer);
     };
   }, [dismissTooltip, expanded, isFooterVisible, tooltipDismissed]);
-
-  useEffect(() => {
-    if (!isFooterVisible) return;
-    setTooltipVisible(false);
-  }, [isFooterVisible]);
 
   useEffect(() => {
     if (!expanded) return;
@@ -214,7 +208,7 @@ export function ChatSupportWidget({
 
   return (
     <div className="chat-support-widget">
-      {tooltipVisible && !expanded && (
+      {tooltipVisible && !expanded && !isFooterVisible && (
         <div className="chat-support-tooltip" role="status">
           <button type="button" aria-label="Dismiss chat support tip" onClick={dismissTooltip}>
             <X aria-hidden="true" size={13} />

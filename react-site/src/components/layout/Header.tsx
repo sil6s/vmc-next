@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ArrowRight, CalendarDays, Menu, Phone, ShoppingBag, UserRound } from "lucide-react";
+import type { ReactNode } from "react";
 import { useState } from "react";
 import { navigation } from "@/data/navigation";
 import { locations as locationPages } from "@/data/locations";
@@ -57,6 +58,32 @@ function isExternalHref(href: string) {
   return href.startsWith("http://") || href.startsWith("https://");
 }
 
+function UtilityAction({
+  href,
+  children,
+  className = "utility-button"
+}: {
+  href: string;
+  children: ReactNode;
+  className?: string;
+}) {
+  const external = isExternalHref(href);
+
+  if (external) {
+    return (
+      <a className={className} href={href} target="_blank" rel="noopener noreferrer">
+        {children}
+      </a>
+    );
+  }
+
+  return (
+    <Link className={className} href={href}>
+      {children}
+    </Link>
+  );
+}
+
 export function Header({
   ctaHref = "/book-appointment/",
   locations,
@@ -98,6 +125,14 @@ export function Header({
         </NavigationMenu>
 
         <div className="desktop-actions">
+          <UtilityAction href={onlinePortalUrl}>
+            <UserRound aria-hidden="true" size={15} />
+            Patient Portal
+          </UtilityAction>
+          <UtilityAction href={pharmacyUrl}>
+            <ShoppingBag aria-hidden="true" size={15} />
+            Online Pharmacy
+          </UtilityAction>
           {showBookingButton && (
             <Link className="nav-cta" href={ctaHref}>
               Book Appointment

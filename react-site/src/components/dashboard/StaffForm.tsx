@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { AlertTriangle, ArrowDown, ArrowUp, CheckCircle, Eye, EyeOff, ImageIcon, MoreHorizontal, Plus, Search, Trash2, UsersRound } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar } from "@/components/ui/avatar";
@@ -442,8 +442,6 @@ function PersonEditorSheet({
   const [draft, setDraft] = useState<PersonProfile | null>(profile);
   const [uploading, setUploading] = useState(false);
 
-  useEffect(() => setDraft(profile), [profile]);
-
   if (!draft) return null;
 
   const update = <Key extends keyof PersonProfile>(key: Key, value: PersonProfile[Key]) => {
@@ -837,7 +835,7 @@ export function StaffForm({ initialStaff, initialProfiles }: { initialStaff: Sta
       <StatusMessage {...status} />
 
       <AddPersonDialog open={addOpen} onOpenChange={setAddOpen} onChoose={chooseNewProfile} />
-      <PersonEditorSheet profile={editing} open={Boolean(editing)} onOpenChange={(open) => !open && setEditing(null)} onSave={saveProfile} onRemove={setRemoving} />
+      <PersonEditorSheet key={editing?._id || "person-editor"} profile={editing} open={Boolean(editing)} onOpenChange={(open) => !open && setEditing(null)} onSave={saveProfile} onRemove={setRemoving} />
       <PersonPreviewDialog profile={previewing} onEdit={(profile) => { setPreviewing(null); setEditing(profile); }} onClose={() => setPreviewing(null)} />
       <RemovePersonDialog profile={removing} onClose={() => setRemoving(null)} onHide={hideProfile} onRemove={removeProfile} />
     </div>

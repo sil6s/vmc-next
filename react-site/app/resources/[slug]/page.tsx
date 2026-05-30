@@ -459,7 +459,7 @@ function AuthorOrReviewCard({ post, readTime }: { post: BlogPost; readTime: stri
             </p>
             <p>
               <Stethoscope aria-hidden="true" size={17} />
-              For specific guidance, contact our veterinary team before changing your pet's care routine.
+              For specific guidance, contact our veterinary team before changing your pet&apos;s care routine.
             </p>
           </div>
         </CardContent>
@@ -662,6 +662,7 @@ function MarkdownContent({ value, className = "" }: { value?: string; className?
       if (!src) return null;
       return (
         <span className="resource-markdown-image">
+          {/* eslint-disable-next-line @next/next/no-img-element -- Markdown images can come from arbitrary source URLs. */}
           <img src={src} alt={alt || ""} loading="lazy" />
         </span>
       );
