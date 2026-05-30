@@ -49,9 +49,9 @@ export default async function LoginPage({
           <div className="admin-login-content">
             <div className="admin-login-copy">
               <p className="dashboard-eyebrow">Private Admin Portal</p>
-              <h1>Sign in to manage Veterinary Medical Centers</h1>
+              <h1>We&rsquo;ve gone passwordless.</h1>
               <p>
-                Dashboard access is limited to approved clinic administrators. Enter your admin email to receive a secure sign-in link, or use a saved passkey if your device supports it.
+                Enter your admin email and we&rsquo;ll send a secure sign-in link. No password needed.
               </p>
             </div>
 

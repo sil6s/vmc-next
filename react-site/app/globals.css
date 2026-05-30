@@ -14389,6 +14389,114 @@ body:has(.standalone-studio-shell) {
   margin-top: 1px;
 }
 
+.admin-signin-form {
+  display: grid;
+  gap: 14px;
+}
+
+.admin-signin-label {
+  display: grid;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--body);
+}
+
+.admin-signin-button {
+  display: inline-flex;
+  min-height: 52px;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  border: none;
+  border-radius: 6px;
+  background: var(--red);
+  color: var(--white);
+  font-size: 13px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: 0 10px 28px rgba(169, 27, 27, 0.22);
+  transition: background 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.admin-signin-button:hover:not(:disabled) {
+  background: var(--rdark);
+  box-shadow: 0 14px 36px rgba(169, 27, 27, 0.28);
+  transform: translateY(-1px);
+}
+
+.admin-signin-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.admin-signin-hint {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  margin: 0;
+  color: var(--body);
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.admin-signin-hint svg {
+  flex: 0 0 auto;
+  color: var(--gold);
+  margin-top: 2px;
+}
+
+.admin-signin-error {
+  margin: 0;
+  color: var(--red);
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.admin-signin-sent {
+  display: grid;
+  gap: 10px;
+  text-align: center;
+}
+
+.admin-signin-sent svg {
+  justify-self: center;
+  color: var(--red);
+}
+
+.admin-signin-sent h2 {
+  margin: 0;
+  color: var(--ink);
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 26px;
+}
+
+.admin-signin-sent p {
+  margin: 0;
+  color: var(--body);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.55;
+}
+
+.admin-signin-resend {
+  justify-self: center;
+  border: none;
+  background: none;
+  color: var(--red);
+  font-size: 13px;
+  font-weight: 850;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 .admin-login-secondary-actions {
   display: grid;
   gap: 12px;
