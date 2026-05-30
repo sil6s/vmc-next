@@ -60,6 +60,11 @@ const nextConfig: NextConfig = {
         source: "/first-vet-visit-northern-kentucky/",
         destination: "/new-patients/",
         permanent: true
+      },
+      {
+        source: "/privacy/",
+        destination: "/privacy-policy/",
+        permanent: true
       }
     ];
   }

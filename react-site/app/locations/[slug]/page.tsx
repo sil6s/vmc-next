@@ -6,6 +6,7 @@ import { Award, Car, Clock, HeartPulse, MapPin, Phone, ShieldCheck, Stethoscope,
 import { Breadcrumbs } from "@/components/sections/Breadcrumbs";
 import { CTASection } from "@/components/sections/CTASection";
 import { FAQSection } from "@/components/sections/FAQSection";
+import { OttoInlineWidget } from "@/components/sections/OttoInlineWidget";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { locations, getLocation } from "@/data/locations";
@@ -334,6 +335,19 @@ export default async function LocationPage({ params }: Params) {
           </div>
         </Container>
       </section>
+
+      {location.slug === "vet-in-independence-ky" && (
+        <section className="location-section location-section-cream">
+          <Container>
+            <div className="section-heading">
+              <p className="eyebrow">Connect Online</p>
+              <h2>Reach our Independence team.</h2>
+              <p>Use the widget below to request an appointment, ask a question, or connect with our Independence team directly through Otto.</p>
+            </div>
+            <OttoInlineWidget />
+          </Container>
+        </section>
+      )}
 
       <section className="location-section location-section-white">
         <Container>
