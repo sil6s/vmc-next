@@ -57,11 +57,15 @@ type SanityServiceDetail = SanityServiceCard & {
   secondaryCTA?: SanityCta;
   fullDescription?: string;
   overview?: PortableTextBlock[];
+  approachSection?: string;
   symptomsOrReasons?: ServiceReason[];
   whatToExpect?: ServiceStep[];
   includedCare?: ServiceIncludedCare[];
   keyBenefits?: ServiceIncludedCare[];
   careApproachCards?: ServiceIncludedCare[];
+  whatToBring?: string[];
+  helpfulQuestions?: string[];
+  urgentCallout?: { title: string; text: string };
   timelineBlocks?: { label?: string; title: string; description: string }[];
   comparisonTable?: ServiceDetail["comparisonTable"];
   contentTable?: ServiceDetail["contentTable"];
@@ -132,11 +136,15 @@ function normalizeDetail(service: SanityServiceDetail): ServiceDetail {
     fullDescription: service.fullDescription,
     overview: service.overview,
     overviewText: fallback?.overviewText || [],
+    approachSection: service.approachSection || fallback?.approachSection,
     symptomsOrReasons: service.symptomsOrReasons?.length ? service.symptomsOrReasons : fallback?.symptomsOrReasons || [],
     whatToExpect: service.whatToExpect?.length ? service.whatToExpect : fallback?.whatToExpect || [],
     includedCare: service.includedCare?.length ? service.includedCare : fallback?.includedCare || [],
     keyBenefits: service.keyBenefits,
-    careApproachCards: service.careApproachCards,
+    careApproachCards: service.careApproachCards?.length ? service.careApproachCards : fallback?.careApproachCards,
+    whatToBring: service.whatToBring?.length ? service.whatToBring : fallback?.whatToBring,
+    helpfulQuestions: service.helpfulQuestions?.length ? service.helpfulQuestions : fallback?.helpfulQuestions,
+    urgentCallout: service.urgentCallout || fallback?.urgentCallout,
     timelineBlocks: service.timelineBlocks,
     comparisonTable: service.comparisonTable,
     contentTable: service.contentTable,

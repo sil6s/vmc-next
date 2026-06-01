@@ -4,12 +4,15 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PortableText, type PortableTextComponents } from "next-sanity";
 import {
+  AlertTriangle,
   ArrowRight,
   BadgeCheck,
   CalendarCheck,
   CheckCircle,
+  ClipboardList,
   Clock,
   ExternalLink,
+  HelpCircle,
   MapPin,
   Phone,
   ShieldCheck,
@@ -40,7 +43,9 @@ import { getRelatedServiceCards, getServiceDetail, getServiceDetailSlugs } from 
 
 type Params = { params: Promise<{ slug: string }> };
 
-const defaultTrustChips = ["Dogs & cats", "New patients welcome", "Fort Thomas", "Independence", "Locally owned"];
+const defaultTrustChips = ["Dogs & cats", "New patients welcome", "Fort Thomas, KY", "Independence, KY", "Locally owned"];
+
+const defaultDisclaimer = "This page is for educational purposes and does not replace a veterinary exam. If your pet has severe, sudden, or rapidly worsening symptoms, call Veterinary Medical Centers or seek urgent veterinary care.";
 
 function displayDate(date?: string) {
   if (!date) return null;
@@ -66,7 +71,9 @@ function ServiceDataTable({ table }: { table: ServiceTable }) {
           <tbody>
             {table.rows.map((row, rowIndex) => (
               <tr key={`${row.cells.join("-")}-${rowIndex}`}>
-                {table.columns.map((column, cellIndex) => <td key={`${column}-${cellIndex}`}>{row.cells[cellIndex] || ""}</td>)}
+                {table.columns.map((column, cellIndex) => (
+                  <td key={`${column}-${cellIndex}`}>{row.cells[cellIndex] || ""}</td>
+                ))}
               </tr>
             ))}
           </tbody>
@@ -147,7 +154,6 @@ export default async function ServicePage({ params }: Params) {
     : service.heroImage || "/images/veterinary-care-hero.jpg";
   const categoryLabel = serviceCategoryLabels[service.serviceCategory];
   const benefits = service.keyBenefits?.length ? service.keyBenefits : service.includedCare;
-  const approachCards = service.careApproachCards?.length ? service.careApproachCards : service.includedCare;
   const finalButtons = service.finalCtaButtons?.length
     ? service.finalCtaButtons
     : [
@@ -169,6 +175,7 @@ export default async function ServicePage({ params }: Params) {
 
   return (
     <>
+      {/* Hero */}
       <section className="service-landing-hero">
         <Container>
           <div className="service-landing-hero-grid">
@@ -204,7 +211,7 @@ export default async function ServicePage({ params }: Params) {
                   <CalendarCheck aria-hidden="true" size={21} />
                   <div>
                     <strong>{service.title}</strong>
-                    <span>Available in Fort Thomas and Independence.</span>
+                    <span>Fort Thomas, KY · Independence, KY</span>
                   </div>
                 </CardContent>
               </Card>
@@ -219,22 +226,53 @@ export default async function ServicePage({ params }: Params) {
         <Container>
           <div className="service-landing-layout">
             <main className="service-landing-main">
+
+              {/* Quick Summary */}
               <section className="service-rich-card service-overview-card">
-                <div>
+                <div className="service-section-head">
                   <p className="eyebrow">Quick Summary</p>
-                  <h2>What this service helps with.</h2>
+                  <h2>Is this the right service for your pet?</h2>
                 </div>
-                <div className="service-rich-copy">
-                  <p>{service.fullDescription || service.shortDescription}</p>
-                  <p>Veterinary Medical Centers serves dogs and cats from Fort Thomas, Independence, and nearby Northern Kentucky communities with practical guidance and calm communication.</p>
-                </div>
+                <dl className="service-quick-summary-grid">
+                  <div className="service-quick-summary-item">
+                    <dt>What this helps with</dt>
+                    <dd>{service.fullDescription || service.shortDescription}</dd>
+                  </div>
+                  {service.bestFor.length > 0 && (
+                    <div className="service-quick-summary-item">
+                      <dt>Best for</dt>
+                      <dd>
+                        <ul>{service.bestFor.map((item) => <li key={item}>{item}</li>)}</ul>
+                      </dd>
+                    </div>
+                  )}
+                  {service.symptomsOrReasons.length > 0 && (
+                    <div className="service-quick-summary-item">
+                      <dt>Common reasons to schedule</dt>
+                      <dd>
+                        <ul>{service.symptomsOrReasons.slice(0, 3).map((r) => <li key={r.title}>{r.title}</li>)}</ul>
+                      </dd>
+                    </div>
+                  )}
+                  <div className="service-quick-summary-item">
+                    <dt>Available at</dt>
+                    <dd>Fort Thomas, KY · Independence, KY</dd>
+                  </div>
+                  {service.appointmentType && (
+                    <div className="service-quick-summary-item">
+                      <dt>Typical next step</dt>
+                      <dd>{service.appointmentType}</dd>
+                    </div>
+                  )}
+                </dl>
               </section>
 
+              {/* What This Service Helps With */}
               {benefits.length > 0 && (
                 <section className="service-section-block">
                   <div className="service-section-head">
-                    <p className="eyebrow">Best For</p>
-                    <h2>Helpful reasons families choose this care.</h2>
+                    <p className="eyebrow">What It Helps With</p>
+                    <h2>What {service.title.toLowerCase()} helps with.</h2>
                   </div>
                   <div className="service-scenario-grid">
                     {benefits.slice(0, 6).map((item) => (
@@ -250,25 +288,30 @@ export default async function ServicePage({ params }: Params) {
                 </section>
               )}
 
-              <section className="service-rich-card service-main-content">
-                <div>
-                  <p className="eyebrow">Guide</p>
-                  <h2>{service.title} at Veterinary Medical Centers.</h2>
-                </div>
-                <div className="service-rich-copy">
-                  {service.overview?.length ? (
-                    <PortableText value={service.overview} components={portableComponents} />
-                  ) : (
-                    service.overviewText.map((paragraph) => <p key={paragraph}>{paragraph}</p>)
-                  )}
-                </div>
-              </section>
+              {/* Main Educational Guide */}
+              {(service.overview?.length || service.overviewText.length > 0) ? (
+                <section className="service-rich-card service-main-content">
+                  <div>
+                    <p className="eyebrow">Guide</p>
+                    <h2>{service.title} at Veterinary Medical Centers.</h2>
+                  </div>
+                  <div className="service-rich-copy">
+                    {service.overview?.length ? (
+                      <PortableText value={service.overview} components={portableComponents} />
+                    ) : (
+                      service.overviewText.map((paragraph) => <p key={paragraph}>{paragraph}</p>)
+                    )}
+                  </div>
+                </section>
+              ) : null}
 
+              {/* Signs to Watch For */}
               {service.symptomsOrReasons.length > 0 && (
                 <section className="service-section-block">
                   <div className="service-section-head">
-                    <p className="eyebrow">When to Schedule</p>
-                    <h2>Signs this appointment may be the right next step.</h2>
+                    <p className="eyebrow">Signs to Watch For</p>
+                    <h2>When your pet may need this service.</h2>
+                    <p>These are common reasons pet owners in Fort Thomas, Independence, and nearby Northern Kentucky communities schedule this type of appointment.</p>
                   </div>
                   <div className="service-scenario-grid">
                     {service.symptomsOrReasons.map((reason) => (
@@ -284,11 +327,48 @@ export default async function ServicePage({ params }: Params) {
                 </section>
               )}
 
+              {/* Urgent Care Callout */}
+              {service.urgentCallout?.title && (
+                <aside className="service-urgent-callout" role="note" aria-label="When to seek urgent care">
+                  <AlertTriangle aria-hidden="true" size={22} />
+                  <div>
+                    <strong>{service.urgentCallout.title}</strong>
+                    {service.urgentCallout.text && <p>{service.urgentCallout.text}</p>}
+                  </div>
+                </aside>
+              )}
+
+              {/* How Veterinary Medical Centers Approaches This Care */}
+              <section className="service-section-block">
+                <div className="service-section-head">
+                  <p className="eyebrow">Our Approach</p>
+                  <h2>How Veterinary Medical Centers approaches {service.title.toLowerCase()}.</h2>
+                  <p>
+                    {service.approachSection ||
+                      `At both our Fort Thomas and Independence locations, Veterinary Medical Centers focuses on clear communication, practical recommendations, and individualized care. We help families across Northern Kentucky understand what we find during the exam, discuss their options, and make decisions that fit their pet and their household.`}
+                  </p>
+                </div>
+                {service.careApproachCards?.length ? (
+                  <div className="service-inclusion-grid">
+                    {service.careApproachCards.slice(0, 6).map((item) => (
+                      <Card className="service-inclusion-card" key={`${item.title}-${item.description}`}>
+                        <CardHeader>
+                          <Sparkles aria-hidden="true" size={19} />
+                          <CardTitle>{item.title}</CardTitle>
+                        </CardHeader>
+                        <CardContent><p>{item.description}</p></CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                ) : null}
+              </section>
+
+              {/* What Happens During the Visit */}
               {service.whatToExpect.length > 0 && (
                 <section className="service-section-block service-visit-flow">
                   <div className="service-section-head">
                     <p className="eyebrow">What to Expect</p>
-                    <h2>How the visit usually works.</h2>
+                    <h2>What happens during the visit.</h2>
                   </div>
                   <div className="service-timeline">
                     {service.whatToExpect.map((step, index) => (
@@ -304,11 +384,51 @@ export default async function ServicePage({ params }: Params) {
                 </section>
               )}
 
+              {/* What to Bring */}
+              {service.whatToBring?.length ? (
+                <section className="service-section-block">
+                  <div className="service-section-head">
+                    <p className="eyebrow">Preparation</p>
+                    <h2>What to bring to your appointment.</h2>
+                    <p>Having this information ready helps your veterinarian give the most useful guidance during the visit.</p>
+                  </div>
+                  <ul className="service-checklist">
+                    {service.whatToBring.map((item) => (
+                      <li key={item}>
+                        <ClipboardList aria-hidden="true" size={17} />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              ) : null}
+
+              {/* Helpful Questions to Ask */}
+              {service.helpfulQuestions?.length ? (
+                <section className="service-section-block">
+                  <div className="service-section-head">
+                    <p className="eyebrow">Questions to Ask</p>
+                    <h2>Helpful questions for your veterinarian.</h2>
+                    <p>You can write these down or mention them at the start of the visit.</p>
+                  </div>
+                  <ol className="service-questions-list">
+                    {service.helpfulQuestions.map((question) => (
+                      <li key={question}>
+                        <HelpCircle aria-hidden="true" size={17} />
+                        {question}
+                      </li>
+                    ))}
+                  </ol>
+                </section>
+              ) : null}
+
+              {/* Comparison Table / Mini Timeline */}
               {(tableIsRenderable(service.comparisonTable) || tableIsRenderable(service.contentTable) || Boolean(service.timelineBlocks?.length)) && (
                 <section className="service-section-block">
                   <div className="service-section-head">
-                    <p className="eyebrow">Helpful Chart</p>
-                    <h2>A simple way to compare next steps.</h2>
+                    <p className="eyebrow">Helpful Reference</p>
+                    <h2>A simple way to understand next steps.</h2>
+                    <p>Your veterinarian will recommend next steps based on your pet's exam and history. This chart is for educational purposes only.</p>
                   </div>
                   {tableIsRenderable(service.comparisonTable) && <ServiceDataTable table={service.comparisonTable as ServiceTable} />}
                   {tableIsRenderable(service.contentTable) && <ServiceDataTable table={service.contentTable as ServiceTable} />}
@@ -328,26 +448,7 @@ export default async function ServicePage({ params }: Params) {
                 </section>
               )}
 
-              {approachCards.length > 0 && (
-                <section className="service-section-block">
-                  <div className="service-section-head">
-                    <p className="eyebrow">Our Approach</p>
-                    <h2>Care that feels clear, local, and practical.</h2>
-                  </div>
-                  <div className="service-inclusion-grid">
-                    {approachCards.slice(0, 6).map((item) => (
-                      <Card className="service-inclusion-card" key={`${item.title}-${item.description}`}>
-                        <CardHeader>
-                          <Sparkles aria-hidden="true" size={19} />
-                          <CardTitle>{item.title}</CardTitle>
-                        </CardHeader>
-                        <CardContent><p>{item.description}</p></CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </section>
-              )}
-
+              {/* Callout Blocks */}
               {service.calloutBlocks?.length ? (
                 <section className="service-callout-grid" aria-label="Helpful service notes">
                   {service.calloutBlocks.map((callout) => (
@@ -360,11 +461,14 @@ export default async function ServicePage({ params }: Params) {
                 </section>
               ) : null}
 
+              {/* Local Care — Fort Thomas & Independence */}
               <section className="service-section-block">
                 <div className="service-section-head">
-                  <p className="eyebrow">Locations</p>
-                  <h2>Choose your Veterinary Medical Centers location.</h2>
-                  <p>Both locations support dogs and cats with relationship-based care for Northern Kentucky families.</p>
+                  <p className="eyebrow">Local Care</p>
+                  <h2>Serving dogs and cats in Fort Thomas and Independence, KY.</h2>
+                  <p>
+                    Veterinary Medical Centers provides {service.title.toLowerCase()} for pets and families across Northern Kentucky, including Fort Thomas, Independence, and the surrounding communities.
+                  </p>
                 </div>
                 <div className="service-location-grid">
                   {settings.publicLocations.map((location) => (
@@ -391,14 +495,15 @@ export default async function ServicePage({ params }: Params) {
                 </div>
               </section>
 
+              {/* Related Services */}
               {relatedServices.length > 0 && (
                 <section className="service-section-block">
                   <div className="service-section-head">
                     <p className="eyebrow">Related Services</p>
-                    <h2>Helpful services to compare.</h2>
+                    <h2>Other services that may be helpful.</h2>
                   </div>
                   <div className="service-related-grid">
-                    {relatedServices.slice(0, 5).map((related) => (
+                    {relatedServices.slice(0, 4).map((related) => (
                       <Card className="service-related-card" key={related.slug}>
                         <CardHeader>
                           <CardTitle>{related.title}</CardTitle>
@@ -413,11 +518,12 @@ export default async function ServicePage({ params }: Params) {
                 </section>
               )}
 
+              {/* Related Resources */}
               {service.relatedResources?.length ? (
                 <section className="service-section-block">
                   <div className="service-section-head">
                     <p className="eyebrow">Related Resources</p>
-                    <h2>More pet care guidance from VMC.</h2>
+                    <h2>More pet care guidance from our team.</h2>
                   </div>
                   <div className="service-related-grid">
                     {service.relatedResources.slice(0, 4).map((resource) => (
@@ -435,6 +541,7 @@ export default async function ServicePage({ params }: Params) {
                 </section>
               ) : null}
 
+              {/* External References */}
               {service.externalReferences?.length ? (
                 <section className="service-section-block">
                   <div className="service-section-head">
@@ -454,6 +561,7 @@ export default async function ServicePage({ params }: Params) {
               ) : null}
             </main>
 
+            {/* Sidebar */}
             <aside className="service-conversion-sidebar" aria-label="Book this service">
               <Card className="service-book-card">
                 <CardHeader>
@@ -463,9 +571,13 @@ export default async function ServicePage({ params }: Params) {
                 </CardHeader>
                 <CardContent>
                   <dl>
-                    <div><dt>Best for</dt><dd>{service.bestFor.join(", ")}</dd></div>
-                    <div><dt>Locations</dt><dd>{service.locationRelevance.join(", ")}</dd></div>
-                    <div><dt>Service area</dt><dd>{(service.serviceAreas?.length ? service.serviceAreas : ["Northern Kentucky"]).join(", ")}</dd></div>
+                    {service.bestFor.length > 0 && (
+                      <div><dt>Best for</dt><dd>{service.bestFor.slice(0, 3).join(", ")}</dd></div>
+                    )}
+                    <div><dt>Locations</dt><dd>Fort Thomas, KY · Independence, KY</dd></div>
+                    {service.appointmentType && (
+                      <div><dt>Appointment type</dt><dd>{service.appointmentType}</dd></div>
+                    )}
                   </dl>
                   <Separator />
                   <div className="service-sidebar-actions">
@@ -479,12 +591,14 @@ export default async function ServicePage({ params }: Params) {
                   </div>
                   <div className="service-sidebar-note">
                     <ShieldCheck aria-hidden="true" size={17} />
-                    <p>Not sure what your pet needs? Call us and we will help you choose a practical next step.</p>
+                    <p>Not sure what your pet needs? Call us — our team will help you choose the right next step.</p>
                   </div>
                   {relatedServices.length > 0 && (
                     <div className="service-sidebar-related">
                       <h3>Related services</h3>
-                      {relatedServices.slice(0, 3).map((related) => <Link href={`/services/${related.slug}/`} key={related.slug}>{related.title}</Link>)}
+                      {relatedServices.slice(0, 3).map((related) => (
+                        <Link href={`/services/${related.slug}/`} key={related.slug}>{related.title}</Link>
+                      ))}
                     </div>
                   )}
                 </CardContent>
@@ -494,20 +608,26 @@ export default async function ServicePage({ params }: Params) {
         </Container>
       </div>
 
-      {service.faqs.length > 0 && <FAQSection faqs={service.faqs} title={`Questions about ${service.title.toLowerCase()}.`} />}
+      {/* FAQ Section */}
+      {service.faqs.length > 0 && (
+        <FAQSection faqs={service.faqs} title={`Frequently asked questions about ${service.title.toLowerCase()}.`} />
+      )}
 
+      {/* Final CTA */}
       <section className="service-final-cta">
         <Container>
           <div className="service-final-cta-inner">
             <p className="eyebrow">Next Steps</p>
-            <h2>{service.finalCtaTitle || "Not sure what your pet needs? Our team can help."}</h2>
-            <p>{service.finalCtaText || "Tell us what you are noticing and our Fort Thomas or Independence team can help you choose the right appointment type."}</p>
+            <h2>{service.finalCtaTitle || "Ready to schedule? Our team can help."}</h2>
+            <p>{service.finalCtaText || "Tell us what you are noticing and our Fort Thomas or Independence team will help you choose the right appointment type."}</p>
             <div className="service-final-actions">
               {finalButtons.map((button, index) => (
-                <Button href={button.href} variant={index === 0 ? "secondary" : "ghost"} key={`${button.label}-${button.href}`}>{button.label}</Button>
+                <Button href={button.href} variant={index === 0 ? "secondary" : "ghost"} key={`${button.label}-${button.href}`}>
+                  {button.label}
+                </Button>
               ))}
             </div>
-            {service.disclaimer && <p className="service-disclaimer">{service.disclaimer}</p>}
+            <p className="service-disclaimer">{service.disclaimer || defaultDisclaimer}</p>
           </div>
         </Container>
       </section>

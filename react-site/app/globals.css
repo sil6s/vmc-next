@@ -6376,6 +6376,160 @@ textarea {
   color: var(--white);
 }
 
+/* ── Service page — Quick Summary Grid ── */
+
+.service-quick-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+.service-quick-summary-item {
+  border: 1px solid rgba(169, 27, 27, 0.1);
+  border-radius: 10px;
+  background: var(--white);
+  padding: 18px 20px;
+  box-shadow: 0 2px 8px rgba(23, 19, 19, 0.03);
+}
+
+.service-quick-summary-item dt {
+  margin-bottom: 7px;
+  color: var(--gold);
+  font-size: 10px;
+  font-weight: 950;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.service-quick-summary-item dd {
+  margin: 0;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.58;
+}
+
+.service-quick-summary-item ul {
+  margin: 0;
+  padding-left: 14px;
+  display: grid;
+  gap: 4px;
+  color: var(--body);
+}
+
+/* ── Service page — Urgent Care Callout ── */
+
+.service-urgent-callout {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 14px;
+  align-items: flex-start;
+  border: 1.5px solid rgba(169, 27, 27, 0.3);
+  border-radius: 12px;
+  background: rgba(169, 27, 27, 0.04);
+  padding: 20px 22px;
+  margin: 0;
+}
+
+.service-urgent-callout svg {
+  flex: 0 0 auto;
+  color: var(--red);
+  margin-top: 2px;
+}
+
+.service-urgent-callout strong {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--red);
+  font-size: 16px;
+  font-weight: 950;
+}
+
+.service-urgent-callout p {
+  margin: 0;
+  color: var(--body);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.62;
+}
+
+/* ── Service page — What to Bring Checklist ── */
+
+.service-checklist {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.service-checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  border: 1px solid rgba(169, 27, 27, 0.1);
+  border-radius: 10px;
+  background: var(--white);
+  padding: 16px 18px;
+  color: var(--body);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.55;
+}
+
+.service-checklist li svg {
+  flex: 0 0 auto;
+  color: var(--red);
+  margin-top: 2px;
+}
+
+/* ── Service page — Helpful Questions List ── */
+
+.service-questions-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: questions;
+}
+
+.service-questions-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  border: 1px solid rgba(169, 27, 27, 0.1);
+  border-radius: 10px;
+  background: var(--white);
+  padding: 16px 18px;
+  color: var(--body);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.55;
+}
+
+.service-questions-list li svg {
+  flex: 0 0 auto;
+  color: var(--red);
+  margin-top: 2px;
+}
+
+/* ── Responsive adjustments for new sections ── */
+
+@media (max-width: 700px) {
+  .service-quick-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .service-urgent-callout {
+    grid-template-columns: 28px minmax(0, 1fr);
+    gap: 12px;
+  }
+}
+
+/* ── Service booking dialog ── */
+
 .service-booking-dialog {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);

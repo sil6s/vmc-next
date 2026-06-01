@@ -96,11 +96,15 @@ export type ServiceDetail = ServiceCard & {
   fullDescription?: string;
   overview?: PortableTextBlock[];
   overviewText: string[];
+  approachSection?: string;
   symptomsOrReasons: ServiceReason[];
   whatToExpect: ServiceStep[];
   includedCare: ServiceIncludedCare[];
   keyBenefits?: ServiceIncludedCare[];
   careApproachCards?: ServiceIncludedCare[];
+  whatToBring?: string[];
+  helpfulQuestions?: string[];
+  urgentCallout?: { title: string; text: string };
   timelineBlocks?: { label?: string; title: string; description: string }[];
   comparisonTable?: ServiceTable;
   contentTable?: ServiceTable;
@@ -145,7 +149,7 @@ export const serviceHubServices: ServiceDetail[] = [
     cta: "Learn about wellness exams",
     cardIcon: "stethoscope",
     featured: true,
-    metaTitle: "Pet Wellness Exams in Northern Kentucky | VMC",
+    metaTitle: "Pet Wellness Exams in Northern Kentucky | Veterinary Medical Centers",
     metaDescription:
       "Schedule pet wellness exams for dogs and cats in Northern Kentucky at Veterinary Medical Centers in Fort Thomas and Independence.",
     focusKeyword: "pet wellness exams Northern Kentucky",
@@ -210,14 +214,14 @@ export const serviceHubServices: ServiceDetail[] = [
     bestFor: ["Puppies", "Kittens", "Lifestyle-based protection"],
     cta: "View vaccination care",
     cardIcon: "syringe",
-    metaTitle: "Dog & Cat Vaccinations in Northern Kentucky | VMC",
+    metaTitle: "Dog & Cat Vaccinations in Northern Kentucky | Veterinary Medical Centers",
     metaDescription: "Vaccination care for dogs, cats, puppies, and kittens in Fort Thomas and Independence KY.",
     heroTitle: "Dog & Cat Vaccinations in Northern Kentucky",
     heroDescription: "Vaccines are an important part of preventive veterinary care for dogs and cats, and our team helps choose the right protection for your pet's lifestyle.",
     heroImage: "/images/veterinary-care-hero.jpg",
     heroImageAlt: "Veterinarian providing dog and cat vaccination care in Northern Kentucky",
     overviewText: [
-      "Vaccination visits at VMC are not one-size-fits-all. Our veterinarians consider your pet's age, species, travel habits, exposure risk, medical history, and local Northern Kentucky requirements before making recommendations.",
+      "Vaccination visits at Veterinary Medical Centers are not one-size-fits-all. Our veterinarians consider your pet's age, species, travel habits, exposure risk, medical history, and local Northern Kentucky requirements before making recommendations.",
       "We explain which vaccines are core, which are lifestyle-based, and how often boosters may be needed. The goal is practical protection without unnecessary confusion."
     ],
     symptomsOrReasons: [
@@ -257,8 +261,8 @@ export const serviceHubServices: ServiceDetail[] = [
     cta: "Start puppy or kitten care",
     cardIcon: "baby",
     featured: true,
-    metaTitle: "Puppy & Kitten Vet Care in Northern Kentucky | VMC",
-    metaDescription: "Start puppy or kitten care with exams, vaccines, prevention, and practical guidance at VMC in Northern Kentucky.",
+    metaTitle: "Puppy & Kitten Vet Care in Northern Kentucky | Veterinary Medical Centers",
+    metaDescription: "Start puppy or kitten care with exams, vaccines, prevention, and practical guidance at Veterinary Medical Centers in Northern Kentucky.",
     heroTitle: "Puppy & Kitten Veterinary Care in Northern Kentucky",
     heroDescription: "New puppies and kittens need a strong start, and our team helps you understand exams, vaccines, prevention, nutrition, behavior, and early health planning.",
     heroImage: "/images/cat-closeup-hero.png",
@@ -300,41 +304,91 @@ export const serviceHubServices: ServiceDetail[] = [
     slug: "pet-dental-care",
     serviceCategory: "dentalSurgery",
     shortDescription:
-      "Dental exams, professional cleanings, dental X-rays when appropriate, and treatment recommendations for dogs and cats with oral health needs.",
-    bestFor: ["Bad breath", "Tartar", "Chewing changes"],
+      "Dental exams, professional cleaning discussions, dental X-rays when appropriate, treatment planning, and home dental care guidance for dogs and cats with oral health needs.",
+    bestFor: ["Bad breath", "Visible tartar", "Red or swollen gums", "Chewing changes", "Oral discomfort"],
     cta: "Explore dental care",
     cardIcon: "smilePlus",
     featured: true,
-    metaTitle: "Pet Dental Care in Northern Kentucky | VMC",
-    metaDescription: "Veterinary dental exams and professional dental care for dogs and cats in Fort Thomas and Independence KY.",
+    metaTitle: "Pet Dental Care in Northern Kentucky | Veterinary Medical Centers",
+    metaDescription: "Veterinary dental exams and professional dental care for dogs and cats in Fort Thomas and Independence, KY.",
+    focusKeyword: "pet dental care Northern Kentucky",
+    heroEyebrow: "Dental & Oral Health",
     heroTitle: "Pet Dental Care in Northern Kentucky",
-    heroDescription: "Dental disease can affect comfort, breath, eating, and overall health, so our team helps families understand oral findings and treatment options clearly.",
+    heroDescription: "Dental disease can affect your pet's comfort, eating habits, and long-term wellbeing. Our team in Fort Thomas and Independence helps families understand oral findings and treatment options clearly.",
     heroImage: "/images/veterinary-care-hero.jpg",
-    heroImageAlt: "Pet dental care at Veterinary Medical Centers in Northern Kentucky",
+    heroImageAlt: "Pet dental exam at Veterinary Medical Centers in Northern Kentucky",
+    fullDescription: "Dental disease is one of the most common health concerns in dogs and cats, and many pets show signs of discomfort before owners realize it. Veterinary Medical Centers evaluates oral health as part of routine wellness care and offers professional dental cleaning, dental X-rays when appropriate, and treatment planning for pets with oral health needs.",
     overviewText: [
-      "Pet dental care at VMC starts with an oral evaluation and a conversation about what you are noticing at home. Bad breath, tartar, red gums, drooling, and chewing changes can all point to oral discomfort or disease.",
-      "When professional dental cleaning or treatment is recommended, we explain preparation, anesthesia, monitoring, dental X-rays when appropriate, recovery, and home-care steps so you know what to expect."
+      "Dental health is closely connected to your pet's overall comfort and quality of life. Bad breath is often the first sign families notice, but visible tartar, red gums, drooling, dropping food, or changes in how a pet chews can all point to oral pain or disease that deserves veterinary attention.",
+      "Veterinary Medical Centers approaches pet dental care with clear communication and practical guidance. Whether your pet needs a dental exam as part of a routine visit or you're noticing changes at home, our Fort Thomas and Independence teams help families understand what the exam reveals and what the recommended next steps would involve."
     ],
+    approachSection: "Our veterinary teams in Fort Thomas and Independence approach pet dental care with clear communication and practical recommendations. We explain what we find during the exam, discuss why professional cleaning or treatment may be recommended, and take time to walk through what the process involves — including anesthesia, monitoring, dental X-rays when appropriate, and home-care steps. Our goal is to help families feel informed and comfortable making decisions for their pet.",
     symptomsOrReasons: [
-      { title: "Bad breath or visible tartar", description: "These can be signs of dental disease that should be evaluated." },
-      { title: "Chewing changes", description: "Dropping food, favoring one side, or avoiding hard food can signal oral discomfort." },
-      { title: "Red gums or drooling", description: "Inflammation and saliva changes deserve a veterinary exam." }
+      { title: "Bad breath", description: "Persistent unpleasant breath is one of the most common signs of dental disease and is often the first thing families notice." },
+      { title: "Visible tartar or discolored teeth", description: "Yellow or brown buildup on the teeth is a sign that dental plaque has hardened and may be contributing to gum disease." },
+      { title: "Red, swollen, or bleeding gums", description: "Gum inflammation can indicate early or advanced periodontal disease and should be evaluated by a veterinarian." },
+      { title: "Drooling more than usual", description: "Increased saliva or drooling can be a sign of oral pain, mouth sores, or dental disease that is affecting comfort." },
+      { title: "Chewing changes or dropping food", description: "If your pet avoids hard food, favors one side while chewing, or drops food frequently, oral discomfort may be a cause." },
+      { title: "Decreased appetite or reluctance to eat", description: "Dental pain can make eating uncomfortable, leading to appetite changes that may not obviously connect to oral health." },
+      { title: "Pawing at the mouth or face", description: "Repeated pawing at the mouth or rubbing the face may signal oral pain or irritation." },
+      { title: "Dental concerns found during a wellness visit", description: "Many dental problems are identified during a routine exam before obvious symptoms develop at home." }
     ],
     whatToExpect: [
-      { stepTitle: "Oral exam", stepDescription: "We assess visible teeth, gums, breath, and signs of discomfort." },
-      { stepTitle: "Treatment discussion", stepDescription: "Your veterinarian explains whether cleaning, imaging, or treatment may be recommended." },
-      { stepTitle: "Home-care plan", stepDescription: "We review practical ways to support dental health after the visit." }
+      { stepTitle: "Oral exam and conversation", stepDescription: "Your veterinarian examines visible teeth, gums, and surrounding tissues and asks what you've noticed at home — including breath changes, eating habits, or any pawing at the face." },
+      { stepTitle: "Discussion of findings", stepDescription: "Your veterinarian explains what they observed — tartar buildup, gum redness, loose teeth, or other concerns — and why these may affect your pet's comfort." },
+      { stepTitle: "Professional cleaning discussion", stepDescription: "If a professional cleaning is recommended, your veterinarian explains the process, including anesthesia, monitoring, dental X-rays when appropriate, and what to expect during recovery." },
+      { stepTitle: "Treatment planning when needed", stepDescription: "If the exam reveals concerns that may need further treatment such as extractions, the team walks through what that could involve and what questions to consider." },
+      { stepTitle: "Home dental care guidance", stepDescription: "Before you leave, we discuss practical home-care options such as tooth brushing, dental products, and realistic ways to support your pet's oral health between visits." }
     ],
+    careApproachCards: [
+      { title: "Clear explanation of findings", description: "We explain what we see during the dental exam in plain language, including why a finding matters and what it could mean for your pet's comfort." },
+      { title: "Thoughtful cleaning planning", description: "Professional dental cleanings require anesthesia. We explain pre-procedure preparation, monitoring, and what the procedure involves before you decide." },
+      { title: "Dental X-rays when appropriate", description: "Dental X-rays can reveal disease below the gumline that is not visible on exam. Your veterinarian discusses when imaging may add useful information." },
+      { title: "Treatment options explained", description: "If extractions or further treatment are recommended, we walk through the options, what to expect, and what post-procedure care involves." },
+      { title: "Realistic home care guidance", description: "We give practical home-care suggestions based on your pet's tolerance and your household routine — without pressure if brushing isn't working." },
+      { title: "Connection to overall wellness", description: "Dental health connects to eating, comfort, behavior, and long-term wellbeing. We discuss how oral findings fit into your pet's overall health picture." }
+    ],
+    whatToBring: [
+      "Vaccine records and medical history, especially any prior dental procedures",
+      "Current medications and supplements your pet is taking",
+      "Notes about any eating or chewing changes you have noticed at home",
+      "Photos or short videos of symptoms such as drooling, pawing at the face, or dropping food",
+      "Your pet's diet details — type of food, frequency, and any dental treats or products used",
+      "A list of questions you want to discuss with the veterinarian"
+    ],
+    helpfulQuestions: [
+      "Does my pet have signs of dental disease that need attention now?",
+      "What does a professional dental cleaning involve, and what should I expect?",
+      "Will my pet need anesthesia, and what does the monitoring process look like?",
+      "Are dental X-rays recommended, and what might they show?",
+      "Is there anything I can do at home to help my pet's dental health between visits?",
+      "How does my pet's dental health connect to their overall comfort and wellbeing?",
+      "What signs should I watch for that would prompt me to call before the next scheduled visit?"
+    ],
+    urgentCallout: {
+      title: "When to call sooner",
+      text: "Call Veterinary Medical Centers or seek urgent veterinary care if your pet suddenly stops eating, shows signs of significant mouth pain, has a swollen face or jaw, or you notice a broken tooth. These signs may need prompt attention rather than a routine appointment."
+    },
     includedCare: [
-      { title: "Oral health assessment", description: "A veterinarian reviews visible dental concerns and symptoms." },
-      { title: "Professional cleaning plan", description: "Dental cleanings may be recommended when tartar or gum disease is present." },
-      { title: "Dental treatment planning", description: "We discuss extractions or additional care when needed." }
+      { title: "Oral health assessment", description: "A veterinarian evaluates visible dental concerns and discusses symptoms during the exam." },
+      { title: "Professional cleaning discussion", description: "We explain when and why a professional cleaning may be recommended." },
+      { title: "Dental X-ray guidance", description: "Dental imaging is discussed when it may add information that affects the care plan." },
+      { title: "Treatment planning", description: "We walk through options for extractions or additional care when findings warrant it." },
+      { title: "Home care guidance", description: "Practical, realistic options for supporting oral health between veterinary visits." }
     ],
-    whenToScheduleText: ["Schedule dental care if your pet has bad breath, tartar, red gums, mouth sensitivity, drooling, or chewing changes."],
-    relatedServiceSlugs: ["pet-wellness-exams", "senior-pet-care", "soft-tissue-surgery"],
+    whenToScheduleText: ["Schedule a dental exam if your pet has bad breath, visible tartar, red gums, mouth sensitivity, drooling, dropping food, or chewing changes. Dental health is also reviewed during routine wellness visits."],
+    relatedServiceSlugs: ["pet-wellness-exams", "senior-pet-care", "soft-tissue-surgery", "sick-pet-visits"],
     faqs: [
-      { question: "Do pets need anesthesia for dental cleanings?", answer: "Professional dental cleanings typically require anesthesia so the team can clean below the gumline and evaluate the mouth safely." },
-      { question: "Can dental disease affect comfort?", answer: "Yes. Dental disease can contribute to pain, chewing changes, infection, and reduced quality of life." }
+      { question: "Does my pet need anesthesia for a professional dental cleaning?", answer: "Professional dental cleanings for pets require anesthesia so the team can safely clean above and below the gumline, evaluate each tooth, and take X-rays if needed. Veterinary Medical Centers explains the anesthesia and monitoring process before the procedure." },
+      { question: "How do I know if my pet has dental disease?", answer: "Common signs include bad breath, visible yellow or brown buildup on the teeth, red or swollen gums, drooling, chewing changes, dropping food, or decreased appetite. A veterinary dental exam can identify problems that may not be obvious at home." },
+      { question: "Can dental disease affect my pet's comfort and quality of life?", answer: "Yes. Dental disease can cause pain that affects eating, behavior, and daily comfort. Many pets hide discomfort, so problems may be further along than their behavior suggests by the time they become noticeable." },
+      { question: "How often should my pet have a dental exam?", answer: "Dental health is typically evaluated during routine wellness exams. Based on findings, your veterinarian may recommend a professional cleaning or more frequent monitoring. Small breeds and certain dog and cat breeds often develop dental disease earlier." },
+      { question: "What are dental X-rays used for in pets?", answer: "Dental X-rays allow veterinarians to see the portion of teeth and roots below the gumline, where significant disease can develop without visible signs. They help identify loose teeth, abscesses, bone loss, and other concerns that affect treatment planning." },
+      { question: "What is involved in a professional pet dental cleaning?", answer: "A professional cleaning involves anesthesia, a thorough scaling and polishing of the teeth above and below the gumline, evaluation of each tooth and surrounding tissue, dental X-rays when appropriate, and any additional treatment recommended based on findings." },
+      { question: "Do indoor cats need dental care?", answer: "Yes. Indoor cats are just as susceptible to dental disease as outdoor cats. Regular exams and periodic dental care are important for cats at every life stage." },
+      { question: "What can I do at home to support my pet's dental health?", answer: "Home dental care options include tooth brushing with pet-safe toothpaste, dental rinses, certain dental treats and diets, and water additives. Your veterinary team can suggest realistic options based on your pet's tolerance and household routine." },
+      { question: "Do you offer dental care at both locations?", answer: "Veterinary Medical Centers provides dental exams and oral health care for dogs and cats at both our Fort Thomas and Independence, Kentucky locations." },
+      { question: "What should I watch for after a dental procedure?", answer: "After a professional cleaning or dental procedure, watch for changes in appetite, behavior, swelling near the face or jaw, or reluctance to eat. Your veterinarian provides discharge instructions and a number to call if you have concerns during recovery." }
     ],
     author: defaultAuthor,
     updatedAt: "2026-05-11",
@@ -351,14 +405,14 @@ export const serviceHubServices: ServiceDetail[] = [
     bestFor: ["Puppies", "Kittens", "Newly adopted pets"],
     cta: "Learn about spay & neuter",
     cardIcon: "shieldCheck",
-    metaTitle: "Spay & Neuter Surgery in Northern Kentucky | VMC",
+    metaTitle: "Spay & Neuter Surgery in Northern Kentucky | Veterinary Medical Centers",
     metaDescription: "Spay and neuter surgery planning for dogs and cats at Veterinary Medical Centers in Northern Kentucky.",
     heroTitle: "Spay & Neuter Surgery in Northern Kentucky",
     heroDescription: "Our team helps families understand spay and neuter timing, preparation, anesthesia, monitoring, pain control, and recovery for dogs and cats.",
     heroImage: "/images/veterinary-care-hero.jpg",
     heroImageAlt: "Veterinary surgery planning for dogs and cats in Northern Kentucky",
     overviewText: [
-      "Spay and neuter procedures are common veterinary surgeries, but every pet still deserves thoughtful preparation and monitoring. At VMC, we discuss timing, health history, pre-surgical considerations, anesthesia, pain control, and recovery before the procedure.",
+      "Spay and neuter procedures are common veterinary surgeries, but every pet still deserves thoughtful preparation and monitoring. Our team discusses timing, health history, pre-surgical considerations, anesthesia, pain control, and recovery before the procedure.",
       "Our goal is to make the process clear and manageable for families while keeping your pet's comfort and safety central."
     ],
     symptomsOrReasons: [
@@ -397,10 +451,10 @@ export const serviceHubServices: ServiceDetail[] = [
     bestFor: ["Mass removals", "Wound care", "Select routine procedures"],
     cta: "Learn about surgery",
     cardIcon: "scissors",
-    metaTitle: "Pet Soft Tissue Surgery in Northern Kentucky | VMC",
+    metaTitle: "Pet Soft Tissue Surgery in Northern Kentucky | Veterinary Medical Centers",
     metaDescription: "Soft tissue surgery for dogs and cats with careful monitoring and recovery guidance in Northern Kentucky.",
     heroTitle: "Pet Soft Tissue Surgery in Northern Kentucky",
-    heroDescription: "For dogs and cats who need selected soft tissue procedures, VMC focuses on preparation, monitoring, communication, pain control, and recovery support.",
+    heroDescription: "For dogs and cats who need selected soft tissue procedures, Veterinary Medical Centers focuses on preparation, monitoring, communication, pain control, and recovery support.",
     heroImage: "/images/veterinary-care-hero.jpg",
     heroImageAlt: "Pet soft tissue surgery planning in Northern Kentucky",
     overviewText: [
@@ -444,7 +498,7 @@ export const serviceHubServices: ServiceDetail[] = [
     cta: "Schedule a sick visit",
     cardIcon: "heartPulse",
     featured: true,
-    metaTitle: "Sick Pet Visits in Northern Kentucky | VMC",
+    metaTitle: "Sick Pet Visits in Northern Kentucky | Veterinary Medical Centers",
     metaDescription: "Veterinary sick visits for dogs and cats with new symptoms in Fort Thomas and Independence KY.",
     heroTitle: "Sick Pet Visits in Northern Kentucky",
     heroDescription: "When your dog or cat is not acting like themselves, our team can evaluate symptoms, explain findings, and help you choose practical next steps.",
@@ -452,7 +506,7 @@ export const serviceHubServices: ServiceDetail[] = [
     heroImageAlt: "Veterinarian evaluating a sick pet in Northern Kentucky",
     overviewText: [
       "Sick pet visits are for concerns that should not wait for a routine wellness exam. Vomiting, diarrhea, coughing, limping, eye redness, appetite changes, painful behavior, urinary changes, and sudden lethargy all deserve veterinary guidance.",
-      "Call first if symptoms seem urgent. Our Fort Thomas and Independence teams can help determine whether VMC, a same-day appointment, or an emergency hospital is the safest next step."
+      "Call first if symptoms seem urgent. Our Fort Thomas and Independence teams can help determine whether our clinic, a same-day appointment, or an emergency hospital is the safest next step."
     ],
     symptomsOrReasons: [
       { title: "Vomiting, diarrhea, or appetite changes", description: "Digestive symptoms can have many causes and may need timely care." },
@@ -473,7 +527,7 @@ export const serviceHubServices: ServiceDetail[] = [
     relatedServiceSlugs: ["veterinary-diagnostics", "skin-ear-allergy-care", "pet-wellness-exams"],
     faqs: [
       { question: "Should I call before bringing in a sick pet?", answer: "Yes. Calling first helps us triage your pet and recommend the safest next step." },
-      { question: "Do you handle emergencies?", answer: "VMC sees urgent concerns during clinic hours, but life-threatening emergencies should go to a 24-hour emergency hospital." }
+      { question: "Do you handle emergencies?", answer: "Veterinary Medical Centers sees urgent concerns during clinic hours, but life-threatening emergencies should go to a 24-hour emergency hospital." }
     ],
     author: defaultAuthor,
     updatedAt: "2026-05-11",
@@ -490,15 +544,15 @@ export const serviceHubServices: ServiceDetail[] = [
     bestFor: ["Illness", "Senior pets", "Pre-surgical screening"],
     cta: "Learn about diagnostics",
     cardIcon: "microscope",
-    metaTitle: "Veterinary Diagnostics in Northern Kentucky | VMC",
-    metaDescription: "Diagnostic testing guidance for dogs and cats in Northern Kentucky at VMC Fort Thomas and Independence.",
+    metaTitle: "Veterinary Diagnostics in Northern Kentucky | Veterinary Medical Centers",
+    metaDescription: "Diagnostic testing guidance for dogs and cats in Northern Kentucky at our Fort Thomas and Independence.",
     heroTitle: "Veterinary Diagnostics in Northern Kentucky",
     heroDescription: "Diagnostic testing can help us better understand what is happening inside your pet's body and choose next steps with more clarity.",
     heroImage: "/images/veterinary-care-hero.jpg",
     heroImageAlt: "Veterinary diagnostics for dogs and cats in Northern Kentucky",
     overviewText: [
       "Diagnostics are often recommended when symptoms are unclear, a pet is aging, surgery is planned, or a condition needs monitoring. Testing may help identify patterns that cannot be seen from an exam alone.",
-      "At VMC, we explain why a test is recommended, what information it may provide, and how results could affect the care plan."
+      "Our team explains why a test is recommended, what information it may provide, and how results could affect the care plan."
     ],
     symptomsOrReasons: [
       { title: "Symptoms do not have an obvious cause", description: "Testing can help narrow possible explanations." },
@@ -536,7 +590,7 @@ export const serviceHubServices: ServiceDetail[] = [
     bestFor: ["Aging dogs", "Aging cats", "Chronic health concerns"],
     cta: "Plan senior pet care",
     cardIcon: "activity",
-    metaTitle: "Senior Pet Care in Northern Kentucky | VMC",
+    metaTitle: "Senior Pet Care in Northern Kentucky | Veterinary Medical Centers",
     metaDescription: "Senior dog and cat veterinary care in Fort Thomas and Independence, including monitoring, diagnostics, and quality-of-life support.",
     heroTitle: "Senior Pet Care in Northern Kentucky",
     heroDescription: "Older dogs and cats benefit from attentive monitoring, practical communication, and care plans that support comfort and quality of life.",
@@ -582,7 +636,7 @@ export const serviceHubServices: ServiceDetail[] = [
     bestFor: ["Year-round protection", "Outdoor pets", "Puppies and kittens"],
     cta: "Ask about prevention",
     cardIcon: "shieldCheck",
-    metaTitle: "Parasite Prevention for Pets in Northern Kentucky | VMC",
+    metaTitle: "Parasite Prevention for Pets in Northern Kentucky | Veterinary Medical Centers",
     metaDescription: "Flea, tick, heartworm, and intestinal parasite prevention guidance for dogs and cats in Northern Kentucky.",
     heroTitle: "Parasite Prevention for Dogs & Cats in Northern Kentucky",
     heroDescription: "Parasite prevention helps protect pets and families from fleas, ticks, heartworms, and intestinal parasites common in local environments.",
@@ -628,7 +682,7 @@ export const serviceHubServices: ServiceDetail[] = [
     bestFor: ["Itching", "Ear infections", "Hot spots and allergies"],
     cta: "Get skin & ear help",
     cardIcon: "clipboardList",
-    metaTitle: "Pet Skin, Ear & Allergy Care in Northern Kentucky | VMC",
+    metaTitle: "Pet Skin, Ear & Allergy Care in Northern Kentucky | Veterinary Medical Centers",
     metaDescription: "Veterinary care for itching, ear infections, hot spots, and allergy symptoms in dogs and cats in Northern Kentucky.",
     heroTitle: "Pet Skin, Ear & Allergy Care in Northern Kentucky",
     heroDescription: "Itching, licking, ear odor, hair loss, and recurring irritation can have many causes, and our team can help evaluate symptoms and next steps.",
@@ -674,7 +728,7 @@ export const serviceHubServices: ServiceDetail[] = [
     bestFor: ["Weight management", "Diet questions", "Life-stage nutrition"],
     cta: "Talk about nutrition",
     cardIcon: "apple",
-    metaTitle: "Pet Nutrition & Weight Guidance in Northern Kentucky | VMC",
+    metaTitle: "Pet Nutrition & Weight Guidance in Northern Kentucky | Veterinary Medical Centers",
     metaDescription: "Nutrition and weight guidance for dogs and cats at Veterinary Medical Centers in Northern Kentucky.",
     heroTitle: "Pet Nutrition & Weight Guidance in Northern Kentucky",
     heroDescription: "Food choices, weight changes, and feeding routines can affect long-term health, and our team helps families make practical nutrition decisions.",
@@ -682,7 +736,7 @@ export const serviceHubServices: ServiceDetail[] = [
     heroImageAlt: "Pet nutrition guidance at Veterinary Medical Centers in Northern Kentucky",
     overviewText: [
       "Nutrition advice should be tied to your pet's age, breed, activity level, body condition, medical needs, and home routine. There is rarely one perfect answer for every dog or cat.",
-      "At VMC, we help families talk through food choices, feeding amounts, weight changes, treats, life-stage transitions, and nutrition questions connected to medical care."
+      "Our team helps families talk through food choices, feeding amounts, weight changes, treats, life-stage transitions, and nutrition questions connected to medical care."
     ],
     symptomsOrReasons: [
       { title: "Your pet is gaining or losing weight", description: "Weight changes can affect comfort and may point to health concerns." },

@@ -251,6 +251,10 @@ export const SERVICE_QUERY = `*[
   comparisonTable,
   contentTable,
   calloutBlocks,
+  approachSection,
+  whatToBring,
+  helpfulQuestions,
+  urgentCallout,
   whenToSchedule,
   relatedServices[]->{
     ${SERVICE_CARD_FIELDS}
