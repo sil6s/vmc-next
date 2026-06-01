@@ -1,17 +1,20 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { KeyRound, Mail } from "lucide-react";
+import { AlertCircle, KeyRound, Mail } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { TurnstileField } from "@/components/forms/TurnstileField";
 import { createClient } from "@/lib/supabase/client";
 
+const CODE_LENGTH = 8;
+
 export function PasskeySignInForm({ callbackUrl }: { callbackUrl: string }) {
   const [email, setEmail] = useState("");
-  const [code, setCode] = useState("");
+  const [digits, setDigits] = useState<string[]>(Array(CODE_LENGTH).fill(""));
   const [state, setState] = useState<"idle" | "sending" | "sent" | "verifying" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
   const captchaToken = useRef("");
+  const inputRefs = useRef<Array<HTMLInputElement | null>>(Array(CODE_LENGTH).fill(null));
 
   const redirectTo = typeof window !== "undefined"
     ? `${window.location.origin}/api/auth/callback?next=${encodeURIComponent(callbackUrl)}`
@@ -42,63 +45,116 @@ export function PasskeySignInForm({ callbackUrl }: { callbackUrl: string }) {
     }
   };
 
-  const handleCodeSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    const trimmed = code.replace(/\s/g, "");
-    if (!trimmed) return;
-
+  const submitCode = async (code: string) => {
     setState("verifying");
     setErrorMessage("");
 
     const supabase = createClient();
     const { error } = await supabase.auth.verifyOtp({
       email: email.trim().toLowerCase(),
-      token: trimmed,
+      token: code,
       type: "email"
     });
 
     if (error) {
       setState("sent");
-      setErrorMessage("That code didn't work. Check it and try again, or request a new one.");
+      setErrorMessage("That code didn't work — check it or request a new one.");
     } else {
       window.location.href = callbackUrl;
     }
   };
 
+  const handleDigitChange = (index: number, value: string) => {
+    const digit = value.replace(/\D/g, "").slice(-1);
+    const newDigits = [...digits];
+    newDigits[index] = digit;
+    setDigits(newDigits);
+
+    if (digit && index < CODE_LENGTH - 1) {
+      inputRefs.current[index + 1]?.focus();
+    }
+
+    if (digit && newDigits.every(d => d !== "")) {
+      submitCode(newDigits.join(""));
+    }
+  };
+
+  const handleDigitKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Backspace" && !digits[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
+  };
+
+  const handlePaste = (e: React.ClipboardEvent) => {
+    e.preventDefault();
+    const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, CODE_LENGTH);
+    const newDigits = Array(CODE_LENGTH).fill("");
+    for (let i = 0; i < pasted.length; i++) newDigits[i] = pasted[i];
+    setDigits(newDigits);
+    const nextEmpty = newDigits.findIndex(d => d === "");
+    inputRefs.current[nextEmpty === -1 ? CODE_LENGTH - 1 : nextEmpty]?.focus();
+    if (newDigits.every(d => d !== "")) submitCode(newDigits.join(""));
+  };
+
   if (state === "sent" || state === "verifying") {
     return (
       <div className="admin-signin-sent">
-        <Mail aria-hidden="true" size={28} />
-        <h2>Check your email</h2>
-        <p>
-          We sent a code to <strong>{email}</strong>. Enter it below or click the link in the email.
+        <div className="admin-signin-sent-head">
+          <span className="admin-signin-sent-icon">
+            <Mail aria-hidden="true" size={20} />
+          </span>
+          <div>
+            <h2>Check your email</h2>
+            <p className="admin-signin-sent-sub">No password required — just a secure one-time code.</p>
+          </div>
+        </div>
+
+        <hr className="admin-signin-divider" />
+
+        <p className="admin-signin-sent-desc">
+          We sent a code to <strong>{email}</strong> — enter it below or click the link in the email.
         </p>
 
-        <form className="admin-signin-code-form" onSubmit={handleCodeSubmit}>
-          <label className="admin-signin-label" htmlFor="admin-otp-code">
-            <span>6-digit code</span>
-            <Input
-              id="admin-otp-code"
-              type="text"
-              inputMode="numeric"
-              autoComplete="one-time-code"
-              placeholder="000000"
-              maxLength={6}
-              value={code}
-              onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
-              disabled={state === "verifying"}
-              autoFocus
-            />
+        <form
+          className="admin-signin-code-form"
+          onSubmit={(e) => { e.preventDefault(); submitCode(digits.join("")); }}
+        >
+          <label className="admin-signin-label" htmlFor="admin-otp-0">
+            8-digit code
           </label>
 
+          <div className="admin-signin-otp-inputs" onPaste={handlePaste}>
+            {digits.map((digit, i) => (
+              <input
+                key={i}
+                ref={(el) => { inputRefs.current[i] = el; }}
+                id={i === 0 ? "admin-otp-0" : undefined}
+                className="admin-signin-otp-input"
+                type="text"
+                inputMode="numeric"
+                autoComplete={i === 0 ? "one-time-code" : "off"}
+                maxLength={1}
+                value={digit}
+                onChange={(e) => handleDigitChange(i, e.target.value)}
+                onKeyDown={(e) => handleDigitKeyDown(i, e)}
+                disabled={state === "verifying"}
+                autoFocus={i === 0}
+                aria-label={`Digit ${i + 1} of ${CODE_LENGTH}`}
+              />
+            ))}
+          </div>
+
           {errorMessage && (
-            <p className="admin-signin-error" role="alert">{errorMessage}</p>
+            <p className="admin-signin-error" role="alert">
+              <AlertCircle aria-hidden="true" size={14} />
+              {errorMessage}
+            </p>
           )}
 
           <button
             className="admin-signin-button"
             type="submit"
-            disabled={state === "verifying" || code.replace(/\s/g, "").length < 6}
+            disabled={state === "verifying" || digits.some(d => d === "")}
           >
             {state === "verifying" ? "Verifying…" : "Continue"}
           </button>
@@ -107,9 +163,9 @@ export function PasskeySignInForm({ callbackUrl }: { callbackUrl: string }) {
         <button
           className="admin-signin-resend"
           type="button"
-          onClick={() => { setState("idle"); setCode(""); setErrorMessage(""); }}
+          onClick={() => { setState("idle"); setDigits(Array(CODE_LENGTH).fill("")); setErrorMessage(""); }}
         >
-          Use a different email
+          Wrong address? Use a different email
         </button>
       </div>
     );

@@ -14685,35 +14685,68 @@ body:has(.standalone-studio-shell) {
 }
 
 .admin-signin-error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   margin: 0;
   color: var(--red);
   font-size: 13px;
   font-weight: 750;
 }
 
-.admin-signin-sent {
-  display: grid;
-  gap: 10px;
-  text-align: center;
+.admin-signin-error svg {
+  flex: 0 0 auto;
 }
 
-.admin-signin-sent svg {
-  justify-self: center;
+.admin-signin-sent {
+  display: grid;
+  gap: 14px;
+}
+
+.admin-signin-sent-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.admin-signin-sent-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(169, 27, 27, 0.08);
   color: var(--red);
 }
 
-.admin-signin-sent h2 {
-  margin: 0;
+.admin-signin-sent-head h2 {
+  margin: 0 0 2px;
   color: var(--ink);
-  font-family: var(--font-serif), Georgia, serif;
-  font-size: 26px;
+  font-size: 17px;
+  font-weight: 850;
 }
 
-.admin-signin-sent p {
+.admin-signin-sent-sub {
+  margin: 0;
+  color: var(--body);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.admin-signin-divider {
+  border: none;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  margin: 0;
+}
+
+.admin-signin-sent-desc {
   margin: 0;
   color: var(--body);
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.55;
 }
 
@@ -14723,11 +14756,40 @@ body:has(.standalone-studio-shell) {
   width: 100%;
 }
 
-.admin-signin-code-form input {
-  text-align: center;
-  font-size: 22px;
+.admin-signin-otp-inputs {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-signin-otp-input {
+  flex: 1;
+  min-width: 0;
+  height: 54px;
+  border: 1.5px solid rgba(0, 0, 0, 0.18);
+  border-radius: 8px;
+  background: var(--white);
+  color: var(--ink);
+  font-size: 20px;
   font-weight: 800;
-  letter-spacing: 0.2em;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  -moz-appearance: textfield;
+}
+
+.admin-signin-otp-input::-webkit-outer-spin-button,
+.admin-signin-otp-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+.admin-signin-otp-input:focus {
+  border-color: var(--red);
+  box-shadow: 0 0 0 3px rgba(169, 27, 27, 0.12);
+}
+
+.admin-signin-otp-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .admin-signin-resend {
