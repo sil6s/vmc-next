@@ -99,6 +99,13 @@ type PortableCtaBlock = {
   secondaryHref?: string;
 };
 
+type PortableTableBlock = {
+  title?: string;
+  headers?: string[];
+  rows?: Array<{ cells?: string[] }>;
+  note?: string;
+};
+
 const resourceTypeLabels = {
   blog: "Blog",
   education: "Education Guide",
@@ -165,6 +172,10 @@ function displayDate(date?: string) {
 
 function imageUrl(post: BlogPost, width = 1280, height = 720) {
   return post.image ? urlFor(post.image).width(width).height(height).fit("crop").url() : post.featuredImage || "/images/veterinary-care-hero.jpg";
+}
+
+function heroImageUrl(post: BlogPost) {
+  return post.image ? urlFor(post.image).width(1400).auto("format").url() : post.featuredImage || "/images/veterinary-care-hero.jpg";
 }
 
 function schemaImageUrl(post: BlogPost) {
@@ -426,7 +437,7 @@ function FeaturedImage({ post }: { post: BlogPost }) {
       <figure className="resource-editorial-image-frame">
         <Image
           className="resource-editorial-image"
-          src={imageUrl(post)}
+          src={heroImageUrl(post)}
           alt={post.featuredImageAlt || `${post.title} from Veterinary Medical Centers`}
           width={1280}
           height={720}
@@ -508,6 +519,22 @@ function QuickAnswerCard({ children }: { children: string }) {
   );
 }
 
+function ResourceMedicalDisclaimer() {
+  return (
+    <Alert className="resource-medical-disclaimer" tone="warning" aria-label="Resource medical disclaimer and emergency information">
+      <AlertTriangle aria-hidden="true" size={22} />
+      <div>
+        <p className="eyebrow">Medical disclaimer</p>
+        <AlertTitle>This article is general education, not a diagnosis.</AlertTitle>
+        <AlertDescription>
+          If your pet seems sick, painful, injured, or unlike themselves, call Veterinary Medical Centers during business hours or book an appointment. If you think this is an emergency, seek emergency care now. For after-hours 24/7 emergency and urgent care, MedVet Cincinnati is at 3964 Red Bank Rd., Fairfax, OH 45227 and can be reached at{" "}
+          <a href="tel:15135610069">513.561.0069</a>.
+        </AlertDescription>
+      </div>
+    </Alert>
+  );
+}
+
 function BottomCTA() {
   return (
     <Card className="resource-editorial-cta resource-editorial-cta-bottom" aria-label="Veterinary Medical Centers next steps">
@@ -571,7 +598,7 @@ function PortableCta({ value }: { value: PortableCtaBlock }) {
           <h3>{value.title || "Talk with our care team."}</h3>
           <p>{portableTextPlainText(value.body) || "We can help you decide what makes sense for your pet and your visit."}</p>
         </div>
-        <div className="resource-editorial-actions">
+        <div className="resource-portable-cta-actions">
           <ShadButton asChild>
             <Link href={primaryHref}>{value.primaryLabel || "Book Appointment"}</Link>
           </ShadButton>
@@ -605,6 +632,40 @@ function PortableFaq({ value }: { value: PortableFaqBlock }) {
   );
 }
 
+function PortableComparisonTable({ value }: { value: PortableTableBlock }) {
+  const headers = value.headers?.filter(Boolean) || [];
+  const rows = value.rows?.filter((row) => row.cells?.some(Boolean)) || [];
+
+  if (!headers.length || !rows.length) return null;
+
+  return (
+    <figure className="resource-comparison-table">
+      {value.title && <figcaption>{value.title}</figcaption>}
+      <div className="resource-markdown-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              {headers.map((header) => (
+                <th key={header}>{header}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row, rowIndex) => (
+              <tr key={`${row.cells?.join("-") || "row"}-${rowIndex}`}>
+                {headers.map((header, cellIndex) => (
+                  <td key={`${header}-${cellIndex}`}>{row.cells?.[cellIndex] || ""}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {value.note && <p className="resource-comparison-table-note">{value.note}</p>}
+    </figure>
+  );
+}
+
 function StructuredSources({ post }: { post: BlogPost }) {
   if (!post.externalLinks.length || post.sourcesMarkdown) return null;
 
@@ -618,6 +679,23 @@ function StructuredSources({ post }: { post: BlogPost }) {
               {link.label}
             </a>
             {link.source && <span>{link.source}</span>}
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+function StructuredInternalLinks({ post }: { post: BlogPost }) {
+  if (!post.internalLinks.length) return null;
+
+  return (
+    <section className="resource-internal-links-section" aria-labelledby="article-next-reads">
+      <h2 id="article-next-reads">Helpful next reads</h2>
+      <ul className="resource-structured-sources">
+        {post.internalLinks.map((link) => (
+          <li key={`${link.href}-${link.label}`}>
+            <Link href={link.href}>{link.label}</Link>
           </li>
         ))}
       </ul>
@@ -723,6 +801,7 @@ function portableComponents(): PortableTextComponents {
       },
       faq: ({ value }) => <PortableFaq value={value as PortableFaqBlock} />,
       faqs: ({ value }) => <PortableFaq value={value as PortableFaqBlock} />,
+      comparisonTable: ({ value }) => <PortableComparisonTable value={value as PortableTableBlock} />,
       cta: ({ value }) => <PortableCta value={value as PortableCtaBlock} />
     },
     block: {
@@ -767,6 +846,7 @@ function ArticleBody({ markdownBody, post }: { markdownBody?: string; post: Blog
       <article className="resource-article-card" aria-labelledby="resource-title">
         <div className="resource-article-content">
           <QuickAnswerCard>{markdownParts.quickAnswer || fallback.quickAnswer}</QuickAnswerCard>
+          <ResourceMedicalDisclaimer />
 
           {renderMarkdown && markdownBody ? (
             <MarkdownContent value={markdownParts.body || markdownBody} />
@@ -793,6 +873,7 @@ function ArticleBody({ markdownBody, post }: { markdownBody?: string; post: Blog
             </section>
           )}
           <StructuredSources post={post} />
+          <StructuredInternalLinks post={post} />
 
           <section className="resource-next-step-section" aria-labelledby="ready-for-next-visit">
             <h2 id="ready-for-next-visit">Ready for your next visit</h2>

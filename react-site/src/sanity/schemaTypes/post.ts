@@ -348,6 +348,66 @@ export const postType = defineType({
           }
         },
         {
+          name: "comparisonTable",
+          title: "Simple table",
+          type: "object",
+          fields: [
+            defineField({
+              name: "title",
+              title: "Table title",
+              type: "string"
+            }),
+            defineField({
+              name: "headers",
+              title: "Column headers",
+              type: "array",
+              of: [{ type: "string" }],
+              validation: (rule) => rule.min(2).max(4)
+            }),
+            defineField({
+              name: "rows",
+              title: "Rows",
+              type: "array",
+              of: [
+                {
+                  type: "object",
+                  fields: [
+                    defineField({
+                      name: "cells",
+                      title: "Cells",
+                      type: "array",
+                      of: [{ type: "string" }]
+                    })
+                  ],
+                  preview: {
+                    select: { cells: "cells" },
+                    prepare({ cells }) {
+                      return {
+                        title: Array.isArray(cells) ? cells.join(" | ") : "Table row"
+                      };
+                    }
+                  }
+                }
+              ]
+            }),
+            defineField({
+              name: "note",
+              title: "Optional note",
+              type: "text",
+              rows: 2
+            })
+          ],
+          preview: {
+            select: { title: "title" },
+            prepare({ title }) {
+              return {
+                title: title || "Simple table",
+                subtitle: "Standard rich text content block"
+              };
+            }
+          }
+        },
+        {
           name: "callout",
           title: "Article callout",
           type: "object",
