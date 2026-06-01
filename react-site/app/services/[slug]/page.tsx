@@ -83,6 +83,14 @@ const portableComponents: PortableTextComponents = {
     normal: ({ children }) => <p>{children}</p>,
     blockquote: ({ children }) => <blockquote>{children}</blockquote>
   },
+  list: {
+    bullet: ({ children }) => <ul>{children}</ul>,
+    number: ({ children }) => <ol>{children}</ol>
+  },
+  listItem: {
+    bullet: ({ children }) => <li>{children}</li>,
+    number: ({ children }) => <li>{children}</li>
+  },
   marks: {
     link: ({ children, value }) => {
       const href = typeof value?.href === "string" ? value.href : "#";

@@ -5781,38 +5781,45 @@ textarea {
 
 .service-landing-main {
   display: grid;
-  gap: clamp(26px, 4vw, 42px);
+  gap: 0;
 }
 
 .service-rich-card,
 .service-section-block {
   display: grid;
-  gap: 22px;
-  border: 1px solid rgba(169, 27, 27, 0.11);
-  border-radius: 14px;
-  background: #fffdf9;
-  padding: clamp(24px, 4vw, 42px);
-  box-shadow: 0 18px 54px rgba(23, 19, 19, 0.045);
+  gap: 26px;
+  border: none;
+  border-top: 1px solid rgba(169, 27, 27, 0.1);
+  border-radius: 0;
+  background: transparent;
+  padding: clamp(32px, 4vw, 52px) 0;
+  box-shadow: none;
+}
+
+.service-rich-card:first-child,
+.service-section-block:first-child {
+  border-top: none;
+  padding-top: 0;
 }
 
 .service-overview-card {
-  grid-template-columns: minmax(230px, 0.34fr) minmax(0, 1fr);
-  gap: clamp(24px, 4vw, 46px);
+  grid-template-columns: 1fr;
+  gap: 16px;
 }
 
 .service-rich-card h2,
 .service-section-head h2 {
   margin: 0;
   color: var(--ink);
-  font-size: clamp(33px, 4vw, 52px);
+  font-size: clamp(28px, 3.2vw, 42px);
   letter-spacing: 0;
-  line-height: 1.04;
+  line-height: 1.08;
 }
 
 .service-section-head {
   display: grid;
-  gap: 8px;
-  max-width: 800px;
+  gap: 10px;
+  max-width: 760px;
 }
 
 .service-section-head p:not(.eyebrow),
@@ -5827,14 +5834,20 @@ textarea {
 .service-rich-copy {
   display: grid;
   gap: 16px;
+  max-width: 820px;
 }
 
 .service-main-content {
   grid-template-columns: 1fr;
+  background: var(--white);
+  border: 1px solid rgba(169, 27, 27, 0.1);
+  border-radius: 14px;
+  padding: clamp(28px, 4vw, 44px);
+  box-shadow: 0 4px 20px rgba(23, 19, 19, 0.04);
 }
 
 .service-main-content .service-rich-copy {
-  max-width: 880px;
+  max-width: 820px;
 }
 
 .service-main-content h2,
@@ -6028,24 +6041,38 @@ textarea {
 .service-scenario-grid,
 .service-inclusion-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
 }
 
 .service-scenario-card,
 .service-inclusion-card,
 .service-related-card,
 .service-location-card {
+  border: 1px solid rgba(169, 27, 27, 0.11);
   border-radius: 12px;
   background: var(--white);
-  box-shadow: none;
+  box-shadow: 0 4px 16px rgba(23, 19, 19, 0.04);
 }
 
 .service-scenario-card .ui-card-header,
 .service-inclusion-card .ui-card-header {
-  display: grid;
-  gap: 11px;
-  padding: 22px 22px 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 20px 20px 10px;
+}
+
+.service-scenario-card .ui-card-header svg,
+.service-inclusion-card .ui-card-header svg {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  margin-top: 2px;
+  border-radius: 8px;
+  background: rgba(169, 27, 27, 0.07);
+  color: var(--red);
+  padding: 7px;
 }
 
 .service-scenario-card svg,
@@ -6056,13 +6083,13 @@ textarea {
 
 .service-scenario-card .ui-card-title,
 .service-inclusion-card .ui-card-title {
-  font-size: 21px;
-  line-height: 1.14;
+  font-size: 18px;
+  line-height: 1.2;
 }
 
 .service-scenario-card .ui-card-content,
 .service-inclusion-card .ui-card-content {
-  padding: 0 22px 22px;
+  padding: 0 20px 20px 20px;
 }
 
 .service-scenario-card p,
@@ -13940,8 +13967,7 @@ textarea {
     margin: -18px 14px 16px;
   }
 
-  .service-rich-card,
-  .service-section-block {
+  .service-main-content {
     padding: 22px;
   }
 
