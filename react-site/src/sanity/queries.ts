@@ -1,12 +1,12 @@
 export const POSTS_QUERY = `*[
   _type == "post"
   && defined(slug.current)
-]|order(publishedAt desc)[0...$limit]{
+]|order(coalesce(publishedAt, _updatedAt, _createdAt) desc)[0...$limit]{
   _id,
   title,
   "slug": slug.current,
-  publishedAt,
-  updatedAt,
+  "publishedAt": coalesce(publishedAt, _updatedAt, _createdAt),
+  "updatedAt": coalesce(updatedAt, _updatedAt),
   lastReviewedAt,
   "resourceType": coalesce(resourceType, "blog"),
   "contentMode": coalesce(contentMode, select((defined(bodyMarkdown) || defined(bodyMarkdownFile)) && !defined(body) => "advanced", "standard")),
@@ -19,8 +19,8 @@ export const POSTS_QUERY = `*[
   focusKeyword,
   canonicalUrl,
   image,
-  "imageAlt": coalesce(image.alt, title),
-  "imageCaption": image.caption,
+  "imageAlt": coalesce(image.alt, featuredImageAltText, title),
+  "imageCaption": coalesce(image.caption, featuredImageCaptionText),
   openGraphImage,
   ogImageAlt,
   "openGraphImageAlt": coalesce(openGraphImage.alt, ogImageAlt, image.alt, title),
@@ -44,8 +44,8 @@ export const POST_QUERY = `*[
   _id,
   title,
   "slug": slug.current,
-  publishedAt,
-  updatedAt,
+  "publishedAt": coalesce(publishedAt, _updatedAt, _createdAt),
+  "updatedAt": coalesce(updatedAt, _updatedAt),
   lastReviewedAt,
   "resourceType": coalesce(resourceType, "blog"),
   "contentMode": coalesce(contentMode, select((defined(bodyMarkdown) || defined(bodyMarkdownFile)) && !defined(body) => "advanced", "standard")),
@@ -58,8 +58,8 @@ export const POST_QUERY = `*[
   focusKeyword,
   canonicalUrl,
   image,
-  "imageAlt": coalesce(image.alt, title),
-  "imageCaption": image.caption,
+  "imageAlt": coalesce(image.alt, featuredImageAltText, title),
+  "imageCaption": coalesce(image.caption, featuredImageCaptionText),
   openGraphImage,
   ogImageAlt,
   "openGraphImageAlt": coalesce(openGraphImage.alt, ogImageAlt, image.alt, title),
@@ -84,12 +84,12 @@ export const RELATED_POSTS_QUERY = `*[
     category == $category
     || count(tags[@ in $tags]) > 0
   )
-]|order(publishedAt desc)[0...$limit]{
+]|order(coalesce(publishedAt, _updatedAt, _createdAt) desc)[0...$limit]{
   _id,
   title,
   "slug": slug.current,
-  publishedAt,
-  updatedAt,
+  "publishedAt": coalesce(publishedAt, _updatedAt, _createdAt),
+  "updatedAt": coalesce(updatedAt, _updatedAt),
   lastReviewedAt,
   "resourceType": coalesce(resourceType, "blog"),
   "contentMode": coalesce(contentMode, select((defined(bodyMarkdown) || defined(bodyMarkdownFile)) && !defined(body) => "advanced", "standard")),
@@ -102,8 +102,8 @@ export const RELATED_POSTS_QUERY = `*[
   focusKeyword,
   canonicalUrl,
   image,
-  "imageAlt": coalesce(image.alt, title),
-  "imageCaption": image.caption,
+  "imageAlt": coalesce(image.alt, featuredImageAltText, title),
+  "imageCaption": coalesce(image.caption, featuredImageCaptionText),
   openGraphImage,
   ogImageAlt,
   "openGraphImageAlt": coalesce(openGraphImage.alt, ogImageAlt, image.alt, title),

@@ -135,6 +135,9 @@ function fromStaticPost(post: Post): BlogPost {
 
 function fromSanityPost(post: SanityBlogPost): BlogPost {
   const excerpt = post.excerpt || "Veterinary Medical Centers pet health article.";
+  const featuredImage = post.image
+    ? urlFor(post.image).width(800).height(500).fit("crop").auto("format").url()
+    : "/images/veterinary-care-hero.jpg";
   const author = post.author
     ? {
         name: post.author.name || defaultBlogAuthor.name,
@@ -179,9 +182,7 @@ function fromSanityPost(post: SanityBlogPost): BlogPost {
     faqMarkdown: post.faqMarkdown,
     body: post.body,
     image: post.image,
-    featuredImage: post.image
-      ? urlFor(post.image).width(800).height(500).fit("crop").url()
-      : "/images/veterinary-care-hero.jpg",
+    featuredImage,
     featuredImageAlt: post.imageAlt || `${post.title} from Veterinary Medical Centers`,
     featuredImageCaption: post.imageCaption,
     openGraphImage: post.openGraphImage,
@@ -194,6 +195,7 @@ function fromSanityPost(post: SanityBlogPost): BlogPost {
     seo: {
       title: post.seoTitle || `${post.title} | Veterinary Medical Centers`,
       description: post.seoDescription || excerpt,
+      image: featuredImage,
       canonicalUrl: post.canonicalUrl
     }
   };

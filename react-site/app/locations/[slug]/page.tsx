@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Award, Car, CheckCircle, Clock, HeartPulse, MapPin, Navigation, Phone, ShieldCheck, Sparkles, Stethoscope, Star } from "lucide-react";
+import { ArrowRight, Award, BookOpenText, Car, CheckCircle, Clock, HeartPulse, MapPin, Navigation, Phone, ShieldCheck, Sparkles, Stethoscope, Star } from "lucide-react";
 import { Breadcrumbs } from "@/components/sections/Breadcrumbs";
 import { CTASection } from "@/components/sections/CTASection";
 import { FAQSection } from "@/components/sections/FAQSection";
@@ -16,6 +16,7 @@ import { testimonials } from "@/data/testimonials";
 import { pageMetadata } from "@/lib/metadata";
 import { getPublicSettings } from "@/lib/settings/public";
 import { breadcrumbSchema, faqSchema, JsonLd, locationVeterinaryCareSchema, serviceListSchema, webpageSchema } from "@/lib/schema";
+import { getBlogPosts } from "@/sanity/posts";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -65,7 +66,7 @@ export default async function LocationPage({ params }: Params) {
   if (!location) notFound();
 
   const ottoClinicId = OTTO_CLINIC_IDS[location.slug];
-  const settings = await getPublicSettings();
+  const [settings, resourcePosts] = await Promise.all([getPublicSettings(), getBlogPosts(8)]);
   const siteLocation =
     settings.publicLocations.find((item) => item.name === location.shortName) ||
     site.locations.find((item) => item.name === location.shortName) ||
@@ -74,6 +75,7 @@ export default async function LocationPage({ params }: Params) {
   const locationServices = serviceLinks
     .map((serviceSlug) => serviceHubServices.find((service) => service.slug === serviceSlug))
     .filter((service): service is (typeof serviceHubServices)[number] => Boolean(service));
+  const locationResources = resourcePosts.slice(0, 3);
 
   const crumbs = [
     { name: "Home", path: "/" },
@@ -135,6 +137,11 @@ export default async function LocationPage({ params }: Params) {
       {/* ── Clinic Details ── */}
       <section className="location-section location-section-cream">
         <Container>
+          <div className="location-section-head location-details-head">
+            <p className="eyebrow">Visit Information</p>
+            <h2>Plan your visit to our {location.shortName} clinic.</h2>
+            <p>Each detail gets its own row so it is easy to scan before you call, drive over, or schedule your first appointment.</p>
+          </div>
           <div className="location-details-grid">
 
             {/* Address */}
@@ -145,6 +152,10 @@ export default async function LocationPage({ params }: Params) {
               <div className="location-detail-content">
                 <h3>Address</h3>
                 <p>{location.address}</p>
+                <ul className="location-detail-bullets">
+                  <li>Easy clinic access for local pet families</li>
+                  <li>{location.quickFacts.nearby}</li>
+                </ul>
                 <a
                   href={siteLocation.mapUrl}
                   target="_blank"
@@ -166,6 +177,10 @@ export default async function LocationPage({ params }: Params) {
                 <h3>Phone</h3>
                 <a href={`tel:${location.tel}`} className="location-detail-phone">{location.phone}</a>
                 <p className="location-detail-note">Call for appointments, urgent questions, and same-day availability.</p>
+                <ul className="location-detail-bullets">
+                  <li>Best first step if your pet is sick or symptoms are changing</li>
+                  <li>Our team can help you choose the right appointment type</li>
+                </ul>
               </div>
             </div>
 
@@ -179,6 +194,7 @@ export default async function LocationPage({ params }: Params) {
                 <ul className="location-hours-list">
                   {siteLocation.hours.map((h) => <li key={h}>{h}</li>)}
                 </ul>
+                <p className="location-detail-note">Saturday availability may rotate. Call ahead before planning a weekend visit.</p>
               </div>
             </div>
 
@@ -190,6 +206,10 @@ export default async function LocationPage({ params }: Params) {
               <div className="location-detail-content">
                 <h3>Parking</h3>
                 <p>{location.quickFacts.parking}</p>
+                <ul className="location-detail-bullets">
+                  <li>Pull in close to the clinic instead of searching for street parking</li>
+                  <li>Helpful for senior pets, cats in carriers, and nervous dogs</li>
+                </ul>
               </div>
             </div>
 
@@ -201,6 +221,10 @@ export default async function LocationPage({ params }: Params) {
               <div className="location-detail-content">
                 <h3>Patients Seen</h3>
                 <p>{location.quickFacts.petsSeen}</p>
+                <ul className="location-detail-bullets">
+                  <li>{location.quickFacts.mainServices}</li>
+                  <li>Relationship-based care from puppy and kitten visits through senior pet support</li>
+                </ul>
               </div>
             </div>
 
@@ -428,6 +452,34 @@ export default async function LocationPage({ params }: Params) {
                 <p>{location.crossLinkCopy}</p>
               </div>
               <Button href={`/locations/${relatedLocation.slug}/`}>{location.crossLinkCta}</Button>
+            </div>
+          </Container>
+        </section>
+      )}
+
+      {/* ── Related Resources ── */}
+      {locationResources.length > 0 && (
+        <section className="location-section location-section-white">
+          <Container>
+            <div className="location-section-head">
+              <p className="eyebrow">Pet Care Resources</p>
+              <h2>Helpful guides before or after your {location.shortName} visit.</h2>
+              <p>Browse practical education from the Veterinary Medical Centers team, then call us if you want help applying it to your pet.</p>
+            </div>
+            <div className="location-resource-grid">
+              {locationResources.map((post) => (
+                <article className="location-resource-card" key={post.slug}>
+                  <BookOpenText aria-hidden="true" size={20} />
+                  <p className="eyebrow">{post.category}</p>
+                  <h3>
+                    <Link href={`/resources/${post.slug}/`}>{post.title}</Link>
+                  </h3>
+                  <p>{post.excerpt}</p>
+                  <Link href={`/resources/${post.slug}/`}>
+                    Read resource <ArrowRight aria-hidden="true" size={15} />
+                  </Link>
+                </article>
+              ))}
             </div>
           </Container>
         </section>

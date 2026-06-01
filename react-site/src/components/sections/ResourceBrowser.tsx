@@ -48,18 +48,28 @@ function matchesFilter(item: ResourceCardItem, terms: readonly string[]) {
 function fuzzySearch(items: ResourceCardItem[], query: string) {
   if (!query.trim()) return items;
   const words = query.toLowerCase().trim().split(/\s+/);
-  return items.filter((item) => {
+  return items
+    .map((item) => {
     const haystack = [item.title, item.excerpt, item.category, item.resourceTypeLabel, ...item.tags]
       .join(" ")
       .toLowerCase();
-    return words.every((word) => haystack.includes(word));
-  });
+      const score = words.reduce((total, word) => {
+        if (haystack.includes(word)) return total + 6;
+        const compactWord = word.replace(/[aeiou]/g, "");
+        if (compactWord.length > 2 && haystack.replace(/[aeiou]/g, "").includes(compactWord)) return total + 3;
+        return total;
+      }, 0);
+      return { item, score };
+    })
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score || b.item.sortKey - a.item.sortKey)
+    .map(({ item }) => item);
 }
 
 function sortItems(items: ResourceCardItem[], sort: SortId) {
   const copy = [...items];
-  if (sort === "newest") return copy.sort((a, b) => a.sortKey - b.sortKey);
-  if (sort === "oldest") return copy.sort((a, b) => b.sortKey - a.sortKey);
+  if (sort === "newest") return copy.sort((a, b) => b.sortKey - a.sortKey);
+  if (sort === "oldest") return copy.sort((a, b) => a.sortKey - b.sortKey);
   if (sort === "az") return copy.sort((a, b) => a.title.localeCompare(b.title));
   return copy;
 }

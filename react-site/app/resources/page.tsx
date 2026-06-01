@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { BookOpenText, GraduationCap, Newspaper } from "lucide-react"; // used in resourceTypeIcons
 import { Hero } from "@/components/sections/Hero";
 import { ResourceBrowser, type ResourceCardItem } from "@/components/sections/ResourceBrowser";
 import { Section } from "@/components/ui/Section";
@@ -21,24 +20,24 @@ const resourceTypeLabels: Record<ResourceType, string> = {
   faq: "FAQ"
 };
 
-const resourceTypeIcons: Record<ResourceType, typeof BookOpenText> = {
-  blog: BookOpenText,
-  education: GraduationCap,
-  "clinic-news": Newspaper,
-  faq: BookOpenText
-};
-
 export const metadata = pageMetadata({ ...seo, path: "/resources/" });
 
 function featuredImageUrl(post: BlogPost) {
-  return post.image ? urlFor(post.image).width(760).height(460).fit("crop").url() : post.featuredImage || "/images/veterinary-care-hero.jpg";
+  return post.image ? urlFor(post.image).width(760).height(460).fit("crop").auto("format").url() : post.featuredImage || "/images/veterinary-care-hero.jpg";
+}
+
+function featuredPostForToday(posts: BlogPost[]) {
+  if (!posts.length) return undefined;
+  const featuredPool = posts.filter((post) => post.resourceType === "education" || post.tags.some((tag) => /featured|wellness|new patient/i.test(tag)));
+  const pool = featuredPool.length ? featuredPool : posts;
+  const day = Math.floor(Date.now() / 86_400_000);
+  return pool[day % pool.length];
 }
 
 export default async function ResourcesPage() {
   const posts = await getBlogPosts(24);
-  const featured = posts[0];
-  const rest = posts.slice(1);
-  const browserResources: ResourceCardItem[] = (featured ? rest : posts).map((post, index) => ({
+  const featured = featuredPostForToday(posts);
+  const browserResources: ResourceCardItem[] = posts.map((post) => ({
     slug: post.slug,
     title: post.title,
     excerpt: post.excerpt,
@@ -51,7 +50,7 @@ export default async function ResourcesPage() {
     authorImageAlt: post.author.imageAlt,
     readingTime: post.readingTime || post.author.title,
     tags: post.tags,
-    sortKey: index
+    sortKey: new Date(post.updatedAt || post.date).getTime() || 0
   }));
 
   return (

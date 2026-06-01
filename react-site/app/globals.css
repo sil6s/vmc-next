@@ -882,7 +882,7 @@ svg {
 .ui-navigation-menu-viewport-position {
   position: absolute;
   top: calc(100% + 8px);
-  left: 0;
+  left: -12px;
   display: flex;
   justify-content: flex-start;
   transform: none;
@@ -4693,9 +4693,10 @@ textarea {
   display: grid;
   grid-template-columns: 22px 1fr;
   gap: 12px;
-  margin: 18px 24px 24px;
+  margin: 22px 28px 34px;
   border-top: 1px solid rgba(169, 27, 27, 0.12);
-  padding-top: 18px;
+  padding-top: 22px;
+  padding-bottom: 4px;
 }
 
 .doctor-education-card strong {
@@ -4710,12 +4711,12 @@ textarea {
 
 .doctor-education-card ul {
   display: grid;
-  gap: 7px;
+  gap: 9px;
   margin: 0;
   padding-left: 18px;
   color: var(--body);
   font-size: 13px;
-  line-height: 1.55;
+  line-height: 1.65;
 }
 
 .care-approach-grid {
@@ -10510,34 +10511,43 @@ textarea {
 
 .location-details-grid {
   display: grid;
-  gap: 0;
-  max-width: 760px;
-  border: 1px solid rgba(169, 27, 27, 0.1);
-  border-radius: 12px;
-  background: var(--white);
-  overflow: hidden;
-  box-shadow: 0 4px 20px rgba(23, 19, 19, 0.05);
+  gap: 14px;
+  max-width: 900px;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  overflow: visible;
+  box-shadow: none;
+}
+
+.location-details-head {
+  margin-bottom: 24px;
 }
 
 .location-detail-row {
   display: grid;
-  grid-template-columns: 56px minmax(0, 1fr);
-  border-bottom: 1px solid rgba(169, 27, 27, 0.09);
-  padding: 24px;
-  gap: 0;
+  grid-template-columns: 58px minmax(0, 1fr);
+  border: 1px solid rgba(169, 27, 27, 0.1);
+  border-left: 4px solid rgba(169, 27, 27, 0.38);
+  border-radius: 10px;
+  padding: clamp(20px, 3vw, 28px);
+  gap: 16px;
   align-items: start;
+  background: var(--white);
+  box-shadow: 0 8px 28px rgba(23, 19, 19, 0.045);
 }
 
 .location-detail-row:last-child {
-  border-bottom: none;
+  border-bottom: 1px solid rgba(169, 27, 27, 0.1);
 }
 
 .location-detail-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 10px;
   background: rgba(169, 27, 27, 0.07);
   color: var(--red);
@@ -10546,7 +10556,35 @@ textarea {
 }
 
 .location-detail-content {
-  padding-left: 16px;
+  padding-left: 0;
+}
+
+.location-detail-bullets {
+  display: grid;
+  gap: 7px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.location-detail-bullets li {
+  position: relative;
+  padding-left: 18px;
+  color: var(--body);
+  font-size: 13.5px;
+  font-weight: 650;
+  line-height: 1.55;
+}
+
+.location-detail-bullets li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.7em;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--red);
 }
 
 .location-detail-content h3 {
@@ -10964,6 +11002,59 @@ textarea {
   text-transform: uppercase;
 }
 
+.location-resource-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.location-resource-card {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  border: 1px solid rgba(169, 27, 27, 0.1);
+  border-radius: 10px;
+  background: #fffdf9;
+  padding: 24px;
+  box-shadow: 0 4px 18px rgba(23, 19, 19, 0.04);
+}
+
+.location-resource-card > svg {
+  color: var(--red);
+}
+
+.location-resource-card h3 {
+  margin: 0;
+  font-family: var(--font-serif), Georgia, serif;
+  color: var(--ink);
+  font-size: 22px;
+  line-height: 1.15;
+}
+
+.location-resource-card h3 a {
+  color: inherit;
+}
+
+.location-resource-card p:not(.eyebrow) {
+  margin: 0;
+  color: var(--body);
+  font-size: 14.5px;
+  font-weight: 550;
+  line-height: 1.68;
+}
+
+.location-resource-card > a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 4px;
+  color: var(--red);
+  font-size: 12px;
+  font-weight: 950;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
 /* Vertical timeline (first visit steps) */
 .location-timeline-vertical {
   display: grid;
@@ -11094,7 +11185,7 @@ textarea {
 
 /* Nav dropdown — About menu */
 .nav-dropdown-about {
-  min-width: 340px;
+  min-width: 320px;
   padding: 8px;
 }
 
@@ -11142,12 +11233,13 @@ textarea {
 
 .nav-dropdown-clinics {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 6px;
 }
 
 .nav-dropdown-clinic-card {
   display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 3px !important;
   border: 1px solid rgba(169, 27, 27, 0.12) !important;
   border-radius: 8px !important;
@@ -11155,6 +11247,17 @@ textarea {
   padding: 12px !important;
   text-decoration: none !important;
   transition: background 0.15s ease, border-color 0.15s ease !important;
+}
+
+.nav-dropdown-clinic-card strong,
+.nav-dropdown-clinic-card span {
+  grid-column: 1;
+}
+
+.nav-dropdown-clinic-card small {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
 }
 
 .nav-dropdown-clinic-card:hover {
@@ -14391,6 +14494,7 @@ textarea {
   .contact-need-grid,
   .contact-location-grid,
   .location-service-grid,
+  .location-resource-grid,
   .location-review-grid,
   .new-patient-card-grid.three,
   .payment-grid,
@@ -14604,6 +14708,7 @@ textarea {
   .contact-location-grid,
   .contact-call-list ul,
   .location-service-grid,
+  .location-resource-grid,
   .location-card-grid,
   .location-review-grid,
   .new-patient-card-grid.three,
