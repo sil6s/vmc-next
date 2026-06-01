@@ -1,7 +1,53 @@
+export const canonicalSiteUrl = "https://nky.vet";
+
+function normalizedPublicUrl(value: string) {
+  try {
+    const url = new URL(value);
+    if (url.hostname === "www.nky.vet") {
+      url.hostname = "nky.vet";
+    }
+    if (url.hostname === "nky.vet") {
+      url.protocol = "https:";
+      url.hash = "";
+      return url.toString().replace(/\/$/, "");
+    }
+    if (url.hostname.endsWith(".vercel.app") || url.hostname === "localhost" || url.hostname === "127.0.0.1") {
+      return canonicalSiteUrl;
+    }
+  } catch {
+    return canonicalSiteUrl;
+  }
+
+  return canonicalSiteUrl;
+}
+
+export function publicUrl(path = "/") {
+  const url = new URL(path, canonicalSiteUrl);
+  return url.toString();
+}
+
+export function canonicalUrl(value = "/") {
+  try {
+    const url = new URL(value, canonicalSiteUrl);
+    if (url.hostname === "www.nky.vet") {
+      url.hostname = "nky.vet";
+    }
+    if (url.hostname.endsWith(".vercel.app") || url.hostname === "localhost" || url.hostname === "127.0.0.1") {
+      return publicUrl(`${url.pathname}${url.search}`);
+    }
+    if (url.hostname === "nky.vet") {
+      url.protocol = "https:";
+    }
+    return url.toString();
+  } catch {
+    return publicUrl("/");
+  }
+}
+
 export const site = {
   name: "Veterinary Medical Centers",
   shortName: "VMC",
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || "https://nky.vet",
+  siteUrl: normalizedPublicUrl(process.env.NEXT_PUBLIC_SITE_URL || canonicalSiteUrl),
   tagline: "Fort Thomas & Independence, Kentucky",
   legal: "Fear-Free Certified. Licensed in KY and OH.",
   email: "information@nky.vet",
@@ -46,5 +92,5 @@ export const site = {
 export type SiteLocation = (typeof site.locations)[number];
 
 export function absoluteUrl(path = "/") {
-  return new URL(path, site.siteUrl).toString();
+  return canonicalUrl(path);
 }

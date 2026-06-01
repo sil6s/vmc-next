@@ -123,7 +123,7 @@ export function AnalyticsOverview({ analytics, compact = false }: { analytics: A
             ["Avg. Response Time", analytics.health.responseTime],
             ["Lighthouse SEO Score", analytics.health.seoScore],
             ["Vercel Deployment", analytics.health.deployment],
-            ["Google Login", "Secure"],
+            ["Admin Login", "Secure"],
             ["Link Health", "Operational"]
           ].map(([label, value]) => (
             <p key={label}>

@@ -22,7 +22,7 @@ export default async function NotAuthorizedPage() {
       <div className="admin-auth-card">
         <LockKeyhole aria-hidden="true" size={32} />
         <p className="dashboard-eyebrow">Not authorized</p>
-        <h1>This Google account does not have dashboard access.</h1>
+        <h1>This email does not have dashboard access.</h1>
         <p>
           {email ? `You are currently signed in as ${email}.` : "No active session was found."}
           {" "}Use an approved admin account or add that exact email to <code>ADMIN_EMAILS</code> or the <code>admin_roles</code> table.

@@ -34,7 +34,7 @@ export async function getPublicSettings() {
   return {
     ...settings,
     publicLocations: settings.locations.map(publicLocation),
-    siteUrl: process.env.NEXT_PUBLIC_SITE_URL || site.siteUrl
+    siteUrl: site.siteUrl
   };
 }
 

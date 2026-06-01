@@ -16,7 +16,7 @@ type ResourceTypeValue = "education" | "faq" | "blog" | "clinic-news";
 type ImportResult = { error?: string; publicUrl?: string; studioUrl?: string; title?: string; slug?: string };
 
 const steps = ["Content Type", "Details", "Image & Notes", "AI Instructions", "Import", "Review"];
-const categories = ["Pet Care", "Wellness", "Dental Care", "Puppy & Kitten Care", "Senior Pet Care", "Clinic News"];
+const categories = ["Dog care", "Cat care", "New patients", "Wellness", "Clinic News"];
 const contentTypes: Array<{ value: ResourceTypeValue; title: string; body: string }> = [
   { value: "education", title: "Educational guide", body: "Best for helpful pet care articles, prevention guides, and condition overviews." },
   { value: "faq", title: "FAQ resource", body: "Best for answering common questions from pet owners." },
@@ -142,7 +142,7 @@ export function ResourceCreateWizard({ authors }: { authors: ResourceAuthorOptio
   const [resourceType, setResourceType] = useState<ResourceTypeValue | "">("");
   const [subject, setSubject] = useState("");
   const [focusKeyword, setFocusKeyword] = useState("");
-  const [category, setCategory] = useState("Pet Care");
+  const [category, setCategory] = useState("Wellness");
   const [authorId, setAuthorId] = useState(authors[0]?._id || "");
   const [notes, setNotes] = useState("");
   const [imageUrl, setImageUrl] = useState("");

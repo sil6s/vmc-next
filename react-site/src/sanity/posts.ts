@@ -305,6 +305,6 @@ export async function getRelatedBlogPosts(post: BlogPost, limit = 3) {
 }
 
 export async function getBlogSlugs() {
-  const posts = await getBlogPosts(50);
+  const posts = await getBlogPosts(200);
   return posts.map((post) => post.slug);
 }

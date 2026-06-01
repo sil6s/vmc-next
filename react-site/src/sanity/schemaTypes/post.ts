@@ -73,9 +73,9 @@ export const postType = defineType({
       type: "string",
       group: "content",
       options: {
-        list: ["Pet Care", "Wellness", "Dental Care", "Puppy & Kitten Care", "Senior Pet Care", "Clinic News"]
+        list: ["Dog care", "Cat care", "New patients", "Wellness", "Clinic News"]
       },
-      initialValue: "Pet Care"
+      initialValue: "Wellness"
     }),
     defineField({
       name: "tags",

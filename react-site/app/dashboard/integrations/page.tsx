@@ -1,8 +1,8 @@
-import { BarChart3, Bot, Database, PenTool } from "lucide-react";
+import { BarChart3, Database, KeyRound, PenTool } from "lucide-react";
 
 export default function IntegrationsPage() {
   const integrations = [
-    ["Google OAuth", "Secure admin login through approved Google accounts.", "Connected", Bot],
+    ["Passwordless Admin Login", "Secure email-link sign-in for approved admin addresses.", "Connected", KeyRound],
     ["Umami Analytics", "Public site tracking and dashboard metrics.", process.env.UMAMI_API_KEY ? "API Connected" : "Tracking Enabled", BarChart3],
     ["Postgres Storage", "Persistent settings, links, hours, resources, and activity logs.", process.env.DATABASE_URL || process.env.POSTGRES_URL ? "Connected" : "Needs DATABASE_URL", Database],
     ["Sanity Studio", "Optional long-term embedded editorial studio path.", "Ready later", PenTool]

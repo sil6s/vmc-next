@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { absoluteUrl, site } from "@/data/site";
+import { absoluteUrl, canonicalUrl as toCanonicalUrl, site } from "@/data/site";
 
 type SeoInput = {
   title: string;
@@ -12,7 +12,7 @@ type SeoInput = {
 
 export function pageMetadata({ title, description, path = "/", image = site.socialImage, canonicalUrl, type = "website" }: SeoInput): Metadata {
   const url = absoluteUrl(path);
-  const canonical = canonicalUrl || url;
+  const canonical = toCanonicalUrl(canonicalUrl || url);
   const imageUrl = absoluteUrl(image);
 
   return {

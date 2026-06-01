@@ -28,14 +28,14 @@ export function PasskeySignInForm({ callbackUrl }: { callbackUrl: string }) {
       email: email.trim().toLowerCase(),
       options: {
         emailRedirectTo: redirectTo,
-        shouldCreateUser: false,
+        shouldCreateUser: true,
         ...(captchaToken.current ? { captchaToken: captchaToken.current } : {})
       }
     });
 
     if (error) {
       setState("error");
-      setErrorMessage("Could not send sign-in link. Make sure this email is an approved admin address.");
+      setErrorMessage("Could not send a sign-in link. Check the email address and try again.");
     } else {
       setState("sent");
     }

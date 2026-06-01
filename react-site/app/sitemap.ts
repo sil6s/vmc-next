@@ -6,7 +6,7 @@ import { getBlogPosts } from "@/sanity/posts";
 import { getServiceDetailSlugs } from "@/sanity/services";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const posts = await getBlogPosts(50);
+  const posts = await getBlogPosts(200);
   const serviceSlugs = await getServiceDetailSlugs();
   const routes = [
     ...sitemapStaticRoutes,

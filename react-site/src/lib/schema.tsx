@@ -1,7 +1,7 @@
 import type { FAQ } from "@/data/faqs";
 import type { LocationPage } from "@/data/locations";
 import type { ServiceDetail } from "@/data/serviceHub";
-import { absoluteUrl, site } from "@/data/site";
+import { absoluteUrl, canonicalUrl, site } from "@/data/site";
 import type { PublicSettings } from "@/lib/settings/public";
 
 export function organizationSchema(settings?: PublicSettings) {
@@ -211,6 +211,8 @@ export function articleSchema(post: {
   category?: string;
   tags?: string[];
 }) {
+  const articleUrl = canonicalUrl(post.canonicalUrl || `/resources/${post.slug}/`);
+
   return {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
@@ -218,10 +220,10 @@ export function articleSchema(post: {
     datePublished: post.date,
     dateModified: post.updatedAt || post.date,
     description: post.excerpt,
-    url: post.canonicalUrl || absoluteUrl(`/resources/${post.slug}/`),
+    url: articleUrl,
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": post.canonicalUrl || absoluteUrl(`/resources/${post.slug}/`)
+      "@id": articleUrl
     },
     image: post.schemaImage || (post.featuredImage ? absoluteUrl(post.featuredImage) : undefined),
     articleSection: post.category,

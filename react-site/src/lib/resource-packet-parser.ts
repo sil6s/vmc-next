@@ -81,7 +81,8 @@ function cleanScalar(value = "") {
 function parseList(value = "") {
   return value
     .split(/\r?\n/)
-    .map((line) => line.replace(/^\s*[-*+]\s+/, "").trim())
+    .flatMap((line) => line.replace(/^\s*[-*+]\s+/, "").split(","))
+    .map((line) => line.trim())
     .filter(Boolean);
 }
 

@@ -42,7 +42,7 @@ const resourceTypes: Array<{ value: ResourceTypeValue; label: string }> = [
   { value: "clinic-news", label: "Clinic news" }
 ];
 
-const categories = ["Pet Care", "Wellness", "Dental Care", "Puppy & Kitten Care", "Senior Pet Care", "Clinic News"];
+const categories = ["Dog care", "Cat care", "New patients", "Wellness", "Clinic News"];
 
 const steps = [
   "Basics",
@@ -443,7 +443,7 @@ export function ResourcePacketImporter({ authors }: { authors: ResourceAuthorOpt
   const [selectedAuthorId, setSelectedAuthorId] = useState(authors[0]?._id || "");
   const [subject, setSubject] = useState("");
   const [resourceType, setResourceType] = useState<ResourceTypeValue>("education");
-  const [category, setCategory] = useState("Pet Care");
+  const [category, setCategory] = useState("Wellness");
   const [focusKeyword, setFocusKeyword] = useState("");
   const [contentNotes, setContentNotes] = useState("");
   const [featuredImageUrl, setFeaturedImageUrl] = useState("");
