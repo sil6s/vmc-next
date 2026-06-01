@@ -14691,6 +14691,19 @@ body:has(.standalone-studio-shell) {
   line-height: 1.55;
 }
 
+.admin-signin-code-form {
+  display: grid;
+  gap: 14px;
+  width: 100%;
+}
+
+.admin-signin-code-form input {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+}
+
 .admin-signin-resend {
   justify-self: center;
   border: none;
