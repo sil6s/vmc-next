@@ -24,6 +24,15 @@ export type LocationPage = {
   trustChips: string[];
   whyHeading: string;
   whyCards: { title: string; text: string }[];
+  personalStoryHeading: string;
+  personalStory: string[];
+  personalHighlights: string[];
+  cincinnatiCta?: {
+    headline: string;
+    subhead: string;
+    body: string;
+    tip: string;
+  };
   servicesHeading: string;
   communitiesHeading: string;
   communitiesIntro: string;
@@ -74,6 +83,25 @@ export const locations: LocationPage[] = [
       nearby: "Highland Heights, Newport, Bellevue, Dayton, Southgate, Cold Spring, Alexandria, Silver Grove, Cincinnati"
     },
     trustChips: ["Locally owned", "Dogs and cats", "Northern Kentucky", "Convenient Memorial Parkway location"],
+    personalStoryHeading: "A Fort Thomas Veterinarian Who Calls This Home",
+    personalStory: [
+      "Dr. Kristi Baker doesn't just work in Fort Thomas — she lives here. Her kids attend Fort Thomas City Schools. Her family is woven into this neighborhood, and her investment in this community goes well beyond clinic hours.",
+      "That personal stake shapes everything about how Veterinary Medical Centers of Fort Thomas operates. Care is relationship-based, decisions are made close to home, and the team genuinely knows the families it serves.",
+      "When you bring your pet here, you're trusting a practice owned by someone who understands what it means to be a Fort Thomas family — because she is one."
+    ],
+    personalHighlights: [
+      "Dr. Baker lives in Fort Thomas with her husband and two children",
+      "Her kids attend Fort Thomas City Schools",
+      "Independently owned and operated — no corporate chain",
+      "Long-term relationships with Fort Thomas and Campbell County families",
+      "Serving dogs and cats in this community through every life stage"
+    ],
+    cincinnatiCta: {
+      headline: "Cincinnati Pet Owners: You're Closer Than You Think",
+      subhead: "About 10 minutes from downtown via I-471 N",
+      body: "If you live in Cincinnati or just across the river, Veterinary Medical Centers of Fort Thomas is one of the most convenient locally owned vet options in the area. Take I-471 North into Kentucky, exit at Exit 5 (Memorial Parkway), and you're here — with on-site parking waiting. No meters. No blocks to walk. Just pull in and you're at the door. Families from Clifton, Mount Lookout, Hyde Park, and Anderson Township make the short drive regularly.",
+      tip: "I-471 N → Exit 5 (Memorial Pkwy) → left on Memorial Pkwy → clinic on the right. On-site parking available."
+    },
     whyHeading: "Why Fort Thomas Families Choose Veterinary Medical Centers",
     whyCards: [
       {
@@ -206,6 +234,19 @@ export const locations: LocationPage[] = [
       nearby: "Taylor Mill, Ryland Heights, Covington, Latonia, Edgewood, Erlanger, Kenton County"
     },
     trustChips: ["Locally owned", "Dogs and cats", "Kenton County", "Madison Pike location"],
+    personalStoryHeading: "Where Veterinary Medical Centers Began — and Why It Still Matters",
+    personalStory: [
+      "Veterinary Medical Centers of Independence was Dr. Kristi Baker's first clinic. She grew up in Northern Kentucky. This is home — and opening a practice here wasn't just a business decision. It was a commitment to the community she was raised in.",
+      "That first clinic set the tone for everything that followed: relationship-based care, clear communication, and a genuine belief that families deserve a veterinarian they can trust over time — not a rotating schedule of strangers.",
+      "Years later, Independence still carries that founding spirit. It's independently owned, locally operated, and built by someone who holds Northern Kentucky close to her heart."
+    ],
+    personalHighlights: [
+      "The first clinic Dr. Baker ever opened",
+      "Dr. Baker grew up in Northern Kentucky",
+      "Independently owned — not part of a corporate chain",
+      "Built on the belief that veterinary care should be personal and consistent",
+      "Serving Independence, Kenton County, and nearby Northern Kentucky communities"
+    ],
     whyHeading: "Why Independence Families Choose Veterinary Medical Centers",
     whyCards: [
       {

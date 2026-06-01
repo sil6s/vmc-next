@@ -3,6 +3,7 @@ import type { PortableTextBlock } from "next-sanity";
 import { posts as staticPosts, type Post } from "@/data/posts";
 import { getManagedBlogPost, getManagedBlogPosts, type ManagedBlogPost } from "@/lib/blog-admin";
 import { client } from "./client";
+import { urlFor } from "./image";
 import { POSTS_QUERY, POST_QUERY, RELATED_POSTS_QUERY } from "./queries";
 import { sanityEnabled } from "./env";
 
@@ -178,7 +179,9 @@ function fromSanityPost(post: SanityBlogPost): BlogPost {
     faqMarkdown: post.faqMarkdown,
     body: post.body,
     image: post.image,
-    featuredImage: "/images/veterinary-care-hero.jpg",
+    featuredImage: post.image
+      ? urlFor(post.image).width(800).height(500).fit("crop").url()
+      : "/images/veterinary-care-hero.jpg",
     featuredImageAlt: post.imageAlt || `${post.title} from Veterinary Medical Centers`,
     featuredImageCaption: post.imageCaption,
     openGraphImage: post.openGraphImage,

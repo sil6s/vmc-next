@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Award, Car, CheckCircle, Clock, HeartPulse, MapPin, Phone, ShieldCheck, Stethoscope, Star } from "lucide-react";
+import { Award, Car, CheckCircle, Clock, HeartPulse, MapPin, Navigation, Phone, ShieldCheck, Sparkles, Stethoscope, Star } from "lucide-react";
 import { Breadcrumbs } from "@/components/sections/Breadcrumbs";
 import { CTASection } from "@/components/sections/CTASection";
 import { FAQSection } from "@/components/sections/FAQSection";
@@ -35,12 +35,12 @@ const serviceLinks = [
 ];
 
 const firstVisitSteps = [
-  ["Request an appointment", "Call the clinic, send a message, or use the online appointment request path that works best for your family."],
-  ["Complete new patient forms", "Share your contact information, pet details, prior clinic details, and visit goals before you arrive."],
-  ["Bring prior veterinary records", "Vaccine history, medication lists, previous exam notes, lab results, and adoption paperwork are all helpful."],
-  ["Share your pet's history and concerns", "Tell us what has changed, what you are worried about, and what you want the visit to accomplish."],
-  ["Meet with the veterinary team", "Your veterinarian examines your pet, answers questions, and explains what they are seeing."],
-  ["Review recommendations and next steps", "You leave with practical guidance, follow-up timing, and a clear plan for your dog or cat."]
+  ["Request an appointment", "Call the clinic, send a message, or use the online appointment request."],
+  ["Complete new patient forms", "Share your contact info, pet details, prior clinic, and visit goals before you arrive."],
+  ["Bring prior veterinary records", "Vaccine history, medications, lab results, and adoption paperwork all help."],
+  ["Share your pet's history and concerns", "Tell us what changed, what worries you, and what you want the visit to accomplish."],
+  ["Meet with the veterinary team", "Your veterinarian examines your pet, explains findings, and answers questions."],
+  ["Leave with a clear care plan", "You leave with practical guidance, follow-up timing, and a clear plan for your pet."]
 ];
 
 export function generateStaticParams() {
@@ -83,7 +83,7 @@ export default async function LocationPage({ params }: Params) {
 
   return (
     <>
-      {/* Hero */}
+      {/* ── Hero ── */}
       <section className="location-hero">
         <Container>
           <div className="location-hero-grid">
@@ -96,9 +96,7 @@ export default async function LocationPage({ params }: Params) {
                 <Button href={`tel:${location.tel}`} variant="ghost">Call {location.shortName}</Button>
               </div>
               <div className="location-chip-row">
-                {location.trustChips.map((chip) => (
-                  <span key={chip}>{chip}</span>
-                ))}
+                {location.trustChips.map((chip) => <span key={chip}>{chip}</span>)}
               </div>
             </div>
             <div className="location-hero-media">
@@ -123,64 +121,95 @@ export default async function LocationPage({ params }: Params) {
 
       <Breadcrumbs items={crumbs.map((item) => ({ label: item.name, href: item.path }))} />
 
-      {/* Info bar */}
-      <div className="location-info-bar">
-        <Container>
-          <div className="location-info-bar-items">
-            <a className="location-info-bar-item" href={siteLocation.mapUrl} target="_blank" rel="noopener noreferrer">
-              <MapPin aria-hidden="true" size={20} />
-              <div>
-                <strong>Address</strong>
-                <span>{location.address}</span>
-              </div>
-            </a>
-            <a className="location-info-bar-item" href={`tel:${location.tel}`}>
-              <Phone aria-hidden="true" size={20} />
-              <div>
-                <strong>Phone</strong>
-                <span>{location.phone}</span>
-              </div>
-            </a>
-            <div className="location-info-bar-item">
-              <Clock aria-hidden="true" size={20} />
-              <div>
-                <strong>Hours</strong>
-                {siteLocation.hours.map((h) => <span key={h}>{h}</span>)}
-              </div>
-            </div>
-            <div className="location-info-bar-item">
-              <Car aria-hidden="true" size={20} />
-              <div>
-                <strong>Parking</strong>
-                <span>{location.quickFacts.parking}</span>
-              </div>
-            </div>
-            <div className="location-info-bar-item">
-              <HeartPulse aria-hidden="true" size={20} />
-              <div>
-                <strong>Patients</strong>
-                <span>{location.quickFacts.petsSeen}</span>
-              </div>
-            </div>
-          </div>
-        </Container>
-      </div>
-
-      {/* About this location */}
+      {/* ── About This Location ── */}
       <section className="location-section location-section-white">
         <Container>
           <div className="location-about">
             <p className="eyebrow">{location.keyword}</p>
             <h2>{location.introHeading}</h2>
-            {location.intro.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
+            {location.intro.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
           </div>
         </Container>
       </section>
 
-      {/* Google Map — full width */}
-      <section className="location-section location-section-cream location-map-section">
+      {/* ── Clinic Details ── */}
+      <section className="location-section location-section-cream">
+        <Container>
+          <div className="location-details-grid">
+
+            {/* Address */}
+            <div className="location-detail-row">
+              <div className="location-detail-icon">
+                <MapPin aria-hidden="true" size={20} />
+              </div>
+              <div className="location-detail-content">
+                <h3>Address</h3>
+                <p>{location.address}</p>
+                <a
+                  href={siteLocation.mapUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="location-detail-link"
+                >
+                  <Navigation aria-hidden="true" size={14} />
+                  Get directions
+                </a>
+              </div>
+            </div>
+
+            {/* Phone */}
+            <div className="location-detail-row">
+              <div className="location-detail-icon">
+                <Phone aria-hidden="true" size={20} />
+              </div>
+              <div className="location-detail-content">
+                <h3>Phone</h3>
+                <a href={`tel:${location.tel}`} className="location-detail-phone">{location.phone}</a>
+                <p className="location-detail-note">Call for appointments, urgent questions, and same-day availability.</p>
+              </div>
+            </div>
+
+            {/* Hours */}
+            <div className="location-detail-row">
+              <div className="location-detail-icon">
+                <Clock aria-hidden="true" size={20} />
+              </div>
+              <div className="location-detail-content">
+                <h3>Hours</h3>
+                <ul className="location-hours-list">
+                  {siteLocation.hours.map((h) => <li key={h}>{h}</li>)}
+                </ul>
+              </div>
+            </div>
+
+            {/* Parking */}
+            <div className="location-detail-row">
+              <div className="location-detail-icon">
+                <Car aria-hidden="true" size={20} />
+              </div>
+              <div className="location-detail-content">
+                <h3>Parking</h3>
+                <p>{location.quickFacts.parking}</p>
+              </div>
+            </div>
+
+            {/* Patients */}
+            <div className="location-detail-row">
+              <div className="location-detail-icon">
+                <HeartPulse aria-hidden="true" size={20} />
+              </div>
+              <div className="location-detail-content">
+                <h3>Patients Seen</h3>
+                <p>{location.quickFacts.petsSeen}</p>
+              </div>
+            </div>
+
+          </div>
+        </Container>
+      </section>
+
+      {/* ── Google Map ── */}
+      <section className="location-section location-section-white location-map-section">
         <Container>
           <div className="location-map-block">
             <div className="location-map-block-head">
@@ -193,9 +222,7 @@ export default async function LocationPage({ params }: Params) {
                 <a className="btn btn-primary" href={siteLocation.mapUrl} target="_blank" rel="noopener noreferrer">
                   Get Directions
                 </a>
-                <a className="btn btn-ghost" href={`tel:${location.tel}`}>
-                  Call {location.shortName}
-                </a>
+                <a className="btn btn-ghost" href={`tel:${location.tel}`}>Call {location.shortName}</a>
               </div>
             </div>
             <div className="location-map-embed-full">
@@ -211,13 +238,47 @@ export default async function LocationPage({ params }: Params) {
         </Container>
       </section>
 
-      {/* Veterinary services */}
+      {/* ── Cincinnati CTA (Fort Thomas only) ── */}
+      {location.cincinnatiCta && (
+        <section className="location-section location-section-cream">
+          <Container>
+            <div className="location-cincinnati-cta">
+              <div className="location-cincinnati-copy">
+                <p className="eyebrow">{location.cincinnatiCta.subhead}</p>
+                <h2>{location.cincinnatiCta.headline}</h2>
+                <p>{location.cincinnatiCta.body}</p>
+                <div className="location-cincinnati-tip">
+                  <Navigation aria-hidden="true" size={16} />
+                  <span>{location.cincinnatiCta.tip}</span>
+                </div>
+                <div className="hero-actions">
+                  <Button href="/book-appointment/">Book an Appointment</Button>
+                  <Button href={siteLocation.mapUrl} variant="ghost">Get Directions</Button>
+                </div>
+              </div>
+              <aside className="location-cincinnati-card">
+                <Sparkles aria-hidden="true" size={24} />
+                <h3>Why Fort Thomas?</h3>
+                <ul>
+                  <li><CheckCircle aria-hidden="true" size={15} /> On-site parking — no meters or street hunting</li>
+                  <li><CheckCircle aria-hidden="true" size={15} /> ~10 minutes from downtown Cincinnati</li>
+                  <li><CheckCircle aria-hidden="true" size={15} /> Off I-471 N, Exit 5 — easy in and out</li>
+                  <li><CheckCircle aria-hidden="true" size={15} /> Locally owned, not a corporate chain</li>
+                  <li><CheckCircle aria-hidden="true" size={15} /> Dogs and cats of all ages welcome</li>
+                </ul>
+              </aside>
+            </div>
+          </Container>
+        </section>
+      )}
+
+      {/* ── Veterinary Services ── */}
       <section className="location-section location-section-white">
         <Container>
           <div className="location-section-head">
             <p className="eyebrow">Veterinary Services</p>
             <h2>{location.servicesHeading}</h2>
-            <p>Our {location.shortName} location provides full-service veterinary care for dogs and cats, with recommendations based on your pet&apos;s age, lifestyle, medical history, and current needs.</p>
+            <p>Full-service care for dogs and cats — from wellness visits and vaccines to dental care, diagnostics, surgery consultations, and senior pet support.</p>
           </div>
           <div className="location-service-grid">
             {locationServices.map((service) => (
@@ -232,7 +293,7 @@ export default async function LocationPage({ params }: Params) {
         </Container>
       </section>
 
-      {/* Why this location */}
+      {/* ── Why This Clinic ── */}
       <section className="location-section location-section-cream">
         <Container>
           <div className="location-section-head">
@@ -251,8 +312,33 @@ export default async function LocationPage({ params }: Params) {
         </Container>
       </section>
 
-      {/* Nearby communities */}
+      {/* ── Personal Story / Locally Owned ── */}
       <section className="location-section location-section-white">
+        <Container>
+          <div className="location-personal-grid">
+            <div className="location-about">
+              <p className="eyebrow">Locally & Independently Owned</p>
+              <h2>{location.personalStoryHeading}</h2>
+              {location.personalStory.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+            </div>
+            <aside className="location-highlights-card">
+              <Award aria-hidden="true" size={24} />
+              <h3>What this means for your pet</h3>
+              <ul className="location-feature-list">
+                {location.personalHighlights.map((item) => (
+                  <li key={item}>
+                    <CheckCircle aria-hidden="true" size={16} />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </aside>
+          </div>
+        </Container>
+      </section>
+
+      {/* ── Nearby Communities ── */}
+      <section className="location-section location-section-cream">
         <Container>
           <div className="location-section-head">
             <p className="eyebrow">Nearby Communities</p>
@@ -260,62 +346,19 @@ export default async function LocationPage({ params }: Params) {
             <p>{location.communitiesIntro}</p>
           </div>
           <div className="community-chip-grid">
-            {location.communities.map((community) => (
-              <span key={community}>{community}</span>
-            ))}
+            {location.communities.map((community) => <span key={community}>{community}</span>)}
           </div>
           <p className="location-local-search">{location.communitiesSearchCopy}</p>
         </Container>
       </section>
 
-      {/* What makes this clinic different */}
-      <section className="location-section location-section-cream">
-        <Container>
-          <div className="location-about">
-            <p className="eyebrow">Local Difference</p>
-            <h2>{location.ownershipHeading}</h2>
-            {location.ownershipCopy.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
-            <ul className="location-feature-list">
-              <li><CheckCircle aria-hidden="true" size={17} />Locally owned and independently operated</li>
-              <li><CheckCircle aria-hidden="true" size={17} />Care for dogs and cats</li>
-              <li><CheckCircle aria-hidden="true" size={17} />Preventive, medical, dental, and surgical services</li>
-              <li><CheckCircle aria-hidden="true" size={17} />Clear communication before and after every visit</li>
-              <li><CheckCircle aria-hidden="true" size={17} />Practical recommendations based on your pet&apos;s needs</li>
-              <li><CheckCircle aria-hidden="true" size={17} />Two Northern Kentucky locations with one standard of care</li>
-            </ul>
-          </div>
-        </Container>
-      </section>
-
-      {/* Team section */}
+      {/* ── First Visit ── */}
       <section className="location-section location-section-white">
-        <Container>
-          <div className="location-about-with-quote">
-            <div className="location-about">
-              <p className="eyebrow">Our Team</p>
-              <h2>{location.bakerHeading}</h2>
-              {location.bakerCopy.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
-              ))}
-            </div>
-            <aside className="location-quote-aside">
-              <Award aria-hidden="true" size={26} />
-              <blockquote>Care should feel personal, clear, and rooted in a team that knows your pet over time.</blockquote>
-              <cite>Veterinary Medical Centers</cite>
-            </aside>
-          </div>
-        </Container>
-      </section>
-
-      {/* First visit timeline — vertical */}
-      <section className="location-section location-section-cream">
         <Container>
           <div className="location-section-head">
             <p className="eyebrow">First Visit</p>
             <h2>What to expect at your first visit.</h2>
-            <p>New patients are welcome at our {location.shortName} location. Here is how a first visit typically works.</p>
+            <p>New patients are welcome at our {location.shortName} location. Here is how a first appointment typically works.</p>
           </div>
           <div className="location-timeline-vertical">
             {firstVisitSteps.map(([title, text], index) => (
@@ -329,14 +372,14 @@ export default async function LocationPage({ params }: Params) {
             ))}
           </div>
           <div className="hero-actions location-timeline-actions">
-            <Button href="/new-patients/" variant="ghost">New Patients Start Here</Button>
+            <Button href="/new-patients/" variant="ghost">New Patient Information</Button>
             <Button href="/book-appointment/">Request Appointment</Button>
           </div>
         </Container>
       </section>
 
-      {/* Reviews */}
-      <section className="location-section location-section-white">
+      {/* ── Reviews ── */}
+      <section className="location-section location-section-cream">
         <Container>
           <div className="location-section-head">
             <p className="eyebrow">What Pet Owners Say</p>
@@ -346,7 +389,7 @@ export default async function LocationPage({ params }: Params) {
           <div className="location-review-grid">
             {testimonials.slice(0, 3).map((review) => (
               <article className="location-review-card" key={review.name}>
-                <div className="location-review-stars" aria-label="Five star review">
+                <div className="location-review-stars" role="img" aria-label="Five star rating">
                   {[...Array(5)].map((_, i) => <Star key={i} aria-hidden="true" size={15} />)}
                 </div>
                 <p>{review.text}</p>
@@ -360,23 +403,23 @@ export default async function LocationPage({ params }: Params) {
         </Container>
       </section>
 
-      {/* Otto booking widget */}
+      {/* ── Otto Booking Widget ── */}
       {ottoClinicId && (
-        <section className="location-section location-section-cream">
+        <section className="location-section location-section-white">
           <Container>
             <div className="location-section-head">
               <p className="eyebrow">Connect Online</p>
               <h2>Reach our {location.shortName} team.</h2>
-              <p>Use the widget below to request an appointment, ask a question, or connect with our {location.shortName} team directly.</p>
+              <p>Request an appointment, ask a question, or connect with our {location.shortName} team directly.</p>
             </div>
             <OttoInlineWidget clinicId={ottoClinicId} />
           </Container>
         </section>
       )}
 
-      {/* Other location cross-link */}
+      {/* ── Other Location Cross-Link ── */}
       {relatedLocation && (
-        <section className="location-section location-section-white">
+        <section className="location-section location-section-cream">
           <Container>
             <div className="location-cross-link">
               <div>
@@ -396,7 +439,7 @@ export default async function LocationPage({ params }: Params) {
         title={`Ready to visit our ${location.shortName} location?`}
         body={`Call our ${location.shortName} team, request an appointment online, or complete your new patient form before your first visit.`}
         primary={{ label: "Book Appointment", href: "/book-appointment/" }}
-        secondary={{ label: "New Patients Start Here", href: "/new-patients/" }}
+        secondary={{ label: "New Patient Information", href: "/new-patients/" }}
       />
 
       <JsonLd

@@ -27,30 +27,33 @@ function AboutLocationsDropdown() {
     <NavigationMenuItem>
       <NavigationMenuTrigger>About</NavigationMenuTrigger>
       <NavigationMenuContent>
-        <div className="nav-dropdown-menu nav-dropdown-about" aria-label="About and location pages">
-          <NavigationMenuLink asChild>
-            <Link href="/about/">
-              <strong>Our Practice</strong>
-              <span>Locally owned veterinary care</span>
-            </Link>
-          </NavigationMenuLink>
-          <NavigationMenuLink asChild>
-            <Link href="/locations/">
-              <strong>All Locations</strong>
-              <span>Fort Thomas and Independence</span>
-            </Link>
-          </NavigationMenuLink>
-          <div className="nav-dropdown-divider" aria-hidden="true">
-            <span>Find a clinic</span>
-          </div>
-          {locationPages.map((location) => (
-            <NavigationMenuLink asChild key={location.slug}>
-              <Link href={`/locations/${location.slug}/`}>
-                <strong>{location.shortName}</strong>
-                <span>{location.address.split(",")[0]}</span>
+        <div className="nav-dropdown-about" aria-label="About and location pages">
+          <div className="nav-dropdown-top-links">
+            <NavigationMenuLink asChild>
+              <Link href="/about/">
+                <strong>Our Practice</strong>
+                <span>Locally owned veterinary care</span>
               </Link>
             </NavigationMenuLink>
-          ))}
+            <NavigationMenuLink asChild>
+              <Link href="/locations/">
+                <strong>All Locations</strong>
+                <span>Fort Thomas &amp; Independence</span>
+              </Link>
+            </NavigationMenuLink>
+          </div>
+          <p className="nav-dropdown-label" aria-hidden="true">Find a clinic</p>
+          <div className="nav-dropdown-clinics">
+            {locationPages.map((location) => (
+              <NavigationMenuLink asChild key={location.slug}>
+                <Link href={`/locations/${location.slug}/`} className="nav-dropdown-clinic-card">
+                  <strong>{location.shortName}</strong>
+                  <span>{location.address.split(",")[0]}</span>
+                  <small>{location.phone}</small>
+                </Link>
+              </NavigationMenuLink>
+            ))}
+          </div>
         </div>
       </NavigationMenuContent>
     </NavigationMenuItem>

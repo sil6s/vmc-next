@@ -2,9 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import { ArrowUpDown, Search } from "lucide-react";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useDeferredValue, useState } from "react";
+import { ArrowUpDown, Search, X } from "lucide-react";
 
 export type ResourceCardItem = {
   slug: string;
@@ -23,24 +22,38 @@ export type ResourceCardItem = {
 };
 
 const filters = [
-  { id: "all", label: "All resources", match: () => true },
-  { id: "dog", label: "Dog care", match: (item: ResourceCardItem) => matches(item, ["dog", "dogs", "puppy", "canine"]) },
-  { id: "cat", label: "Cat care", match: (item: ResourceCardItem) => matches(item, ["cat", "cats", "kitten", "feline"]) },
-  { id: "new-patients", label: "New patients", match: (item: ResourceCardItem) => matches(item, ["new patient", "first visit", "registration", "appointment"]) },
-  { id: "wellness", label: "Wellness", match: (item: ResourceCardItem) => matches(item, ["wellness", "preventive", "vaccines", "senior", "dental"]) }
+  { id: "all", label: "All" },
+  { id: "dog", label: "Dogs", terms: ["dog", "dogs", "puppy", "canine"] },
+  { id: "cat", label: "Cats", terms: ["cat", "cats", "kitten", "feline"] },
+  { id: "new-patients", label: "New patients", terms: ["new patient", "first visit", "registration", "appointment"] },
+  { id: "wellness", label: "Wellness", terms: ["wellness", "preventive", "vaccines", "senior", "dental"] }
 ] as const;
 
+type FilterId = (typeof filters)[number]["id"];
 type SortId = "newest" | "oldest" | "az";
 
 const sortOptions: { id: SortId; label: string }[] = [
-  { id: "newest", label: "Newest first" },
-  { id: "oldest", label: "Oldest first" },
+  { id: "newest", label: "Newest" },
+  { id: "oldest", label: "Oldest" },
   { id: "az", label: "A–Z" }
 ];
 
-function matches(item: ResourceCardItem, terms: string[]) {
-  const haystack = [item.title, item.excerpt, item.category, item.resourceTypeLabel, ...item.tags].join(" ").toLowerCase();
+function matchesFilter(item: ResourceCardItem, terms: readonly string[]) {
+  const haystack = [item.title, item.excerpt, item.category, item.resourceTypeLabel, ...item.tags]
+    .join(" ")
+    .toLowerCase();
   return terms.some((term) => haystack.includes(term));
+}
+
+function fuzzySearch(items: ResourceCardItem[], query: string) {
+  if (!query.trim()) return items;
+  const words = query.toLowerCase().trim().split(/\s+/);
+  return items.filter((item) => {
+    const haystack = [item.title, item.excerpt, item.category, item.resourceTypeLabel, ...item.tags]
+      .join(" ")
+      .toLowerCase();
+    return words.every((word) => haystack.includes(word));
+  });
 }
 
 function sortItems(items: ResourceCardItem[], sort: SortId) {
@@ -52,25 +65,61 @@ function sortItems(items: ResourceCardItem[], sort: SortId) {
 }
 
 export function ResourceBrowser({ resources }: { resources: ResourceCardItem[] }) {
-  const [active, setActive] = useState<(typeof filters)[number]["id"]>("all");
+  const [active, setActive] = useState<FilterId>("all");
   const [sort, setSort] = useState<SortId>("newest");
+  const [query, setQuery] = useState("");
+  const deferredQuery = useDeferredValue(query);
 
-  const filter = filters.find((item) => item.id === active) || filters[0];
-  const filtered = active === "all" ? resources : resources.filter(filter.match);
-  const visible = sortItems(filtered, sort);
+  const activeFilter = filters.find((f) => f.id === active);
+  const tabFiltered =
+    active === "all" || !activeFilter || !("terms" in activeFilter)
+      ? resources
+      : resources.filter((item) => matchesFilter(item, activeFilter.terms));
+  const searched = fuzzySearch(tabFiltered, deferredQuery);
+  const visible = sortItems(searched, sort);
+  const isSearching = deferredQuery.trim().length > 0;
 
   return (
     <div className="resource-browser">
+      {/* Search bar */}
+      <label className="resource-search-bar" htmlFor="resource-search">
+        <Search aria-hidden="true" size={19} />
+        <input
+          id="resource-search"
+          type="search"
+          placeholder="Search guides, topics, and resources…"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          autoComplete="off"
+          spellCheck={false}
+        />
+        {query && (
+          <button
+            type="button"
+            className="resource-search-clear"
+            onClick={() => setQuery("")}
+            aria-label="Clear search"
+          >
+            <X aria-hidden="true" size={16} />
+          </button>
+        )}
+      </label>
+
+      {/* Filter chips + sort */}
       <div className="resource-browser-toolbar">
-        <Tabs value={active} onValueChange={(v) => setActive(v as (typeof filters)[number]["id"])}>
-          <TabsList className="resource-filter-bar" aria-label="Filter pet health resources">
-            {filters.map((item) => (
-              <TabsTrigger value={item.id} key={item.id}>
-                {item.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
+        <div className="resource-filter-chips" role="group" aria-label="Filter by topic">
+          {filters.map((f) => (
+            <button
+              key={f.id}
+              type="button"
+              className={`resource-filter-chip${active === f.id ? " is-active" : ""}`}
+              onClick={() => setActive(f.id)}
+              aria-pressed={active === f.id}
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
 
         <div className="resource-sort-control">
           <ArrowUpDown aria-hidden="true" size={14} />
@@ -86,18 +135,31 @@ export function ResourceBrowser({ resources }: { resources: ResourceCardItem[] }
         </div>
       </div>
 
+      {/* Result count */}
       <p className="resource-browser-count" aria-live="polite">
-        {visible.length === resources.length
-          ? `Showing all ${visible.length} resources`
-          : `Showing ${visible.length} of ${resources.length} resources`}
+        {isSearching
+          ? `${visible.length} result${visible.length !== 1 ? "s" : ""} for "${deferredQuery.trim()}"`
+          : visible.length === resources.length
+          ? `${visible.length} resources`
+          : `${visible.length} of ${resources.length} resources`}
       </p>
 
+      {/* Grid or empty state */}
       {visible.length ? (
         <div className="blog-card-grid">
           {visible.map((post) => (
             <article className="blog-card" key={post.slug}>
-              <Link className="blog-card-image" href={`/resources/${post.slug}/`} aria-label={`Read ${post.title}`}>
-                <Image src={post.imageUrl} alt={post.imageAlt} fill sizes="(max-width: 720px) 100vw, (max-width: 1100px) 50vw, 380px" />
+              <Link
+                className="blog-card-image"
+                href={`/resources/${post.slug}/`}
+                aria-label={`Read ${post.title}`}
+              >
+                <Image
+                  src={post.imageUrl}
+                  alt={post.imageAlt}
+                  fill
+                  sizes="(max-width: 720px) 100vw, (max-width: 1100px) 50vw, 380px"
+                />
               </Link>
               <div className="blog-card-body">
                 <p className="eyebrow">{post.resourceTypeLabel} · {post.category}</p>
@@ -122,8 +184,16 @@ export function ResourceBrowser({ resources }: { resources: ResourceCardItem[] }
       ) : (
         <div className="resource-empty-state">
           <Search aria-hidden="true" size={28} />
-          <h3>No resources found for this filter.</h3>
-          <p>Try all resources, or add matching tags in Sanity like dog, cat, new patient, wellness, dental, puppy, kitten, or senior.</p>
+          <h3>
+            {isSearching
+              ? `No results for "${deferredQuery.trim()}"`
+              : "No resources found for this filter."}
+          </h3>
+          <p>
+            {isSearching
+              ? "Try different keywords, or clear your search to browse all resources."
+              : "Try all resources, or add matching tags in Sanity like dog, cat, new patient, wellness, or dental."}
+          </p>
         </div>
       )}
     </div>
