@@ -209,7 +209,7 @@ function readingTime(post: BlogPost, markdownBody?: string) {
 }
 
 function shouldRenderMarkdown(post: BlogPost, markdownBody?: string) {
-  return post.contentMode === "advanced" || (!post.body?.length && Boolean(markdownBody));
+  return !post.body?.length && Boolean(markdownBody);
 }
 
 async function resolveMarkdownBody(post: BlogPost) {

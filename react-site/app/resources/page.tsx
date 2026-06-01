@@ -35,7 +35,7 @@ function featuredPostForToday(posts: BlogPost[]) {
 }
 
 export default async function ResourcesPage() {
-  const posts = await getBlogPosts(24);
+  const posts = await getBlogPosts(100);
   const featured = featuredPostForToday(posts);
   const browserResources: ResourceCardItem[] = posts.map((post) => ({
     slug: post.slug,
