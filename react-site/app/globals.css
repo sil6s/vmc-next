@@ -1112,7 +1112,7 @@ svg {
 
 .eyebrow {
   margin: 0 0 16px;
-  color: var(--gold);
+  color: #7a4e1e;
   font-size: 12px;
   font-weight: 900;
   letter-spacing: 0.12em;
@@ -10850,6 +10850,49 @@ a.location-info-bar-item span {
 }
 
 .home-care-finder,
+/* ── New client steps timeline (homepage) ── */
+
+.home-new-client-steps {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 28px;
+  margin-bottom: 32px;
+}
+
+.home-new-client-steps article {
+  border-top: 2px solid rgba(169, 27, 27, 0.22);
+  padding-top: 20px;
+}
+
+.home-new-client-steps span {
+  display: block;
+  color: rgba(169, 27, 27, 0.3);
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 40px;
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 12px;
+}
+
+.home-new-client-steps h3 {
+  margin: 0 0 8px;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.18;
+  color: var(--ink);
+}
+
+.home-new-client-steps p {
+  margin: 0;
+  color: var(--body);
+  font-size: 14px;
+  font-weight: 550;
+  line-height: 1.72;
+}
+
+/* ── Home service tabs ── */
+
 .home-service-tabs,
 .home-review-browser {
   display: grid;
@@ -11112,7 +11155,12 @@ a.location-info-bar-item span {
   gap: 8px;
 }
 
-.home-service-grid,
+.home-service-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
 .home-location-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -11131,7 +11179,84 @@ a.location-info-bar-item span {
   gap: 38px;
 }
 
-.home-service-card,
+.home-service-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(169, 27, 27, 0.13);
+  border-radius: 10px;
+  background: var(--white);
+  overflow: hidden;
+  box-shadow: 0 14px 36px rgba(23, 19, 19, 0.05);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.home-service-card:hover {
+  border-color: rgba(169, 27, 27, 0.3);
+  box-shadow: 0 20px 52px rgba(23, 19, 19, 0.09);
+  transform: translateY(-2px);
+}
+
+.home-service-card-image {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background: #fff8ef;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.home-service-card-image img {
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.home-service-card:hover .home-service-card-image img {
+  transform: scale(1.04);
+}
+
+.home-service-card-body {
+  display: grid;
+  gap: 12px;
+  align-content: space-between;
+  flex: 1;
+  padding: 24px;
+}
+
+.home-service-card h3 {
+  margin: 0;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.15;
+  color: var(--ink);
+}
+
+.home-service-bullets {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.home-service-bullets li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--body);
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.4;
+}
+
+.home-service-bullets li::before {
+  content: "";
+  flex: 0 0 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--red);
+}
+
 .home-location-card {
   display: grid;
   gap: 24px;
@@ -11144,14 +11269,12 @@ a.location-info-bar-item span {
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-.home-service-card:hover,
 .home-location-card:hover {
   border-color: rgba(169, 27, 27, 0.34);
   box-shadow: 0 20px 52px rgba(23, 19, 19, 0.08);
   transform: translateY(-2px);
 }
 
-.home-service-card h3,
 .home-location-card h3 {
   margin: 0 0 8px;
   font-family: var(--font-serif), Georgia, serif;
@@ -11209,14 +11332,15 @@ a.location-info-bar-item span {
   color: var(--red);
 }
 
-.home-service-card p,
+.home-service-card-body > p,
 .home-location-card p,
 .home-location-card address {
   margin: 0;
   color: var(--body);
-  font-size: 15px;
+  font-size: 14px;
   font-style: normal;
-  line-height: 1.65;
+  font-weight: 550;
+  line-height: 1.68;
 }
 
 .location-kicker {
@@ -14221,18 +14345,25 @@ a.location-info-bar-item span {
 
   .locations-feature-copy,
   .home-care-panel,
-  .home-service-card,
   .home-location-card {
     padding: 22px;
   }
 
+  .home-service-card-body {
+    padding: 18px;
+    gap: 10px;
+  }
+
   .home-service-card {
     min-width: 0;
-    gap: 14px;
   }
 
   .home-service-card h3 {
-    font-size: 23px;
+    font-size: 20px;
+  }
+
+  .home-new-client-steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .home-service-card-actions a {
@@ -20547,6 +20678,32 @@ body:has(.standalone-studio-shell) {
 
   .npf-step-title {
     font-size: 18px;
+  }
+}
+
+/* ── New client steps → 2-col then 1-col ── */
+@media (max-width: 860px) {
+  .home-new-client-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .home-new-client-steps {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Service grid 3→2→1 ── */
+@media (max-width: 900px) {
+  .home-service-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .home-service-grid {
+    grid-template-columns: 1fr;
   }
 }
 

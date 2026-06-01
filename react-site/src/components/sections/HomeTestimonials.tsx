@@ -50,7 +50,7 @@ export function HomeTestimonials() {
               </span>
             </div>
             <div className="pawstimonial-body">
-              <div className="pawstimonial-stars" aria-label="Positive client feedback">
+              <div className="pawstimonial-stars" role="img" aria-label="Five star rating">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <Star key={star} size={13} fill="currentColor" />
                 ))}

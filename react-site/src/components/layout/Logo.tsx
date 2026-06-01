@@ -18,8 +18,8 @@ export function Logo({ className = "" }: { className?: string }) {
         </svg>
       </span>
       <span className="logo-txt">
-        <span className="logo-main" aria-label={site.name}>Veterinary Medical Centers</span>
-        <span className="logo-sub" aria-label="Fort Thomas, Kentucky and Independence, Kentucky">Fort Thomas, Kentucky &amp; Independence, Kentucky</span>
+        <span className="logo-main">Veterinary Medical Centers</span>
+        <span className="logo-sub" aria-hidden="true">Fort Thomas, Kentucky &amp; Independence, Kentucky</span>
       </span>
       <span className="logo-animal logo-cat" aria-hidden="true">
         <svg viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">

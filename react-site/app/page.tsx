@@ -26,7 +26,7 @@ const localCards = [
   {
     title: "Local relationships",
     text:
-      "VMC is rooted in Northern Kentucky, with a vet team that gets to know your pet's history, your goals, and what helps visits feel easier over time.",
+      "Veterinary Medical Centers is rooted in Northern Kentucky, with a vet team that gets to know your pet's history, your goals, and what helps visits feel easier over time.",
     icon: HandHeart
   },
   {
@@ -63,7 +63,7 @@ const localCards = [
 
 const newClientSteps = [
   ["Choose your location", "Pick the Fort Thomas vet location or Independence vet location based on what is easiest for your day."],
-  ["Schedule your visit", "Request an appointment online or call your local VMC team for help choosing the right appointment type."],
+  ["Schedule your visit", "Request an appointment online or call your local Veterinary Medical Centers team for help choosing the right appointment type."],
   ["Send or bring records", "Vaccine history, medications, prior exam notes, and adoption paperwork help us understand your pet faster."],
   ["Meet your vet team", "We take time to learn your pet's history, answer questions, and complete a thoughtful exam."],
   ["Leave with a clear care plan", "You leave with practical recommendations, follow-up timing, and next steps for your dog or cat."]
@@ -186,10 +186,10 @@ export default async function HomePage() {
       </Section>
 
       <Section tone="cream" eyebrow="New Clients" title="New to our vet center? Here’s what to expect">
-        <div className="location-timeline">
+        <div className="home-new-client-steps">
           {newClientSteps.map(([title, text], index) => (
             <article key={title}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
+              <span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
               <h3>{title}</h3>
               <p>{text}</p>
             </article>
@@ -212,7 +212,7 @@ export default async function HomePage() {
           <div className="first-visit-card-grid">
             {firstVisitCards.map(([title, text], index) => (
               <article key={title}>
-                <span>{String(index + 1).padStart(2, "0")}</span>
+                <span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
                 <h3>{title}</h3>
                 <p>{text}</p>
               </article>

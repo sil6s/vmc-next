@@ -373,7 +373,7 @@ export default async function ServicePage({ params }: Params) {
                   <div className="service-timeline">
                     {service.whatToExpect.map((step, index) => (
                       <article key={`${step.stepTitle}-${index}`}>
-                        <span>{String(index + 1).padStart(2, "0")}</span>
+                        <span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
                         <div>
                           <h3>{step.stepTitle}</h3>
                           <p>{step.stepDescription}</p>
@@ -436,7 +436,7 @@ export default async function ServicePage({ params }: Params) {
                     <div className="service-timeline service-mini-timeline">
                       {service.timelineBlocks.map((block, index) => (
                         <article key={`${block.title}-${index}`}>
-                          <span>{block.label || String(index + 1).padStart(2, "0")}</span>
+                          <span aria-hidden="true">{block.label || String(index + 1).padStart(2, "0")}</span>
                           <div>
                             <h3>{block.title}</h3>
                             <p>{block.description}</p>

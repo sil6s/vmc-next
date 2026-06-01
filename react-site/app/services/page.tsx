@@ -387,7 +387,7 @@ export default async function ServicesPage() {
           <div className="visit-steps">
             {visitSteps.map(([title, copy], index) => (
               <article className="visit-step" key={title}>
-                <span>{String(index + 1).padStart(2, "0")}</span>
+                <span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
                 <h3>{title}</h3>
                 <p>{copy}</p>
               </article>
