@@ -48,7 +48,7 @@ const situationCards = [
   {
     title: "My pet seems healthy but is due for care",
     services: [
-      ["Wellness Exam", "wellness-exams"],
+      ["Wellness Exam", "pet-wellness-exams"],
       ["Vaccinations", "dog-cat-vaccinations"],
       ["Parasite Prevention", "parasite-prevention"]
     ]
@@ -65,7 +65,7 @@ const situationCards = [
     title: "My pet has bad breath or trouble chewing",
     services: [
       ["Dental Care", "pet-dental-care"],
-      ["Wellness Exam", "wellness-exams"],
+      ["Wellness Exam", "pet-wellness-exams"],
       ["Senior Pet Care", "senior-pet-care"]
     ]
   },
@@ -117,12 +117,12 @@ const resourceLinks = [
   {
     title: "Pet Dental Care in Northern Kentucky",
     description: "See how dental exams, cleanings, and treatment planning support long-term comfort.",
-    href: "/veterinary-services/pet-dental-care/"
+    href: "/services/pet-dental-care/"
   },
   {
     title: "Pet Soft Tissue Surgery in Northern Kentucky",
     description: "Review common surgical care, preparation, monitoring, and recovery support.",
-    href: "/veterinary-services/soft-tissue-surgery/"
+    href: "/services/soft-tissue-surgery/"
   },
   {
     title: "About Veterinary Medical Centers",
@@ -285,7 +285,7 @@ export default async function ServicesPage() {
                   <ul>
                     {card.services.map(([label, slug]) => (
                       <li key={slug}>
-                        <Link href={`/veterinary-services/${slug}/`}>{label}</Link>
+                        <Link href={`/services/${slug}/`}>{label}</Link>
                       </li>
                     ))}
                   </ul>
@@ -425,7 +425,7 @@ export default async function ServicesPage() {
         data={[
           webpageSchema("/services/", seo.title, seo.description),
           organizationSchema(),
-          serviceListSchema(services.map((service) => ({ name: service.title, description: service.shortDescription, path: `/veterinary-services/${service.slug}/` }))),
+          serviceListSchema(services.map((service) => ({ name: service.title, description: service.shortDescription, path: `/services/${service.slug}/` }))),
           breadcrumbSchema(crumbs),
           faqSchema(servicesFaqs)
         ]}

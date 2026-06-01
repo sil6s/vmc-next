@@ -95,7 +95,7 @@ export function ServiceBrowser({ services }: { services: ServiceCard[] }) {
               <p className="service-best">
                 <strong>Best for:</strong> {service.bestFor.join(", ")}
               </p>
-              <Link href={`/veterinary-services/${service.slug}/`}>{service.cta}</Link>
+              <Link href={`/services/${service.slug}/`}>{service.cta}</Link>
             </article>
           );
         })}

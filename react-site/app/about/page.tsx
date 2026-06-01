@@ -111,11 +111,11 @@ const whyCards = [
 
 const serviceCards = [
   ["Wellness & Preventive Care", "Routine exams, vaccines, and prevention help your local vet team catch changes early.", "/services/"],
-  ["Puppy & Kitten Care", "First visits, vaccine timing, parasite prevention, and new pet guidance for a confident start.", "/veterinary-services/puppy-kitten-care/"],
-  ["Dental Care", "Oral health support for bad breath, tartar, chewing changes, and preventive dental planning.", "/veterinary-services/pet-dental-care/"],
-  ["Sick Visits & Medical Care", "Practical help when your pet is vomiting, limping, coughing, not eating, or acting differently.", "/veterinary-services/sick-pet-visits/"],
-  ["Surgery & Soft Tissue Procedures", "Procedure planning with preparation, monitoring, pain control, and recovery instructions.", "/veterinary-services/soft-tissue-surgery/"],
-  ["Senior Pet Care", "Closer monitoring for aging dogs and cats, mobility changes, dental needs, and chronic conditions.", "/veterinary-services/senior-pet-care/"],
+  ["Puppy & Kitten Care", "First visits, vaccine timing, parasite prevention, and new pet guidance for a confident start.", "/services/puppy-kitten-care/"],
+  ["Dental Care", "Oral health support for bad breath, tartar, chewing changes, and preventive dental planning.", "/services/pet-dental-care/"],
+  ["Sick Visits & Medical Care", "Practical help when your pet is vomiting, limping, coughing, not eating, or acting differently.", "/services/sick-pet-visits/"],
+  ["Surgery & Soft Tissue Procedures", "Procedure planning with preparation, monitoring, pain control, and recovery instructions.", "/services/soft-tissue-surgery/"],
+  ["Senior Pet Care", "Closer monitoring for aging dogs and cats, mobility changes, dental needs, and chronic conditions.", "/services/senior-pet-care/"],
   ["Online Pharmacy & Refills", "Approved medication, preventive, and refill support through VMC online tools.", "/online-vet-pharmacy-northern-kentucky-cincinnati/"]
 ];
 
@@ -131,8 +131,8 @@ const resourceLinks = [
   ["New patient information", "/new-patients/"],
   ["Vet services for dogs and cats", "/services/"],
   ["First vet visit guide", "/new-patients/"],
-  ["Pet dental care", "/veterinary-services/pet-dental-care/"],
-  ["Soft tissue surgery", "/veterinary-services/soft-tissue-surgery/"],
+  ["Pet dental care", "/services/pet-dental-care/"],
+  ["Soft tissue surgery", "/services/soft-tissue-surgery/"],
   ["Online pharmacy", "/online-vet-pharmacy-northern-kentucky-cincinnati/"],
   ["Patient portal", "/patient-portal-online-booking/"],
   ["Contact Veterinary Medical Centers", "/contact/"]

@@ -43,28 +43,48 @@ type SanityServiceCard = {
 type SanityServiceDetail = SanityServiceCard & {
   metaTitle?: string;
   metaDescription?: string;
+  canonicalUrl?: string;
   focusKeyword?: string;
+  secondaryKeywords?: string[];
+  noindex?: boolean;
   heroEyebrow?: string;
   heroTitle?: string;
   heroDescription?: string;
   heroImage?: SanityImageSource;
+  openGraphImage?: SanityImageSource;
   heroImageAlt?: string;
   primaryCTA?: SanityCta;
   secondaryCTA?: SanityCta;
+  fullDescription?: string;
   overview?: PortableTextBlock[];
   symptomsOrReasons?: ServiceReason[];
   whatToExpect?: ServiceStep[];
   includedCare?: ServiceIncludedCare[];
+  keyBenefits?: ServiceIncludedCare[];
+  careApproachCards?: ServiceIncludedCare[];
+  timelineBlocks?: { label?: string; title: string; description: string }[];
+  comparisonTable?: ServiceDetail["comparisonTable"];
+  contentTable?: ServiceDetail["contentTable"];
+  calloutBlocks?: ServiceDetail["calloutBlocks"];
   whenToSchedule?: PortableTextBlock[];
   relatedServices?: SanityServiceCard[];
+  relatedResources?: ServiceDetail["relatedResources"];
+  externalReferences?: ServiceDetail["externalReferences"];
   faqs?: ServiceFaq[];
   author?: ServiceAuthor;
   reviewedBy?: ServiceAuthor;
   publishedAt?: string;
   updatedAt?: string;
+  lastReviewedDate?: string;
   cardImage?: SanityImageSource;
   cardImageAlt?: string;
   locationRelevance?: string[];
+  serviceAreas?: string[];
+  finalCtaTitle?: string;
+  finalCtaText?: string;
+  finalCtaButtons?: { label: string; href: string }[];
+  disclaimer?: string;
+  schemaType?: string;
 };
 
 const options = { next: { revalidate: 30 } };
@@ -96,30 +116,50 @@ function normalizeDetail(service: SanityServiceDetail): ServiceDetail {
     ...card,
     metaTitle: service.metaTitle || fallback?.metaTitle,
     metaDescription: service.metaDescription || fallback?.metaDescription || card.shortDescription,
+    canonicalUrl: service.canonicalUrl,
     focusKeyword: service.focusKeyword || fallback?.focusKeyword,
+    secondaryKeywords: service.secondaryKeywords,
+    noindex: service.noindex,
     heroEyebrow: service.heroEyebrow || fallback?.heroEyebrow || "Veterinary Services in Northern Kentucky",
     heroTitle: service.heroTitle || service.title,
     heroDescription: service.heroDescription || card.shortDescription,
     heroImage: fallback?.heroImage,
     heroImageSource: service.heroImage,
+    openGraphImage: service.openGraphImage,
     heroImageAlt: service.heroImageAlt || fallback?.heroImageAlt || `${service.title} at Veterinary Medical Centers in Northern Kentucky`,
     primaryCTA: normalizeCta(service.primaryCTA) || fallback?.primaryCTA,
     secondaryCTA: normalizeCta(service.secondaryCTA) || fallback?.secondaryCTA,
+    fullDescription: service.fullDescription,
     overview: service.overview,
     overviewText: fallback?.overviewText || [],
     symptomsOrReasons: service.symptomsOrReasons?.length ? service.symptomsOrReasons : fallback?.symptomsOrReasons || [],
     whatToExpect: service.whatToExpect?.length ? service.whatToExpect : fallback?.whatToExpect || [],
     includedCare: service.includedCare?.length ? service.includedCare : fallback?.includedCare || [],
+    keyBenefits: service.keyBenefits,
+    careApproachCards: service.careApproachCards,
+    timelineBlocks: service.timelineBlocks,
+    comparisonTable: service.comparisonTable,
+    contentTable: service.contentTable,
+    calloutBlocks: service.calloutBlocks,
     whenToSchedule: service.whenToSchedule,
     whenToScheduleText: fallback?.whenToScheduleText || [],
     relatedServiceSlugs: relatedSlugs,
     relatedServices: service.relatedServices?.map(normalizeCard),
+    relatedResources: service.relatedResources,
+    externalReferences: service.externalReferences,
     faqs: service.faqs?.length ? service.faqs : fallback?.faqs || [],
     author: service.author || fallback?.author,
     reviewedBy: service.reviewedBy || fallback?.reviewedBy,
     publishedAt: service.publishedAt || fallback?.publishedAt,
     updatedAt: service.updatedAt || fallback?.updatedAt,
+    lastReviewedDate: service.lastReviewedDate,
     locationRelevance: service.locationRelevance?.length ? service.locationRelevance : fallback?.locationRelevance || ["Fort Thomas", "Independence", "Northern Kentucky"],
+    serviceAreas: service.serviceAreas,
+    finalCtaTitle: service.finalCtaTitle,
+    finalCtaText: service.finalCtaText,
+    finalCtaButtons: service.finalCtaButtons,
+    disclaimer: service.disclaimer,
+    schemaType: service.schemaType,
     appointmentType: fallback?.appointmentType || "Veterinary appointment"
   };
 }
@@ -158,11 +198,11 @@ export async function getServiceDetail(slug: string) {
       const service = await client.fetch<SanityServiceDetail | null>(SERVICE_QUERY, { slug }, options);
       if (service) return normalizeDetail(service);
     } catch {
-      // Static fallbacks keep Vercel builds working before Sanity content is published.
+      return null;
     }
   }
 
-  return getStaticServiceDetail(slug);
+  return null;
 }
 
 export async function getServiceDetailSlugs() {
@@ -171,11 +211,11 @@ export async function getServiceDetailSlugs() {
       const slugs = await client.fetch<{ slug: string }[]>(SERVICE_SLUGS_QUERY, {}, options);
       if (slugs.length) return slugs.map((item) => item.slug);
     } catch {
-      // Static fallback below.
+      return [];
     }
   }
 
-  return serviceHubServices.map((service) => service.slug);
+  return [];
 }
 
 export async function getRelatedServiceCards(service: ServiceDetail) {

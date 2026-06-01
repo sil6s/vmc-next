@@ -1,5 +1,4 @@
 import { locations } from "@/data/locations";
-import { services } from "@/data/services";
 import { serviceHubServices } from "@/data/serviceHub";
 
 export const staticRoutes = [
@@ -25,8 +24,7 @@ export const sitemapStaticRoutes = staticRoutes.filter(
 export function allRoutes() {
   return [
     ...staticRoutes,
-    ...services.map((service) => `/services/${service.slug}/`),
-    ...serviceHubServices.map((service) => `/veterinary-services/${service.slug}/`),
+    ...serviceHubServices.map((service) => `/services/${service.slug}/`),
     ...locations.map((location) => `/locations/${location.slug}/`)
   ];
 }

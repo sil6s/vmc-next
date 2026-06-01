@@ -37,6 +37,33 @@ export type ServiceIncludedCare = {
   description: string;
 };
 
+export type ServiceTable = {
+  title?: string;
+  columns: string[];
+  rows: { cells: string[] }[];
+};
+
+export type ServiceCallout = {
+  title: string;
+  text: string;
+  tone?: string;
+};
+
+export type ServiceExternalReference = {
+  title: string;
+  url: string;
+  source?: string;
+};
+
+export type ServiceRelatedResource = {
+  title: string;
+  slug: string;
+  excerpt?: string;
+  category?: string;
+  image?: SanityImageSource;
+  imageAlt?: string;
+};
+
 export type ServiceFaq = {
   question: string;
   answer: string;
@@ -53,30 +80,50 @@ export type ServiceAuthor = {
 export type ServiceDetail = ServiceCard & {
   metaTitle?: string;
   metaDescription?: string;
+  canonicalUrl?: string;
   focusKeyword?: string;
+  secondaryKeywords?: string[];
+  noindex?: boolean;
   heroEyebrow?: string;
   heroTitle: string;
   heroDescription: string;
   heroImage?: string;
   heroImageSource?: SanityImageSource;
+  openGraphImage?: SanityImageSource;
   heroImageAlt?: string;
   primaryCTA?: { label: string; href: string };
   secondaryCTA?: { label: string; href: string };
+  fullDescription?: string;
   overview?: PortableTextBlock[];
   overviewText: string[];
   symptomsOrReasons: ServiceReason[];
   whatToExpect: ServiceStep[];
   includedCare: ServiceIncludedCare[];
+  keyBenefits?: ServiceIncludedCare[];
+  careApproachCards?: ServiceIncludedCare[];
+  timelineBlocks?: { label?: string; title: string; description: string }[];
+  comparisonTable?: ServiceTable;
+  contentTable?: ServiceTable;
+  calloutBlocks?: ServiceCallout[];
   whenToSchedule?: PortableTextBlock[];
   whenToScheduleText: string[];
   relatedServiceSlugs: string[];
   relatedServices?: ServiceCard[];
+  relatedResources?: ServiceRelatedResource[];
+  externalReferences?: ServiceExternalReference[];
   faqs: ServiceFaq[];
   author?: ServiceAuthor;
   reviewedBy?: ServiceAuthor;
   publishedAt?: string;
   updatedAt?: string;
+  lastReviewedDate?: string;
   locationRelevance: string[];
+  serviceAreas?: string[];
+  finalCtaTitle?: string;
+  finalCtaText?: string;
+  finalCtaButtons?: { label: string; href: string }[];
+  disclaimer?: string;
+  schemaType?: string;
   appointmentType: string;
 };
 
@@ -88,9 +135,9 @@ const defaultAuthor = {
 
 export const serviceHubServices: ServiceDetail[] = [
   {
-    id: "wellness-exams",
+    id: "pet-wellness-exams",
     title: "Pet Wellness Exams",
-    slug: "wellness-exams",
+    slug: "pet-wellness-exams",
     serviceCategory: "preventiveCare",
     shortDescription:
       "Routine exams help our veterinarians catch changes early, answer questions, and create a care plan based on your pet's age, lifestyle, and health history.",
@@ -189,7 +236,7 @@ export const serviceHubServices: ServiceDetail[] = [
       { title: "Booster schedule", description: "We explain what is due now and what comes next." }
     ],
     whenToScheduleText: ["Schedule vaccination care when your pet is new to your home, due for boosters, preparing to board, or overdue for preventive care."],
-    relatedServiceSlugs: ["wellness-exams", "puppy-kitten-care", "parasite-prevention"],
+    relatedServiceSlugs: ["pet-wellness-exams", "puppy-kitten-care", "parasite-prevention"],
     faqs: [
       { question: "Do indoor cats need vaccines?", answer: "Many indoor cats still benefit from core vaccines. Recommendations depend on age, history, household risk, and local requirements." },
       { question: "Can vaccines be done during a wellness exam?", answer: "Yes. Vaccines are commonly reviewed and administered during wellness visits when appropriate." }
@@ -237,7 +284,7 @@ export const serviceHubServices: ServiceDetail[] = [
       { title: "Home-care guidance", description: "We discuss feeding, behavior, grooming, and safety basics." }
     ],
     whenToScheduleText: ["Schedule a puppy or kitten visit soon after adoption, even if your new pet appears healthy."],
-    relatedServiceSlugs: ["dog-cat-vaccinations", "parasite-prevention", "wellness-exams"],
+    relatedServiceSlugs: ["dog-cat-vaccinations", "parasite-prevention", "pet-wellness-exams"],
     faqs: [
       { question: "When should my puppy or kitten first see a vet?", answer: "Schedule soon after adoption or bringing your pet home so records, vaccines, parasites, and early health needs can be reviewed." },
       { question: "Should I bring adoption paperwork?", answer: "Yes. Bring any vaccine records, deworming details, medication information, and adoption paperwork you have." }
@@ -284,7 +331,7 @@ export const serviceHubServices: ServiceDetail[] = [
       { title: "Dental treatment planning", description: "We discuss extractions or additional care when needed." }
     ],
     whenToScheduleText: ["Schedule dental care if your pet has bad breath, tartar, red gums, mouth sensitivity, drooling, or chewing changes."],
-    relatedServiceSlugs: ["wellness-exams", "senior-pet-care", "soft-tissue-surgery"],
+    relatedServiceSlugs: ["pet-wellness-exams", "senior-pet-care", "soft-tissue-surgery"],
     faqs: [
       { question: "Do pets need anesthesia for dental cleanings?", answer: "Professional dental cleanings typically require anesthesia so the team can clean below the gumline and evaluate the mouth safely." },
       { question: "Can dental disease affect comfort?", answer: "Yes. Dental disease can contribute to pain, chewing changes, infection, and reduced quality of life." }
@@ -423,7 +470,7 @@ export const serviceHubServices: ServiceDetail[] = [
       { title: "Treatment plan", description: "We explain medications, home care, and warning signs." }
     ],
     whenToScheduleText: ["Schedule a sick visit when your pet has new symptoms, pain, behavior changes, or is not acting like themselves."],
-    relatedServiceSlugs: ["veterinary-diagnostics", "skin-ear-allergy-care", "wellness-exams"],
+    relatedServiceSlugs: ["veterinary-diagnostics", "skin-ear-allergy-care", "pet-wellness-exams"],
     faqs: [
       { question: "Should I call before bringing in a sick pet?", answer: "Yes. Calling first helps us triage your pet and recommend the safest next step." },
       { question: "Do you handle emergencies?", answer: "VMC sees urgent concerns during clinic hours, but life-threatening emergencies should go to a 24-hour emergency hospital." }
@@ -515,7 +562,7 @@ export const serviceHubServices: ServiceDetail[] = [
       { title: "Quality-of-life support", description: "We discuss comfort, mobility, and home-care adjustments." }
     ],
     whenToScheduleText: ["Ask about senior pet care when your dog or cat is aging, slowing down, or showing changes in appetite, weight, thirst, mobility, or behavior."],
-    relatedServiceSlugs: ["wellness-exams", "veterinary-diagnostics", "nutrition-weight-guidance"],
+    relatedServiceSlugs: ["pet-wellness-exams", "veterinary-diagnostics", "nutrition-weight-guidance"],
     faqs: [
       { question: "How often should senior pets see a veterinarian?", answer: "Many senior pets benefit from exams every six months, especially if they have chronic conditions or new changes." },
       { question: "Can you help with mobility changes?", answer: "Yes. We can evaluate pain, arthritis concerns, weight, and practical comfort strategies." }
@@ -561,7 +608,7 @@ export const serviceHubServices: ServiceDetail[] = [
       { title: "Prevention plan", description: "You leave with clear dosing and timing instructions." }
     ],
     whenToScheduleText: ["Discuss parasite prevention during wellness visits, puppy or kitten visits, adoption visits, or anytime your pet has a gap in protection."],
-    relatedServiceSlugs: ["wellness-exams", "dog-cat-vaccinations", "puppy-kitten-care"],
+    relatedServiceSlugs: ["pet-wellness-exams", "dog-cat-vaccinations", "puppy-kitten-care"],
     faqs: [
       { question: "Do indoor pets need parasite prevention?", answer: "Some indoor pets still face parasite risks. Recommendations depend on species, lifestyle, household pets, and local exposure." },
       { question: "Is prevention needed year-round?", answer: "Year-round prevention is often recommended because parasite exposure can be unpredictable." }
@@ -653,7 +700,7 @@ export const serviceHubServices: ServiceDetail[] = [
       { title: "Follow-up plan", description: "Rechecks may help track progress over time." }
     ],
     whenToScheduleText: ["Ask about nutrition during wellness visits, senior care, weight changes, chronic condition visits, or anytime you are unsure what to feed."],
-    relatedServiceSlugs: ["wellness-exams", "senior-pet-care", "skin-ear-allergy-care"],
+    relatedServiceSlugs: ["pet-wellness-exams", "senior-pet-care", "skin-ear-allergy-care"],
     faqs: [
       { question: "Can you recommend a specific food?", answer: "We can discuss food choices based on your pet's age, health, body condition, and medical needs." },
       { question: "Should I be concerned about weight gain?", answer: "Weight gain can affect comfort and long-term health. A visit can help identify realistic next steps." }

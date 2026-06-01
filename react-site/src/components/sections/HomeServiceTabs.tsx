@@ -10,9 +10,9 @@ const serviceGroups = [
     label: "Wellness",
     icon: ShieldCheck,
     services: [
-      ["Wellness Exams", "Routine visits help your local vet team monitor health, catch changes early, and keep care on track.", "/veterinary-services/wellness-exams/"],
-      ["Vaccines", "Lifestyle-based vaccines help protect dogs and cats from serious preventable diseases.", "/veterinary-services/dog-cat-vaccinations/"],
-      ["Parasite Prevention", "Year-round guidance for heartworm, fleas, ticks, and intestinal parasites in Northern Kentucky.", "/veterinary-services/parasite-prevention/"]
+      ["Wellness Exams", "Routine visits help your local vet team monitor health, catch changes early, and keep care on track.", "/services/pet-wellness-exams/"],
+      ["Vaccines", "Lifestyle-based vaccines help protect dogs and cats from serious preventable diseases.", "/services/dog-cat-vaccinations/"],
+      ["Parasite Prevention", "Year-round guidance for heartworm, fleas, ticks, and intestinal parasites in Northern Kentucky.", "/services/parasite-prevention/"]
     ]
   },
   {
@@ -20,9 +20,9 @@ const serviceGroups = [
     label: "Dental",
     icon: SmilePlus,
     services: [
-      ["Pet Dental Cleanings", "Dental evaluations and professional care planning for bad breath, tartar, and oral discomfort.", "/veterinary-services/pet-dental-care/"],
-      ["Oral Health Checks", "We look for signs of discomfort, gum disease, chewing changes, and other dental concerns during visits.", "/veterinary-services/pet-dental-care/"],
-      ["Home Dental Guidance", "Our team explains practical ways to support your pet's mouth between professional dental visits.", "/veterinary-services/pet-dental-care/"]
+      ["Pet Dental Cleanings", "Dental evaluations and professional care planning for bad breath, tartar, and oral discomfort.", "/services/pet-dental-care/"],
+      ["Oral Health Checks", "We look for signs of discomfort, gum disease, chewing changes, and other dental concerns during visits.", "/services/pet-dental-care/"],
+      ["Home Dental Guidance", "Our team explains practical ways to support your pet's mouth between professional dental visits.", "/services/pet-dental-care/"]
     ]
   },
   {
@@ -30,9 +30,9 @@ const serviceGroups = [
     label: "Sick Visits",
     icon: Microscope,
     services: [
-      ["Sick Visits", "When your pet is not acting like themselves, our vet team can evaluate symptoms and next steps.", "/veterinary-services/sick-pet-visits/"],
-      ["Diagnostics", "Lab work and testing help guide care when symptoms are unclear or monitoring is needed.", "/veterinary-services/veterinary-diagnostics/"],
-      ["Skin & Ear Concerns", "Itching, ear odor, hot spots, licking, and allergies can all benefit from a vet visit.", "/veterinary-services/skin-ear-allergy-care/"]
+      ["Sick Visits", "When your pet is not acting like themselves, our vet team can evaluate symptoms and next steps.", "/services/sick-pet-visits/"],
+      ["Diagnostics", "Lab work and testing help guide care when symptoms are unclear or monitoring is needed.", "/services/veterinary-diagnostics/"],
+      ["Skin & Ear Concerns", "Itching, ear odor, hot spots, licking, and allergies can all benefit from a vet visit.", "/services/skin-ear-allergy-care/"]
     ]
   },
   {
@@ -40,8 +40,8 @@ const serviceGroups = [
     label: "Surgery",
     icon: Scissors,
     services: [
-      ["Soft Tissue Surgery", "Selected procedures with careful preparation, monitoring, pain control, and recovery guidance.", "/veterinary-services/soft-tissue-surgery/"],
-      ["Spay & Neuter", "Surgery planning for puppies, kittens, newly adopted pets, and preventive care needs.", "/veterinary-services/spay-neuter-surgery/"],
+      ["Soft Tissue Surgery", "Selected procedures with careful preparation, monitoring, pain control, and recovery guidance.", "/services/soft-tissue-surgery/"],
+      ["Spay & Neuter", "Surgery planning for puppies, kittens, newly adopted pets, and preventive care needs.", "/services/spay-neuter-surgery/"],
       ["Surgical Consultations", "Clear guidance before procedures so you know what to expect and how to prepare.", "/book-appointment/"]
     ]
   },
@@ -50,8 +50,8 @@ const serviceGroups = [
     label: "Puppy/Kitten",
     icon: Baby,
     services: [
-      ["New Puppy & Kitten Visits", "First exams, vaccine timing, prevention, nutrition, and practical new pet guidance.", "/veterinary-services/puppy-kitten-care/"],
-      ["Vaccine Series", "We help you plan early vaccine timing around age, lifestyle, exposure risk, and records.", "/veterinary-services/dog-cat-vaccinations/"],
+      ["New Puppy & Kitten Visits", "First exams, vaccine timing, prevention, nutrition, and practical new pet guidance.", "/services/puppy-kitten-care/"],
+      ["Vaccine Series", "We help you plan early vaccine timing around age, lifestyle, exposure risk, and records.", "/services/dog-cat-vaccinations/"],
       ["First Visit Guidance", "Know what to bring and what to expect before your first appointment with our team.", "/new-patients/"]
     ]
   },
@@ -60,9 +60,9 @@ const serviceGroups = [
     label: "Senior Care",
     icon: HeartPulse,
     services: [
-      ["Senior Pet Wellness", "Closer monitoring for aging dogs and cats, including comfort, mobility, and early detection.", "/veterinary-services/senior-pet-care/"],
-      ["Nutrition Guidance", "Practical food and weight conversations based on age, activity, and medical needs.", "/veterinary-services/nutrition-weight-guidance/"],
-      ["Ongoing Health Support", "Care plans help families manage long-term pet health needs over time.", "/veterinary-services/senior-pet-care/"]
+      ["Senior Pet Wellness", "Closer monitoring for aging dogs and cats, including comfort, mobility, and early detection.", "/services/senior-pet-care/"],
+      ["Nutrition Guidance", "Practical food and weight conversations based on age, activity, and medical needs.", "/services/nutrition-weight-guidance/"],
+      ["Ongoing Health Support", "Care plans help families manage long-term pet health needs over time.", "/services/senior-pet-care/"]
     ]
   }
 ];

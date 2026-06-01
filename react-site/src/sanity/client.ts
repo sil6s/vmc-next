@@ -5,7 +5,7 @@ export const client = createClient({
   projectId: sanityConfig.projectId,
   dataset: sanityConfig.dataset,
   apiVersion: sanityConfig.apiVersion,
-  useCdn: !sanityConfig.token,
+  useCdn: false,
   token: sanityConfig.token,
   perspective: "published"
 });

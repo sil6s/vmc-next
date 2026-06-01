@@ -171,7 +171,7 @@ const SERVICE_CARD_FIELDS = `
   shortDescription,
   bestFor,
   featured,
-  cardIcon,
+  "cardIcon": coalesce(cardIcon, serviceIcon),
   "cardImageAlt": cardImageAlt,
   "cta": coalesce(primaryCTA.label, "Learn more")
 `;
@@ -179,6 +179,7 @@ const SERVICE_CARD_FIELDS = `
 export const SERVICES_QUERY = `*[
   _type == "service"
   && defined(slug.current)
+  && coalesce(noindex, false) != true
 ]|order(featured desc, title asc){
   ${SERVICE_CARD_FIELDS}
 }`;
@@ -187,6 +188,7 @@ export const FEATURED_SERVICES_QUERY = `*[
   _type == "service"
   && defined(slug.current)
   && featured == true
+  && coalesce(noindex, false) != true
 ]|order(title asc)[0...$limit]{
   ${SERVICE_CARD_FIELDS}
 }`;
@@ -195,6 +197,7 @@ export const SERVICES_BY_CATEGORY_QUERY = `*[
   _type == "service"
   && defined(slug.current)
   && serviceCategory == $category
+  && coalesce(noindex, false) != true
 ]|order(title asc){
   ${SERVICE_CARD_FIELDS}
 }`;
@@ -202,6 +205,7 @@ export const SERVICES_BY_CATEGORY_QUERY = `*[
 export const SERVICE_SLUGS_QUERY = `*[
   _type == "service"
   && defined(slug.current)
+  && coalesce(noindex, false) != true
 ]{
   "slug": slug.current
 }`;
@@ -215,33 +219,66 @@ export const SERVICE_QUERY = `*[
   "slug": slug.current,
   serviceCategory,
   shortDescription,
-  metaTitle,
-  metaDescription,
+  "metaTitle": coalesce(seoTitle, metaTitle),
+  "metaDescription": coalesce(seoDescription, metaDescription),
+  canonicalUrl,
   focusKeyword,
-  heroEyebrow,
+  secondaryKeywords,
+  noindex,
+  "heroEyebrow": coalesce(eyebrow, heroEyebrow),
   heroTitle,
-  heroDescription,
+  "heroDescription": coalesce(heroSubtitle, heroDescription),
   heroImage,
   heroImageAlt,
-  primaryCTA,
-  secondaryCTA,
+  openGraphImage,
+  "primaryCTA": {
+    "label": coalesce(primaryCtaLabel, primaryCTA.label),
+    "href": coalesce(primaryCtaUrl, primaryCTA.href)
+  },
+  "secondaryCTA": {
+    "label": coalesce(secondaryCtaLabel, secondaryCTA.label),
+    "href": coalesce(secondaryCtaUrl, secondaryCTA.href)
+  },
   bestFor,
-  overview,
-  symptomsOrReasons,
-  whatToExpect,
-  includedCare,
+  fullDescription,
+  "overview": coalesce(overviewContent, overview),
+  "symptomsOrReasons": coalesce(symptomsOrReasonsToSchedule, symptomsOrReasons),
+  "whatToExpect": coalesce(whatToExpectSteps, whatToExpect),
+  "includedCare": coalesce(careApproachCards, includedCare),
+  keyBenefits,
+  careApproachCards,
+  timelineBlocks,
+  comparisonTable,
+  contentTable,
+  calloutBlocks,
   whenToSchedule,
   relatedServices[]->{
     ${SERVICE_CARD_FIELDS}
   },
-  faqs,
+  relatedResources[]->{
+    title,
+    "slug": slug.current,
+    category,
+    image,
+    "imageAlt": coalesce(image.alt, title),
+    "excerpt": coalesce(excerpt, pt::text(body)[0...170], bodyMarkdown[0...170])
+  },
+  externalReferences,
+  "faqs": coalesce(faqItems, faqs),
   author->{name, title, image, bio, credentials, "slug": slug.current},
   reviewedBy->{name, title, image, bio, credentials, "slug": slug.current},
   publishedAt,
   updatedAt,
+  lastReviewedDate,
   featured,
-  cardIcon,
+  "cardIcon": coalesce(cardIcon, serviceIcon),
   cardImage,
   cardImageAlt,
-  locationRelevance
+  "locationRelevance": coalesce(locationMentions, locationRelevance),
+  serviceAreas,
+  finalCtaTitle,
+  finalCtaText,
+  finalCtaButtons,
+  disclaimer,
+  schemaType
 }`;

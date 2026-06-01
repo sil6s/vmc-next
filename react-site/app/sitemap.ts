@@ -10,7 +10,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const serviceSlugs = await getServiceDetailSlugs();
   const routes = [
     ...sitemapStaticRoutes,
-    ...serviceSlugs.map((slug) => `/veterinary-services/${slug}/`),
+    ...serviceSlugs.map((slug) => `/services/${slug}/`),
     ...locations.map((location) => `/locations/${location.slug}/`),
     ...posts.map((post) => `/resources/${post.slug}/`)
   ];

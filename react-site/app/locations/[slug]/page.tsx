@@ -20,7 +20,7 @@ import { breadcrumbSchema, faqSchema, JsonLd, locationVeterinaryCareSchema, serv
 type Params = { params: Promise<{ slug: string }> };
 
 const serviceLinks = [
-  "wellness-exams",
+  "pet-wellness-exams",
   "dog-cat-vaccinations",
   "puppy-kitten-care",
   "senior-pet-care",
@@ -62,12 +62,12 @@ const resources = [
   {
     title: "Pet Dental Care",
     description: "Learn how dental exams and treatment planning support long-term comfort.",
-    href: "/veterinary-services/pet-dental-care/"
+    href: "/services/pet-dental-care/"
   },
   {
     title: "Pet Surgery",
     description: "Review surgical consultation, preparation, monitoring, and recovery support.",
-    href: "/veterinary-services/soft-tissue-surgery/"
+    href: "/services/soft-tissue-surgery/"
   },
   {
     title: "Contact Veterinary Medical Centers",
@@ -229,7 +229,7 @@ export default async function LocationPage({ params }: Params) {
                 <Stethoscope aria-hidden="true" size={20} />
                 <h3>{service.title}</h3>
                 <p>{service.shortDescription}</p>
-                <Link href={`/veterinary-services/${service.slug}/`}>{service.cta}</Link>
+                <Link href={`/services/${service.slug}/`}>{service.cta}</Link>
               </article>
             ))}
           </div>
@@ -420,7 +420,7 @@ export default async function LocationPage({ params }: Params) {
         data={[
           webpageSchema(`/locations/${location.slug}/`, location.seo.title, location.seo.description),
           locationVeterinaryCareSchema(location, `/locations/${location.slug}/`),
-          serviceListSchema(locationServices.map((service) => ({ name: service.title, description: service.shortDescription, path: `/veterinary-services/${service.slug}/` }))),
+          serviceListSchema(locationServices.map((service) => ({ name: service.title, description: service.shortDescription, path: `/services/${service.slug}/` }))),
           breadcrumbSchema(crumbs),
           faqSchema(location.faqs)
         ]}

@@ -38,37 +38,37 @@ const serviceCards = [
   {
     title: "Wellness and prevention",
     text: "Routine exams, vaccines, parasite prevention, and guidance for every life stage.",
-    href: "/veterinary-services/wellness-exams/",
+    href: "/services/pet-wellness-exams/",
     icon: ShieldCheck
   },
   {
     title: "Dental care",
     text: "Oral exams, dental recommendations, and care planning to support your pet’s comfort and health.",
-    href: "/veterinary-services/pet-dental-care/",
+    href: "/services/pet-dental-care/",
     icon: SmilePlus
   },
   {
     title: "Sick visits and diagnostics",
     text: "Care for new symptoms, changes in behavior, and health concerns that need a closer look.",
-    href: "/veterinary-services/sick-pet-visits/",
+    href: "/services/sick-pet-visits/",
     icon: Microscope
   },
   {
     title: "Surgery support",
     text: "Practical surgical guidance, pre-visit communication, and follow-up support when procedures are needed.",
-    href: "/veterinary-services/soft-tissue-surgery/",
+    href: "/services/soft-tissue-surgery/",
     icon: Scissors
   },
   {
     title: "Puppy and kitten care",
     text: "Early-life exams, vaccine planning, prevention, and new pet guidance.",
-    href: "/veterinary-services/puppy-kitten-care/",
+    href: "/services/puppy-kitten-care/",
     icon: Baby
   },
   {
     title: "Senior pet care",
     text: "Monitoring, comfort-focused recommendations, and care planning for aging dogs and cats.",
-    href: "/veterinary-services/senior-pet-care/",
+    href: "/services/senior-pet-care/",
     icon: HeartPulse
   }
 ];

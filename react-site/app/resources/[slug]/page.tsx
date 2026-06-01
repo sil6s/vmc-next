@@ -130,7 +130,7 @@ const calloutTones = {
 const fallbackRelatedCards: RelatedCardItem[] = [
   {
     title: "Pet Wellness Exams in Northern Kentucky",
-    href: "/services/pet-wellness-exams-northern-kentucky/",
+    href: "/services/pet-wellness-exams/",
     date: "2026-01-15",
     category: "Preventive Care",
     excerpt: "What to expect from routine dog and cat wellness care at Veterinary Medical Centers.",

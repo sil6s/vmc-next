@@ -15,8 +15,8 @@ const careOptions = [
       "New pets need a thoughtful start. We help with first exams, vaccine timing, parasite prevention, nutrition, and practical questions for life at home.",
     reasons: ["First vet visit", "Puppy and kitten vaccines", "New pet questions"],
     services: [
-      ["Puppy and kitten care", "/veterinary-services/puppy-kitten-care/"],
-      ["Vaccines", "/veterinary-services/dog-cat-vaccinations/"],
+      ["Puppy and kitten care", "/services/puppy-kitten-care/"],
+      ["Vaccines", "/services/dog-cat-vaccinations/"],
       ["First visit guide", "/new-patients/"]
     ],
     cta: ["Start here", "/new-patients/"],
@@ -32,9 +32,9 @@ const careOptions = [
       "For routine checkups, vaccines, parasite prevention, and everyday questions, our local vet team helps you stay ahead of health changes.",
     reasons: ["Annual checkups", "Vaccine review", "Heartworm, flea, and tick prevention"],
     services: [
-      ["Wellness exams", "/veterinary-services/wellness-exams/"],
-      ["Vaccines", "/veterinary-services/dog-cat-vaccinations/"],
-      ["Parasite prevention", "/veterinary-services/parasite-prevention/"]
+      ["Wellness exams", "/services/pet-wellness-exams/"],
+      ["Vaccines", "/services/dog-cat-vaccinations/"],
+      ["Parasite prevention", "/services/parasite-prevention/"]
     ],
     cta: ["Schedule a wellness visit", "/book-appointment/"],
     icon: ShieldCheck
@@ -49,11 +49,11 @@ const careOptions = [
       "Bad breath, tartar, red gums, or chewing changes can be signs your dog or cat needs dental care. We help you understand what is happening and what options make sense.",
     reasons: ["Bad breath", "Tartar or red gums", "Chewing changes"],
     services: [
-      ["Pet dental care", "/veterinary-services/pet-dental-care/"],
-      ["Wellness exams", "/veterinary-services/wellness-exams/"],
-      ["Senior pet care", "/veterinary-services/senior-pet-care/"]
+      ["Pet dental care", "/services/pet-dental-care/"],
+      ["Wellness exams", "/services/pet-wellness-exams/"],
+      ["Senior pet care", "/services/senior-pet-care/"]
     ],
-    cta: ["Explore dental care", "/veterinary-services/pet-dental-care/"],
+    cta: ["Explore dental care", "/services/pet-dental-care/"],
     icon: SmilePlus
   },
   {
@@ -66,9 +66,9 @@ const careOptions = [
       "Itching, licking, ear odor, hair loss, and irritated skin can have many causes. Our vet team can evaluate symptoms and recommend practical next steps.",
     reasons: ["Itching or licking", "Ear odor or discharge", "Hot spots or allergies"],
     services: [
-      ["Skin, ear, and allergy care", "/veterinary-services/skin-ear-allergy-care/"],
-      ["Sick pet visits", "/veterinary-services/sick-pet-visits/"],
-      ["Diagnostics", "/veterinary-services/veterinary-diagnostics/"]
+      ["Skin, ear, and allergy care", "/services/skin-ear-allergy-care/"],
+      ["Sick pet visits", "/services/sick-pet-visits/"],
+      ["Diagnostics", "/services/veterinary-diagnostics/"]
     ],
     cta: ["Get skin or ear help", "/book-appointment/"],
     icon: Ear
@@ -83,9 +83,9 @@ const careOptions = [
       "For spay and neuter, mass removals, and selected soft tissue procedures, our vet team focuses on clear preparation, monitoring, pain control, and recovery instructions.",
     reasons: ["Spay or neuter", "Mass removal discussions", "Pre-surgical lab work"],
     services: [
-      ["Soft tissue surgery", "/veterinary-services/soft-tissue-surgery/"],
-      ["Spay and neuter", "/veterinary-services/spay-neuter-surgery/"],
-      ["Diagnostics", "/veterinary-services/veterinary-diagnostics/"]
+      ["Soft tissue surgery", "/services/soft-tissue-surgery/"],
+      ["Spay and neuter", "/services/spay-neuter-surgery/"],
+      ["Diagnostics", "/services/veterinary-diagnostics/"]
     ],
     cta: ["Talk about surgery", "/book-appointment/"],
     icon: Scissors
@@ -100,9 +100,9 @@ const careOptions = [
       "If your pet is vomiting, limping, coughing, not eating, acting differently, or showing signs of discomfort, our vet team can help you understand what is going on and what to do next.",
     reasons: ["Vomiting or diarrhea", "Limping or pain", "Coughing, appetite, or behavior changes"],
     services: [
-      ["Sick pet visits", "/veterinary-services/sick-pet-visits/"],
-      ["Diagnostics", "/veterinary-services/veterinary-diagnostics/"],
-      ["Skin, ear, and allergy care", "/veterinary-services/skin-ear-allergy-care/"]
+      ["Sick pet visits", "/services/sick-pet-visits/"],
+      ["Diagnostics", "/services/veterinary-diagnostics/"],
+      ["Skin, ear, and allergy care", "/services/skin-ear-allergy-care/"]
     ],
     cta: ["Schedule a sick visit", "/book-appointment/"],
     icon: HeartPulse
