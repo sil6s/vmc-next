@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { BookOpenText, GraduationCap, Newspaper } from "lucide-react";
+import { BookOpenText, GraduationCap, Newspaper } from "lucide-react"; // used in resourceTypeIcons
 import { Hero } from "@/components/sections/Hero";
 import { ResourceBrowser, type ResourceCardItem } from "@/components/sections/ResourceBrowser";
 import { Section } from "@/components/ui/Section";
@@ -10,7 +10,7 @@ import { urlFor } from "@/sanity/image";
 import { getBlogPosts, type BlogPost, type ResourceType } from "@/sanity/posts";
 
 const seo = {
-  title: "Pet Health Resources in Northern Kentucky | VMC",
+  title: "Pet Health Resources in Northern Kentucky | Veterinary Medical Centers",
   description: "Read pet health articles, education guides, and clinic resources from Veterinary Medical Centers for dog and cat owners in Northern Kentucky."
 };
 
@@ -38,7 +38,7 @@ export default async function ResourcesPage() {
   const posts = await getBlogPosts(24);
   const featured = posts[0];
   const rest = posts.slice(1);
-  const browserResources: ResourceCardItem[] = (featured ? rest : posts).map((post) => ({
+  const browserResources: ResourceCardItem[] = (featured ? rest : posts).map((post, index) => ({
     slug: post.slug,
     title: post.title,
     excerpt: post.excerpt,
@@ -50,7 +50,8 @@ export default async function ResourcesPage() {
     authorImage: post.author.image,
     authorImageAlt: post.author.imageAlt,
     readingTime: post.readingTime || post.author.title,
-    tags: post.tags
+    tags: post.tags,
+    sortKey: index
   }));
 
   return (
@@ -112,17 +113,6 @@ export default async function ResourcesPage() {
       </Section>
 
       <Section tone="cream" eyebrow="Browse Resources" title="Articles and education for pet owners.">
-        <div className="resource-type-strip" aria-label="Resource types">
-          {Object.entries(resourceTypeLabels).map(([type, label]) => {
-            const Icon = resourceTypeIcons[type as ResourceType];
-            return (
-              <span key={type}>
-                <Icon aria-hidden="true" size={17} />
-                {label}
-              </span>
-            );
-          })}
-        </div>
         <ResourceBrowser resources={browserResources} />
       </Section>
       <JsonLd data={[webpageSchema("/resources/", seo.title, seo.description), breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Resources", path: "/resources/" }])]} />

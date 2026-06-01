@@ -27,19 +27,22 @@ function AboutLocationsDropdown() {
     <NavigationMenuItem>
       <NavigationMenuTrigger>About</NavigationMenuTrigger>
       <NavigationMenuContent>
-        <div className="nav-dropdown-menu nav-dropdown-menu-compact" aria-label="About and location pages">
+        <div className="nav-dropdown-menu nav-dropdown-about" aria-label="About and location pages">
           <NavigationMenuLink asChild>
             <Link href="/about/">
-              <strong>About VMC</strong>
+              <strong>Our Practice</strong>
               <span>Locally owned veterinary care</span>
             </Link>
           </NavigationMenuLink>
           <NavigationMenuLink asChild>
             <Link href="/locations/">
-              <strong>Locations</strong>
+              <strong>All Locations</strong>
               <span>Fort Thomas and Independence</span>
             </Link>
           </NavigationMenuLink>
+          <div className="nav-dropdown-divider" aria-hidden="true">
+            <span>Find a clinic</span>
+          </div>
           {locationPages.map((location) => (
             <NavigationMenuLink asChild key={location.slug}>
               <Link href={`/locations/${location.slug}/`}>

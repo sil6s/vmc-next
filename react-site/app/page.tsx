@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { BookOpenText, CalendarCheck, Clock, Clock3, FileText, HandHeart, HeartHandshake, MapPin, MessageSquareText, PawPrint, Phone, ShieldCheck, Stethoscope } from "lucide-react";
+import { CalendarCheck, Clock, Clock3, FileText, HandHeart, HeartHandshake, MapPin, MessageSquareText, PawPrint, Phone, ShieldCheck, Stethoscope } from "lucide-react";
 import { FAQSection } from "@/components/sections/FAQSection";
 import { Hero } from "@/components/sections/Hero";
 import { HomeCareFinder } from "@/components/sections/HomeCareFinder";
+import { HomeResourceCarousel } from "@/components/sections/HomeResourceCarousel";
 import { HomeServiceTabs } from "@/components/sections/HomeServiceTabs";
 import { HomeTestimonials } from "@/components/sections/HomeTestimonials";
 import { TeamSection } from "@/components/sections/TeamSection";
@@ -108,7 +109,15 @@ function MapEmbed({ src, title }: { src: string; title: string }) {
 export default async function HomePage() {
   const hero = pages.home.hero;
   const settings = await getPublicSettings();
-  const [resourceGuides, staffProfiles] = await Promise.all([getBlogPosts(6), fetchHomepagePersonProfiles()]);
+  const [resourceGuides, staffProfiles] = await Promise.all([getBlogPosts(24), fetchHomepagePersonProfiles()]);
+  const carouselPosts = resourceGuides.slice(0, 8).map((post) => ({
+    slug: post.slug,
+    title: post.title,
+    excerpt: post.excerpt,
+    category: post.category,
+    imageUrl: post.featuredImage || "/images/veterinary-care-hero.jpg",
+    readingTime: post.readingTime || "Pet care resource"
+  }));
 
   return (
     <>
@@ -285,18 +294,7 @@ export default async function HomePage() {
       </Section>
 
       <Section tone="cream" eyebrow="Pet Care Guides" title="Helpful pet care guides from your local vet team">
-        <div className="resource-card-grid">
-          {resourceGuides.map((post) => (
-            <article className="resource-card" key={post.slug}>
-              <BookOpenText aria-hidden="true" size={22} />
-              <p className="eyebrow">{post.category}</p>
-              <h3>{post.title}</h3>
-              <p>{post.excerpt}</p>
-              <small>{post.readingTime || "Pet care resource"}</small>
-              <Link href={`/resources/${post.slug}/`}>Read guide</Link>
-            </article>
-          ))}
-        </div>
+        <HomeResourceCarousel posts={carouselPosts} total={resourceGuides.length} />
       </Section>
 
       <Section tone="white" eyebrow="Online Tools" title="Manage your pet’s care online">
