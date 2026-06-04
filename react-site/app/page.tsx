@@ -1,4 +1,6 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import { headers } from "next/headers";
 import { CalendarCheck, Clock, Clock3, FileText, HandHeart, HeartHandshake, MapPin, MessageSquareText, PawPrint, Phone, ShieldCheck, Stethoscope } from "lucide-react";
 import { FAQSection } from "@/components/sections/FAQSection";
 import { Hero } from "@/components/sections/Hero";
@@ -13,14 +15,22 @@ import { Section } from "@/components/ui/Section";
 import { homeFaqs } from "@/data/faqs";
 import { locations } from "@/data/locations";
 import { pages } from "@/data/pages";
+import { localizedSeo } from "@/data/localized-seo";
 import { site } from "@/data/site";
 import { pageMetadata } from "@/lib/metadata";
+import { isLocale, localizedLanguageAlternates } from "@/lib/i18n";
 import { getPublicSettings } from "@/lib/settings/public";
 import { breadcrumbSchema, faqSchema, JsonLd, locationVeterinaryCareSchema, webpageSchema } from "@/lib/schema";
 import { fetchHomepagePersonProfiles } from "@/sanity/personProfiles";
 import { getBlogPosts } from "@/sanity/posts";
 
-export const metadata = pageMetadata({ ...pages.home.seo, path: "/" });
+export async function generateMetadata(): Promise<Metadata> {
+  const localeHeader = (await headers()).get("x-vmc-locale");
+  const locale = isLocale(localeHeader) ? localeHeader : "en";
+  const seo = locale === "en" ? pages.home.seo : localizedSeo[locale]["/"];
+  const path = locale === "en" ? "/" : `/${locale}/`;
+  return pageMetadata({ ...seo, path, languages: localizedLanguageAlternates("/") });
+}
 
 const localCards = [
   {
@@ -109,6 +119,10 @@ function MapEmbed({ src, title }: { src: string; title: string }) {
 export default async function HomePage() {
   const hero = pages.home.hero;
   const settings = await getPublicSettings();
+  const localeHeader = (await headers()).get("x-vmc-locale");
+  const locale = isLocale(localeHeader) ? localeHeader : "en";
+  const seo = locale === "en" ? pages.home.seo : localizedSeo[locale]["/"];
+  const pagePath = locale === "en" ? "/" : `/${locale}/`;
   const [resourceGuides, staffProfiles] = await Promise.all([getBlogPosts(24), fetchHomepagePersonProfiles()]);
   const carouselPosts = resourceGuides.slice(0, 8).map((post) => ({
     slug: post.slug,
@@ -326,7 +340,7 @@ export default async function HomePage() {
       </Section>
       <JsonLd
         data={[
-          webpageSchema("/", pages.home.seo.title, pages.home.seo.description),
+          webpageSchema(pagePath, seo.title, seo.description),
           breadcrumbSchema([{ name: "Home", path: "/" }]),
           faqSchema(homeFaqs),
           ...locations.map((location) => locationVeterinaryCareSchema(location, `/locations/${location.slug}/`))

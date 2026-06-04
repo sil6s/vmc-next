@@ -1,9 +1,8 @@
 import Link from "next/link";
-import { site } from "@/data/site";
 
-export function Logo({ className = "" }: { className?: string }) {
+export function Logo({ className = "", href = "/" }: { className?: string; href?: string }) {
   return (
-    <Link href="/" className={`logo ${className}`} aria-label="Veterinary Medical Centers home">
+    <Link href={href} className={`logo ${className}`} aria-label="Veterinary Medical Centers home">
       <span className="logo-animal logo-dog" aria-hidden="true">
         <svg viewBox="0 0 600 730" xmlns="http://www.w3.org/2000/svg">
           <g transform="translate(0,730) scale(0.1,-0.1)" fill="currentColor" stroke="none">

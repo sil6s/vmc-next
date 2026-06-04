@@ -1,5 +1,7 @@
 import { BookAppointmentExperience } from "@/components/sections/BookAppointmentExperience";
 import { Breadcrumbs } from "@/components/sections/Breadcrumbs";
+import { headers } from "next/headers";
+import { isLocale } from "@/lib/i18n";
 import { pageMetadata } from "@/lib/metadata";
 import { breadcrumbSchema, JsonLd, webpageSchema } from "@/lib/schema";
 import { getPublicSettings } from "@/lib/settings/public";
@@ -17,6 +19,8 @@ type PageProps = {
 
 export default async function BookAppointmentPage({ searchParams }: PageProps) {
   const settings = await getPublicSettings();
+  const localeHeader = (await headers()).get("x-vmc-locale");
+  const locale = isLocale(localeHeader) ? localeHeader : "en";
   const params = await searchParams;
   const initialMode = params?.type === "new" || params?.type === "existing" ? params.type : "choose";
 
@@ -28,6 +32,7 @@ export default async function BookAppointmentPage({ searchParams }: PageProps) {
         liveChatEnabled={settings.liveChat.liveChatEnabled}
         locations={settings.publicLocations}
         initialMode={initialMode}
+        locale={locale}
       />
       <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Book Appointment", href: "/book-appointment/" }]} />
       <JsonLd

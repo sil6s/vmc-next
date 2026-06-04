@@ -52,6 +52,9 @@ import {
   type NewPatientRequest
 } from "@/lib/new-patient/schema";
 import type { PublicLocation } from "@/lib/settings/public";
+import { localeNames, localizedHref, type Locale } from "@/lib/i18n";
+import { CommunicationSupportNotice } from "@/components/layout/CommunicationSupportNotice";
+import { AppointmentFormTranslator } from "@/components/sections/AppointmentFormTranslator";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -147,6 +150,107 @@ function GeoAutocomplete({
   );
 }
 type FlowMode = "choose" | "new" | "existing";
+
+const appointmentCopy: Record<Locale, {
+  eyebrow: string;
+  title: string;
+  intro: string;
+  sameDayTitle: string;
+  sameDayBody: string;
+  call: string;
+  question: string;
+  selectOption: string;
+  pathLabel: string;
+  newPatient: string;
+  newPatientBody: string;
+  newPatientDetail: string;
+  existingPatient: string;
+  existingPatientBody: string;
+  existingPatientDetail: string;
+  continue: string;
+  continueHelp: string;
+  existingEyebrow: string;
+  existingTitle: string;
+  existingIntro: string;
+  patientPortal: string;
+  portalBody: string;
+  callLocationBody: string;
+  liveChat: string;
+  liveChatBody: string;
+  availableNow: string;
+  unavailable: string;
+  contactForm: string;
+  contactFormBody: string;
+  onlinePharmacy: string;
+  pharmacyBody: string;
+  backToOptions: string;
+}> = {
+  en: {
+    eyebrow: "Book appointment", title: "Choose the right appointment path.", intro: "New here? Start with registration. Already a client? Skip the new-patient steps.",
+    sameDayTitle: "Need same-day help?", sameDayBody: "Call the clinic directly for urgent pet health concerns or time-sensitive appointment needs.", call: "Call",
+    question: "Are you new to Veterinary Medical Centers?", selectOption: "Select one option to continue.", pathLabel: "Choose appointment path",
+    newPatient: "New patient", newPatientBody: "Register your pet and request your first visit with our team.", newPatientDetail: "Best for first visits, new pets, and families who have not been seen at Veterinary Medical Centers before.",
+    existingPatient: "Existing patient", existingPatientBody: "Use the portal, call a clinic, or send a non-urgent message.", existingPatientDetail: "Best for current clients scheduling follow-ups, refills, records, or routine care.",
+    continue: "Continue", continueHelp: "We’ll guide you to the correct next step based on your selection.", existingEyebrow: "Existing clients",
+    existingTitle: "Choose the best way to reach us.", existingIntro: "Your pet is already established with our team. Pick the option that matches what you need today.",
+    patientPortal: "Patient portal", portalBody: "Best for online booking, account access, records, and routine client tools.", callLocationBody: "Best for same-day needs, urgent questions, or scheduling help.",
+    liveChat: "Live chat", liveChatBody: "Best for quick general questions during business hours.", availableNow: "Available now", unavailable: "Currently unavailable",
+    contactForm: "Contact form", contactFormBody: "Best for non-urgent questions, follow-ups, billing, records, or refill questions.", onlinePharmacy: "Online pharmacy",
+    pharmacyBody: "Best for eligible refills, preventives, and trusted pet medications.", backToOptions: "Back to options"
+  },
+  es: {
+    eyebrow: "Reservar cita", title: "Elija la opción de cita adecuada.", intro: "¿Es nuevo? Comience con el registro. ¿Ya es cliente? Omita los pasos para nuevos pacientes.",
+    sameDayTitle: "¿Necesita ayuda el mismo día?", sameDayBody: "Llame directamente a la clínica para inquietudes urgentes o necesidades de cita sensibles al tiempo.", call: "Llamar",
+    question: "¿Es nuevo en Veterinary Medical Centers?", selectOption: "Seleccione una opción para continuar.", pathLabel: "Elegir opción de cita",
+    newPatient: "Nuevo paciente", newPatientBody: "Registre a su mascota y solicite su primera visita.", newPatientDetail: "Ideal para primeras visitas, nuevas mascotas y familias que aún no han sido atendidas aquí.",
+    existingPatient: "Paciente existente", existingPatientBody: "Use el portal, llame a una clínica o envíe un mensaje no urgente.", existingPatientDetail: "Ideal para seguimientos, resurtidos, registros o atención de rutina.",
+    continue: "Continuar", continueHelp: "Le guiaremos al siguiente paso correcto según su selección.", existingEyebrow: "Clientes existentes",
+    existingTitle: "Elija la mejor manera de comunicarse con nosotros.", existingIntro: "Su mascota ya está establecida con nuestro equipo. Elija la opción que coincida con lo que necesita hoy.",
+    patientPortal: "Portal del paciente", portalBody: "Ideal para reservas en línea, acceso a la cuenta, registros y herramientas de rutina.", callLocationBody: "Ideal para necesidades del mismo día, preguntas urgentes o ayuda con la programación.",
+    liveChat: "Chat en vivo", liveChatBody: "Ideal para preguntas generales rápidas durante el horario de atención.", availableNow: "Disponible ahora", unavailable: "No disponible actualmente",
+    contactForm: "Formulario de contacto", contactFormBody: "Ideal para preguntas no urgentes, seguimientos, facturación, registros o resurtidos.", onlinePharmacy: "Farmacia en línea",
+    pharmacyBody: "Ideal para resurtidos elegibles, preventivos y medicamentos confiables.", backToOptions: "Volver a las opciones"
+  },
+  fr: {
+    eyebrow: "Prendre rendez-vous", title: "Choisissez le bon parcours de rendez-vous.", intro: "Vous êtes nouveau ? Commencez par l’inscription. Déjà client ? Ignorez les étapes pour nouveaux patients.",
+    sameDayTitle: "Besoin d’aide le jour même ?", sameDayBody: "Appelez directement la clinique pour les problèmes urgents ou les besoins de rendez-vous sensibles au temps.", call: "Appeler",
+    question: "Êtes-vous nouveau chez Veterinary Medical Centers ?", selectOption: "Sélectionnez une option pour continuer.", pathLabel: "Choisir le parcours de rendez-vous",
+    newPatient: "Nouveau patient", newPatientBody: "Inscrivez votre animal et demandez sa première visite.", newPatientDetail: "Idéal pour les premières visites, les nouveaux animaux et les familles qui n’ont pas encore été reçues.",
+    existingPatient: "Patient existant", existingPatientBody: "Utilisez le portail, appelez une clinique ou envoyez un message non urgent.", existingPatientDetail: "Idéal pour les suivis, renouvellements, dossiers ou soins courants.",
+    continue: "Continuer", continueHelp: "Nous vous guiderons vers la bonne prochaine étape selon votre sélection.", existingEyebrow: "Clients existants",
+    existingTitle: "Choisissez la meilleure façon de nous joindre.", existingIntro: "Votre animal est déjà suivi par notre équipe. Choisissez l’option correspondant à votre besoin.",
+    patientPortal: "Portail patient", portalBody: "Idéal pour la réservation en ligne, l’accès au compte, les dossiers et les outils courants.", callLocationBody: "Idéal pour les besoins du jour même, les questions urgentes ou l’aide à la planification.",
+    liveChat: "Chat en direct", liveChatBody: "Idéal pour les questions générales rapides pendant les heures d’ouverture.", availableNow: "Disponible maintenant", unavailable: "Actuellement indisponible",
+    contactForm: "Formulaire de contact", contactFormBody: "Idéal pour les questions non urgentes, suivis, facturation, dossiers ou renouvellements.", onlinePharmacy: "Pharmacie en ligne",
+    pharmacyBody: "Idéal pour les renouvellements admissibles, les préventifs et les médicaments de confiance.", backToOptions: "Retour aux options"
+  },
+  hi: {
+    eyebrow: "अपॉइंटमेंट बुक करें", title: "सही अपॉइंटमेंट विकल्प चुनें।", intro: "क्या आप नए हैं? पंजीकरण से शुरू करें। पहले से ग्राहक हैं? नए मरीज़ वाले चरण छोड़ें।",
+    sameDayTitle: "क्या उसी दिन सहायता चाहिए?", sameDayBody: "तत्काल स्वास्थ्य चिंता या समय-संवेदनशील अपॉइंटमेंट के लिए क्लिनिक को सीधे कॉल करें।", call: "कॉल करें",
+    question: "क्या आप Veterinary Medical Centers में नए हैं?", selectOption: "जारी रखने के लिए एक विकल्प चुनें।", pathLabel: "अपॉइंटमेंट विकल्प चुनें",
+    newPatient: "नया मरीज़", newPatientBody: "अपने पालतू पशु का पंजीकरण करें और पहली मुलाकात का अनुरोध करें।", newPatientDetail: "पहली मुलाकात, नए पालतू पशु और पहली बार आने वाले परिवारों के लिए।",
+    existingPatient: "मौजूदा मरीज़", existingPatientBody: "पोर्टल का उपयोग करें, क्लिनिक को कॉल करें या गैर-तत्काल संदेश भेजें।", existingPatientDetail: "फॉलो-अप, रिफिल, रिकॉर्ड या नियमित देखभाल के लिए।",
+    continue: "जारी रखें", continueHelp: "आपके चयन के आधार पर हम आपको सही अगले कदम तक ले जाएँगे।", existingEyebrow: "मौजूदा ग्राहक",
+    existingTitle: "हमसे संपर्क करने का सबसे अच्छा तरीका चुनें।", existingIntro: "आपका पालतू पशु हमारी टीम के साथ पहले से पंजीकृत है। आज की आवश्यकता के अनुसार विकल्प चुनें।",
+    patientPortal: "मरीज़ पोर्टल", portalBody: "ऑनलाइन बुकिंग, खाता, रिकॉर्ड और नियमित टूल के लिए।", callLocationBody: "उसी दिन की ज़रूरत, तत्काल प्रश्न या शेड्यूलिंग सहायता के लिए।",
+    liveChat: "लाइव चैट", liveChatBody: "कार्य समय के दौरान सामान्य प्रश्नों के लिए।", availableNow: "अभी उपलब्ध", unavailable: "अभी उपलब्ध नहीं",
+    contactForm: "संपर्क फ़ॉर्म", contactFormBody: "गैर-तत्काल प्रश्न, फॉलो-अप, बिलिंग, रिकॉर्ड या रिफिल के लिए।", onlinePharmacy: "ऑनलाइन फ़ार्मेसी",
+    pharmacyBody: "योग्य रिफिल, निवारक उत्पाद और भरोसेमंद दवाओं के लिए।", backToOptions: "विकल्पों पर वापस जाएँ"
+  },
+  zh: {
+    eyebrow: "预约", title: "选择合适的预约方式。", intro: "第一次来？请先注册。已经是客户？可以跳过新患者步骤。",
+    sameDayTitle: "需要当天帮助吗？", sameDayBody: "如有紧急宠物健康问题或时间紧迫的预约需求，请直接致电诊所。", call: "致电",
+    question: "您是 Veterinary Medical Centers 的新客户吗？", selectOption: "请选择一个选项继续。", pathLabel: "选择预约方式",
+    newPatient: "新患者", newPatientBody: "为宠物注册并申请第一次就诊。", newPatientDetail: "适合首次就诊、新宠物以及以前未在本诊所就诊的家庭。",
+    existingPatient: "现有患者", existingPatientBody: "使用患者门户、致电诊所或发送非紧急消息。", existingPatientDetail: "适合复诊、续药、病历或常规护理。",
+    continue: "继续", continueHelp: "我们会根据您的选择引导您完成正确的下一步。", existingEyebrow: "现有客户",
+    existingTitle: "选择最适合的联系方式。", existingIntro: "您的宠物已在我们的团队建档。请选择符合您今天需求的选项。",
+    patientPortal: "患者门户", portalBody: "适合在线预约、账户访问、病历和常规客户工具。", callLocationBody: "适合当天需求、紧急问题或预约帮助。",
+    liveChat: "在线聊天", liveChatBody: "适合营业时间内的快速一般问题。", availableNow: "现在可用", unavailable: "目前不可用",
+    contactForm: "联系表格", contactFormBody: "适合非紧急问题、复诊、账单、病历或续药问题。", onlinePharmacy: "网上药房",
+    pharmacyBody: "适合符合条件的续药、预防用品和可信赖的宠物药物。", backToOptions: "返回选项"
+  }
+};
 
 type PetEntry = {
   id: string;
@@ -676,14 +780,17 @@ function ExistingPanel({
   pharmacyUrl,
   liveChatEnabled,
   publicLocations,
-  onBack
+  onBack,
+  locale
 }: {
   portalUrl: string;
   pharmacyUrl: string;
   liveChatEnabled: boolean;
   publicLocations: PublicLocation[];
   onBack: () => void;
+  locale: Locale;
 }) {
+  const copy = appointmentCopy[locale];
   const isChatAvailable = liveChatEnabled && easternBusinessHours();
   const openChat = () => window.dispatchEvent(new Event("vmc:open-chat-support"));
   const fortThomas = publicLocations.find((loc) => loc.id === "fort-thomas") || publicLocations[0];
@@ -692,16 +799,16 @@ function ExistingPanel({
   return (
     <div className="book-existing-screen">
       <div className="book-existing-copy">
-        <p className="eyebrow">Existing clients</p>
-        <h1>Choose the best way to reach us.</h1>
-        <p>Your pet is already established with our team. Pick the option that matches what you need today.</p>
+        <p className="eyebrow">{copy.existingEyebrow}</p>
+        <h1>{copy.existingTitle}</h1>
+        <p>{copy.existingIntro}</p>
       </div>
       <div className="book-existing-grid">
         <a className="book-existing-card is-featured" href={portalUrl} target={portalUrl.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer">
           <FileText aria-hidden="true" />
           <span>
-            <strong>Patient portal</strong>
-            <small>Best for online booking, account access, records, and routine client tools.</small>
+            <strong>{copy.patientPortal}</strong>
+            <small>{copy.portalBody}</small>
           </span>
           <ExternalLink aria-hidden="true" size={15} />
         </a>
@@ -709,8 +816,8 @@ function ExistingPanel({
           <a className="book-existing-card" href={`tel:${fortThomas.tel}`}>
             <Phone aria-hidden="true" />
             <span>
-              <strong>Call Fort Thomas</strong>
-              <small>Best for same-day needs, urgent questions, or scheduling help near Fort Thomas.</small>
+              <strong>{copy.call} Fort Thomas</strong>
+              <small>{copy.callLocationBody}</small>
               <em>{fortThomas.phone}</em>
             </span>
           </a>
@@ -719,8 +826,8 @@ function ExistingPanel({
           <a className="book-existing-card" href={`tel:${independence.tel}`}>
             <Phone aria-hidden="true" />
             <span>
-              <strong>Call Independence</strong>
-              <small>Best for same-day needs, urgent questions, or scheduling help near Independence.</small>
+              <strong>{copy.call} Independence</strong>
+              <small>{copy.callLocationBody}</small>
               <em>{independence.phone}</em>
             </span>
           </a>
@@ -729,9 +836,9 @@ function ExistingPanel({
           <button className="book-existing-card" type="button" onClick={openChat}>
             <MessageCircle aria-hidden="true" />
             <span>
-              <strong>Live chat</strong>
-              <small>Best for quick general questions while chat is available during business hours.</small>
-              <em>Available now</em>
+              <strong>{copy.liveChat}</strong>
+              <small>{copy.liveChatBody}</small>
+              <em>{copy.availableNow}</em>
             </span>
           </button>
         )}
@@ -739,30 +846,30 @@ function ExistingPanel({
           <span className="book-existing-card book-disabled-option">
             <MessageCircle aria-hidden="true" />
             <span>
-              <strong>Live chat</strong>
-              <small>Best for quick general questions when chat is available during business hours.</small>
-              <em>Currently unavailable</em>
+              <strong>{copy.liveChat}</strong>
+              <small>{copy.liveChatBody}</small>
+              <em>{copy.unavailable}</em>
             </span>
           </span>
         )}
-        <a className="book-existing-card" href="/contact/#message-form">
+        <a className="book-existing-card" href={localizedHref("/contact/#message-form", locale)}>
           <FileText aria-hidden="true" />
           <span>
-            <strong>Contact form</strong>
-            <small>Best for non-urgent questions, follow-ups, billing, records, or refill questions.</small>
+            <strong>{copy.contactForm}</strong>
+            <small>{copy.contactFormBody}</small>
           </span>
         </a>
         <a className="book-existing-card" href={pharmacyUrl} target={pharmacyUrl.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer">
           <FileText aria-hidden="true" />
           <span>
-            <strong>Online pharmacy</strong>
-            <small>Best for eligible refills, preventives, and trusted pet medications.</small>
+            <strong>{copy.onlinePharmacy}</strong>
+            <small>{copy.pharmacyBody}</small>
           </span>
           <ExternalLink aria-hidden="true" size={15} />
         </a>
       </div>
       <ShadButton className="book-existing-back" variant="secondary" type="button" onClick={onBack}>
-        <ArrowLeft aria-hidden="true" size={16} /> Back to options
+        <ArrowLeft aria-hidden="true" size={16} /> {copy.backToOptions}
       </ShadButton>
     </div>
   );
@@ -777,14 +884,17 @@ export function BookAppointmentExperience({
   pharmacyUrl,
   liveChatEnabled,
   locations,
-  initialMode = "choose"
+  initialMode = "choose",
+  locale = "en"
 }: {
   portalUrl: string;
   pharmacyUrl: string;
   liveChatEnabled: boolean;
   locations: PublicLocation[];
   initialMode?: FlowMode;
+  locale?: Locale;
 }) {
+  const copy = appointmentCopy[locale];
   // When initialMode is "new" or "existing", skip the choice screen
   const [mode, setMode] = useState<FlowMode>(initialMode);
   const [choiceSelection, setChoiceSelection] = useState<"new" | "existing" | null>(null);
@@ -978,6 +1088,10 @@ export function BookAppointmentExperience({
     const additionalPets = pets.slice(1);
 
     let schedulingNotes = data.schedulingNotes.trim();
+    if (locale !== "en") {
+      const languageNote = `Preferred language: ${localeNames[locale]}. Automated translation may be used to review this request.`;
+      schedulingNotes = schedulingNotes ? `${languageNote}\n\n${schedulingNotes}` : languageNote;
+    }
     if (additionalPets.length > 0) {
       const petLines = additionalPets
         .map(
@@ -1070,21 +1184,20 @@ export function BookAppointmentExperience({
       <section className="book-flow book-choice-flow" id="appointment-flow">
         <div className="book-choice-screen">
           <div className="book-choice-copy">
-            <p className="eyebrow">Book appointment</p>
-            <h1>Choose the right appointment path.</h1>
-            <p>
-              New here? Start with registration. Already a client? Skip the new-patient steps.
-            </p>
+            <p className="eyebrow">{copy.eyebrow}</p>
+            <h1>{copy.title}</h1>
+            <p>{copy.intro}</p>
+            <CommunicationSupportNotice locale={locale} />
             <Alert className="book-choice-alert" tone="warning">
               <Phone aria-hidden="true" size={18} />
               <div>
-                <AlertTitle>Need same-day help?</AlertTitle>
-                <AlertDescription>Call the clinic directly for urgent pet health concerns or time-sensitive appointment needs.</AlertDescription>
+                <AlertTitle>{copy.sameDayTitle}</AlertTitle>
+                <AlertDescription>{copy.sameDayBody}</AlertDescription>
                 <div className="book-choice-phone-row">
                   {publicLocations.map((loc) => (
                     <a href={`tel:${loc.tel}`} key={loc.id}>
                       <Phone aria-hidden="true" size={15} />
-                      Call {loc.name}
+                      {copy.call} {loc.name}
                     </a>
                   ))}
                 </div>
@@ -1094,11 +1207,11 @@ export function BookAppointmentExperience({
 
           <Card className="book-choice-panel">
             <CardHeader>
-              <CardTitle>Are you new to Veterinary Medical Centers?</CardTitle>
-              <CardDescription>Select one option to continue.</CardDescription>
+              <CardTitle>{copy.question}</CardTitle>
+              <CardDescription>{copy.selectOption}</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="book-choice-cards" role="radiogroup" aria-label="Choose appointment path">
+              <div className="book-choice-cards" role="radiogroup" aria-label={copy.pathLabel}>
                 <button
                   type="button"
                   role="radio"
@@ -1107,9 +1220,9 @@ export function BookAppointmentExperience({
                   onClick={() => setChoiceSelection("new")}
                 >
                   <PawPrint aria-hidden="true" size={24} />
-                  <strong>New patient</strong>
-                  <span>Register your pet and request your first visit with our team.</span>
-                  <small>Best for first visits, new pets, and families who have not been seen at Veterinary Medical Centers before.</small>
+                  <strong>{copy.newPatient}</strong>
+                  <span>{copy.newPatientBody}</span>
+                  <small>{copy.newPatientDetail}</small>
                   {choiceSelection === "new" && <Check aria-hidden="true" size={17} />}
                 </button>
                 <button
@@ -1120,9 +1233,9 @@ export function BookAppointmentExperience({
                   onClick={() => setChoiceSelection("existing")}
                 >
                   <UserRound aria-hidden="true" size={24} />
-                  <strong>Existing patient</strong>
-                  <span>Use the portal, call a clinic, or send a non-urgent message.</span>
-                  <small>Best for current clients scheduling follow-ups, refills, records, or routine care.</small>
+                  <strong>{copy.existingPatient}</strong>
+                  <span>{copy.existingPatientBody}</span>
+                  <small>{copy.existingPatientDetail}</small>
                   {choiceSelection === "existing" && <Check aria-hidden="true" size={17} />}
                 </button>
               </div>
@@ -1132,9 +1245,9 @@ export function BookAppointmentExperience({
                   disabled={!choiceSelection}
                   onClick={() => choiceSelection && setMode(choiceSelection)}
                 >
-                  Continue <ArrowRight aria-hidden="true" size={16} />
+                  {copy.continue} <ArrowRight aria-hidden="true" size={16} />
                 </ShadButton>
-                <p>We’ll guide you to the correct next step based on your selection.</p>
+                <p>{copy.continueHelp}</p>
               </div>
             </CardContent>
           </Card>
@@ -1154,6 +1267,7 @@ export function BookAppointmentExperience({
           liveChatEnabled={liveChatEnabled}
           publicLocations={publicLocations}
           onBack={() => setMode("choose")}
+          locale={locale}
         />
       </section>
     );
@@ -1165,6 +1279,10 @@ export function BookAppointmentExperience({
 
   return (
     <section className="book-flow" id="appointment-flow">
+      <AppointmentFormTranslator locale={locale} />
+      {locale !== "en" && (
+        <CommunicationSupportNotice locale={locale} className="book-language-form-note" appointmentForm />
+      )}
       <div className="book-form-shell">
         {/* Sticky header */}
         <div className="book-form-header">

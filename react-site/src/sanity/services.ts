@@ -1,5 +1,6 @@
 import type { SanityImageSource } from "@sanity/image-url";
 import type { PortableTextBlock } from "next-sanity";
+import type { Locale } from "@/lib/i18n";
 import {
   getStaticRelatedServices,
   getStaticServiceDetail,
@@ -172,38 +173,38 @@ function normalizeDetail(service: SanityServiceDetail): ServiceDetail {
   };
 }
 
-async function fetchSanityServiceCards(query: string, params: Record<string, unknown> = {}) {
+async function fetchSanityServiceCards(query: string, params: Record<string, unknown> = {}, locale: Locale = "en") {
   if (!sanityEnabled) return [];
 
   try {
-    const services = await client.fetch<SanityServiceCard[]>(query, params, options);
+    const services = await client.fetch<SanityServiceCard[]>(query, { ...params, locale }, options);
     return services.map(normalizeCard);
   } catch {
     return [];
   }
 }
 
-export async function getServiceHubCards() {
-  const sanityServices = await fetchSanityServiceCards(SERVICES_QUERY);
+export async function getServiceHubCards(locale: Locale = "en") {
+  const sanityServices = await fetchSanityServiceCards(SERVICES_QUERY, {}, locale);
   return sanityServices.length ? sanityServices : serviceHubServices.map((service) => normalizeCard(service));
 }
 
-export async function getFeaturedServiceCards(limit = 6) {
-  const sanityServices = await fetchSanityServiceCards(FEATURED_SERVICES_QUERY, { limit });
+export async function getFeaturedServiceCards(limit = 6, locale: Locale = "en") {
+  const sanityServices = await fetchSanityServiceCards(FEATURED_SERVICES_QUERY, { limit }, locale);
   const fallback = serviceHubServices.filter((service) => service.featured).slice(0, limit).map((service) => normalizeCard(service));
   return sanityServices.length ? sanityServices : fallback;
 }
 
-export async function getServiceCardsByCategory(category: ServiceCategory) {
-  const sanityServices = await fetchSanityServiceCards(SERVICES_BY_CATEGORY_QUERY, { category });
+export async function getServiceCardsByCategory(category: ServiceCategory, locale: Locale = "en") {
+  const sanityServices = await fetchSanityServiceCards(SERVICES_BY_CATEGORY_QUERY, { category }, locale);
   const fallback = serviceHubServices.filter((service) => service.serviceCategory === category).map((service) => normalizeCard(service));
   return sanityServices.length ? sanityServices : fallback;
 }
 
-export async function getServiceDetail(slug: string) {
+export async function getServiceDetail(slug: string, locale: Locale = "en") {
   if (sanityEnabled) {
     try {
-      const service = await client.fetch<SanityServiceDetail | null>(SERVICE_QUERY, { slug }, options);
+      const service = await client.fetch<SanityServiceDetail | null>(SERVICE_QUERY, { slug, locale }, options);
       if (service) return normalizeDetail(service);
     } catch {
       return null;
@@ -226,14 +227,14 @@ export async function getServiceDetailSlugs() {
   return [];
 }
 
-export async function getRelatedServiceCards(service: ServiceDetail) {
+export async function getRelatedServiceCards(service: ServiceDetail, locale: Locale = "en") {
   if (service.relatedServices?.length) return service.relatedServices.slice(0, 4);
 
   if (service.relatedServiceSlugs.length) {
     return getStaticRelatedServices(service.relatedServiceSlugs).map((related) => normalizeCard(related));
   }
 
-  const allServices = await getServiceHubCards();
+  const allServices = await getServiceHubCards(locale);
   return allServices
     .filter((candidate) => candidate.slug !== service.slug && candidate.serviceCategory === service.serviceCategory)
     .slice(0, 4);

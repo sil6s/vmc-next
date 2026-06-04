@@ -1,4 +1,6 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import { headers } from "next/headers";
 import { MapPin, Phone, Stethoscope } from "lucide-react";
 import { Breadcrumbs } from "@/components/sections/Breadcrumbs";
 import { CTASection } from "@/components/sections/CTASection";
@@ -7,9 +9,11 @@ import { ServiceBrowser } from "@/components/sections/ServiceBrowser";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { locations } from "@/data/locations";
+import { localizedSeo } from "@/data/localized-seo";
 import { serviceCategoryLabels, type ServiceCategory } from "@/data/serviceHub";
 import { site } from "@/data/site";
 import { pageMetadata } from "@/lib/metadata";
+import { isLocale, localizedLanguageAlternates } from "@/lib/i18n";
 import { breadcrumbSchema, faqSchema, JsonLd, organizationSchema, serviceListSchema, webpageSchema } from "@/lib/schema";
 import { getServiceHubCards } from "@/sanity/services";
 
@@ -183,10 +187,20 @@ const crumbs = [
   { name: "Services", path: "/services/" }
 ];
 
-export const metadata = pageMetadata({ ...seo, path: "/services/" });
+export async function generateMetadata(): Promise<Metadata> {
+  const localeHeader = (await headers()).get("x-vmc-locale");
+  const locale = isLocale(localeHeader) ? localeHeader : "en";
+  const metadataSeo = locale === "en" ? seo : localizedSeo[locale]["/services/"];
+  const path = locale === "en" ? "/services/" : `/${locale}/services/`;
+  return pageMetadata({ ...metadataSeo, path, languages: localizedLanguageAlternates("/services/") });
+}
 
 export default async function ServicesPage() {
-  const services = await getServiceHubCards();
+  const localeHeader = (await headers()).get("x-vmc-locale");
+  const locale = isLocale(localeHeader) ? localeHeader : "en";
+  const services = await getServiceHubCards(locale);
+  const metadataSeo = locale === "en" ? seo : localizedSeo[locale]["/services/"];
+  const pagePath = locale === "en" ? "/services/" : `/${locale}/services/`;
 
   return (
     <>
@@ -423,7 +437,7 @@ export default async function ServicesPage() {
       />
       <JsonLd
         data={[
-          webpageSchema("/services/", seo.title, seo.description),
+          webpageSchema(pagePath, metadataSeo.title, metadataSeo.description),
           organizationSchema(),
           serviceListSchema(services.map((service) => ({ name: service.title, description: service.shortDescription, path: `/services/${service.slug}/` }))),
           breadcrumbSchema(crumbs),

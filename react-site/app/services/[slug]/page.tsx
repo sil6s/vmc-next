@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { PortableText, type PortableTextComponents } from "next-sanity";
 import {
@@ -27,8 +28,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Container } from "@/components/ui/Container";
 import { Separator } from "@/components/ui/separator";
 import { serviceCategoryLabels, type ServiceTable } from "@/data/serviceHub";
+import { localizedServiceSeo } from "@/data/localized-seo";
 import { site } from "@/data/site";
 import { pageMetadata } from "@/lib/metadata";
+import { isLocale, localizedLanguageAlternates } from "@/lib/i18n";
 import {
   breadcrumbSchema,
   faqSchema,
@@ -118,21 +121,26 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
-  const service = await getServiceDetail(slug);
+  const localeHeader = (await headers()).get("x-vmc-locale");
+  const locale = isLocale(localeHeader) ? localeHeader : "en";
+  const service = await getServiceDetail(slug, locale);
   if (!service) return {};
 
   const imageSource = service.openGraphImage || service.heroImageSource;
   const image = imageSource ? urlFor(imageSource).width(1200).height(630).fit("crop").url() : service.heroImage;
   const title = service.metaTitle || `${service.title} in Northern Kentucky | Veterinary Medical Centers`;
   const description = service.metaDescription || service.shortDescription;
+  const seo = locale === "en" ? { title, description } : localizedServiceSeo(locale, service.title, description);
+  const path = locale === "en" ? `/services/${service.slug}/` : `/${locale}/services/${service.slug}/`;
 
   return {
     ...pageMetadata({
-      title,
-      description,
-      path: `/services/${service.slug}/`,
+      title: seo.title,
+      description: seo.description,
+      path,
       image,
-      canonicalUrl: service.canonicalUrl
+      canonicalUrl: locale === "en" ? service.canonicalUrl : undefined,
+      languages: localizedLanguageAlternates(`/services/${service.slug}/`)
     }),
     robots: {
       index: !service.noindex,
@@ -143,11 +151,17 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 
 export default async function ServicePage({ params }: Params) {
   const { slug } = await params;
-  const service = await getServiceDetail(slug);
+  const localeHeader = (await headers()).get("x-vmc-locale");
+  const locale = isLocale(localeHeader) ? localeHeader : "en";
+  const service = await getServiceDetail(slug, locale);
   if (!service) notFound();
 
   const settings = await getPublicSettings();
-  const relatedServices = await getRelatedServiceCards(service);
+  const serviceSeo = locale === "en"
+    ? { title: service.metaTitle || service.title, description: service.metaDescription || service.shortDescription }
+    : localizedServiceSeo(locale, service.title, service.metaDescription || service.shortDescription);
+  const servicePath = locale === "en" ? `/services/${service.slug}/` : `/${locale}/services/${service.slug}/`;
+  const relatedServices = await getRelatedServiceCards(service, locale);
   const updatedDate = displayDate(service.lastReviewedDate || service.updatedAt || service.publishedAt);
   const heroImage = service.heroImageSource
     ? urlFor(service.heroImageSource).width(1300).height(980).fit("crop").url()
@@ -428,7 +442,7 @@ export default async function ServicePage({ params }: Params) {
                   <div className="service-section-head">
                     <p className="eyebrow">Helpful Reference</p>
                     <h2>A simple way to understand next steps.</h2>
-                    <p>Your veterinarian will recommend next steps based on your pet's exam and history. This chart is for educational purposes only.</p>
+                    <p>Your veterinarian will recommend next steps based on your pet&apos;s exam and history. This chart is for educational purposes only.</p>
                   </div>
                   {tableIsRenderable(service.comparisonTable) && <ServiceDataTable table={service.comparisonTable as ServiceTable} />}
                   {tableIsRenderable(service.contentTable) && <ServiceDataTable table={service.contentTable as ServiceTable} />}
@@ -634,9 +648,9 @@ export default async function ServicePage({ params }: Params) {
 
       <JsonLd
         data={[
-          webpageSchema(`/services/${service.slug}/`, service.metaTitle || service.title, service.metaDescription || service.shortDescription),
+          webpageSchema(servicePath, serviceSeo.title, serviceSeo.description),
           organizationSchema(settings),
-          veterinaryServiceSchema(service, `/services/${service.slug}/`),
+          veterinaryServiceSchema(service, servicePath),
           breadcrumbSchema(crumbs),
           service.faqs.length ? faqSchema(service.faqs) : null
         ].filter(Boolean)}

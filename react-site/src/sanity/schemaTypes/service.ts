@@ -16,6 +16,33 @@ const simplePortableText = [
   { type: "block", styles: [{ title: "Normal", value: "normal" }, { title: "H2", value: "h2" }, { title: "H3", value: "h3" }, { title: "Quote", value: "blockquote" }], lists: [{ title: "Bullet", value: "bullet" }, { title: "Number", value: "number" }], marks: { decorators: [{ title: "Strong", value: "strong" }, { title: "Emphasis", value: "em" }], annotations: [{ name: "link", title: "Link", type: "object", fields: [{ name: "href", title: "URL", type: "string" }] }] } }
 ];
 
+const translatedServiceFields = [
+  defineField({ name: "title", title: "Service title", type: "string" }),
+  defineField({ name: "shortDescription", title: "Short description", type: "text", rows: 3 }),
+  defineField({ name: "fullDescription", title: "Plain-language summary", type: "text", rows: 5 }),
+  defineField({ name: "seoTitle", title: "SEO title", type: "string" }),
+  defineField({ name: "seoDescription", title: "Meta description", type: "text", rows: 3 }),
+  defineField({ name: "eyebrow", title: "Hero eyebrow", type: "string" }),
+  defineField({ name: "heroTitle", title: "Hero title", type: "string" }),
+  defineField({ name: "heroSubtitle", title: "Hero subtitle", type: "text", rows: 3 }),
+  defineField({ name: "heroImageAlt", title: "Hero image alt text", type: "string" }),
+  defineField({ name: "primaryCtaLabel", title: "Primary CTA label", type: "string" }),
+  defineField({ name: "secondaryCtaLabel", title: "Secondary CTA label", type: "string" }),
+  defineField({ name: "bestFor", title: "Best for", type: "array", of: [{ type: "string" }] }),
+  defineField({ name: "keyBenefits", title: "Key benefits", type: "array", of: [{ type: "object", fields: [defineField({ name: "title", title: "Title", type: "string" }), defineField({ name: "description", title: "Description", type: "text", rows: 2 })] }] }),
+  defineField({ name: "symptomsOrReasonsToSchedule", title: "Symptoms or reasons to schedule", type: "array", of: [{ type: "object", fields: [defineField({ name: "title", title: "Reason", type: "string" }), defineField({ name: "description", title: "Description", type: "text", rows: 2 })] }] }),
+  defineField({ name: "overviewContent", title: "Main educational content", type: "array", of: simplePortableText }),
+  defineField({ name: "whatToExpectSteps", title: "What to expect steps", type: "array", of: [{ type: "object", fields: [defineField({ name: "stepTitle", title: "Step title", type: "string" }), defineField({ name: "stepDescription", title: "Step description", type: "text", rows: 2 })] }] }),
+  defineField({ name: "careApproachCards", title: "Care approach cards", type: "array", of: [{ type: "object", fields: [defineField({ name: "title", title: "Title", type: "string" }), defineField({ name: "description", title: "Description", type: "text", rows: 3 })] }] }),
+  defineField({ name: "approachSection", title: "Approach section", type: "text", rows: 4 }),
+  defineField({ name: "whatToBring", title: "What to bring", type: "array", of: [{ type: "string" }] }),
+  defineField({ name: "helpfulQuestions", title: "Helpful questions", type: "array", of: [{ type: "string" }] }),
+  defineField({ name: "faqItems", title: "FAQ items", type: "array", of: [{ type: "object", fields: [defineField({ name: "question", title: "Question", type: "string" }), defineField({ name: "answer", title: "Answer", type: "text", rows: 3 })] }] }),
+  defineField({ name: "finalCtaTitle", title: "Final CTA title", type: "string" }),
+  defineField({ name: "finalCtaText", title: "Final CTA text", type: "text", rows: 3 }),
+  defineField({ name: "disclaimer", title: "Medical disclaimer", type: "text", rows: 3 })
+];
+
 export const serviceType = defineType({
   name: "service",
   title: "Service Page",
@@ -30,6 +57,7 @@ export const serviceType = defineType({
     { name: "links", title: "Links & CTAs" },
     { name: "images", title: "Images" },
     { name: "schema", title: "Schema & Review Info" }
+    ,{ name: "translations", title: "Translations" }
   ],
   fields: [
     defineField({ name: "title", title: "Service title", type: "string", group: "identity", validation: (rule) => rule.required() }),
@@ -79,6 +107,29 @@ export const serviceType = defineType({
     defineField({ name: "reviewedBy", title: "Reviewed by", type: "reference", group: "schema", to: [{ type: "author" }] }),
     defineField({ name: "lastReviewedDate", title: "Last reviewed date", type: "date", group: "schema" }),
     defineField({ name: "schemaType", title: "Schema type", type: "string", group: "schema", options: { list: ["Service", "VeterinaryCare"] }, initialValue: "Service" })
+    ,
+    defineField({
+      name: "translations",
+      title: "Translated service content",
+      type: "array",
+      group: "translations",
+      description: "Add one entry per language. The website falls back to English only when a translated field is empty.",
+      of: [{
+        type: "object",
+        fields: [
+          defineField({
+            name: "locale",
+            title: "Language",
+            type: "string",
+            options: { list: [{ title: "Spanish", value: "es" }, { title: "French", value: "fr" }, { title: "Hindi", value: "hi" }, { title: "Simplified Chinese", value: "zh" }] },
+            validation: (rule) => rule.required()
+          }),
+          ...translatedServiceFields
+        ],
+        preview: { select: { title: "locale", subtitle: "title" } }
+      }],
+      validation: (rule) => rule.unique()
+    })
   ],
   preview: {
     select: {

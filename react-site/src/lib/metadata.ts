@@ -8,9 +8,10 @@ type SeoInput = {
   image?: string;
   canonicalUrl?: string;
   type?: "website" | "article";
+  languages?: Record<string, string>;
 };
 
-export function pageMetadata({ title, description, path = "/", image = site.socialImage, canonicalUrl, type = "website" }: SeoInput): Metadata {
+export function pageMetadata({ title, description, path = "/", image = site.socialImage, canonicalUrl, type = "website", languages }: SeoInput): Metadata {
   const url = absoluteUrl(path);
   const canonical = toCanonicalUrl(canonicalUrl || url);
   const imageUrl = absoluteUrl(image);
@@ -19,7 +20,8 @@ export function pageMetadata({ title, description, path = "/", image = site.soci
     title,
     description,
     alternates: {
-      canonical
+      canonical,
+      languages
     },
     openGraph: {
       type,

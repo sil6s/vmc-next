@@ -18,13 +18,13 @@ SheetOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
 const SheetContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & { side?: "right" | "left" }
->(({ className, children, side = "right", ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & { side?: "right" | "left"; closeLabel?: string }
+>(({ className, children, side = "right", closeLabel = "Close menu", ...props }, ref) => (
   <SheetPortal>
     <SheetOverlay />
     <DialogPrimitive.Content className={cn("ui-sheet-content", `ui-sheet-${side}`, className)} ref={ref} {...props}>
       {children}
-      <DialogPrimitive.Close className="ui-sheet-close" aria-label="Close menu">
+      <DialogPrimitive.Close className="ui-sheet-close" aria-label={closeLabel}>
         <X aria-hidden="true" size={22} />
       </DialogPrimitive.Close>
     </DialogPrimitive.Content>

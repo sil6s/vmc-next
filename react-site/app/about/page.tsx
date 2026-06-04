@@ -1,5 +1,7 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { headers } from "next/headers";
 import {
   BadgeCheck,
   Building2,
@@ -15,13 +17,21 @@ import { Hero } from "@/components/sections/Hero";
 import { Section } from "@/components/ui/Section";
 import { locations } from "@/data/locations";
 import { pages } from "@/data/pages";
+import { localizedSeo } from "@/data/localized-seo";
 import { site } from "@/data/site";
 import { pageMetadata } from "@/lib/metadata";
+import { isLocale, localizedLanguageAlternates } from "@/lib/i18n";
 import { getPublicSettings } from "@/lib/settings/public";
 import { JsonLd, breadcrumbSchema, faqSchema, locationVeterinaryCareSchema, personSchema, webpageSchema } from "@/lib/schema";
 import { fetchAboutPersonProfiles, profileImageAlt, profileImageUrl } from "@/sanity/personProfiles";
 
-export const metadata = pageMetadata({ ...pages.about.seo, path: "/about/" });
+export async function generateMetadata(): Promise<Metadata> {
+  const localeHeader = (await headers()).get("x-vmc-locale");
+  const locale = isLocale(localeHeader) ? localeHeader : "en";
+  const seo = locale === "en" ? pages.about.seo : localizedSeo[locale]["/about/"];
+  const path = locale === "en" ? "/about/" : `/${locale}/about/`;
+  return pageMetadata({ ...seo, path, languages: localizedLanguageAlternates("/about/") });
+}
 
 const aboutFaqs = [
   {
@@ -147,6 +157,10 @@ const externalResources = [
 
 export default async function AboutPage() {
   const [settings, personProfiles] = await Promise.all([getPublicSettings(), fetchAboutPersonProfiles()]);
+  const localeHeader = (await headers()).get("x-vmc-locale");
+  const locale = isLocale(localeHeader) ? localeHeader : "en";
+  const seo = locale === "en" ? pages.about.seo : localizedSeo[locale]["/about/"];
+  const pagePath = locale === "en" ? "/about/" : `/${locale}/about/`;
   const sanityDoctors = personProfiles.filter((profile) => profile.profileType === "doctor" && profile.visible !== false);
   const visibleDoctors = sanityDoctors.length ? sanityDoctors : settings.staff.doctors.filter((doctor) => doctor.isVisible);
 
@@ -328,7 +342,7 @@ export default async function AboutPage() {
 
       <JsonLd
         data={[
-          webpageSchema("/about/", pages.about.seo.title, pages.about.seo.description),
+          webpageSchema(pagePath, seo.title, seo.description),
           breadcrumbSchema([{ name: "Home", path: "/" }, { name: "About", path: "/about/" }]),
           faqSchema(aboutFaqs),
           ...visibleDoctors.map((doctor) => {
