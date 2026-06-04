@@ -35,6 +35,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     metadataBase: new URL(settings.siteUrl),
+    applicationName: "Veterinary Medical Centers",
     title: {
       default: settings.seo.defaultSeoTitle,
       template: "%s"
@@ -44,13 +45,20 @@ export async function generateMetadata(): Promise<Metadata> {
       icon: [{ url: "/favicon.png", type: "image/png" }],
       shortcut: "/favicon.png",
       apple: "/favicon.png"
+    },
+    manifest: "/manifest.webmanifest",
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: { index: true, follow: true }
     }
   };
 }
 
 export const viewport: Viewport = {
   width: "device-width",
-  initialScale: 1
+  initialScale: 1,
+  themeColor: "#a91b1b"
 };
 
 export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

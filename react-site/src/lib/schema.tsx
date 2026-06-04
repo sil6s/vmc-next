@@ -6,6 +6,9 @@ import type { PublicSettings } from "@/lib/settings/public";
 
 export function organizationSchema(settings?: PublicSettings) {
   const locations = settings?.publicLocations || site.locations;
+  const sameAs = settings?.seo.sameAsSocialLinks?.length
+    ? settings.seo.sameAsSocialLinks
+    : site.sameAs;
 
   return {
     "@context": "https://schema.org",
@@ -15,8 +18,24 @@ export function organizationSchema(settings?: PublicSettings) {
     url: settings?.siteUrl || site.siteUrl,
     email: site.email,
     image: absoluteUrl(site.socialImage),
-    areaServed: ["Northern Kentucky", "Fort Thomas KY", "Independence KY", "Greater Cincinnati"],
-    sameAs: settings?.seo.sameAsSocialLinks,
+    priceRange: "$$",
+    areaServed: [
+      "Northern Kentucky",
+      "Fort Thomas KY",
+      "Independence KY",
+      "Campbell County KY",
+      "Kenton County KY",
+      "Greater Cincinnati"
+    ],
+    ...(sameAs ? { sameAs } : {}),
+    openingHoursSpecification: [
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        opens: "08:00",
+        closes: "18:00"
+      }
+    ],
     address: locations.map((location) => ({
       "@type": "PostalAddress",
       streetAddress: location.street,
@@ -172,6 +191,53 @@ export function locationVeterinaryCareSchema(location: LocationPage, path: strin
     ],
     areaServed: location.communities,
     hasMap: site.locations.find((siteLocation) => siteLocation.name === location.shortName)?.mapUrl
+  };
+}
+
+export function cityPageVeterinaryCareSchema(opts: {
+  locationName: string;
+  address: string;
+  tel: string;
+  phone: string;
+  path: string;
+  city: string;
+  state: string;
+}) {
+  const { locationName, address, tel, phone, path, city, state } = opts;
+  const isIndependence = locationName === "Independence";
+  const officialName = isIndependence
+    ? "Veterinary Medical Centers of Independence"
+    : "Veterinary Medical Centers of Fort Thomas";
+  const zip = isIndependence ? "41051" : "41075";
+  const streetAddress = address.split(",")[0];
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "VeterinaryCare",
+    "@id": `${absoluteUrl(path)}#location`,
+    name: officialName,
+    url: absoluteUrl(path),
+    telephone: tel,
+    parentOrganization: {
+      "@id": `${site.siteUrl}/#organization`
+    },
+    address: {
+      "@type": "PostalAddress",
+      streetAddress,
+      addressLocality: locationName,
+      addressRegion: "KY",
+      postalCode: zip,
+      addressCountry: "US"
+    },
+    areaServed: { "@type": "City", name: city, containedInPlace: { "@type": "State", name: state } },
+    openingHoursSpecification: [
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        opens: "08:00",
+        closes: "18:00"
+      }
+    ]
   };
 }
 

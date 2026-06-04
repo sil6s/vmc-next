@@ -55,6 +55,12 @@ export const site = {
   pharmacyExternalUrl: "https://nky-vet.ourvet.com/pet/",
   googleTagManagerId: "GTM-K9VSFT44",
   socialImage: "/images/vmc-social-media.jpg",
+  sameAs: [
+    "https://www.facebook.com/vetmedicalcenters/",
+    "https://www.instagram.com/veterinarymedicalcenters/",
+    "https://share.google/GeJuAWRtZTyn3SR1E",
+    "https://share.google/Rl2PewRXhXu44c9Ny"
+  ],
   locations: [
     {
       id: "fort-thomas",

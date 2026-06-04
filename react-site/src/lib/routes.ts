@@ -1,4 +1,5 @@
 import { locations } from "@/data/locations";
+import { getCityPageSlugs } from "@/data/cityPages";
 import { serviceHubServices } from "@/data/serviceHub";
 
 export const staticRoutes = [
@@ -14,7 +15,8 @@ export const staticRoutes = [
   "/online-vet-pharmacy-northern-kentucky-cincinnati/",
   "/vet-near-me/",
   "/new-patient-registration-form/",
-  "/privacy-policy/"
+  "/privacy-policy/",
+  "/terms/"
 ] as const;
 
 export const sitemapStaticRoutes = staticRoutes.filter(
@@ -25,6 +27,7 @@ export function allRoutes() {
   return [
     ...staticRoutes,
     ...serviceHubServices.map((service) => `/services/${service.slug}/`),
-    ...locations.map((location) => `/locations/${location.slug}/`)
+    ...locations.map((location) => `/locations/${location.slug}/`),
+    ...getCityPageSlugs().map((slug) => `/locations/${slug}/`)
   ];
 }

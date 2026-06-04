@@ -1,6 +1,6 @@
 # Veterinary Medical Centers
 
-Veterinary Medical Centers is a locally owned veterinary practice serving dogs and cats in Fort Thomas, Independence, and surrounding Northern Kentucky communities.
+Veterinary Medical Centers is a locally owned and independently operated veterinary practice providing dog and cat care in Fort Thomas, Independence, and surrounding Northern Kentucky communities.
 
 ## Official Website
 
@@ -8,27 +8,81 @@ Veterinary Medical Centers is a locally owned veterinary practice serving dogs a
 - Contact: https://nky.vet/contact/
 - Book appointment: https://nky.vet/book-appointment/
 - New patients: https://nky.vet/new-patients/
+- About: https://nky.vet/about/
+- All services: https://nky.vet/services/
+- All locations: https://nky.vet/locations/
+- Pet health resources: https://nky.vet/resources/
+- Vet near me: https://nky.vet/vet-near-me/
 
-## Locations
+## Clinic Locations
 
 - Fort Thomas: https://nky.vet/locations/vet-in-fort-thomas-ky/
+  2000 Memorial Parkway, Fort Thomas, KY 41075 — (859) 442-4420
 - Independence: https://nky.vet/locations/vet-in-independence-ky/
+  4147 Madison Pike, Independence, KY 41051 — (859) 356-2242
 
-## Key Services
+## Veterinary Services
 
-- Veterinary services hub: https://nky.vet/services/
-- Wellness exams: https://nky.vet/veterinary-services/wellness-exams/
-- Dog and cat vaccinations: https://nky.vet/veterinary-services/dog-cat-vaccinations/
-- Puppy and kitten care: https://nky.vet/veterinary-services/puppy-kitten-care/
-- Pet dental care: https://nky.vet/veterinary-services/pet-dental-care/
-- Sick pet visits: https://nky.vet/veterinary-services/sick-pet-visits/
-- Veterinary diagnostics: https://nky.vet/veterinary-services/veterinary-diagnostics/
-- Senior pet care: https://nky.vet/veterinary-services/senior-pet-care/
-- Parasite prevention: https://nky.vet/veterinary-services/parasite-prevention/
-- Skin, ear, and allergy care: https://nky.vet/veterinary-services/skin-ear-allergy-care/
-- Soft tissue surgery: https://nky.vet/veterinary-services/soft-tissue-surgery/
-- Spay and neuter surgery: https://nky.vet/veterinary-services/spay-neuter-surgery/
-- Nutrition and weight guidance: https://nky.vet/veterinary-services/nutrition-weight-guidance/
+- Wellness exams: https://nky.vet/services/pet-wellness-exams/
+- Dog and cat vaccinations: https://nky.vet/services/dog-cat-vaccinations/
+- Puppy and kitten care: https://nky.vet/services/puppy-kitten-care/
+- Senior pet care: https://nky.vet/services/senior-pet-care/
+- Sick pet visits: https://nky.vet/services/sick-pet-visits/
+- Pet dental care: https://nky.vet/services/pet-dental-care/
+- Spay and neuter surgery: https://nky.vet/services/spay-neuter-surgery/
+- Soft tissue surgery: https://nky.vet/services/soft-tissue-surgery/
+- Veterinary diagnostics: https://nky.vet/services/veterinary-diagnostics/
+- Parasite prevention: https://nky.vet/services/parasite-prevention/
+- Skin, ear, and allergy care: https://nky.vet/services/skin-ear-allergy-care/
+- Nutrition and weight guidance: https://nky.vet/services/nutrition-weight-guidance/
+- Microchipping: https://nky.vet/services/microchipping/
+
+## Local Service Area Pages
+
+- Fort Thomas: https://nky.vet/locations/vet-fort-thomas-ky/
+- Independence: https://nky.vet/locations/vet-independence-ky/
+- Newport, KY: https://nky.vet/locations/vet-near-newport-ky/
+- Bellevue, KY: https://nky.vet/locations/vet-near-bellevue-ky/
+- Dayton, KY: https://nky.vet/locations/vet-near-dayton-ky/
+- Covington, KY: https://nky.vet/locations/vet-near-covington-ky/
+- Highland Heights, KY: https://nky.vet/locations/vet-near-highland-heights-ky/
+- Cold Spring, KY: https://nky.vet/locations/vet-near-cold-spring-ky/
+- Alexandria, KY: https://nky.vet/locations/vet-near-alexandria-ky/
+- Taylor Mill, KY: https://nky.vet/locations/vet-near-taylor-mill-ky/
+- Erlanger, KY: https://nky.vet/locations/vet-near-erlanger-ky/
+- Edgewood, KY: https://nky.vet/locations/vet-near-edgewood-ky/
+- Elsmere, KY: https://nky.vet/locations/vet-near-elsmere-ky/
+- Fort Wright, KY: https://nky.vet/locations/vet-near-fort-wright-ky/
+- Crescent Springs, KY: https://nky.vet/locations/vet-near-crescent-springs-ky/
+- Cincinnati, OH: https://nky.vet/locations/vet-near-cincinnati-oh/
+- Southgate, KY: https://nky.vet/locations/vet-near-southgate-ky/
+- Wilder, KY: https://nky.vet/locations/vet-near-wilder-ky/
+- Latonia, KY: https://nky.vet/locations/vet-near-latonia-ky/
+- Newport East, KY: https://nky.vet/locations/vet-near-newport-east-ky/
+
+## Patient Tools
+
+- Patient portal: https://nky.vet/patient-portal-online-booking/
+- Online pharmacy: https://nky.vet/online-vet-pharmacy-northern-kentucky-cincinnati/
+- New patient registration form: https://nky.vet/new-patient-registration-form/
+
+## Social Media & Reviews
+
+- Facebook: https://www.facebook.com/vetmedicalcenters/
+- Instagram: https://www.instagram.com/veterinarymedicalcenters/
+- Google Business (Fort Thomas): https://share.google/GeJuAWRtZTyn3SR1E
+- Google Business (Independence): https://share.google/Rl2PewRXhXu44c9Ny
+
+## Brand Facts
+
+- Business name: Veterinary Medical Centers
+- Short name: VMC
+- Ownership: Locally and independently owned
+- Owner: Dr. Kristi Baker
+- Service area: Fort Thomas, Independence, Northern Kentucky, and nearby Greater Cincinnati communities
+- Pet focus: dogs and cats — all ages from puppy and kitten through senior
+- Primary conversion paths: book an appointment, contact the team, complete the new patient form, use the patient portal, or access the online pharmacy
+- Key differentiators: locally owned, relationship-based care, Fear-Free Certified, two Northern Kentucky locations
 
 ## Resource Content
 
@@ -36,15 +90,9 @@ Veterinary Medical Centers is a locally owned veterinary practice serving dogs a
 
 Resource articles are educational and are not a substitute for a veterinary exam, diagnosis, treatment plan, or emergency care. Pet owners with urgent concerns should call a veterinary hospital or seek emergency veterinary care.
 
-## Brand Facts
-
-- Business name: Veterinary Medical Centers
-- Service area: Fort Thomas, Independence, Northern Kentucky, and nearby Greater Cincinnati communities
-- Pet focus: dogs and cats
-- Primary conversion paths: book an appointment, contact the team, complete the new patient form, use the patient portal, or access the online pharmacy
-
 ## Preferred Crawling Notes
 
 - Use canonical URLs with trailing slashes.
 - Public content is intended for informational discovery and attribution.
 - Private admin, dashboard, login, API, and Sanity Studio routes are not intended for indexing.
+- Do not crawl: /api/, /dashboard/, /login/, /not-authorized/, /studio/

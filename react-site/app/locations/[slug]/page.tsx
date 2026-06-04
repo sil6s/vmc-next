@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, Award, BookOpenText, Car, CheckCircle, Clock, HeartPulse, MapPin, Navigation, Phone, ShieldCheck, Sparkles, Stethoscope, Star } from "lucide-react";
+import { ArrowRight, Award, BookOpenText, Car, CheckCircle, Clock, ExternalLink, HeartPulse, MapPin, Navigation, Phone, ShieldCheck, Sparkles, Star, Stethoscope } from "lucide-react";
 import { Breadcrumbs } from "@/components/sections/Breadcrumbs";
 import { CTASection } from "@/components/sections/CTASection";
 import { FAQSection } from "@/components/sections/FAQSection";
@@ -10,12 +10,14 @@ import { OttoInlineWidget } from "@/components/sections/OttoInlineWidget";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { locations, getLocation } from "@/data/locations";
+import { getCityPage, getCityPageSlugs } from "@/data/cityPages";
+import type { CityPage } from "@/data/cityPages";
 import { serviceHubServices } from "@/data/serviceHub";
 import { site } from "@/data/site";
 import { testimonials } from "@/data/testimonials";
 import { pageMetadata } from "@/lib/metadata";
 import { getPublicSettings } from "@/lib/settings/public";
-import { breadcrumbSchema, faqSchema, JsonLd, locationVeterinaryCareSchema, serviceListSchema, webpageSchema } from "@/lib/schema";
+import { breadcrumbSchema, cityPageVeterinaryCareSchema, faqSchema, JsonLd, locationVeterinaryCareSchema, serviceListSchema, webpageSchema } from "@/lib/schema";
 import { getBlogPosts } from "@/sanity/posts";
 
 type Params = { params: Promise<{ slug: string }> };
@@ -45,14 +47,26 @@ const firstVisitSteps = [
 ];
 
 export function generateStaticParams() {
-  return locations.map((location) => ({ slug: location.slug }));
+  const locationSlugs = locations.map((location) => ({ slug: location.slug }));
+  const citySlugs = getCityPageSlugs().map((slug) => ({ slug }));
+  return [...locationSlugs, ...citySlugs];
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const location = getLocation(slug);
-  if (!location) return {};
-  return pageMetadata({ ...location.seo, path: `/locations/${location.slug}/`, image: location.image });
+  if (location) {
+    return pageMetadata({ ...location.seo, path: `/locations/${location.slug}/`, image: location.image });
+  }
+  const cityPage = getCityPage(slug);
+  if (cityPage) {
+    return pageMetadata({
+      title: cityPage.seo.title,
+      description: cityPage.seo.description,
+      path: `${cityPage.canonicalPath}/`
+    });
+  }
+  return {};
 }
 
 const OTTO_CLINIC_IDS: Record<string, string | undefined> = {
@@ -60,10 +74,260 @@ const OTTO_CLINIC_IDS: Record<string, string | undefined> = {
   "vet-in-independence-ky": process.env.NEXT_PUBLIC_OTTO_INDEPENDENCE_CLINIC_ID
 };
 
+// ── City SEO page service slugs ──────────────────────────────────────────────
+const citySeoServiceSlugs = [
+  "pet-wellness-exams",
+  "dog-cat-vaccinations",
+  "puppy-kitten-care",
+  "senior-pet-care",
+  "sick-pet-visits",
+  "pet-dental-care",
+  "spay-neuter-surgery",
+  "soft-tissue-surgery",
+  "veterinary-diagnostics",
+  "microchipping"
+];
+
+const googleReviewUrls: Record<string, string> = {
+  "Fort Thomas": "https://www.google.com/search?q=Veterinary+Medical+Centers+Fort+Thomas+KY+reviews",
+  Independence: "https://www.google.com/search?q=Veterinary+Medical+Centers+Independence+KY+reviews"
+};
+
+async function CityPageView({ cityPage }: { cityPage: CityPage }) {
+  const services = citySeoServiceSlugs
+    .map((s) => serviceHubServices.find((svc) => svc.slug === s))
+    .filter((s): s is (typeof serviceHubServices)[number] => Boolean(s));
+
+  const path = `${cityPage.canonicalPath}/`;
+  const crumbs = [
+    { name: "Home", path: "/" },
+    { name: "Locations", path: "/locations/" },
+    { name: cityPage.h1, path }
+  ];
+
+  const reviewUrl = googleReviewUrls[cityPage.nearest.location] ?? googleReviewUrls["Fort Thomas"];
+  const leaveReviewUrl = cityPage.nearest.location === "Independence"
+    ? "https://g.page/r/VMCIndependence/review"
+    : "https://g.page/r/VMCFortThomas/review";
+
+  const isPrimaryLocation = cityPage.pageType === "primary_location";
+  const locationLabel = cityPage.nearest.location === "Independence"
+    ? "Independence"
+    : "Fort Thomas";
+
+  return (
+    <>
+      {/* ── Hero ── */}
+      <section className="city-seo-hero">
+        <Container>
+          <div className="city-seo-hero-inner">
+            <div className="city-seo-hero-copy">
+              <p className="eyebrow">Veterinary Medical Centers — Northern Kentucky</p>
+              <h1>{cityPage.h1}</h1>
+              <p className="city-seo-hero-intro">{cityPage.introParagraph}</p>
+              <div className="hero-actions">
+                <Button href="/book-appointment/">Request an Appointment</Button>
+                <Button href={`tel:${cityPage.nearest.tel}`} variant="ghost">
+                  Call {locationLabel}
+                </Button>
+              </div>
+            </div>
+            <aside className="city-seo-location-card">
+              <p className="eyebrow">Closest VMC location</p>
+              <strong>Veterinary Medical Centers of {locationLabel}</strong>
+              <address>
+                <MapPin aria-hidden="true" size={15} />
+                {cityPage.nearest.address}
+              </address>
+              <a href={`tel:${cityPage.nearest.tel}`}>
+                <Phone aria-hidden="true" size={15} />
+                {cityPage.nearest.phone}
+              </a>
+              {!isPrimaryLocation && (
+                <p className="city-seo-distance">
+                  About {cityPage.nearest.miles} miles away
+                </p>
+              )}
+              <div className="city-seo-card-actions">
+                <Button href="/book-appointment/">Book Appointment</Button>
+                <Button
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cityPage.nearest.address)}`}
+                  variant="ghost"
+                >
+                  Get Directions
+                </Button>
+              </div>
+            </aside>
+          </div>
+        </Container>
+      </section>
+
+      <Breadcrumbs items={crumbs.map((c) => ({ label: c.name, href: c.path }))} />
+
+      {/* ── Vet Care Near City ── */}
+      <section className="city-seo-section city-seo-section-white">
+        <Container>
+          <div className="city-seo-content-block">
+            <h2>{cityPage.vetCareSection.heading}</h2>
+            <p>{cityPage.vetCareSection.body}</p>
+          </div>
+        </Container>
+      </section>
+
+      {/* ── Cincinnati angle (when applicable) ── */}
+      {cityPage.cincinnatAngle && (
+        <section className="city-seo-section city-seo-section-cream">
+          <Container>
+            <div className="city-seo-cincinnati-bar">
+              <Navigation aria-hidden="true" size={20} />
+              <div>
+                <strong>Easier access than downtown Cincinnati</strong>
+                <p>{cityPage.cincinnatAngle}</p>
+              </div>
+              <div className="city-seo-cincinnati-pills">
+                <span><CheckCircle aria-hidden="true" size={14} /> On-site parking</span>
+                <span><CheckCircle aria-hidden="true" size={14} /> Off I-471 North, Exit 5</span>
+                <span><CheckCircle aria-hidden="true" size={14} /> Locally owned</span>
+              </div>
+            </div>
+          </Container>
+        </section>
+      )}
+
+      {/* ── Services ── */}
+      <section className="city-seo-section city-seo-section-white">
+        <Container>
+          <div className="city-seo-section-head">
+            <p className="eyebrow">Veterinary Services</p>
+            <h2>Dog and cat services available near {cityPage.city}</h2>
+            <p>
+              Full-service care for dogs and cats — from wellness visits and vaccines to dental care, diagnostics, surgery, and senior pet support.
+            </p>
+          </div>
+          <div className="city-seo-service-grid">
+            {services.map((service) => (
+              <article className="city-seo-service-card" key={service.slug}>
+                <Stethoscope aria-hidden="true" size={18} />
+                <h3>
+                  <Link href={`/services/${service.slug}/`}>{service.title}</Link>
+                </h3>
+                <p>{service.shortDescription}</p>
+              </article>
+            ))}
+          </div>
+          <p className="city-seo-service-footer">
+            <Link href="/services/">Browse all veterinary services →</Link>
+          </p>
+        </Container>
+      </section>
+
+      {/* ── Local context ── */}
+      <section className="city-seo-section city-seo-section-cream">
+        <Container>
+          <div className="city-seo-content-block">
+            <p className="eyebrow">Local Care</p>
+            <h2>{cityPage.localSection.heading}</h2>
+            <p>{cityPage.localSection.body}</p>
+          </div>
+        </Container>
+      </section>
+
+      {/* ── Why VMC ── */}
+      <section className="city-seo-section city-seo-section-white">
+        <Container>
+          <div className="city-seo-section-head">
+            <p className="eyebrow">Why VMC</p>
+            <h2>Why pet owners near {cityPage.city} choose Veterinary Medical Centers</h2>
+          </div>
+          <ul className="city-seo-why-list">
+            {cityPage.whyChoosePoints.map((point) => (
+              <li key={point}>
+                <CheckCircle aria-hidden="true" size={18} />
+                <span>{point}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="city-seo-why-footer hero-actions">
+            <Button href="/book-appointment/">Request an Appointment</Button>
+            <Button href="/new-patients/" variant="ghost">New Patient Information</Button>
+          </div>
+        </Container>
+      </section>
+
+      {/* ── Pawstimonials ── */}
+      <section className="city-seo-section city-seo-section-cream">
+        <Container>
+          <div className="city-seo-section-head">
+            <p className="eyebrow">Pawstimonials</p>
+            <h2>Pawstimonials from pets and their people</h2>
+            <p>{cityPage.fallbackCopy}</p>
+          </div>
+          <div className="city-seo-review-grid">
+            {testimonials.slice(0, 3).map((review) => (
+              <article className="city-seo-review-card" key={review.name}>
+                <div className="city-seo-review-stars" role="img" aria-label="Five star rating">
+                  {[...Array(5)].map((_, i) => <Star key={i} aria-hidden="true" size={14} />)}
+                </div>
+                <p>{review.text}</p>
+                <footer>
+                  <strong>{review.name}</strong>
+                  <span>{review.location}</span>
+                  <span className="city-seo-review-source">Google review</span>
+                </footer>
+              </article>
+            ))}
+          </div>
+          <div className="city-seo-review-actions hero-actions">
+            <a className="btn btn-ghost" href={reviewUrl} target="_blank" rel="noopener noreferrer">
+              <ExternalLink aria-hidden="true" size={15} />
+              Read Google Reviews
+            </a>
+            <a className="btn btn-ghost" href={leaveReviewUrl} target="_blank" rel="noopener noreferrer">
+              Leave a Review
+            </a>
+          </div>
+        </Container>
+      </section>
+
+      {/* ── FAQs ── */}
+      <FAQSection faqs={cityPage.faqs} title={`Common questions about vet care near ${cityPage.city}`} />
+
+      {/* ── CTA ── */}
+      <CTASection
+        title={`Ready to schedule care near ${cityPage.city}?`}
+        body={`Call our ${locationLabel} team, request an appointment online, or complete new patient forms before your first visit.`}
+        primary={{ label: "Request an Appointment", href: "/book-appointment/" }}
+        secondary={{ label: "New Patient Information", href: "/new-patients/" }}
+      />
+
+      <JsonLd
+        data={[
+          webpageSchema(path, cityPage.seo.title, cityPage.seo.description),
+          cityPageVeterinaryCareSchema({
+            locationName: cityPage.nearest.location,
+            address: cityPage.nearest.address,
+            tel: cityPage.nearest.tel,
+            phone: cityPage.nearest.phone,
+            path,
+            city: cityPage.city,
+            state: cityPage.state
+          }),
+          breadcrumbSchema(crumbs),
+          faqSchema(cityPage.faqs)
+        ]}
+      />
+    </>
+  );
+}
+
 export default async function LocationPage({ params }: Params) {
   const { slug } = await params;
   const location = getLocation(slug);
-  if (!location) notFound();
+  if (!location) {
+    const cityPage = getCityPage(slug);
+    if (!cityPage) notFound();
+    return <CityPageView cityPage={cityPage} />;
+  }
 
   const ottoClinicId = OTTO_CLINIC_IDS[location.slug];
   const [settings, resourcePosts] = await Promise.all([getPublicSettings(), getBlogPosts(8)]);
