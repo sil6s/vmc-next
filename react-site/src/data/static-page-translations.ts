@@ -115,7 +115,41 @@ const common: Record<TranslatedLocale, TranslationDictionary> = {
     "Fort Thomas, KY · Independence, KY": "Fort Thomas, Kentucky · Independence, Kentucky",
     "Call for current hours": "Llame para conocer el horario actual",
     "Reference": "Referencia",
-    "Helpful note": "Nota útil"
+    "Helpful note": "Nota útil",
+    "Client Reviews": "Reseñas de clientes",
+    "What our community says.": "Lo que dice nuestra comunidad.",
+    "4.8 average rating": "Calificación promedio de 4.8",
+    "Google reviews from Fort Thomas and Independence pet families": "Reseñas de Google de familias de Fort Thomas e Independence",
+    "Dr. Baker and her associates are amazing. They treat your pets like family and take the time to answer every question without rushing.":
+      "La Dra. Baker y sus asociados son increíbles. Tratan a sus mascotas como familia y se toman el tiempo para responder cada pregunta sin apresurarse.",
+    "From the moment we walked in, everything felt calm and thoughtful. The team took time to help my cat feel comfortable.":
+      "Desde el momento en que entramos, todo se sentía tranquilo y considerado. El equipo se tomó el tiempo para ayudar a que mi gato se sintiera cómodo.",
+    "The staff is gentle, kind, and professional. They explained pricing upfront and followed up the next day to check on my pet.":
+      "El personal es amable, gentil y profesional. Explicaron los precios de antemano y llamaron al día siguiente para saber cómo estaba mi mascota.",
+    "Our first visit could not have gone better. Everyone was kind, patient, and made sure our pet felt comfortable.":
+      "Nuestra primera visita no pudo haber salido mejor. Todos fueron amables, pacientes y se aseguraron de que nuestra mascota se sintiera cómoda.",
+    "Better care starts with listening carefully, explaining clearly, and knowing the pet and family in front of us.":
+      "Una mejor atención comienza con escuchar con atención, explicar con claridad y conocer a la mascota y la familia frente a nosotros.",
+    "Care team, RVTs, and client support": "Equipo de atención, técnicos veterinarios y apoyo al cliente",
+    "Office leadership, registered veterinary technicians, assistants, and client service team members help make each visit organized, calmer, and easier to understand.":
+      "El liderazgo de la clínica, los técnicos veterinarios registrados, los asistentes y el equipo de atención al cliente ayudan a que cada visita sea organizada, más tranquila y fácil de entender.",
+    "Personal care looks like:": "La atención personalizada se ve así:",
+    "Familiar faces": "Rostros familiares",
+    "Comfort-focused visits": "Visitas enfocadas en la comodidad",
+    "VMC is led locally, so decisions are made close to the pets, clients, and communities the team serves.":
+      "VMC es dirigida localmente, por lo que las decisiones se toman cerca de las mascotas, los clientes y las comunidades a las que sirve el equipo.",
+    "Familiar faces help your pet's history, preferences, and long-term health needs stay connected from visit to visit.":
+      "Los rostros familiares ayudan a que el historial, las preferencias y las necesidades de salud a largo plazo de su mascota se mantengan conectados de visita en visita.",
+    "The team uses a Fear Free mindset where possible, with thoughtful pacing and handling that respects each pet.":
+      "El equipo utiliza una mentalidad Fear Free cuando es posible, con un ritmo y manejo cuidadosos que respetan a cada mascota.",
+    "Dogs and cats can receive wellness care, sick visits, dental care, surgery, senior support, and ongoing guidance.":
+      "Los perros y gatos pueden recibir atención de bienestar, visitas por enfermedad, atención dental, cirugía, apoyo para mascotas mayores y orientación continua.",
+    "Recommendations are explained in practical language so families understand what matters now and what comes next.":
+      "Las recomendaciones se explican en lenguaje práctico para que las familias entiendan qué importa ahora y qué viene después.",
+    "With clinics in Fort Thomas and Independence, VMC supports pet owners across Northern Kentucky and Greater Cincinnati.":
+      "Con clínicas en Fort Thomas e Independence, VMC apoya a los dueños de mascotas en todo el norte de Kentucky y el área metropolitana de Cincinnati.",
+    "VMC resources": "Recursos de VMC",
+    "Trusted pet care resources": "Recursos confiables de cuidado de mascotas"
     ,
     "From routine wellness exams and vaccines to dental care, diagnostics, surgery, and sick visits, Veterinary Medical Centers of Northern Kentucky provides relationship-based care for pets across Fort Thomas, Independence, and nearby NKY communities.":
       "Desde exámenes de bienestar y vacunas hasta atención dental, diagnóstico, cirugía y visitas por enfermedad, Veterinary Medical Centers of Northern Kentucky ofrece atención basada en relaciones para mascotas de Fort Thomas, Independence y comunidades cercanas.",
@@ -179,7 +213,29 @@ const common: Record<TranslatedLocale, TranslationDictionary> = {
     "What to Expect": "À quoi s’attendre", "Preparation": "Préparation", "Questions to Ask": "Questions à poser", "Helpful Reference": "Référence utile",
     "Local Care": "Soins locaux", "Trusted Education Sources": "Sources éducatives fiables", "Book this service": "Réserver ce service",
     "Locations": "Établissements", "Appointment type": "Type de rendez-vous", "Read resource": "Lire la ressource", "New patients welcome": "Nouveaux patients bienvenus",
-    "Locally owned": "Détenu localement", "Dogs & cats": "Chiens et chats"
+    "Locally owned": "Détenu localement", "Dogs & cats": "Chiens et chats",
+    "Client Reviews": "Avis clients",
+    "What our community says.": "Ce que dit notre communauté.",
+    "4.8 average rating": "Note moyenne de 4,8",
+    "Google reviews from Fort Thomas and Independence pet families": "Avis Google de familles d'animaux de Fort Thomas et Independence",
+    "Dr. Baker and her associates are amazing. They treat your pets like family and take the time to answer every question without rushing.":
+      "Dr. Baker et ses associés sont formidables. Ils traitent vos animaux comme des membres de la famille et prennent le temps de répondre à toutes les questions sans précipitation.",
+    "From the moment we walked in, everything felt calm and thoughtful. The team took time to help my cat feel comfortable.":
+      "Dès notre entrée, tout semblait calme et attentionné. L'équipe a pris le temps d'aider mon chat à se sentir à l'aise.",
+    "The staff is gentle, kind, and professional. They explained pricing upfront and followed up the next day to check on my pet.":
+      "Le personnel est doux, aimable et professionnel. Ils ont expliqué les tarifs dès le début et ont fait un suivi le lendemain pour prendre des nouvelles de mon animal.",
+    "Our first visit could not have gone better. Everyone was kind, patient, and made sure our pet felt comfortable.":
+      "Notre première visite ne pouvait pas mieux se passer. Tout le monde était aimable, patient et s'assurait que notre animal se sente à l'aise.",
+    "Better care starts with listening carefully, explaining clearly, and knowing the pet and family in front of us.":
+      "Des soins de meilleure qualité commencent par une écoute attentive, des explications claires et la connaissance de l'animal et de la famille devant nous.",
+    "Care team, RVTs, and client support": "Équipe de soins, techniciens vétérinaires et service client",
+    "Office leadership, registered veterinary technicians, assistants, and client service team members help make each visit organized, calmer, and easier to understand.":
+      "La direction, les techniciens vétérinaires agréés, les assistants et l'équipe de service client contribuent à rendre chaque visite organisée, plus calme et plus facile à comprendre.",
+    "Personal care looks like:": "Des soins personnalisés, cela ressemble à :",
+    "Familiar faces": "Des visages familiers",
+    "Comfort-focused visits": "Des visites axées sur le confort",
+    "VMC resources": "Ressources VMC",
+    "Trusted pet care resources": "Ressources fiables de soins pour animaux"
   },
   hi: {
     "Home": "होम", "About": "हमारे बारे में", "Services": "सेवाएँ", "New Patients": "नए मरीज़",
@@ -192,7 +248,29 @@ const common: Record<TranslatedLocale, TranslationDictionary> = {
     "What to Expect": "क्या अपेक्षा करें", "Preparation": "तैयारी", "Questions to Ask": "पूछने योग्य प्रश्न", "Helpful Reference": "उपयोगी संदर्भ",
     "Local Care": "स्थानीय देखभाल", "Trusted Education Sources": "विश्वसनीय शैक्षिक स्रोत", "Book this service": "यह सेवा बुक करें",
     "Locations": "स्थान", "Appointment type": "अपॉइंटमेंट का प्रकार", "Read resource": "संसाधन पढ़ें", "New patients welcome": "नए मरीज़ों का स्वागत है",
-    "Locally owned": "स्थानीय स्वामित्व", "Dogs & cats": "कुत्ते और बिल्लियाँ"
+    "Locally owned": "स्थानीय स्वामित्व", "Dogs & cats": "कुत्ते और बिल्लियाँ",
+    "Client Reviews": "ग्राहक समीक्षाएँ",
+    "What our community says.": "हमारा समुदाय क्या कहता है।",
+    "4.8 average rating": "4.8 औसत रेटिंग",
+    "Google reviews from Fort Thomas and Independence pet families": "Fort Thomas और Independence के पालतू पशु परिवारों की Google समीक्षाएँ",
+    "Dr. Baker and her associates are amazing. They treat your pets like family and take the time to answer every question without rushing.":
+      "डॉ. बेकर और उनके सहयोगी बेहतरीन हैं। वे आपके पालतू पशुओं के साथ परिवार जैसा व्यवहार करते हैं और बिना जल्दबाजी के हर सवाल का जवाब देते हैं।",
+    "From the moment we walked in, everything felt calm and thoughtful. The team took time to help my cat feel comfortable.":
+      "जैसे ही हम अंदर गए, सब कुछ शांत और सोच-समझकर लग रहा था। टीम ने मेरी बिल्ली को आरामदायक महसूस कराने के लिए समय लिया।",
+    "The staff is gentle, kind, and professional. They explained pricing upfront and followed up the next day to check on my pet.":
+      "कर्मचारी कोमल, दयालु और पेशेवर हैं। उन्होंने पहले से कीमतें बताईं और अगले दिन मेरे पालतू पशु का हाल जानने के लिए फॉलो-अप किया।",
+    "Our first visit could not have gone better. Everyone was kind, patient, and made sure our pet felt comfortable.":
+      "हमारी पहली मुलाकात इससे बेहतर नहीं हो सकती थी। सभी दयालु, धैर्यवान थे और उन्होंने सुनिश्चित किया कि हमारा पालतू पशु आरामदायक महसूस करे।",
+    "Better care starts with listening carefully, explaining clearly, and knowing the pet and family in front of us.":
+      "बेहतर देखभाल ध्यान से सुनने, स्पष्ट रूप से समझाने और सामने मौजूद पालतू पशु और परिवार को जानने से शुरू होती है।",
+    "Care team, RVTs, and client support": "देखभाल टीम, पंजीकृत पशु चिकित्सा तकनीशियन और ग्राहक सहायता",
+    "Office leadership, registered veterinary technicians, assistants, and client service team members help make each visit organized, calmer, and easier to understand.":
+      "क्लिनिक नेतृत्व, पंजीकृत पशु चिकित्सा तकनीशियन, सहायक और ग्राहक सेवा टीम के सदस्य हर मुलाकात को व्यवस्थित, शांत और समझने में आसान बनाते हैं।",
+    "Personal care looks like:": "व्यक्तिगत देखभाल इस प्रकार दिखती है:",
+    "Familiar faces": "परिचित चेहरे",
+    "Comfort-focused visits": "आरामदायक मुलाकातें",
+    "VMC resources": "VMC संसाधन",
+    "Trusted pet care resources": "विश्वसनीय पालतू पशु देखभाल संसाधन"
   },
   zh: {
     "Home": "首页", "About": "关于我们", "Services": "服务", "New Patients": "新患者",
@@ -205,7 +283,29 @@ const common: Record<TranslatedLocale, TranslationDictionary> = {
     "What to Expect": "就诊流程", "Preparation": "准备事项", "Questions to Ask": "可咨询的问题", "Helpful Reference": "实用参考",
     "Local Care": "本地护理", "Trusted Education Sources": "可信教育来源", "Book this service": "预约此服务",
     "Locations": "诊所地点", "Appointment type": "预约类型", "Read resource": "阅读资源", "New patients welcome": "欢迎新患者",
-    "Locally owned": "本地经营", "Dogs & cats": "猫狗"
+    "Locally owned": "本地经营", "Dogs & cats": "猫狗",
+    "Client Reviews": "客户评价",
+    "What our community says.": "我们社区怎么说。",
+    "4.8 average rating": "平均评分 4.8",
+    "Google reviews from Fort Thomas and Independence pet families": "来自 Fort Thomas 和 Independence 宠物家庭的 Google 评价",
+    "Dr. Baker and her associates are amazing. They treat your pets like family and take the time to answer every question without rushing.":
+      "Baker 医生和她的同事们非常出色。他们把您的宠物当作家人对待，耐心回答每一个问题，从不催促。",
+    "From the moment we walked in, everything felt calm and thoughtful. The team took time to help my cat feel comfortable.":
+      "从我们走进门的那一刻起，一切都感觉平静而体贴。团队花时间帮助我的猫感到舒适。",
+    "The staff is gentle, kind, and professional. They explained pricing upfront and followed up the next day to check on my pet.":
+      "工作人员温和、友善且专业。他们提前说明了费用，并在第二天跟进了解我宠物的情况。",
+    "Our first visit could not have gone better. Everyone was kind, patient, and made sure our pet felt comfortable.":
+      "我们的第一次就诊非常顺利。每个人都很友善、耐心，并确保我们的宠物感到舒适。",
+    "Better care starts with listening carefully, explaining clearly, and knowing the pet and family in front of us.":
+      "更好的护理始于认真倾听、清晰解释，以及了解眼前的宠物和家庭。",
+    "Care team, RVTs, and client support": "护理团队、注册兽医技术员和客户支持",
+    "Office leadership, registered veterinary technicians, assistants, and client service team members help make each visit organized, calmer, and easier to understand.":
+      "诊所管理层、注册兽医技术员、助理和客户服务团队共同确保每次就诊有序、平静且易于理解。",
+    "Personal care looks like:": "个性化护理是这样的：",
+    "Familiar faces": "熟悉的面孔",
+    "Comfort-focused visits": "注重舒适的就诊体验",
+    "VMC resources": "VMC 资源",
+    "Trusted pet care resources": "可信赖的宠物护理资源"
   }
 };
 
