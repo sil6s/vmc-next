@@ -1,13 +1,12 @@
 "use client";
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { Languages } from "lucide-react";
 import { isLocalizedStaticPath, localeNames, locales, stripLocale, type Locale } from "@/lib/i18n";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 export function LanguageSelector({ locale, label, compact = false }: { locale: Locale; label: string; compact?: boolean }) {
   const pathname = usePathname();
-  const router = useRouter();
   const searchParams = useSearchParams();
 
   function changeLocale(nextLocale: Locale) {
@@ -15,7 +14,7 @@ export function LanguageSelector({ locale, label, compact = false }: { locale: L
     const localizedBasePath = isLocalizedStaticPath(basePath) ? basePath : "/";
     const nextPath = nextLocale === "en" ? localizedBasePath : localizedBasePath === "/" ? `/${nextLocale}/` : `/${nextLocale}${localizedBasePath}`;
     const query = searchParams.toString();
-    router.push(query ? `${nextPath}?${query}` : nextPath);
+    window.location.href = query ? `${nextPath}?${query}` : nextPath;
   }
 
   return (
