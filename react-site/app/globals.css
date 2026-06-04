@@ -4771,17 +4771,18 @@ textarea {
   color: rgba(255, 255, 255, 0.72);
 }
 
-.footer-logo .logo-main,
-.footer-logo .logo-sub {
+.footer-logo-text {
+  display: block;
   color: var(--white);
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(18px, 2vw, 22px);
+  font-weight: 700;
+  text-decoration: none;
+  margin-bottom: 8px;
 }
 
-.footer-logo .logo-txt {
-  width: clamp(260px, 22vw, 330px);
-}
-
-.footer-logo .logo-animal {
-  color: rgba(255, 255, 255, 0.62);
+.footer-logo-text:hover {
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .newsletter-form {

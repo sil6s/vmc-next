@@ -6,7 +6,6 @@ import { NewsletterForm } from "@/components/forms/NewsletterForm";
 import type { PublicLocation } from "@/lib/settings/public";
 import { getMessages, localizedHref, type Locale } from "@/lib/i18n";
 import { LanguageSelector } from "./LanguageSelector";
-import { Logo } from "./Logo";
 
 type FooterLocation = Pick<PublicLocation, "id" | "name" | "address" | "phone" | "tel">;
 
@@ -69,7 +68,7 @@ export function Footer({
 
       <div className="footer-grid">
         <div>
-          <Logo className="footer-logo" href={localizedHref("/", locale)} />
+          <Link href={localizedHref("/", locale)} className="footer-logo-text">Veterinary Medical Centers</Link>
           <p>{site.tagline}</p>
           <p>{copy.localCare}</p>
           <LanguageSelector locale={locale} label={copy.language} compact />

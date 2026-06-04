@@ -45,15 +45,11 @@ function AboutLocationsDropdown({ locale }: { locale: Locale }) {
                 <span>Fort Thomas &amp; Independence</span>
               </Link>
             </NavigationMenuLink>
-          </div>
-          <p className="nav-dropdown-label" aria-hidden="true">{copy.findClinic}</p>
-          <div className="nav-dropdown-clinics">
             {locationPages.map((location) => (
               <NavigationMenuLink asChild key={location.slug}>
-                <Link href={`/locations/${location.slug}/`} className="nav-dropdown-clinic-card">
+                <Link href={`/locations/${location.slug}/`}>
                   <strong>{location.shortName}</strong>
                   <span>{location.address.split(",")[0]}</span>
-                  <small>{location.phone}</small>
                 </Link>
               </NavigationMenuLink>
             ))}
