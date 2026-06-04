@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, Award, BookOpenText, Car, CheckCircle, Clock, ExternalLink, HeartPulse, MapPin, Navigation, Phone, ShieldCheck, Sparkles, Star, Stethoscope } from "lucide-react";
+import { ArrowRight, Award, BookOpenText, Car, CheckCircle, Clock, ExternalLink, HeartPulse, MapPin, Navigation, Phone, ShieldCheck, Sparkles, Star, Stethoscope, PawPrint } from "lucide-react";
 import { Breadcrumbs } from "@/components/sections/Breadcrumbs";
 import { CTASection } from "@/components/sections/CTASection";
 import { FAQSection } from "@/components/sections/FAQSection";
@@ -93,6 +93,11 @@ const googleReviewUrls: Record<string, string> = {
   Independence: "https://www.google.com/search?q=Veterinary+Medical+Centers+Independence+KY+reviews"
 };
 
+const heroImages: Record<string, string> = {
+  "Fort Thomas": "/images/fort-thomas-clinic.jpg",
+  Independence: "/images/independence-clinic.jpg"
+};
+
 async function CityPageView({ cityPage }: { cityPage: CityPage }) {
   const services = citySeoServiceSlugs
     .map((s) => serviceHubServices.find((svc) => svc.slug === s))
@@ -110,121 +115,129 @@ async function CityPageView({ cityPage }: { cityPage: CityPage }) {
     ? "https://g.page/r/VMCIndependence/review"
     : "https://g.page/r/VMCFortThomas/review";
 
-  const isPrimaryLocation = cityPage.pageType === "primary_location";
-  const locationLabel = cityPage.nearest.location === "Independence"
-    ? "Independence"
-    : "Fort Thomas";
+  const locationLabel = cityPage.nearest.location === "Independence" ? "Independence" : "Fort Thomas";
+  const heroImage = heroImages[cityPage.nearest.location] ?? "/images/northern-kentucky-vet-hero.jpg";
+  const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cityPage.nearest.address)}`;
 
   return (
     <>
       {/* ── Hero ── */}
-      <section className="city-seo-hero">
+      <section className="location-hero">
         <Container>
-          <div className="city-seo-hero-inner">
-            <div className="city-seo-hero-copy">
-              <p className="eyebrow">Veterinary Medical Centers — Northern Kentucky</p>
+          <div className="location-hero-grid">
+            <div className="location-hero-copy">
+              <p className="eyebrow">Veterinary Medical Centers</p>
               <h1>{cityPage.h1}</h1>
-              <p className="city-seo-hero-intro">{cityPage.introParagraph}</p>
+              <p>{cityPage.introParagraph}</p>
               <div className="hero-actions">
                 <Button href="/book-appointment/">Request an Appointment</Button>
                 <Button href={`tel:${cityPage.nearest.tel}`} variant="ghost">
                   Call {locationLabel}
                 </Button>
               </div>
-            </div>
-            <aside className="city-seo-location-card">
-              <p className="eyebrow">Closest VMC location</p>
-              <strong>Veterinary Medical Centers of {locationLabel}</strong>
-              <address>
-                <MapPin aria-hidden="true" size={15} />
-                {cityPage.nearest.address}
-              </address>
-              <a href={`tel:${cityPage.nearest.tel}`}>
-                <Phone aria-hidden="true" size={15} />
-                {cityPage.nearest.phone}
-              </a>
-              {!isPrimaryLocation && (
-                <p className="city-seo-distance">
-                  About {cityPage.nearest.miles} miles away
-                </p>
-              )}
-              <div className="city-seo-card-actions">
-                <Button href="/book-appointment/">Book Appointment</Button>
-                <Button
-                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cityPage.nearest.address)}`}
-                  variant="ghost"
-                >
-                  Get Directions
-                </Button>
+              <div className="location-chip-row">
+                <span>Dogs &amp; cats</span>
+                <span>Locally owned</span>
+                <span>New patients welcome</span>
+                {cityPage.nearest.miles > 0 && <span>~{cityPage.nearest.miles} mi away</span>}
               </div>
-            </aside>
+            </div>
+            <div className="location-hero-media">
+              <Image
+                src={heroImage}
+                alt={`Veterinary Medical Centers — serving ${cityPage.city}, ${cityPage.state}`}
+                width={1100}
+                height={740}
+                sizes="(max-width: 900px) 100vw, 48vw"
+                priority
+              />
+              <div className="location-hero-card">
+                <strong>VMC {locationLabel}</strong>
+                <span>{cityPage.nearest.address}</span>
+                <a href={`tel:${cityPage.nearest.tel}`}>{cityPage.nearest.phone}</a>
+                {cityPage.nearest.miles > 0 && <small>About {cityPage.nearest.miles} miles away</small>}
+              </div>
+            </div>
           </div>
         </Container>
       </section>
 
       <Breadcrumbs items={crumbs.map((c) => ({ label: c.name, href: c.path }))} />
 
-      {/* ── Vet Care Near City ── */}
-      <section className="city-seo-section city-seo-section-white">
+      {/* ── Vet care near city ── */}
+      <section className="location-section location-section-white">
         <Container>
-          <div className="city-seo-content-block">
+          <div className="location-about">
+            <p className="eyebrow">Veterinary Care Near {cityPage.city}</p>
             <h2>{cityPage.vetCareSection.heading}</h2>
             <p>{cityPage.vetCareSection.body}</p>
+            <div className="hero-actions" style={{ marginTop: "24px" }}>
+              <Button href="/book-appointment/">Request an Appointment</Button>
+              <Button href={`tel:${cityPage.nearest.tel}`} variant="ghost">Call {locationLabel}</Button>
+            </div>
           </div>
         </Container>
       </section>
 
-      {/* ── Cincinnati angle (when applicable) ── */}
+      {/* ── Cincinnati angle ── */}
       {cityPage.cincinnatAngle && (
-        <section className="city-seo-section city-seo-section-cream">
+        <section className="location-section location-section-cream">
           <Container>
-            <div className="city-seo-cincinnati-bar">
-              <Navigation aria-hidden="true" size={20} />
-              <div>
-                <strong>Easier access than downtown Cincinnati</strong>
+            <div className="location-cincinnati-cta">
+              <div className="location-cincinnati-copy">
+                <p className="eyebrow">Easier Than Downtown Cincinnati</p>
+                <h2>A Northern Kentucky option just across the river</h2>
                 <p>{cityPage.cincinnatAngle}</p>
+                <div className="location-cincinnati-tip">
+                  <Navigation aria-hidden="true" size={16} />
+                  <span>I-471 North → Exit 5 (Memorial Parkway) → on-site parking</span>
+                </div>
+                <div className="hero-actions">
+                  <Button href="/book-appointment/">Book an Appointment</Button>
+                  <Button href={mapsUrl} variant="ghost">Get Directions</Button>
+                </div>
               </div>
-              <div className="city-seo-cincinnati-pills">
-                <span><CheckCircle aria-hidden="true" size={14} /> On-site parking</span>
-                <span><CheckCircle aria-hidden="true" size={14} /> Off I-471 North, Exit 5</span>
-                <span><CheckCircle aria-hidden="true" size={14} /> Locally owned</span>
-              </div>
+              <aside className="location-cincinnati-card">
+                <Sparkles aria-hidden="true" size={24} />
+                <h3>Why Fort Thomas?</h3>
+                <ul>
+                  <li><CheckCircle aria-hidden="true" size={15} /> On-site parking — no meters</li>
+                  <li><CheckCircle aria-hidden="true" size={15} /> ~10 minutes from downtown Cincinnati</li>
+                  <li><CheckCircle aria-hidden="true" size={15} /> Off I-471 N, Exit 5 — easy in and out</li>
+                  <li><CheckCircle aria-hidden="true" size={15} /> Locally owned, not a corporate chain</li>
+                  <li><CheckCircle aria-hidden="true" size={15} /> Dogs and cats of all ages welcome</li>
+                </ul>
+              </aside>
             </div>
           </Container>
         </section>
       )}
 
       {/* ── Services ── */}
-      <section className="city-seo-section city-seo-section-white">
+      <section className="location-section location-section-white">
         <Container>
-          <div className="city-seo-section-head">
+          <div className="location-section-head">
             <p className="eyebrow">Veterinary Services</p>
             <h2>Dog and cat services available near {cityPage.city}</h2>
-            <p>
-              Full-service care for dogs and cats — from wellness visits and vaccines to dental care, diagnostics, surgery, and senior pet support.
-            </p>
+            <p>Full-service care for dogs and cats — from wellness visits and vaccines to dental care, diagnostics, surgery, and senior pet support.</p>
           </div>
-          <div className="city-seo-service-grid">
+          <div className="location-service-grid">
             {services.map((service) => (
-              <article className="city-seo-service-card" key={service.slug}>
-                <Stethoscope aria-hidden="true" size={18} />
-                <h3>
-                  <Link href={`/services/${service.slug}/`}>{service.title}</Link>
-                </h3>
+              <article className="location-service-card" key={service.slug}>
+                <Stethoscope aria-hidden="true" size={20} />
+                <h3>{service.title}</h3>
                 <p>{service.shortDescription}</p>
+                <Link href={`/services/${service.slug}/`}>{service.cta}</Link>
               </article>
             ))}
           </div>
-          <p className="city-seo-service-footer">
-            <Link href="/services/">Browse all veterinary services →</Link>
-          </p>
         </Container>
       </section>
 
       {/* ── Local context ── */}
-      <section className="city-seo-section city-seo-section-cream">
+      <section className="location-section location-section-cream">
         <Container>
-          <div className="city-seo-content-block">
+          <div className="location-about">
             <p className="eyebrow">Local Care</p>
             <h2>{cityPage.localSection.heading}</h2>
             <p>{cityPage.localSection.body}</p>
@@ -233,21 +246,21 @@ async function CityPageView({ cityPage }: { cityPage: CityPage }) {
       </section>
 
       {/* ── Why VMC ── */}
-      <section className="city-seo-section city-seo-section-white">
+      <section className="location-section location-section-white">
         <Container>
-          <div className="city-seo-section-head">
+          <div className="location-section-head">
             <p className="eyebrow">Why VMC</p>
             <h2>Why pet owners near {cityPage.city} choose Veterinary Medical Centers</h2>
           </div>
-          <ul className="city-seo-why-list">
+          <div className="location-card-grid">
             {cityPage.whyChoosePoints.map((point) => (
-              <li key={point}>
-                <CheckCircle aria-hidden="true" size={18} />
-                <span>{point}</span>
-              </li>
+              <article className="location-benefit-card" key={point}>
+                <PawPrint aria-hidden="true" size={22} />
+                <h3>{point}</h3>
+              </article>
             ))}
-          </ul>
-          <div className="city-seo-why-footer hero-actions">
+          </div>
+          <div className="hero-actions location-timeline-actions">
             <Button href="/book-appointment/">Request an Appointment</Button>
             <Button href="/new-patients/" variant="ghost">New Patient Information</Button>
           </div>
@@ -255,29 +268,28 @@ async function CityPageView({ cityPage }: { cityPage: CityPage }) {
       </section>
 
       {/* ── Pawstimonials ── */}
-      <section className="city-seo-section city-seo-section-cream">
+      <section className="location-section location-section-cream">
         <Container>
-          <div className="city-seo-section-head">
+          <div className="location-section-head">
             <p className="eyebrow">Pawstimonials</p>
             <h2>Pawstimonials from pets and their people</h2>
             <p>{cityPage.fallbackCopy}</p>
           </div>
-          <div className="city-seo-review-grid">
+          <div className="location-review-grid">
             {testimonials.slice(0, 3).map((review) => (
-              <article className="city-seo-review-card" key={review.name}>
-                <div className="city-seo-review-stars" role="img" aria-label="Five star rating">
-                  {[...Array(5)].map((_, i) => <Star key={i} aria-hidden="true" size={14} />)}
+              <article className="location-review-card" key={review.name}>
+                <div className="location-review-stars" role="img" aria-label="Five star rating">
+                  {[...Array(5)].map((_, i) => <Star key={i} aria-hidden="true" size={15} />)}
                 </div>
                 <p>{review.text}</p>
                 <footer>
                   <strong>{review.name}</strong>
                   <span>{review.location}</span>
-                  <span className="city-seo-review-source">Google review</span>
                 </footer>
               </article>
             ))}
           </div>
-          <div className="city-seo-review-actions hero-actions">
+          <div className="hero-actions location-timeline-actions">
             <a className="btn btn-ghost" href={reviewUrl} target="_blank" rel="noopener noreferrer">
               <ExternalLink aria-hidden="true" size={15} />
               Read Google Reviews
@@ -295,7 +307,7 @@ async function CityPageView({ cityPage }: { cityPage: CityPage }) {
       {/* ── CTA ── */}
       <CTASection
         title={`Ready to schedule care near ${cityPage.city}?`}
-        body={`Call our ${locationLabel} team, request an appointment online, or complete new patient forms before your first visit.`}
+        body={`Call our ${locationLabel} team, request an appointment online, or complete your new patient form before your first visit.`}
         primary={{ label: "Request an Appointment", href: "/book-appointment/" }}
         secondary={{ label: "New Patient Information", href: "/new-patients/" }}
       />
