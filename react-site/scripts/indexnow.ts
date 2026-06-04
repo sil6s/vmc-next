@@ -7,7 +7,7 @@
  */
 
 const HOST = "nky.vet";
-const KEY = "288124c529817df2a7ca15ed0969f5ac";
+const KEY = "a576050a2dea48e8a44acc53996fe7c1";
 const BASE = `https://${HOST}`;
 
 // ── Static service slugs ─────────────────────────────────────────────────────
@@ -97,25 +97,34 @@ async function submit() {
     urlList: urls
   };
 
-  // Submit to api.indexnow.org (automatically fans out to Bing, Yandex, etc.)
-  const res = await fetch("https://api.indexnow.org/indexnow", {
-    method: "POST",
-    headers: { "Content-Type": "application/json; charset=utf-8" },
-    body: JSON.stringify(body)
-  });
+  // Submit to all IndexNow-participating engines
+  const engines = [
+    "https://www.bing.com/indexnow",
+    "https://api.indexnow.org/indexnow",
+    "https://yandex.com/indexnow"
+  ];
 
-  console.log(`Response: ${res.status} ${res.statusText}`);
+  for (const endpoint of engines) {
+    const res = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json; charset=utf-8" },
+      body: JSON.stringify(body)
+    });
 
-  if (res.status === 200) {
-    console.log("✓ All URLs submitted successfully.");
-  } else if (res.status === 202) {
-    console.log("✓ URLs received — key validation pending (deploy the key file first).");
-  } else if (res.status === 403) {
-    console.log("✗ Key validation failed. Make sure the key file is live at:");
-    console.log(`  ${BASE}/${KEY}.txt`);
-  } else {
-    const text = await res.text().catch(() => "");
-    console.log("Response body:", text);
+    const label = endpoint.includes("bing") ? "Bing" : "api.indexnow.org";
+    console.log(`[${label}] ${res.status} ${res.statusText}`);
+
+    if (res.status === 200) {
+      console.log(`✓ [${label}] All URLs submitted successfully.`);
+    } else if (res.status === 202) {
+      console.log(`✓ [${label}] Accepted — key validation in progress.`);
+    } else if (res.status === 403) {
+      console.log(`✗ [${label}] Key validation failed.`);
+      console.log(`  Key file must be live at: ${BASE}/${KEY}.txt`);
+    } else {
+      const text = await res.text().catch(() => "");
+      if (text) console.log(`  Body: ${text}`);
+    }
   }
 }
 
