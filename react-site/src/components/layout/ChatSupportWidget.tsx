@@ -28,8 +28,8 @@ const TOOLTIP_DISMISSED_KEY = "vmc_chat_tooltip_dismissed";
 const PANEL_ID = "vmc-chat-support-panel";
 
 const OTTO_CLINICS: Record<LocationKey, string> = {
-  fortThomas: process.env.NEXT_PUBLIC_OTTO_FORT_THOMAS_CLINIC_ID || "REPLACE_WITH_FORT_THOMAS_CLINIC_ID",
-  independence: process.env.NEXT_PUBLIC_OTTO_INDEPENDENCE_CLINIC_ID || "REPLACE_WITH_INDEPENDENCE_CLINIC_ID"
+  fortThomas: process.env.NEXT_PUBLIC_OTTO_FORT_THOMAS_CLINIC_ID || "cmom0dckc0sgp6501aorlulzf",
+  independence: process.env.NEXT_PUBLIC_OTTO_INDEPENDENCE_CLINIC_ID || "cmom0koio0xsd65010qy8yam0"
 };
 
 const fallbackLocations = {
