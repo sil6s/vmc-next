@@ -1,12 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { CalendarDays, Mail, MapPin, MessageCircle, Phone, X } from "lucide-react";
+import type { CSSProperties } from "react";
+import { ArrowRight, CalendarDays, FileText, MapPin, MessageCircle, PawPrint, Pill, Video, X } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
 import type { PublicLocation } from "@/lib/settings/public";
 
 type LocationKey = "fortThomas" | "independence";
-type RequestType = "TalkToStaff" | "RequestAppointment";
+type RequestType = "TalkToStaff" | "RequestAppointment" | "RequestRxRefill" | "RequestMedicalRecords" | "RequestVirtualConsult";
 
 type OttoWidget = {
   initialize?: (clinicId: string, options?: Record<string, unknown>) => void;
@@ -24,7 +25,6 @@ declare global {
 }
 
 const SELECTED_LOCATION_KEY = "vmc_chat_selected_location";
-const TOOLTIP_DISMISSED_KEY = "vmc_chat_tooltip_dismissed";
 const PANEL_ID = "vmc-chat-support-panel";
 
 const OTTO_CLINICS: Record<LocationKey, string> = {
@@ -35,36 +35,54 @@ const OTTO_CLINICS: Record<LocationKey, string> = {
 const fallbackLocations = {
   fortThomas: {
     name: "Fort Thomas",
-    description: "For clients visiting our Fort Thomas location.",
+    description: "For Memorial Parkway appointments, refills, records, and care-team messages.",
     phone: "(859) 442-4420",
     tel: "+18594424420",
     email: "information@nky.vet"
   },
   independence: {
     name: "Independence",
-    description: "For clients visiting our Independence location.",
+    description: "For Madison Pike appointments, refills, records, and care-team messages.",
     phone: "(859) 356-2242",
     tel: "+18593562242",
     email: "information@nky.vet"
   }
 } satisfies Record<LocationKey, { name: string; description: string; phone: string; tel: string; email: string }>;
 
+const helpActions = [
+  {
+    label: "Book an appointment",
+    requestType: "RequestAppointment",
+    icon: CalendarDays
+  },
+  {
+    label: "Request med & food refill",
+    requestType: "RequestRxRefill",
+    icon: Pill
+  },
+  {
+    label: "Request medical records",
+    requestType: "RequestMedicalRecords",
+    icon: FileText
+  },
+  {
+    label: "Request virtual consultation",
+    requestType: "RequestVirtualConsult",
+    icon: Video
+  }
+] satisfies { label: string; requestType: RequestType; icon: typeof CalendarDays }[];
+
 function isLocationKey(value: string | null): value is LocationKey {
   return value === "fortThomas" || value === "independence";
 }
 
 export function ChatSupportWidget({
-  locations,
-  appointmentHref = "/contact/"
+  locations
 }: {
   locations?: PublicLocation[];
   appointmentHref?: string;
 }) {
   const [expanded, setExpanded] = useState(false);
-  const [tooltipVisible, setTooltipVisible] = useState(false);
-  const [tooltipDismissed, setTooltipDismissed] = useState(() =>
-    typeof window === "undefined" || window.sessionStorage.getItem(TOOLTIP_DISMISSED_KEY) === "true"
-  );
   const [isFooterVisible, setIsFooterVisible] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<LocationKey | null>(() => {
     if (typeof window === "undefined") return null;
@@ -74,6 +92,8 @@ export function ChatSupportWidget({
   const [isOttoReady, setIsOttoReady] = useState(false);
   const [isOpening, setIsOpening] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
+  const [helpLocation, setHelpLocation] = useState<LocationKey | null>(null);
+  const [isMobilePanel, setIsMobilePanel] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -104,9 +124,17 @@ export function ChatSupportWidget({
         window.clearInterval(interval);
       }
     };
-    checkOtto();
     const interval = window.setInterval(checkOtto, 400);
+    checkOtto();
     return () => window.clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 760px)");
+    const updateMobilePanel = () => setIsMobilePanel(mediaQuery.matches);
+    updateMobilePanel();
+    mediaQuery.addEventListener("change", updateMobilePanel);
+    return () => mediaQuery.removeEventListener("change", updateMobilePanel);
   }, []);
 
   useEffect(() => {
@@ -120,23 +148,6 @@ export function ChatSupportWidget({
     observer.observe(footer);
     return () => observer.disconnect();
   }, []);
-
-  const dismissTooltip = useCallback(() => {
-    setTooltipVisible(false);
-    setTooltipDismissed(true);
-    window.sessionStorage.setItem(TOOLTIP_DISMISSED_KEY, "true");
-  }, []);
-
-  useEffect(() => {
-    if (expanded || tooltipDismissed || isFooterVisible) return;
-
-    const showTimer = window.setTimeout(() => setTooltipVisible(true), 5000);
-    const hideTimer = window.setTimeout(dismissTooltip, 12500);
-    return () => {
-      window.clearTimeout(showTimer);
-      window.clearTimeout(hideTimer);
-    };
-  }, [dismissTooltip, expanded, isFooterVisible, tooltipDismissed]);
 
   useEffect(() => {
     if (!expanded) return;
@@ -160,10 +171,9 @@ export function ChatSupportWidget({
   }, [expanded]);
 
   const openPanel = useCallback(() => {
-    dismissTooltip();
     setStatusMessage("");
     setExpanded(true);
-  }, [dismissTooltip]);
+  }, []);
 
   useEffect(() => {
     window.addEventListener("vmc:open-chat-support", openPanel);
@@ -172,7 +182,16 @@ export function ChatSupportWidget({
 
   const closePanel = () => {
     setExpanded(false);
+    setHelpLocation(null);
     buttonRef.current?.focus();
+  };
+
+  const chooseLocation = (locationKey: LocationKey) => {
+    setSelectedLocation(locationKey);
+    setHelpLocation(locationKey);
+    setStatusMessage("");
+    window.localStorage.setItem(SELECTED_LOCATION_KEY, locationKey);
+    trackEvent("live_chat_opened", { location: locationKey, step: "location_selected" });
   };
 
   const openOttoForLocation = (locationKey: LocationKey, requestType: RequestType = "TalkToStaff") => {
@@ -189,36 +208,58 @@ export function ChatSupportWidget({
 
     setIsOpening(true);
     setExpanded(false);
+    setHelpLocation(null);
     try {
       window.otto.widget.destroy?.();
-      window.otto.widget.initialize?.(clinicId);
-      // initialize() is async — give the iframe time to load before opening
+      window.otto.widget.initialize?.(clinicId, {
+        isOpen: true,
+        showPreview: true,
+        selectRequestType: requestType
+      });
       window.setTimeout(() => {
+        window.otto?.widget?.selectRequestType?.(requestType);
         window.otto?.widget?.open?.();
         setIsOpening(false);
-      }, 800);
+      }, 700);
     } catch (error) {
       console.error("Failed to open Otto widget", error);
-      setStatusMessage("Live chat could not open. Please call or use the contact form.");
+      setExpanded(true);
+      setHelpLocation(locationKey);
+      setStatusMessage(`Otto could not open. You can call ${location.name} at ${location.phone}.`);
       setIsOpening(false);
     }
   };
 
-  const requestAppointment = () => {
-    trackEvent("book_appointment_click", { source: "chat_support_widget" });
-  };
+  const widgetStyle: CSSProperties | undefined = expanded
+    ? isMobilePanel
+      ? {
+          position: "fixed",
+          inset: 0,
+          right: 0,
+          bottom: 0,
+          width: "100vw",
+          justifyItems: "stretch",
+          alignItems: "stretch"
+        }
+      : { width: "min(620px, calc(100vw - 32px))" }
+    : undefined;
+
+  const panelStyle: CSSProperties = isMobilePanel
+    ? {
+        width: "100%",
+        minHeight: "100dvh",
+        maxHeight: "100dvh",
+        borderRadius: 0,
+        overflowY: "auto",
+        padding: "16px 16px calc(16px + env(safe-area-inset-bottom, 0px))"
+      }
+    : {
+        width: "100%",
+        maxHeight: "min(760px, calc(100dvh - 118px))"
+      };
 
   return (
-    <div className="chat-support-widget">
-      {tooltipVisible && !expanded && !isFooterVisible && (
-        <div className="chat-support-tooltip" role="status">
-          <button type="button" aria-label="Dismiss chat support tip" onClick={dismissTooltip}>
-            <X aria-hidden="true" size={13} />
-          </button>
-          Questions? Choose your location and we’ll point you to the right team.
-        </div>
-      )}
-
+    <div className="chat-support-widget" style={widgetStyle}>
       {expanded && (
         <div
           aria-describedby="vmc-chat-support-description"
@@ -227,79 +268,138 @@ export function ChatSupportWidget({
           id={PANEL_ID}
           ref={panelRef}
           role="dialog"
+          style={panelStyle}
         >
           <div className="chat-support-panel-head">
             <span>
               <MessageCircle aria-hidden="true" size={18} />
             </span>
             <div>
-              <h2 id="vmc-chat-support-title">How can we help?</h2>
-              <p id="vmc-chat-support-description">Choose a location or request help from our team.</p>
+              <h2 id="vmc-chat-support-title">{helpLocation ? `${locationMap[helpLocation].name} help center` : "What can we help with?"}</h2>
+              <p id="vmc-chat-support-description">
+                {helpLocation
+                  ? "Book appointments, request refills, or chat with our team."
+                  : "Select your clinic to book appointments, request refills, get records, and more."}
+              </p>
             </div>
             <button className="chat-support-close" type="button" aria-label="Close chat support panel" onClick={closePanel}>
               <X aria-hidden="true" size={18} />
             </button>
           </div>
 
-          <div className="chat-support-options" aria-label="Chat support options">
-            {(Object.keys(locationMap) as LocationKey[]).map((locationKey) => {
-              const location = locationMap[locationKey];
-              const isSelected = selectedLocation === locationKey;
-              return (
-                <article className={isSelected ? "is-selected" : undefined} key={locationKey}>
-                  <MapPin aria-hidden="true" size={18} />
-                  <div>
-                    <strong>{location.name}</strong>
-                    <small>{location.description}</small>
-                  </div>
-                  {isOttoReady ? (
-                    <button type="button" disabled={isOpening} onClick={() => openOttoForLocation(locationKey)}>
-                      Start live chat
+          {helpLocation ? (
+            <div className="chat-support-help-menu">
+              <div className="chat-support-location-toggle" aria-label="Switch clinic">
+                {(Object.keys(locationMap) as LocationKey[]).map((locationKey) => {
+                  const location = locationMap[locationKey];
+                  const isSelected = helpLocation === locationKey;
+
+                  return (
+                    <button
+                      key={locationKey}
+                      type="button"
+                      className={isSelected ? "is-selected" : undefined}
+                      disabled={isSelected}
+                      onClick={() => chooseLocation(locationKey)}
+                    >
+                      {location.name}
                     </button>
-                  ) : (
-                    <a href={`tel:${location.tel}`}>
-                      <Phone aria-hidden="true" size={14} />
-                      Call
-                    </a>
-                  )}
-                </article>
-              );
-            })}
-          </div>
+                  );
+                })}
+              </div>
 
-          <div className="chat-support-actions">
-            <a href={appointmentHref} onClick={requestAppointment}>
-              <CalendarDays aria-hidden="true" size={17} />
-              Request an appointment
-            </a>
-            <a href="/contact/#message-form" onClick={() => trackEvent("contact_form_started", { source: "chat_support_widget" })}>
-              <Mail aria-hidden="true" size={17} />
-              Message our team
-            </a>
-          </div>
+              <div className="chat-support-action-list" aria-label={`${locationMap[helpLocation].name} help options`}>
+                {helpActions.map((action) => {
+                  const Icon = action.icon;
 
-          <p className={isOttoReady ? "chat-support-availability is-ready" : "chat-support-availability"} aria-live="polite">
-            {isOttoReady ? "Live chat is available." : "Live chat is unavailable locally. Phone and contact options are ready."}
-          </p>
-          {statusMessage && <p className="chat-support-status" role="status">{statusMessage}</p>}
+                  return (
+                    <button
+                      key={action.requestType}
+                      type="button"
+                      disabled={isOpening}
+                      onClick={() => openOttoForLocation(helpLocation, action.requestType)}
+                    >
+                      <Icon aria-hidden="true" size={18} />
+                      <span>{action.label}</span>
+                      <ArrowRight aria-hidden="true" size={16} />
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="chat-support-contact-card">
+                <div>
+                  <strong>Need to talk to someone about your pet?</strong>
+                  <small>Open Otto for a general question or call {locationMap[helpLocation].phone} for urgent symptoms.</small>
+                </div>
+                <button type="button" disabled={isOpening} onClick={() => openOttoForLocation(helpLocation, "TalkToStaff")}>
+                  General inquiry
+                  <ArrowRight aria-hidden="true" size={15} />
+                </button>
+              </div>
+
+              {statusMessage && <p className="chat-support-status" role="status">{statusMessage}</p>}
+            </div>
+          ) : (
+            <>
+              <div className="chat-support-options" aria-label="Chat support options">
+                {(Object.keys(locationMap) as LocationKey[]).map((locationKey) => {
+                  const location = locationMap[locationKey];
+                  const isSelected = selectedLocation === locationKey;
+                  return (
+                    <article className={isSelected ? "is-selected" : undefined} key={locationKey}>
+                      <MapPin aria-hidden="true" size={18} />
+                      <div>
+                        <strong>{location.name}</strong>
+                        <small>{location.description}</small>
+                      </div>
+                      <button type="button" onClick={() => chooseLocation(locationKey)}>
+                        Open {location.name} help
+                        <ArrowRight aria-hidden="true" size={14} />
+                      </button>
+                    </article>
+                  );
+                })}
+              </div>
+
+              <p className={isOttoReady ? "chat-support-availability is-ready" : "chat-support-availability"} aria-live="polite">
+                {isOttoReady ? "Otto help is available." : "Otto is still loading. Phone options are ready if you need help now."}
+              </p>
+              {statusMessage && <p className="chat-support-status" role="status">{statusMessage}</p>}
+            </>
+          )}
         </div>
       )}
 
-      <button
-        aria-controls={PANEL_ID}
-        aria-expanded={expanded}
-        aria-label={expanded ? "Close chat support panel" : "Open chat support panel"}
-        className="chat-support-button"
-        ref={buttonRef}
-        type="button"
-        onClick={expanded ? closePanel : openPanel}
-      >
-        <MessageCircle aria-hidden="true" size={25} strokeWidth={2.4} />
-        <span>
-          <strong>Chat Support</strong>
-          <small>Need help?</small>
-        </span>
-      </button>
+      {!expanded && !isFooterVisible && (
+        <div className="chat-support-greeting" role="status">
+          <span className="chat-support-greeting-avatar">
+            <PawPrint aria-hidden="true" size={16} />
+          </span>
+          <span>
+            <strong>Veterinary Medical Centers</strong>
+            <small>Hi there! Need to book a visit, refill a prescription, or reach the care team? We&apos;re here to help.</small>
+          </span>
+        </div>
+      )}
+
+      {!expanded && (
+        <button
+          aria-controls={PANEL_ID}
+          aria-expanded={expanded}
+          aria-label="Open chat support panel"
+          className="chat-support-button"
+          ref={buttonRef}
+          type="button"
+          onClick={openPanel}
+        >
+          <MessageCircle aria-hidden="true" size={25} strokeWidth={2.4} />
+          <span>
+            <strong>Get help now</strong>
+            <small>Book, refill, message, or get records.</small>
+          </span>
+        </button>
+      )}
     </div>
   );
 }
