@@ -13153,6 +13153,15 @@ textarea {
   padding: 10px 12px;
 }
 
+/* Suppress Otto/Televet's own injected launcher — we drive their widget ourselves */
+body > iframe[src*="televet"],
+body > [class*="televet"][class*="launch"],
+body > [class*="otto"][class*="launch"],
+body > [id*="televet"][id*="launch"],
+body > [id*="otto"][id*="launch"] {
+  display: none !important;
+}
+
 .chat-support-widget {
   position: fixed;
   right: 24px;
@@ -13175,7 +13184,7 @@ textarea {
 
 .chat-support-greeting {
   display: grid;
-  grid-template-columns: 34px minmax(0, 1fr);
+  grid-template-columns: 38px minmax(0, 1fr);
   gap: 10px;
   align-items: start;
   width: min(380px, 100%);
@@ -13190,13 +13199,30 @@ textarea {
 }
 
 .chat-support-greeting-avatar {
-  display: grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
+  position: relative;
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+}
+
+.chat-support-greeting-avatar-img {
+  width: 38px;
+  height: 38px;
   border-radius: 999px;
-  background: var(--red);
-  color: var(--white);
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+
+.chat-support-greeting-avatar-dot {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 11px;
+  height: 11px;
+  border: 2px solid var(--white);
+  border-radius: 999px;
+  background: #3abf6e;
 }
 
 .chat-support-greeting strong,
@@ -13467,8 +13493,52 @@ textarea {
 }
 
 .chat-support-availability.is-ready {
-  background: rgba(31, 157, 85, 0.1);
-  color: #126338;
+  display: inline-flex;
+  align-self: start;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  background: #EAF3DE;
+  color: #27500A;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.chat-support-features {
+  border: 1px solid rgba(169, 27, 27, 0.1);
+  border-radius: 10px;
+  background: var(--white);
+  padding: 13px 14px;
+}
+
+.chat-support-features-heading {
+  margin-bottom: 10px;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.chat-support-features-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 12px;
+}
+
+.chat-support-features-grid span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--body);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.chat-support-features-grid svg {
+  flex-shrink: 0;
+  color: var(--red);
 }
 
 .chat-support-help-menu {
@@ -13519,13 +13589,13 @@ textarea {
   grid-template-columns: 34px minmax(0, 1fr) 18px;
   gap: 11px;
   align-items: center;
-  min-height: 54px;
+  min-height: 62px;
   border: 1px solid rgba(169, 27, 27, 0.12);
   border-radius: 9px;
   background: var(--white);
   color: var(--ink);
   cursor: pointer;
-  padding: 11px 13px;
+  padding: 12px 13px;
   font: inherit;
   text-align: left;
   transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
@@ -13543,9 +13613,22 @@ textarea {
 }
 
 .chat-support-action-list button span {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.chat-support-action-list button span strong {
   font-size: 14px;
   font-weight: 900;
   line-height: 1.2;
+}
+
+.chat-support-action-list button span small {
+  color: var(--body);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
 }
 
 .chat-support-contact-card {

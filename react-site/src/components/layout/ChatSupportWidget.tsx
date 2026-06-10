@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
-import { ArrowRight, CalendarDays, FileText, MapPin, MessageCircle, PawPrint, Pill, Video, X } from "lucide-react";
+import Image from "next/image";
+import { ArrowRight, CalendarDays, CheckCircle2, FileText, MessageCircle, Pill, Video, X } from "lucide-react";
 import { trackEvent } from "@/lib/analytics";
 import type { PublicLocation } from "@/lib/settings/public";
 
@@ -52,25 +53,29 @@ const fallbackLocations = {
 const helpActions = [
   {
     label: "Book an appointment",
+    description: "Find a time that works for you",
     requestType: "RequestAppointment",
     icon: CalendarDays
   },
   {
     label: "Request med & food refill",
+    description: "Prescriptions and diet food refills",
     requestType: "RequestRxRefill",
     icon: Pill
   },
   {
     label: "Request medical records",
+    description: "Get copies for you or another provider",
     requestType: "RequestMedicalRecords",
     icon: FileText
   },
   {
-    label: "Request virtual consultation",
+    label: "Request virtual consult",
+    description: "Video visit with our care team",
     requestType: "RequestVirtualConsult",
     icon: Video
   }
-] satisfies { label: string; requestType: RequestType; icon: typeof CalendarDays }[];
+] satisfies { label: string; description: string; requestType: RequestType; icon: typeof CalendarDays }[];
 
 function isLocationKey(value: string | null): value is LocationKey {
   return value === "fortThomas" || value === "independence";
@@ -92,10 +97,11 @@ export function ChatSupportWidget({
   const [isOttoReady, setIsOttoReady] = useState(false);
   const [isOpening, setIsOpening] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
-  const [helpLocation, setHelpLocation] = useState<LocationKey | null>(null);
+  const [helpLocation, setHelpLocation] = useState<LocationKey>("fortThomas");
   const [isMobilePanel, setIsMobilePanel] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const ottoObserverRef = useRef<MutationObserver | null>(null);
 
   const locationMap = useMemo(() => {
     const fortThomas = locations?.find((location) => location.id === "fort-thomas");
@@ -172,6 +178,10 @@ export function ChatSupportWidget({
 
   const openPanel = useCallback(() => {
     setStatusMessage("");
+    setHelpLocation((prev) => {
+      const saved = typeof window !== "undefined" ? window.localStorage.getItem(SELECTED_LOCATION_KEY) : null;
+      return isLocationKey(saved) ? saved : prev;
+    });
     setExpanded(true);
   }, []);
 
@@ -180,9 +190,10 @@ export function ChatSupportWidget({
     return () => window.removeEventListener("vmc:open-chat-support", openPanel);
   }, [openPanel]);
 
+  useEffect(() => () => ottoObserverRef.current?.disconnect(), []);
+
   const closePanel = () => {
     setExpanded(false);
-    setHelpLocation(null);
     buttonRef.current?.focus();
   };
 
@@ -208,24 +219,48 @@ export function ChatSupportWidget({
 
     setIsOpening(true);
     setExpanded(false);
-    setHelpLocation(null);
+
+    const destroyOtto = () => {
+      ottoObserverRef.current?.disconnect();
+      ottoObserverRef.current = null;
+      window.otto?.widget?.destroy?.();
+    };
+
     try {
-      window.otto.widget.destroy?.();
+      destroyOtto();
       window.otto.widget.initialize?.(clinicId, {
         isOpen: true,
-        showPreview: true,
-        selectRequestType: requestType
+        showPreview: false,
+        selectRequestType: requestType,
+        onClose: destroyOtto,
+        onMinimize: destroyOtto,
+        onDismiss: destroyOtto
       });
       window.setTimeout(() => {
         window.otto?.widget?.selectRequestType?.(requestType);
         window.otto?.widget?.open?.();
         setIsOpening(false);
+
+        // Fallback: if Otto doesn't fire onClose, watch for its launcher appearing
+        // as a new body-level child after the chat is fully rendered.
+        window.setTimeout(() => {
+          const knownEls = new Set(Array.from(document.body.children));
+          ottoObserverRef.current?.disconnect();
+          const observer = new MutationObserver(() => {
+            const hasNewEls = Array.from(document.body.children).some(el => !knownEls.has(el));
+            if (hasNewEls) {
+              destroyOtto();
+            }
+          });
+          observer.observe(document.body, { childList: true });
+          ottoObserverRef.current = observer;
+        }, 1500);
       }, 700);
     } catch (error) {
-      console.error("Failed to open Otto widget", error);
+      console.error("Failed to open chat widget", error);
       setExpanded(true);
       setHelpLocation(locationKey);
-      setStatusMessage(`Otto could not open. You can call ${location.name} at ${location.phone}.`);
+      setStatusMessage(`Chat could not open. You can call ${location.name} at ${location.phone}.`);
       setIsOpening(false);
     }
   };
@@ -241,7 +276,7 @@ export function ChatSupportWidget({
           justifyItems: "stretch",
           alignItems: "stretch"
         }
-      : { width: "min(620px, calc(100vw - 32px))" }
+      : { width: "min(400px, calc(100vw - 32px))" }
     : undefined;
 
   const panelStyle: CSSProperties = isMobilePanel
@@ -255,7 +290,8 @@ export function ChatSupportWidget({
       }
     : {
         width: "100%",
-        maxHeight: "min(760px, calc(100dvh - 118px))"
+        maxHeight: "min(880px, calc(100dvh - 80px))",
+        overflowY: "auto"
       };
 
   return (
@@ -275,106 +311,90 @@ export function ChatSupportWidget({
               <MessageCircle aria-hidden="true" size={18} />
             </span>
             <div>
-              <h2 id="vmc-chat-support-title">{helpLocation ? `${locationMap[helpLocation].name} help center` : "What can we help with?"}</h2>
-              <p id="vmc-chat-support-description">
-                {helpLocation
-                  ? "Book appointments, request refills, or chat with our team."
-                  : "Select your clinic to book appointments, request refills, get records, and more."}
-              </p>
+              <h2 id="vmc-chat-support-title">{locationMap[helpLocation].name} help center</h2>
+              <p id="vmc-chat-support-description">Book appointments, request refills, or chat with our team.</p>
             </div>
             <button className="chat-support-close" type="button" aria-label="Close chat support panel" onClick={closePanel}>
               <X aria-hidden="true" size={18} />
             </button>
           </div>
 
-          {helpLocation ? (
-            <div className="chat-support-help-menu">
-              <div className="chat-support-location-toggle" aria-label="Switch clinic">
-                {(Object.keys(locationMap) as LocationKey[]).map((locationKey) => {
-                  const location = locationMap[locationKey];
-                  const isSelected = helpLocation === locationKey;
+          <div className="chat-support-help-menu">
+            <div className="chat-support-location-toggle" aria-label="Switch clinic">
+              {(Object.keys(locationMap) as LocationKey[]).map((locationKey) => {
+                const location = locationMap[locationKey];
+                const isSelected = helpLocation === locationKey;
 
-                  return (
-                    <button
-                      key={locationKey}
-                      type="button"
-                      className={isSelected ? "is-selected" : undefined}
-                      disabled={isSelected}
-                      onClick={() => chooseLocation(locationKey)}
-                    >
-                      {location.name}
-                    </button>
-                  );
-                })}
-              </div>
-
-              <div className="chat-support-action-list" aria-label={`${locationMap[helpLocation].name} help options`}>
-                {helpActions.map((action) => {
-                  const Icon = action.icon;
-
-                  return (
-                    <button
-                      key={action.requestType}
-                      type="button"
-                      disabled={isOpening}
-                      onClick={() => openOttoForLocation(helpLocation, action.requestType)}
-                    >
-                      <Icon aria-hidden="true" size={18} />
-                      <span>{action.label}</span>
-                      <ArrowRight aria-hidden="true" size={16} />
-                    </button>
-                  );
-                })}
-              </div>
-
-              <div className="chat-support-contact-card">
-                <div>
-                  <strong>Need to talk to someone about your pet?</strong>
-                  <small>Open Otto for a general question or call {locationMap[helpLocation].phone} for urgent symptoms.</small>
-                </div>
-                <button type="button" disabled={isOpening} onClick={() => openOttoForLocation(helpLocation, "TalkToStaff")}>
-                  General inquiry
-                  <ArrowRight aria-hidden="true" size={15} />
-                </button>
-              </div>
-
-              {statusMessage && <p className="chat-support-status" role="status">{statusMessage}</p>}
+                return (
+                  <button
+                    key={locationKey}
+                    type="button"
+                    className={isSelected ? "is-selected" : undefined}
+                    disabled={isSelected}
+                    onClick={() => chooseLocation(locationKey)}
+                  >
+                    {location.name}
+                  </button>
+                );
+              })}
             </div>
-          ) : (
-            <>
-              <div className="chat-support-options" aria-label="Chat support options">
-                {(Object.keys(locationMap) as LocationKey[]).map((locationKey) => {
-                  const location = locationMap[locationKey];
-                  const isSelected = selectedLocation === locationKey;
-                  return (
-                    <article className={isSelected ? "is-selected" : undefined} key={locationKey}>
-                      <MapPin aria-hidden="true" size={18} />
-                      <div>
-                        <strong>{location.name}</strong>
-                        <small>{location.description}</small>
-                      </div>
-                      <button type="button" onClick={() => chooseLocation(locationKey)}>
-                        Open {location.name} help
-                        <ArrowRight aria-hidden="true" size={14} />
-                      </button>
-                    </article>
-                  );
-                })}
-              </div>
 
-              <p className={isOttoReady ? "chat-support-availability is-ready" : "chat-support-availability"} aria-live="polite">
-                {isOttoReady ? "Otto help is available." : "Otto is still loading. Phone options are ready if you need help now."}
-              </p>
-              {statusMessage && <p className="chat-support-status" role="status">{statusMessage}</p>}
-            </>
-          )}
+            <div className="chat-support-action-list" aria-label={`${locationMap[helpLocation].name} help options`}>
+              {helpActions.map((action) => {
+                const Icon = action.icon;
+
+                return (
+                  <button
+                    key={action.requestType}
+                    type="button"
+                    disabled={isOpening}
+                    onClick={() => openOttoForLocation(helpLocation, action.requestType)}
+                  >
+                    <Icon aria-hidden="true" size={18} />
+                    <span>
+                      <strong>{action.label}</strong>
+                      <small>{action.description}</small>
+                    </span>
+                    <ArrowRight aria-hidden="true" size={16} />
+                  </button>
+                );
+              })}
+            </div>
+
+            <div className="chat-support-contact-card">
+              <div>
+                <strong>Need to talk to someone?</strong>
+                <small>Message our team or call {locationMap[helpLocation].phone} for urgent concerns.</small>
+              </div>
+              <button type="button" disabled={isOpening} onClick={() => openOttoForLocation(helpLocation, "TalkToStaff")}>
+                General inquiry
+                <ArrowRight aria-hidden="true" size={15} />
+              </button>
+            </div>
+
+            <p className={isOttoReady ? "chat-support-availability is-ready" : "chat-support-availability"} aria-live="polite">
+              {isOttoReady ? (
+                <><CheckCircle2 aria-hidden="true" size={14} />Help is available now</>
+              ) : (
+                "Loading… Phone options are ready if you need help now."
+              )}
+            </p>
+            {statusMessage && <p className="chat-support-status" role="status">{statusMessage}</p>}
+          </div>
         </div>
       )}
 
       {!expanded && !isFooterVisible && (
         <div className="chat-support-greeting" role="status">
           <span className="chat-support-greeting-avatar">
-            <PawPrint aria-hidden="true" size={16} />
+            <Image
+              src="/images/kristi-baker-headshot-vertical.jpg"
+              alt="Kristi Baker"
+              width={36}
+              height={36}
+              className="chat-support-greeting-avatar-img"
+            />
+            <span className="chat-support-greeting-avatar-dot" aria-hidden="true" />
           </span>
           <span>
             <strong>Veterinary Medical Centers</strong>
