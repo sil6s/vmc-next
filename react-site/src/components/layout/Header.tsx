@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, CalendarDays, Menu, Phone, ShoppingBag, UserRound } from "lucide-react";
+import { ArrowRight, CalendarDays, Menu, MessageCircle, Phone, ShoppingBag, UserRound } from "lucide-react";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { navigation } from "@/data/navigation";
@@ -187,6 +187,16 @@ export function Header({
             <LanguageSelector locale={locale} label={copy.language} />
 
             <div className="mobile-actions">
+              <SheetClose asChild>
+                <button
+                  type="button"
+                  className="mobile-action-chat"
+                  onClick={() => window.dispatchEvent(new CustomEvent("vmc:open-chat-support"))}
+                >
+                  <MessageCircle aria-hidden="true" size={18} />
+                  Get help now
+                </button>
+              </SheetClose>
               {showBookingButton && (
                 <SheetClose asChild>
                   <Link className="mobile-action-primary" href={localizedHref(ctaHref, locale)}>

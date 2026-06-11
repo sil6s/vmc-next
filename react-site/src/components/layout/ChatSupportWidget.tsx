@@ -714,11 +714,12 @@ export function ChatSupportWidget({
           type="button"
           disabled={isOpening}
           onClick={openPanel}
+          suppressHydrationWarning
         >
           {isOpening
             ? <LoaderIcon size={22} className="chat-support-spinner" />
-            : <MessageCircleIcon size={25} strokeWidth={2.4} />}
-          <span>
+            : <MessageCircleIcon size={25} strokeWidth={2.4} className={isOttoReady ? "chat-support-button-icon is-live" : "chat-support-button-icon"} />}
+          <span className="chat-support-button-label">
             <strong>{isOpening ? "Connecting…" : "Get help now"}</strong>
             <small>{isOpening ? "Opening your chat session." : "Book, refill, message, or get records."}</small>
           </span>

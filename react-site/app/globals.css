@@ -11563,39 +11563,38 @@ textarea {
 
 /* Nav dropdown — About menu */
 .nav-dropdown-about {
-  min-width: 320px;
-  padding: 8px;
+  width: 190px;
+  padding: 4px;
 }
 
 .nav-dropdown-top-links {
-  display: grid;
-  gap: 2px;
-  margin-bottom: 4px;
+  display: flex;
+  flex-direction: column;
 }
 
 .nav-dropdown-top-links a {
-  display: grid;
-  gap: 2px;
+  display: block;
   border-radius: 6px;
-  padding: 10px 12px;
+  padding: 8px 10px;
   text-decoration: none;
+  color: var(--ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 13.5px;
+  font-weight: 750;
+  line-height: 1;
 }
 
 .nav-dropdown-top-links a:hover {
-  background: rgba(169, 27, 27, 0.05);
+  background: rgba(169, 27, 27, 0.06);
+  color: var(--red);
 }
 
 .nav-dropdown-top-links strong {
-  color: var(--ink);
-  font-family: var(--font-sans), system-ui, sans-serif;
-  font-size: 13px;
-  font-weight: 820;
+  font-weight: 750;
 }
 
 .nav-dropdown-top-links span {
-  color: var(--body);
-  font-size: 12px;
-  font-weight: 600;
+  display: none;
 }
 
 .nav-dropdown-label {
@@ -13167,7 +13166,7 @@ body > [id*="otto"][id*="launch"],
 .chat-support-widget {
   position: fixed;
   right: 24px;
-  bottom: 96px;
+  bottom: 0;
   z-index: 75;
   display: grid;
   justify-items: end;
@@ -13329,7 +13328,24 @@ body > [id*="televet"]:not([id*="launch"]) {
   flex-shrink: 0;
 }
 
-.chat-support-button > span {
+.chat-support-button-icon {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.chat-support-button-icon.is-live::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  right: -4px;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  background: #3abf6e;
+  border: 2px solid var(--red);
+}
+
+.chat-support-button-label {
   display: grid;
   gap: 1px;
   text-align: left;
@@ -15089,6 +15105,25 @@ body > [id*="televet"]:not([id*="launch"]) {
     color: var(--white);
   }
 
+  .mobile-actions .mobile-action-chat {
+    display: inline-flex;
+    width: 100%;
+    min-height: 56px;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: 2px solid var(--red);
+    border-radius: 6px;
+    background: var(--red);
+    color: var(--white);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
   .mobile-actions .mobile-pharmacy {
     border-color: rgba(184, 125, 58, 0.38);
     color: var(--ink);
@@ -15769,8 +15804,8 @@ body > [id*="televet"]:not([id*="launch"]) {
 
   .otto-launcher-shell,
   .chat-support-widget {
-    right: 14px;
-    bottom: 86px;
+    right: 16px;
+    bottom: env(safe-area-inset-bottom, 0px);
   }
 
   #televet-widget-iframe {
@@ -15803,9 +15838,30 @@ body > [id*="televet"]:not([id*="launch"]) {
     padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 0px));
   }
 
+  /* Hide greeting bubble on mobile — too much space */
+  .chat-support-greeting {
+    display: none;
+  }
+
+  /* Compact FAB circle on mobile */
   .chat-support-button {
-    min-height: 58px;
-    padding: 0 18px;
+    width: 62px;
+    min-height: 62px;
+    padding: 0;
+    border-radius: 999px;
+    justify-content: center;
+  }
+
+  .chat-support-button-label {
+    display: none;
+  }
+
+  .chat-support-button-icon.is-live::after {
+    width: 13px;
+    height: 13px;
+    top: -2px;
+    right: -3px;
+    border-width: 2.5px;
   }
 
   .chat-support-options article,
