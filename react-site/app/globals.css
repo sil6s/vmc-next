@@ -13201,10 +13201,8 @@ body.otto-window-open .chat-support-widget {
   z-index: 2147483647 !important;
 }
 
-/* Strip any wrapper div Otto injects around its iframe */
-body > div:has(> #televet-widget-iframe),
-body > [class*="televet"]:not([class*="launch"]),
-body > [id*="televet"]:not([id*="launch"]) {
+/* Strip any direct wrapper div Otto injects around its iframe */
+body > div:has(> #televet-widget-iframe) {
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;

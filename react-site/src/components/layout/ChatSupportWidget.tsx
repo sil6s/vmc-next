@@ -213,6 +213,8 @@ export function ChatSupportWidget({
   const [isMobilePanel, setIsMobilePanel] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const hasSeenOttoOpenRef = useRef(false);
+  const lastOttoDestroyAtRef = useRef(0);
 
   const locationMap = useMemo(() => {
     const fortThomas = locations?.find((location) => location.id === "fort-thomas");
@@ -280,19 +282,35 @@ export function ChatSupportWidget({
     const updateOttoWindowState = () => {
       const ottoFrame = document.querySelector<HTMLIFrameElement>("#televet-widget-iframe");
       const ottoFrameStyles = ottoFrame ? window.getComputedStyle(ottoFrame) : null;
+      const ottoFrameRect = ottoFrame?.getBoundingClientRect();
       const isOpen = Boolean(
         ottoFrame?.isConnected &&
         ottoFrameStyles &&
         ottoFrameStyles.display !== "none" &&
         ottoFrameStyles.visibility !== "hidden" &&
-        ottoFrameStyles.opacity !== "0"
+        ottoFrameStyles.opacity !== "0" &&
+        ottoFrameRect &&
+        ottoFrameRect.width >= 280 &&
+        ottoFrameRect.height >= 360
       );
 
       document.body.classList.toggle("otto-window-open", isOpen);
       setIsOttoWindowOpen(isOpen);
 
       if (isOpen) {
+        hasSeenOttoOpenRef.current = true;
         setIsOpening(false);
+        setOpeningState(null);
+        return;
+      }
+
+      if (hasSeenOttoOpenRef.current && ottoFrame?.isConnected && !isOpening) {
+        const now = Date.now();
+        if (now - lastOttoDestroyAtRef.current > 1500) {
+          lastOttoDestroyAtRef.current = now;
+          window.otto?.widget?.destroy?.();
+        }
+        hasSeenOttoOpenRef.current = false;
       }
     };
 
@@ -305,7 +323,7 @@ export function ChatSupportWidget({
       observer.disconnect();
       document.body.classList.remove("otto-window-open");
     };
-  }, []);
+  }, [isOpening]);
 
   useEffect(() => {
     if (!expanded) return;
