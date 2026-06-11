@@ -15850,6 +15850,7 @@ body > [id*="televet"]:not([id*="launch"]) {
     padding: 0;
     border-radius: 999px;
     justify-content: center;
+    box-shadow: 0 4px 24px rgba(23, 19, 19, 0.32), 0 1px 4px rgba(23, 19, 19, 0.18);
   }
 
   .chat-support-button-label {

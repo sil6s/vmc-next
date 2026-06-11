@@ -372,9 +372,6 @@ export function ChatSupportWidget({
     setExpanded(false);
 
     try {
-      // Destroy any previous instance first
-      window.otto.widget.destroy?.();
-
       // Guard: Otto sometimes fires onClose/onMinimize/onDismiss immediately
       // during initialize() while cleaning up a prior session. Only allow
       // destroy() once the widget has actually opened (~5s iframe handshake).
@@ -682,7 +679,7 @@ export function ChatSupportWidget({
         </div>
         )}
 
-        {!expanded && !isFooterVisible && !isOttoWindowOpen && (
+        {!expanded && !isFooterVisible && !isOttoWindowOpen && !isMobilePanel && (
         <div className="chat-support-greeting" role="status" style={greetingStyle}>
           <span className="chat-support-greeting-avatar">
             <Image
