@@ -3,24 +3,27 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import Image from "next/image";
-import { ArrowRight, CalendarDays, CheckCircle2, FileText, MessageCircle, Pill, Video, X } from "lucide-react";
-import { trackEvent } from "@/lib/analytics";
+import type { SVGProps } from "react";
 import type { PublicLocation } from "@/lib/settings/public";
 
 type LocationKey = "fortThomas" | "independence";
 type RequestType = "TalkToStaff" | "RequestAppointment" | "RequestRxRefill" | "RequestMedicalRecords" | "RequestVirtualConsult";
+type IconComponent = (props: SVGProps<SVGSVGElement> & { size?: number }) => React.ReactElement;
 
 type OttoWidget = {
   initialize?: (clinicId: string, options?: Record<string, unknown>) => void;
-  open?: () => void;
   destroy?: () => void;
-  selectRequestType?: (requestType: RequestType) => void;
+  close?: () => void;
 };
 
 declare global {
   interface Window {
+    televet?: Record<string, unknown>;
     otto?: {
       widget?: OttoWidget;
+    } & Record<string, unknown>;
+    umami?: {
+      track?: (eventName: string, eventData?: Record<string, unknown>) => void;
     };
   }
 }
@@ -32,6 +35,101 @@ const OTTO_CLINICS: Record<LocationKey, string> = {
   fortThomas: process.env.NEXT_PUBLIC_OTTO_FORT_THOMAS_CLINIC_ID || "cmom0dckc0sgp6501aorlulzf",
   independence: process.env.NEXT_PUBLIC_OTTO_INDEPENDENCE_CLINIC_ID || "cmom0koio0xsd65010qy8yam0"
 };
+
+function trackChatEvent(eventData?: Record<string, unknown>) {
+  window.umami?.track?.("live_chat_opened", eventData);
+}
+
+function SvgIcon({ children, size = 18, ...props }: SVGProps<SVGSVGElement> & { size?: number }) {
+  return (
+    <svg
+      aria-hidden="true"
+      fill="none"
+      height={size}
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      viewBox="0 0 24 24"
+      width={size}
+      {...props}
+    >
+      {children}
+    </svg>
+  );
+}
+
+const ArrowRightIcon: IconComponent = (props) => (
+  <SvgIcon {...props}>
+    <path d="M5 12h14" />
+    <path d="m13 6 6 6-6 6" />
+  </SvgIcon>
+);
+
+const CalendarDaysIcon: IconComponent = (props) => (
+  <SvgIcon {...props}>
+    <path d="M8 2v4" />
+    <path d="M16 2v4" />
+    <rect height="18" rx="2" width="18" x="3" y="4" />
+    <path d="M3 10h18" />
+    <path d="M8 14h.01" />
+    <path d="M12 14h.01" />
+    <path d="M16 14h.01" />
+    <path d="M8 18h.01" />
+    <path d="M12 18h.01" />
+    <path d="M16 18h.01" />
+  </SvgIcon>
+);
+
+const CheckCircleIcon: IconComponent = (props) => (
+  <SvgIcon {...props}>
+    <circle cx="12" cy="12" r="10" />
+    <path d="m9 12 2 2 4-4" />
+  </SvgIcon>
+);
+
+const FileTextIcon: IconComponent = (props) => (
+  <SvgIcon {...props}>
+    <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+    <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+    <path d="M10 9H8" />
+    <path d="M16 13H8" />
+    <path d="M16 17H8" />
+  </SvgIcon>
+);
+
+const LoaderIcon: IconComponent = (props) => (
+  <SvgIcon {...props}>
+    <path d="M21 12a9 9 0 1 1-6.2-8.56" />
+  </SvgIcon>
+);
+
+const MessageCircleIcon: IconComponent = (props) => (
+  <SvgIcon {...props}>
+    <path d="M3 20.3 4.3 16A8.5 8.5 0 1 1 8 19.7Z" />
+  </SvgIcon>
+);
+
+const PillIcon: IconComponent = (props) => (
+  <SvgIcon {...props}>
+    <path d="m10.5 20.5 10-10a4.2 4.2 0 0 0-6-6l-10 10a4.2 4.2 0 0 0 6 6Z" />
+    <path d="m8.5 8.5 7 7" />
+  </SvgIcon>
+);
+
+const VideoIcon: IconComponent = (props) => (
+  <SvgIcon {...props}>
+    <path d="m16 13 5 3V8l-5 3Z" />
+    <rect height="12" rx="2" width="14" x="2" y="6" />
+  </SvgIcon>
+);
+
+const XIcon: IconComponent = (props) => (
+  <SvgIcon {...props}>
+    <path d="M18 6 6 18" />
+    <path d="m6 6 12 12" />
+  </SvgIcon>
+);
 
 const fallbackLocations = {
   fortThomas: {
@@ -55,27 +153,27 @@ const helpActions = [
     label: "Book an appointment",
     description: "Find a time that works for you",
     requestType: "RequestAppointment",
-    icon: CalendarDays
+    icon: CalendarDaysIcon
   },
   {
     label: "Request med & food refill",
     description: "Prescriptions and diet food refills",
     requestType: "RequestRxRefill",
-    icon: Pill
+    icon: PillIcon
   },
   {
     label: "Request medical records",
     description: "Get copies for you or another provider",
     requestType: "RequestMedicalRecords",
-    icon: FileText
+    icon: FileTextIcon
   },
   {
     label: "Request virtual consult",
     description: "Video visit with our care team",
     requestType: "RequestVirtualConsult",
-    icon: Video
+    icon: VideoIcon
   }
-] satisfies { label: string; description: string; requestType: RequestType; icon: typeof CalendarDays }[];
+] satisfies { label: string; description: string; requestType: RequestType; icon: IconComponent }[];
 
 function isLocationKey(value: string | null): value is LocationKey {
   return value === "fortThomas" || value === "independence";
@@ -89,19 +187,19 @@ export function ChatSupportWidget({
 }) {
   const [expanded, setExpanded] = useState(false);
   const [isFooterVisible, setIsFooterVisible] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState<LocationKey | null>(() => {
+  const [, setSelectedLocation] = useState<LocationKey | null>(() => {
     if (typeof window === "undefined") return null;
     const savedLocation = window.localStorage.getItem(SELECTED_LOCATION_KEY);
     return isLocationKey(savedLocation) ? savedLocation : null;
   });
   const [isOttoReady, setIsOttoReady] = useState(false);
+  const [isOttoWindowOpen, setIsOttoWindowOpen] = useState(false);
   const [isOpening, setIsOpening] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
   const [helpLocation, setHelpLocation] = useState<LocationKey>("fortThomas");
   const [isMobilePanel, setIsMobilePanel] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const ottoObserverRef = useRef<MutationObserver | null>(null);
 
   const locationMap = useMemo(() => {
     const fortThomas = locations?.find((location) => location.id === "fort-thomas");
@@ -124,6 +222,16 @@ export function ChatSupportWidget({
   }, [locations]);
 
   useEffect(() => {
+    window.televet = window.televet || {};
+    window.otto = window.otto || {};
+
+    if (!document.querySelector('script[src="https://connect.televet.com/shim.js"]')) {
+      const script = document.createElement("script");
+      script.async = true;
+      script.src = "https://connect.televet.com/shim.js";
+      document.head.appendChild(script);
+    }
+
     const checkOtto = () => {
       if (window.otto?.widget) {
         setIsOttoReady(true);
@@ -153,6 +261,65 @@ export function ChatSupportWidget({
     });
     observer.observe(footer);
     return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const updateOttoWindowState = () => {
+      const ottoFrame = document.querySelector<HTMLIFrameElement>("#televet-widget-iframe");
+      const isOpen = Boolean(ottoFrame?.isConnected);
+
+      if (ottoFrame) {
+        const isMobile = window.matchMedia("(max-width: 760px)").matches;
+        const frameStyles: Partial<Record<keyof CSSStyleDeclaration, string>> = isMobile
+          ? {
+              border: "0",
+              borderRadius: "0",
+              bottom: "0",
+              height: "100dvh",
+              left: "0",
+              maxHeight: "100dvh",
+              maxWidth: "100vw",
+              position: "fixed",
+              right: "0",
+              top: "0",
+              width: "100vw",
+              zIndex: "2147483647"
+            }
+          : {
+              border: "0",
+              borderRadius: "16px",
+              bottom: "8px",
+              boxShadow: "0 24px 70px rgba(23, 19, 19, 0.24)",
+              height: "min(732px, calc(100dvh - 16px))",
+              left: "auto",
+              maxHeight: "calc(100dvh - 16px)",
+              maxWidth: "calc(100vw - 16px)",
+              position: "fixed",
+              right: "8px",
+              top: "auto",
+              width: "min(424px, calc(100vw - 16px))",
+              zIndex: "2147483647"
+            };
+
+        Object.entries(frameStyles).forEach(([property, value]) => {
+          if (!value) return;
+          ottoFrame.style.setProperty(property.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`), value, "important");
+        });
+      }
+
+      document.body.classList.toggle("otto-window-open", isOpen);
+      setIsOttoWindowOpen(isOpen);
+    };
+
+    updateOttoWindowState();
+    const interval = window.setInterval(updateOttoWindowState, 500);
+    const observer = new MutationObserver(updateOttoWindowState);
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => {
+      window.clearInterval(interval);
+      observer.disconnect();
+      document.body.classList.remove("otto-window-open");
+    };
   }, []);
 
   useEffect(() => {
@@ -190,8 +357,6 @@ export function ChatSupportWidget({
     return () => window.removeEventListener("vmc:open-chat-support", openPanel);
   }, [openPanel]);
 
-  useEffect(() => () => ottoObserverRef.current?.disconnect(), []);
-
   const closePanel = () => {
     setExpanded(false);
     buttonRef.current?.focus();
@@ -202,7 +367,7 @@ export function ChatSupportWidget({
     setHelpLocation(locationKey);
     setStatusMessage("");
     window.localStorage.setItem(SELECTED_LOCATION_KEY, locationKey);
-    trackEvent("live_chat_opened", { location: locationKey, step: "location_selected" });
+    trackChatEvent({ location: locationKey, step: "location_selected" });
   };
 
   const openOttoForLocation = (locationKey: LocationKey, requestType: RequestType = "TalkToStaff") => {
@@ -210,7 +375,7 @@ export function ChatSupportWidget({
     const clinicId = OTTO_CLINICS[locationKey];
     setSelectedLocation(locationKey);
     window.localStorage.setItem(SELECTED_LOCATION_KEY, locationKey);
-    trackEvent("live_chat_opened", { location: locationKey, requestType });
+    trackChatEvent({ location: locationKey, requestType });
 
     if (!window.otto?.widget) {
       setStatusMessage(`Live chat is not available yet. You can call ${location.name} or message our team below.`);
@@ -220,42 +385,16 @@ export function ChatSupportWidget({
     setIsOpening(true);
     setExpanded(false);
 
-    const destroyOtto = () => {
-      ottoObserverRef.current?.disconnect();
-      ottoObserverRef.current = null;
-      window.otto?.widget?.destroy?.();
-    };
-
     try {
-      destroyOtto();
       window.otto.widget.initialize?.(clinicId, {
         isOpen: true,
         showPreview: false,
-        selectRequestType: requestType,
-        onClose: destroyOtto,
-        onMinimize: destroyOtto,
-        onDismiss: destroyOtto
+        selectRequestType: requestType
       });
-      window.setTimeout(() => {
-        window.otto?.widget?.selectRequestType?.(requestType);
-        window.otto?.widget?.open?.();
-        setIsOpening(false);
 
-        // Fallback: if Otto doesn't fire onClose, watch for its launcher appearing
-        // as a new body-level child after the chat is fully rendered.
-        window.setTimeout(() => {
-          const knownEls = new Set(Array.from(document.body.children));
-          ottoObserverRef.current?.disconnect();
-          const observer = new MutationObserver(() => {
-            const hasNewEls = Array.from(document.body.children).some(el => !knownEls.has(el));
-            if (hasNewEls) {
-              destroyOtto();
-            }
-          });
-          observer.observe(document.body, { childList: true });
-          ottoObserverRef.current = observer;
-        }, 1500);
-      }, 700);
+      window.setTimeout(() => {
+        setIsOpening(false);
+      }, 5000);
     } catch (error) {
       console.error("Failed to open chat widget", error);
       setExpanded(true);
@@ -271,7 +410,7 @@ export function ChatSupportWidget({
           position: "fixed",
           inset: 0,
           right: 0,
-          bottom: 0,
+          bottom: isOttoWindowOpen ? 86 : 0,
           width: "100vw",
           justifyItems: "stretch",
           alignItems: "stretch"
@@ -294,9 +433,72 @@ export function ChatSupportWidget({
         overflowY: "auto"
       };
 
+  const shellStyle: CSSProperties = {
+    ...widgetStyle,
+    right: isMobilePanel ? 14 : 24,
+    bottom: isMobilePanel ? 86 : 96,
+    display: isOttoWindowOpen ? "none" : "grid",
+    width: widgetStyle?.width || "min(620px, calc(100vw - 32px))",
+    justifyItems: widgetStyle?.justifyItems || "end",
+    gap: 12,
+    pointerEvents: "none"
+  };
+
+  const greetingStyle: CSSProperties = {
+    display: "grid",
+    gridTemplateColumns: "38px minmax(0, 1fr)",
+    gap: 10,
+    alignItems: "start",
+    width: "min(380px, 100%)",
+    border: "1px solid rgba(169, 27, 27, 0.15)",
+    borderRadius: 12,
+    background: "rgba(255, 252, 247, 0.98)",
+    boxShadow: "0 18px 48px rgba(23, 19, 19, 0.16)",
+    color: "var(--ink)",
+    padding: "13px 14px",
+    backdropFilter: "blur(14px)"
+  };
+
+  const toggleStyle: CSSProperties = {
+    display: "grid",
+    gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+    gap: 8,
+    border: "1px solid rgba(169, 27, 27, 0.14)",
+    borderRadius: 999,
+    background: "rgba(169, 27, 27, 0.05)",
+    padding: 4
+  };
+
+  const actionButtonStyle: CSSProperties = {
+    display: "grid",
+    gridTemplateColumns: "34px minmax(0, 1fr) 18px",
+    gap: 11,
+    alignItems: "center",
+    minHeight: 62,
+    border: "1px solid rgba(169, 27, 27, 0.12)",
+    borderRadius: 9,
+    background: "var(--white)",
+    color: "var(--ink)",
+    cursor: "pointer",
+    padding: "12px 13px",
+    font: "inherit",
+    textAlign: "left"
+  };
+
+  const contactCardStyle: CSSProperties = {
+    display: "grid",
+    gridTemplateColumns: isMobilePanel ? "1fr" : "minmax(0, 1fr) auto",
+    gap: 14,
+    alignItems: "center",
+    borderRadius: 12,
+    background: "var(--ink)",
+    color: "var(--white)",
+    padding: 16
+  };
+
   return (
-    <div className="chat-support-widget" style={widgetStyle}>
-      {expanded && (
+    <div className="chat-support-widget" style={shellStyle}>
+        {expanded && (
         <div
           aria-describedby="vmc-chat-support-description"
           aria-labelledby="vmc-chat-support-title"
@@ -308,19 +510,19 @@ export function ChatSupportWidget({
         >
           <div className="chat-support-panel-head">
             <span>
-              <MessageCircle aria-hidden="true" size={18} />
+              <MessageCircleIcon size={18} />
             </span>
             <div>
               <h2 id="vmc-chat-support-title">{locationMap[helpLocation].name} help center</h2>
               <p id="vmc-chat-support-description">Book appointments, request refills, or chat with our team.</p>
             </div>
             <button className="chat-support-close" type="button" aria-label="Close chat support panel" onClick={closePanel}>
-              <X aria-hidden="true" size={18} />
+              <XIcon size={18} />
             </button>
           </div>
 
-          <div className="chat-support-help-menu">
-            <div className="chat-support-location-toggle" aria-label="Switch clinic">
+          <div className="chat-support-help-menu" style={{ display: "grid", gap: 12, marginTop: 14 }}>
+            <div className="chat-support-location-toggle" aria-label="Switch clinic" style={toggleStyle}>
               {(Object.keys(locationMap) as LocationKey[]).map((locationKey) => {
                 const location = locationMap[locationKey];
                 const isSelected = helpLocation === locationKey;
@@ -332,6 +534,18 @@ export function ChatSupportWidget({
                     className={isSelected ? "is-selected" : undefined}
                     disabled={isSelected}
                     onClick={() => chooseLocation(locationKey)}
+                    style={{
+                      minHeight: 38,
+                      border: 0,
+                      borderRadius: 999,
+                      background: isSelected ? "var(--white)" : "transparent",
+                      color: isSelected ? "var(--ink)" : "var(--body)",
+                      cursor: isSelected ? "default" : "pointer",
+                      font: "inherit",
+                      fontSize: 12,
+                      fontWeight: 950,
+                      boxShadow: isSelected ? "0 8px 22px rgba(23, 19, 19, 0.08)" : undefined
+                    }}
                   >
                     {location.name}
                   </button>
@@ -339,7 +553,7 @@ export function ChatSupportWidget({
               })}
             </div>
 
-            <div className="chat-support-action-list" aria-label={`${locationMap[helpLocation].name} help options`}>
+            <div className="chat-support-action-list" aria-label={`${locationMap[helpLocation].name} help options`} style={{ display: "grid", gap: 9 }}>
               {helpActions.map((action) => {
                 const Icon = action.icon;
 
@@ -349,32 +563,55 @@ export function ChatSupportWidget({
                     type="button"
                     disabled={isOpening}
                     onClick={() => openOttoForLocation(helpLocation, action.requestType)}
+                    style={actionButtonStyle}
                   >
                     <Icon aria-hidden="true" size={18} />
-                    <span>
-                      <strong>{action.label}</strong>
-                      <small>{action.description}</small>
+                    <span style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                      <strong style={{ fontSize: 14, fontWeight: 900, lineHeight: 1.2 }}>{action.label}</strong>
+                      <small style={{ color: "var(--body)", fontSize: 12, fontWeight: 600, lineHeight: 1.3 }}>{action.description}</small>
                     </span>
-                    <ArrowRight aria-hidden="true" size={16} />
+                    <ArrowRightIcon size={16} />
                   </button>
                 );
               })}
             </div>
 
-            <div className="chat-support-contact-card">
+            <div className="chat-support-contact-card" style={contactCardStyle}>
               <div>
-                <strong>Need to talk to someone?</strong>
-                <small>Message our team or call {locationMap[helpLocation].phone} for urgent concerns.</small>
+                <strong style={{ display: "block", fontSize: 15, fontWeight: 950, lineHeight: 1.2 }}>Need to talk to someone?</strong>
+                <small style={{ display: "block", marginTop: 4, color: "rgba(255, 255, 255, 0.78)", fontSize: 12.5, fontWeight: 700, lineHeight: 1.4 }}>
+                  Message our team or call {locationMap[helpLocation].phone} for urgent concerns.
+                </small>
               </div>
-              <button type="button" disabled={isOpening} onClick={() => openOttoForLocation(helpLocation, "TalkToStaff")}>
+              <button
+                type="button"
+                disabled={isOpening}
+                onClick={() => openOttoForLocation(helpLocation, "TalkToStaff")}
+                style={{
+                  display: "inline-flex",
+                  minHeight: 40,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 7,
+                  border: 0,
+                  borderRadius: 7,
+                  background: "var(--white)",
+                  color: "var(--ink)",
+                  cursor: "pointer",
+                  padding: "0 13px",
+                  font: "inherit",
+                  fontSize: 12,
+                  fontWeight: 950
+                }}
+              >
                 General inquiry
-                <ArrowRight aria-hidden="true" size={15} />
+                <ArrowRightIcon size={15} />
               </button>
             </div>
 
             <p className={isOttoReady ? "chat-support-availability is-ready" : "chat-support-availability"} aria-live="polite">
               {isOttoReady ? (
-                <><CheckCircle2 aria-hidden="true" size={14} />Help is available now</>
+                <><CheckCircleIcon size={14} />Help is available now</>
               ) : (
                 "Loading… Phone options are ready if you need help now."
               )}
@@ -382,10 +619,10 @@ export function ChatSupportWidget({
             {statusMessage && <p className="chat-support-status" role="status">{statusMessage}</p>}
           </div>
         </div>
-      )}
+        )}
 
-      {!expanded && !isFooterVisible && (
-        <div className="chat-support-greeting" role="status">
+        {!expanded && !isFooterVisible && !isOttoWindowOpen && (
+        <div className="chat-support-greeting" role="status" style={greetingStyle}>
           <span className="chat-support-greeting-avatar">
             <Image
               src="/images/kristi-baker-headshot-vertical.jpg"
@@ -397,29 +634,35 @@ export function ChatSupportWidget({
             <span className="chat-support-greeting-avatar-dot" aria-hidden="true" />
           </span>
           <span>
-            <strong>Veterinary Medical Centers</strong>
-            <small>Hi there! Need to book a visit, refill a prescription, or reach the care team? We&apos;re here to help.</small>
+            <strong style={{ display: "block", color: "var(--ink)", fontSize: 13, fontWeight: 950 }}>Veterinary Medical Centers</strong>
+            <small style={{ display: "block", marginTop: 3, color: "var(--body)", fontSize: 12.5, fontWeight: 700, lineHeight: 1.42 }}>
+              Hi there! Need to book a visit, refill a prescription, or reach the care team? We&apos;re here to help.
+            </small>
           </span>
         </div>
-      )}
+        )}
 
-      {!expanded && (
+        {!expanded && !isOttoWindowOpen && (
         <button
           aria-controls={PANEL_ID}
           aria-expanded={expanded}
-          aria-label="Open chat support panel"
-          className="chat-support-button"
+          aria-label={isOpening ? "Opening chat…" : "Open chat support panel"}
+          aria-busy={isOpening || undefined}
+          className={isOpening ? "chat-support-button is-loading" : "chat-support-button"}
           ref={buttonRef}
           type="button"
+          disabled={isOpening}
           onClick={openPanel}
         >
-          <MessageCircle aria-hidden="true" size={25} strokeWidth={2.4} />
+          {isOpening
+            ? <LoaderIcon size={22} className="chat-support-spinner" />
+            : <MessageCircleIcon size={25} strokeWidth={2.4} />}
           <span>
-            <strong>Get help now</strong>
-            <small>Book, refill, message, or get records.</small>
+            <strong>{isOpening ? "Connecting…" : "Get help now"}</strong>
+            <small>{isOpening ? "Opening your chat session." : "Book, refill, message, or get records."}</small>
           </span>
         </button>
-      )}
+        )}
     </div>
   );
 }

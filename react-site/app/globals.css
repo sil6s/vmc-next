@@ -13154,7 +13154,6 @@ textarea {
 }
 
 /* Suppress Otto/Televet's own injected launcher — we drive their widget ourselves */
-body > iframe[src*="televet"],
 body > [class*="televet"][class*="launch"],
 body > [class*="otto"][class*="launch"],
 body > [id*="televet"][id*="launch"],
@@ -13165,7 +13164,7 @@ body > [id*="otto"][id*="launch"] {
 .chat-support-widget {
   position: fixed;
   right: 24px;
-  bottom: 24px;
+  bottom: 96px;
   z-index: 75;
   display: grid;
   justify-items: end;
@@ -13176,6 +13175,11 @@ body > [id*="otto"][id*="launch"] {
 
 .chat-support-widget > * {
   pointer-events: auto;
+}
+
+body.otto-window-open .chat-support-widget,
+body:has(#televet-widget-iframe) .chat-support-widget {
+  display: none;
 }
 
 .chat-support-widget:has(.chat-support-panel) .chat-support-button {
@@ -13270,6 +13274,27 @@ body > [id*="otto"][id*="launch"] {
   background: var(--dark-red);
   box-shadow: 0 22px 56px rgba(23, 19, 19, 0.26);
   transform: translateY(-2px);
+}
+
+.chat-support-button.is-loading {
+  cursor: wait;
+  opacity: 0.88;
+}
+
+.chat-support-button.is-loading:hover,
+.chat-support-button.is-loading:focus-visible {
+  background: var(--red);
+  box-shadow: 0 18px 46px rgba(23, 19, 19, 0.22);
+  transform: none;
+}
+
+@keyframes chat-spin {
+  to { transform: rotate(360deg); }
+}
+
+.chat-support-spinner {
+  animation: chat-spin 0.8s linear infinite;
+  flex-shrink: 0;
 }
 
 .chat-support-button > span {
@@ -15713,7 +15738,7 @@ body > [id*="otto"][id*="launch"] {
   .otto-launcher-shell,
   .chat-support-widget {
     right: 14px;
-    bottom: 14px;
+    bottom: 86px;
   }
 
   .chat-support-widget:has(.chat-support-panel) {

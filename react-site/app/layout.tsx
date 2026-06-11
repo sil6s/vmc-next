@@ -72,7 +72,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
 
   return (
     <html lang={locale === "zh" ? "zh-Hans" : locale} className={`${sans.variable} ${serif.variable}`}>
-      <body>
+      <body suppressHydrationWarning>
         <AnnouncementBanner announcement={settings.announcement} />
         <Header
           locale={locale}
