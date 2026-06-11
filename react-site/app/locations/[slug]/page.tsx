@@ -16,6 +16,7 @@ import { serviceHubServices } from "@/data/serviceHub";
 import { site } from "@/data/site";
 import { testimonials } from "@/data/testimonials";
 import { pageMetadata } from "@/lib/metadata";
+import { OTTO_CLINIC_IDS as OTTO_LOCATION_CLINIC_IDS } from "@/lib/otto";
 import { getPublicSettings } from "@/lib/settings/public";
 import { breadcrumbSchema, cityPageVeterinaryCareSchema, faqSchema, JsonLd, locationVeterinaryCareSchema, serviceListSchema, webpageSchema } from "@/lib/schema";
 import { getBlogPosts } from "@/sanity/posts";
@@ -70,8 +71,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 }
 
 const OTTO_CLINIC_IDS: Record<string, string | undefined> = {
-  "vet-in-fort-thomas-ky": process.env.NEXT_PUBLIC_OTTO_FORT_THOMAS_CLINIC_ID || "cmom0dckc0sgp6501aorlulzf",
-  "vet-in-independence-ky": process.env.NEXT_PUBLIC_OTTO_INDEPENDENCE_CLINIC_ID || "cmom0koio0xsd65010qy8yam0"
+  "vet-in-fort-thomas-ky": OTTO_LOCATION_CLINIC_IDS.fortThomas,
+  "vet-in-independence-ky": OTTO_LOCATION_CLINIC_IDS.independence
 };
 
 // ── City SEO page service slugs ──────────────────────────────────────────────

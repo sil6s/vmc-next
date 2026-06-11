@@ -9,6 +9,7 @@ import { OttoInlineWidget } from "@/components/sections/OttoInlineWidget";
 import { Container } from "@/components/ui/Container";
 import { locations } from "@/data/locations";
 import { pageMetadata } from "@/lib/metadata";
+import { OTTO_CLINIC_IDS } from "@/lib/otto";
 import { breadcrumbSchema, JsonLd, webpageSchema } from "@/lib/schema";
 
 type Params = { params: Promise<{ location: string }> };
@@ -17,7 +18,7 @@ const liveChatLocations = {
   "fort-thomas": {
     slug: "fort-thomas",
     locationSlug: "vet-in-fort-thomas-ky",
-    clinicId: process.env.NEXT_PUBLIC_OTTO_FORT_THOMAS_CLINIC_ID || "cmom0dckc0sgp6501aorlulzf",
+    clinicId: OTTO_CLINIC_IDS.fortThomas,
     title: "Fort Thomas Live Chat",
     seoTitle: "Fort Thomas Vet Live Chat | Veterinary Medical Center",
     description:
@@ -28,7 +29,7 @@ const liveChatLocations = {
   independence: {
     slug: "independence",
     locationSlug: "vet-in-independence-ky",
-    clinicId: process.env.NEXT_PUBLIC_OTTO_INDEPENDENCE_CLINIC_ID || "cmom0koio0xsd65010qy8yam0",
+    clinicId: OTTO_CLINIC_IDS.independence,
     title: "Independence Live Chat",
     seoTitle: "Independence Vet Live Chat | Veterinary Medical Center",
     description:

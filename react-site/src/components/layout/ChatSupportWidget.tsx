@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import Image from "next/image";
 import type { SVGProps } from "react";
+import { OTTO_CLINIC_IDS } from "@/lib/otto";
 import type { PublicLocation } from "@/lib/settings/public";
 
 type LocationKey = "fortThomas" | "independence";
@@ -34,11 +35,6 @@ declare global {
 
 const SELECTED_LOCATION_KEY = "vmc_chat_selected_location";
 const PANEL_ID = "vmc-chat-support-panel";
-
-const OTTO_CLINICS: Record<LocationKey, string> = {
-  fortThomas: process.env.NEXT_PUBLIC_OTTO_FORT_THOMAS_CLINIC_ID || "cmom0dckc0sgp6501aorlulzf",
-  independence: process.env.NEXT_PUBLIC_OTTO_INDEPENDENCE_CLINIC_ID || "cmom0koio0xsd65010qy8yam0"
-};
 
 function trackChatEvent(eventData?: Record<string, unknown>) {
   window.umami?.track?.("live_chat_opened", eventData);
@@ -375,7 +371,7 @@ export function ChatSupportWidget({
 
   const openOttoForLocation = (locationKey: LocationKey, requestType: RequestType = "TalkToStaff") => {
     const location = locationMap[locationKey];
-    const clinicId = OTTO_CLINICS[locationKey];
+    const clinicId = OTTO_CLINIC_IDS[locationKey];
     setSelectedLocation(locationKey);
     window.localStorage.setItem(SELECTED_LOCATION_KEY, locationKey);
     trackChatEvent({ location: locationKey, requestType });

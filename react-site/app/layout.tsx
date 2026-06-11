@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Instrument_Sans, Playfair_Display } from "next/font/google";
 import { headers } from "next/headers";
-import Script from "next/script";
 import "easymde/dist/easymde.min.css";
 import "./globals.css";
 import { AnnouncementBanner } from "@/components/layout/AnnouncementBanner";
@@ -101,13 +100,6 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           locations={settings.publicLocations}
           onlinePortalUrl={settings.externalLinks.onlinePortalUrl}
           pharmacyUrl={settings.externalLinks.pharmacyUrl}
-        />
-        <Script
-          id="otto-flow-widget"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `(function(w,d){w.televet=w.televet||{};w.otto=w.otto||{};var s=d.createElement('script');s.async=true;s.src='https://connect.televet.com/shim.js';d.head.appendChild(s);})(window,document);`
-          }}
         />
         {settings.liveChat.liveChatEnabled && (
           <ChatSupportWidget locations={settings.publicLocations} appointmentHref={bookingHref} />
