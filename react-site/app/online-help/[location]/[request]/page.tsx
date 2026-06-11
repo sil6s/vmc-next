@@ -135,6 +135,7 @@ export default async function OnlineHelpPage({ params }: Params) {
               <span className="online-help-powered-by">Powered by Otto</span>
             </div>
             <OttoInlineWidget
+              key={`${helpLocation.clinicId}-${helpRequest.slug}`}
               clinicId={helpLocation.clinicId}
               clinicName={clinic.shortName}
               requestType={helpRequest.requestType}

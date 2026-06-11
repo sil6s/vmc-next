@@ -45,6 +45,12 @@ export function OttoInlineWidget({
     // Tear down any previous instance first
     try { w.otto?.widget?.destroy?.(); } catch { /* ignore */ }
 
+    // Wipe Otto's global so the re-added shim.js boots from scratch.
+    // Otto guards its own init with something like "if (window.otto) return" —
+    // without this, re-adding the script tag on tab switch is a no-op and the
+    // widget never comes back after SPA navigation.
+    try { delete (w as unknown as Record<string, unknown>).otto; } catch { /* ignore */ }
+
     // Set clinic ID before the script runs
     w.televet = { id: clinicId };
 
@@ -57,11 +63,13 @@ export function OttoInlineWidget({
       const widget = w.otto?.widget;
       if (widget && !initialized.current) {
         initialized.current = true;
-        // initialize() pre-selects the request type before the widget renders (no general-menu flash)
-        // fall back to selectRequestType() if initialize isn't exposed post-init
+        // initialize() pre-selects before the widget renders (no general-menu flash).
+        // selectRequestType() is also called as a backstop in case initialize() fired
+        // too late and the widget already rendered with the general menu.
         if (widget.initialize) {
           widget.initialize(clinicId, requestType ? { selectRequestType: requestType } : undefined);
-        } else if (requestType) {
+        }
+        if (requestType) {
           widget.selectRequestType?.(requestType);
         }
         setLoading(false);

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, CalendarDays, Menu, MessageCircle, Phone, ShoppingBag, UserRound } from "lucide-react";
+import { ArrowRight, CalendarDays, Menu, MessageCircle, Phone, Search, ShoppingBag, UserRound } from "lucide-react";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { navigation } from "@/data/navigation";
@@ -21,6 +21,7 @@ import {
 import { Sheet, SheetClose, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { LanguageSelector } from "./LanguageSelector";
 import { Logo } from "./Logo";
+import { SiteSearch } from "./SiteSearch";
 
 type HeaderLocation = Pick<PublicLocation, "id" | "name" | "address" | "phone" | "tel">;
 
@@ -141,6 +142,7 @@ export function Header({
         </NavigationMenu>
 
         <div className="desktop-actions">
+          <SiteSearch />
           <UtilityAction href={onlinePortalUrl}>
             <UserRound aria-hidden="true" size={15} />
             {copy.patientPortal}
@@ -169,6 +171,19 @@ export function Header({
               <SheetTitle>{copy.menuTitle}</SheetTitle>
               <SheetDescription>{copy.menuDescription}</SheetDescription>
             </SheetHeader>
+
+            {/* Mobile search bar — opens the SiteSearch dialog via custom event */}
+            <SheetClose asChild>
+              <button
+                type="button"
+                className="mobile-search-bar"
+                onClick={() => window.dispatchEvent(new CustomEvent("vmc:open-search"))}
+                aria-label="Search the site"
+              >
+                <Search aria-hidden="true" size={16} />
+                <span className="mobile-search-bar-placeholder">Search services, resources…</span>
+              </button>
+            </SheetClose>
 
             <nav className="mobile-menu-nav" aria-label="Mobile navigation">
               <div>
