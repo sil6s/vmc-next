@@ -13222,6 +13222,47 @@ body > div:has(> #televet-widget-iframe) {
   padding: 0 !important;
 }
 
+/* Wrapper that positions the loading overlay relative to the container */
+.otto-widget-frame {
+  position: relative;
+}
+
+/* Spinner overlay — sits on top of the container while Otto loads */
+.otto-loading-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: var(--white);
+  z-index: 2;
+  min-height: 560px;
+  border-radius: 0 0 8px 8px;
+}
+
+.otto-loading-spinner {
+  display: block;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px solid rgba(153, 60, 29, 0.12);
+  border-top-color: #993c1d;
+  animation: otto-spin 0.75s linear infinite;
+}
+
+.otto-loading-text {
+  font-size: 13px;
+  font-weight: 750;
+  color: #888780;
+  letter-spacing: 0.01em;
+}
+
+@keyframes otto-spin {
+  to { transform: rotate(360deg); }
+}
+
 .chat-support-widget:has(.chat-support-panel) .chat-support-button {
   display: none;
 }
