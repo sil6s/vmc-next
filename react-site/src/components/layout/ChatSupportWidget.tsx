@@ -4,29 +4,23 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import Image from "next/image";
 import type { SVGProps } from "react";
-import { OTTO_CLINIC_IDS } from "@/lib/otto";
+import {
+  locationKeyToOnlineHelpSlug,
+  onlineHelpPath,
+  onlineHelpRequests,
+  type OnlineHelpRequestSlug
+} from "@/lib/online-help";
 import type { PublicLocation } from "@/lib/settings/public";
 
 type LocationKey = "fortThomas" | "independence";
-type RequestType = "TalkToStaff" | "RequestAppointment" | "RequestRxRefill" | "RequestMedicalRecords" | "RequestVirtualConsult";
 type IconComponent = (props: SVGProps<SVGSVGElement> & { size?: number }) => React.ReactElement;
 type OpeningState = {
   location: LocationKey;
-  requestType: RequestType;
-};
-
-type OttoWidget = {
-  initialize?: (clinicId: string, options?: Record<string, unknown>) => void;
-  destroy?: () => void;
-  close?: () => void;
+  request: OnlineHelpRequestSlug;
 };
 
 declare global {
   interface Window {
-    televet?: Record<string, unknown>;
-    otto?: {
-      widget?: OttoWidget;
-    } & Record<string, unknown>;
     umami?: {
       track?: (eventName: string, eventData?: Record<string, unknown>) => void;
     };
@@ -78,13 +72,6 @@ const CalendarDaysIcon: IconComponent = (props) => (
     <path d="M8 18h.01" />
     <path d="M12 18h.01" />
     <path d="M16 18h.01" />
-  </SvgIcon>
-);
-
-const CheckCircleIcon: IconComponent = (props) => (
-  <SvgIcon {...props}>
-    <circle cx="12" cy="12" r="10" />
-    <path d="m9 12 2 2 4-4" />
   </SvgIcon>
 );
 
@@ -152,36 +139,28 @@ const helpActions = [
   {
     label: "Book an appointment",
     description: "Find a time that works for you",
-    requestType: "RequestAppointment",
+    request: "appointment",
     icon: CalendarDaysIcon
   },
   {
     label: "Request med & food refill",
     description: "Prescriptions and diet food refills",
-    requestType: "RequestRxRefill",
+    request: "refill",
     icon: PillIcon
   },
   {
     label: "Request medical records",
     description: "Get copies for you or another provider",
-    requestType: "RequestMedicalRecords",
+    request: "records",
     icon: FileTextIcon
   },
   {
     label: "Request virtual consult",
     description: "Video visit with our care team",
-    requestType: "RequestVirtualConsult",
+    request: "virtual-consult",
     icon: VideoIcon
   }
-] satisfies { label: string; description: string; requestType: RequestType; icon: IconComponent }[];
-
-const requestTypeLabels: Record<RequestType, string> = {
-  RequestAppointment: "appointment options",
-  RequestRxRefill: "refill requests",
-  RequestMedicalRecords: "medical records",
-  RequestVirtualConsult: "virtual consultations",
-  TalkToStaff: "general inquiries"
-};
+] satisfies { label: string; description: string; request: OnlineHelpRequestSlug; icon: IconComponent }[];
 
 function isLocationKey(value: string | null): value is LocationKey {
   return value === "fortThomas" || value === "independence";
@@ -200,8 +179,6 @@ export function ChatSupportWidget({
     const savedLocation = window.localStorage.getItem(SELECTED_LOCATION_KEY);
     return isLocationKey(savedLocation) ? savedLocation : null;
   });
-  const [isOttoReady, setIsOttoReady] = useState(false);
-  const [isOttoWindowOpen, setIsOttoWindowOpen] = useState(false);
   const [isOpening, setIsOpening] = useState(false);
   const [openingState, setOpeningState] = useState<OpeningState | null>(null);
   const [statusMessage, setStatusMessage] = useState("");
@@ -209,8 +186,6 @@ export function ChatSupportWidget({
   const [isMobilePanel, setIsMobilePanel] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const hasSeenOttoOpenRef = useRef(false);
-  const lastOttoDestroyAtRef = useRef(0);
 
   const locationMap = useMemo(() => {
     const fortThomas = locations?.find((location) => location.id === "fort-thomas");
@@ -233,28 +208,6 @@ export function ChatSupportWidget({
   }, [locations]);
 
   useEffect(() => {
-    window.televet = window.televet || {};
-    window.otto = window.otto || {};
-
-    if (!document.querySelector('script[src="https://connect.televet.com/shim.js"]')) {
-      const script = document.createElement("script");
-      script.async = true;
-      script.src = "https://connect.televet.com/shim.js";
-      document.head.appendChild(script);
-    }
-
-    const checkOtto = () => {
-      if (window.otto?.widget) {
-        setIsOttoReady(true);
-        window.clearInterval(interval);
-      }
-    };
-    const interval = window.setInterval(checkOtto, 400);
-    checkOtto();
-    return () => window.clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
     const mediaQuery = window.matchMedia("(max-width: 760px)");
     const updateMobilePanel = () => setIsMobilePanel(mediaQuery.matches);
     updateMobilePanel();
@@ -273,53 +226,6 @@ export function ChatSupportWidget({
     observer.observe(footer);
     return () => observer.disconnect();
   }, []);
-
-  useEffect(() => {
-    const updateOttoWindowState = () => {
-      const ottoFrame = document.querySelector<HTMLIFrameElement>("#televet-widget-iframe");
-      const ottoFrameStyles = ottoFrame ? window.getComputedStyle(ottoFrame) : null;
-      const ottoFrameRect = ottoFrame?.getBoundingClientRect();
-      const isOpen = Boolean(
-        ottoFrame?.isConnected &&
-        ottoFrameStyles &&
-        ottoFrameStyles.display !== "none" &&
-        ottoFrameStyles.visibility !== "hidden" &&
-        ottoFrameStyles.opacity !== "0" &&
-        ottoFrameRect &&
-        ottoFrameRect.width >= 280 &&
-        ottoFrameRect.height >= 360
-      );
-
-      document.body.classList.toggle("otto-window-open", isOpen);
-      setIsOttoWindowOpen(isOpen);
-
-      if (isOpen) {
-        hasSeenOttoOpenRef.current = true;
-        setIsOpening(false);
-        setOpeningState(null);
-        return;
-      }
-
-      if (hasSeenOttoOpenRef.current && ottoFrame?.isConnected && !isOpening) {
-        const now = Date.now();
-        if (now - lastOttoDestroyAtRef.current > 1500) {
-          lastOttoDestroyAtRef.current = now;
-          window.otto?.widget?.destroy?.();
-        }
-        hasSeenOttoOpenRef.current = false;
-      }
-    };
-
-    updateOttoWindowState();
-    const interval = window.setInterval(updateOttoWindowState, 500);
-    const observer = new MutationObserver(updateOttoWindowState);
-    observer.observe(document.body, { childList: true, subtree: true });
-    return () => {
-      window.clearInterval(interval);
-      observer.disconnect();
-      document.body.classList.remove("otto-window-open");
-    };
-  }, [isOpening]);
 
   useEffect(() => {
     if (!expanded) return;
@@ -369,53 +275,19 @@ export function ChatSupportWidget({
     trackChatEvent({ location: locationKey, step: "location_selected" });
   };
 
-  const openOttoForLocation = (locationKey: LocationKey, requestType: RequestType = "TalkToStaff") => {
-    const location = locationMap[locationKey];
-    const clinicId = OTTO_CLINIC_IDS[locationKey];
+  const openHelpPage = (locationKey: LocationKey, request: OnlineHelpRequestSlug = "general") => {
+    const locationSlug = locationKeyToOnlineHelpSlug(locationKey);
     setSelectedLocation(locationKey);
     window.localStorage.setItem(SELECTED_LOCATION_KEY, locationKey);
-    trackChatEvent({ location: locationKey, requestType });
-
-    if (!window.otto?.widget) {
-      setStatusMessage(`Live chat is not available yet. You can call ${location.name} or message our team below.`);
-      return;
-    }
+    trackChatEvent({ location: locationKey, request });
 
     setIsOpening(true);
-    setOpeningState({ location: locationKey, requestType });
+    setOpeningState({ location: locationKey, request });
     setExpanded(false);
 
-    try {
-      // Guard: Otto sometimes fires onClose/onMinimize/onDismiss immediately
-      // during initialize() while cleaning up a prior session. Only allow
-      // destroy() once the widget has actually opened (~5s iframe handshake).
-      let widgetOpened = false;
-      const safeDestroy = () => {
-        if (widgetOpened) window.otto?.widget?.destroy?.();
-      };
-
-      window.otto.widget.initialize?.(clinicId, {
-        isOpen: true,
-        showPreview: false,
-        selectRequestType: requestType,
-        onClose: safeDestroy,
-        onMinimize: safeDestroy,
-        onDismiss: safeDestroy
-      });
-
-      window.setTimeout(() => {
-        widgetOpened = true;
-        setIsOpening(false);
-        setOpeningState(null);
-      }, 5000);
-    } catch (error) {
-      console.error("Failed to open chat widget", error);
-      setExpanded(true);
-      setHelpLocation(locationKey);
-      setStatusMessage(`Chat could not open. You can call ${location.name} at ${location.phone}.`);
-      setIsOpening(false);
-      setOpeningState(null);
-    }
+    window.setTimeout(() => {
+      window.location.assign(onlineHelpPath(locationSlug, request));
+    }, 550);
   };
 
   const widgetStyle: CSSProperties | undefined = expanded
@@ -424,7 +296,7 @@ export function ChatSupportWidget({
           position: "fixed",
           inset: 0,
           right: 0,
-          bottom: isOttoWindowOpen ? 86 : 0,
+          bottom: 0,
           width: "100vw",
           justifyItems: "stretch",
           alignItems: "stretch"
@@ -451,7 +323,7 @@ export function ChatSupportWidget({
     ...widgetStyle,
     right: isMobilePanel ? 14 : 24,
     bottom: isMobilePanel ? 86 : 96,
-    display: isOttoWindowOpen || isOpening ? "none" : "grid",
+    display: isOpening ? "none" : "grid",
     width: widgetStyle?.width || "min(620px, calc(100vw - 32px))",
     justifyItems: widgetStyle?.justifyItems || "end",
     gap: 12,
@@ -543,7 +415,7 @@ export function ChatSupportWidget({
 
   return (
     <>
-      {isOpening && openingState && openingLocation && !isOttoWindowOpen && (
+      {isOpening && openingState && openingLocation && (
         <div className="chat-support-loading-panel" role="status" aria-live="polite" style={loadingPanelStyle}>
           <div style={{ display: "grid", justifyItems: "center", gap: 14, textAlign: "center", maxWidth: 290 }}>
             <span
@@ -562,7 +434,7 @@ export function ChatSupportWidget({
             <span style={{ display: "grid", gap: 5 }}>
               <strong style={{ fontSize: 18, fontWeight: 950, lineHeight: 1.15 }}>Opening {openingLocation.name} help</strong>
               <small style={{ color: "var(--body)", fontSize: 13, fontWeight: 750, lineHeight: 1.45 }}>
-                Loading Otto&apos;s {requestTypeLabels[openingState.requestType]} screen.
+                Taking you to {onlineHelpRequests[openingState.request].shortLabel}.
               </small>
             </span>
           </div>
@@ -631,10 +503,10 @@ export function ChatSupportWidget({
 
                 return (
                   <button
-                    key={action.requestType}
+                    key={action.request}
                     type="button"
                     disabled={isOpening}
-                    onClick={() => openOttoForLocation(helpLocation, action.requestType)}
+                    onClick={() => openHelpPage(helpLocation, action.request)}
                     style={actionButtonStyle}
                   >
                     <Icon aria-hidden="true" size={18} />
@@ -658,7 +530,7 @@ export function ChatSupportWidget({
               <button
                 type="button"
                 disabled={isOpening}
-                onClick={() => openOttoForLocation(helpLocation, "TalkToStaff")}
+                onClick={() => openHelpPage(helpLocation, "general")}
                 style={{
                   display: "inline-flex",
                   minHeight: 40,
@@ -681,19 +553,15 @@ export function ChatSupportWidget({
               </button>
             </div>
 
-            <p className={isOttoReady ? "chat-support-availability is-ready" : "chat-support-availability"} aria-live="polite">
-              {isOttoReady ? (
-                <><CheckCircleIcon size={14} />Help is available now</>
-              ) : (
-                "Loading… Phone options are ready if you need help now."
-              )}
+            <p className="chat-support-availability is-ready" aria-live="polite">
+              Choose an option and we&apos;ll open the right secure request page.
             </p>
             {statusMessage && <p className="chat-support-status" role="status">{statusMessage}</p>}
           </div>
         </div>
         )}
 
-        {!expanded && !isFooterVisible && !isOttoWindowOpen && !isMobilePanel && (
+        {!expanded && !isFooterVisible && !isMobilePanel && (
         <div className="chat-support-greeting" role="status" style={greetingStyle}>
           <span className="chat-support-greeting-avatar">
             <Image
@@ -714,11 +582,11 @@ export function ChatSupportWidget({
         </div>
         )}
 
-        {!expanded && !isOttoWindowOpen && (
+        {!expanded && (
         <button
           aria-controls={PANEL_ID}
           aria-expanded={expanded}
-          aria-label={isOpening ? "Opening chat…" : "Open chat support panel"}
+          aria-label={isOpening ? "Opening help options..." : "Open help options"}
           aria-busy={isOpening || undefined}
           className={isOpening ? "chat-support-button is-loading" : "chat-support-button"}
           ref={buttonRef}
@@ -729,10 +597,10 @@ export function ChatSupportWidget({
         >
           {isOpening
             ? <LoaderIcon size={22} className="chat-support-spinner" />
-            : <MessageCircleIcon size={25} strokeWidth={2.4} className={isOttoReady ? "chat-support-button-icon is-live" : "chat-support-button-icon"} />}
+            : <MessageCircleIcon size={25} strokeWidth={2.4} className="chat-support-button-icon" />}
           <span className="chat-support-button-label">
             <strong>{isOpening ? "Connecting…" : "Get help now"}</strong>
-            <small>{isOpening ? "Opening your chat session." : "Book, refill, message, or get records."}</small>
+            <small>{isOpening ? "Opening your request page." : "Book, refill, message, or get records."}</small>
           </span>
         </button>
         )}

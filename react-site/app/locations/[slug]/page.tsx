@@ -6,7 +6,6 @@ import { ArrowRight, Award, BookOpenText, Car, CheckCircle, Clock, ExternalLink,
 import { Breadcrumbs } from "@/components/sections/Breadcrumbs";
 import { CTASection } from "@/components/sections/CTASection";
 import { FAQSection } from "@/components/sections/FAQSection";
-import { OttoInlineWidget } from "@/components/sections/OttoInlineWidget";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { locations, getLocation } from "@/data/locations";
@@ -16,7 +15,7 @@ import { serviceHubServices } from "@/data/serviceHub";
 import { site } from "@/data/site";
 import { testimonials } from "@/data/testimonials";
 import { pageMetadata } from "@/lib/metadata";
-import { OTTO_CLINIC_IDS as OTTO_LOCATION_CLINIC_IDS } from "@/lib/otto";
+import { onlineHelpPath, type OnlineHelpLocationSlug } from "@/lib/online-help";
 import { getPublicSettings } from "@/lib/settings/public";
 import { breadcrumbSchema, cityPageVeterinaryCareSchema, faqSchema, JsonLd, locationVeterinaryCareSchema, serviceListSchema, webpageSchema } from "@/lib/schema";
 import { getBlogPosts } from "@/sanity/posts";
@@ -70,9 +69,9 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   return {};
 }
 
-const OTTO_CLINIC_IDS: Record<string, string | undefined> = {
-  "vet-in-fort-thomas-ky": OTTO_LOCATION_CLINIC_IDS.fortThomas,
-  "vet-in-independence-ky": OTTO_LOCATION_CLINIC_IDS.independence
+const ONLINE_HELP_LOCATION_SLUGS: Record<string, OnlineHelpLocationSlug> = {
+  "vet-in-fort-thomas-ky": "fort-thomas",
+  "vet-in-independence-ky": "independence"
 };
 
 // ── City SEO page service slugs ──────────────────────────────────────────────
@@ -342,7 +341,7 @@ export default async function LocationPage({ params }: Params) {
     return <CityPageView cityPage={cityPage} />;
   }
 
-  const ottoClinicId = OTTO_CLINIC_IDS[location.slug];
+  const onlineHelpLocationSlug = ONLINE_HELP_LOCATION_SLUGS[location.slug];
   const [settings, resourcePosts] = await Promise.all([getPublicSettings(), getBlogPosts(8)]);
   const siteLocation =
     settings.publicLocations.find((item) => item.name === location.shortName) ||
@@ -704,8 +703,8 @@ export default async function LocationPage({ params }: Params) {
         </Container>
       </section>
 
-      {/* ── Otto Booking Widget ── */}
-      {ottoClinicId && (
+      {/* ── Online Help ── */}
+      {onlineHelpLocationSlug && (
         <section className="location-section location-section-white">
           <Container>
             <div className="location-section-head">
@@ -713,7 +712,20 @@ export default async function LocationPage({ params }: Params) {
               <h2>Reach our {location.shortName} team.</h2>
               <p>Request an appointment, ask a question, or connect with our {location.shortName} team directly.</p>
             </div>
-            <OttoInlineWidget clinicId={ottoClinicId} clinicName={location.shortName} />
+            <div className="live-chat-page-actions">
+              <Link className="btn btn-primary" href={onlineHelpPath(onlineHelpLocationSlug, "appointment")}>
+                Request Appointment
+              </Link>
+              <Link className="btn btn-ghost" href={onlineHelpPath(onlineHelpLocationSlug, "refill")}>
+                Request Refill
+              </Link>
+              <Link className="btn btn-ghost" href={onlineHelpPath(onlineHelpLocationSlug, "records")}>
+                Request Records
+              </Link>
+              <Link className="btn btn-ghost" href={onlineHelpPath(onlineHelpLocationSlug, "general")}>
+                General Inquiry
+              </Link>
+            </div>
           </Container>
         </section>
       )}

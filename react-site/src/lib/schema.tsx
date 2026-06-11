@@ -203,7 +203,7 @@ export function cityPageVeterinaryCareSchema(opts: {
   city: string;
   state: string;
 }) {
-  const { locationName, address, tel, phone, path, city, state } = opts;
+  const { locationName, address, tel, path, city, state } = opts;
   const isIndependence = locationName === "Independence";
   const officialName = isIndependence
     ? "Veterinary Medical Centers of Independence"
@@ -305,7 +305,7 @@ export function articleSchema(post: {
       url: site.siteUrl,
       logo: {
         "@type": "ImageObject",
-        url: absoluteUrl("/favicon.png")
+        url: absoluteUrl("/apple-touch-icon.png")
       }
     }
   };

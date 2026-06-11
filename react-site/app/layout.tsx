@@ -41,9 +41,9 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     description: settings.seo.defaultMetaDescription,
     icons: {
-      icon: [{ url: "/favicon.png", type: "image/png" }],
-      shortcut: "/favicon.png",
-      apple: "/favicon.png"
+      icon: [{ url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" }],
+      shortcut: "/favicon-32x32.png",
+      apple: [{ url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }]
     },
     manifest: "/manifest.webmanifest",
     robots: {

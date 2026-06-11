@@ -9,7 +9,7 @@ import { getPublicSettings } from "@/lib/settings/public";
 export const metadata = pageMetadata({
   title: "Book a Vet Appointment | Veterinary Medical Centers",
   description:
-    "Book a veterinary appointment at Veterinary Medical Centers. New patients can complete registration, and existing clients can use portal, phone, live chat, pharmacy, or contact options.",
+    "Book a veterinary appointment at Veterinary Medical Centers. New patients can complete registration, and existing clients can use the portal, phone, online help, pharmacy, or contact options.",
   path: "/book-appointment/"
 });
 

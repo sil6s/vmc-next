@@ -28,8 +28,8 @@ const nextConfig: NextConfig = {
         ]
       },
       {
-        // Prevent indexing of admin/auth routes
-        source: "/(dashboard|login|not-authorized|studio)(.*)",
+        // Prevent indexing of admin/auth and online request routes
+        source: "/(dashboard|login|not-authorized|studio|online-help)(.*)",
         headers: [
           { key: "X-Robots-Tag", value: "noindex, nofollow" }
         ]
@@ -93,6 +93,21 @@ const nextConfig: NextConfig = {
       {
         source: "/privacy/",
         destination: "/privacy-policy/",
+        permanent: true
+      },
+      {
+        source: "/live-chat/:location/",
+        destination: "/online-help/:location/general/",
+        permanent: true
+      },
+      {
+        source: "/live-chat/:location/:request/",
+        destination: "/online-help/:location/:request/",
+        permanent: true
+      },
+      {
+        source: "/online-help/:location/",
+        destination: "/online-help/:location/general/",
         permanent: true
       }
     ];

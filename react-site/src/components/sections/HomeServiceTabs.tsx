@@ -262,8 +262,8 @@ export function HomeServiceTabs() {
                 ))}
               </ul>
               <div className="home-service-card-actions">
-                <Link href={service.href} aria-label={`Learn more about ${service.title}`}>Learn more</Link>
-                <Link href="/book-appointment/" aria-label={`Book a ${service.title} appointment`}>Book this service</Link>
+                <Link href={service.href}>Learn more about {service.title}</Link>
+                <Link href="/book-appointment/" aria-label={`Book this service: ${service.title}`}>Book this service</Link>
               </div>
             </div>
           </article>

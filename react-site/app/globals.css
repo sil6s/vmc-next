@@ -5009,7 +5009,7 @@ textarea {
 
 .team-placeholder span,
 .staff-card span {
-  color: var(--gold);
+  color: #8a551b;
   font-size: 10px;
   font-weight: 900;
   letter-spacing: 0.1em;
@@ -11770,7 +11770,7 @@ textarea {
 
 .home-new-client-steps span {
   display: block;
-  color: rgba(169, 27, 27, 0.3);
+  color: rgba(169, 27, 27, 0.62);
   font-family: var(--font-serif), Georgia, serif;
   font-size: 40px;
   font-weight: 900;
@@ -12647,7 +12647,7 @@ textarea {
 }
 
 .pawstimonial-card small {
-  color: var(--gold);
+  color: #8a551b;
   font-size: 11px;
   font-weight: 900;
   letter-spacing: 0.08em;
@@ -12723,7 +12723,7 @@ textarea {
 
 .first-visit-card-grid span {
   grid-row: span 2;
-  color: rgba(169, 27, 27, 0.24);
+  color: rgba(169, 27, 27, 0.62);
   font-family: var(--font-serif), Georgia, serif;
   font-size: 35px;
   font-weight: 900;
@@ -13183,25 +13183,36 @@ body.otto-window-open .chat-support-widget {
   display: none;
 }
 
-#televet-widget-iframe {
-  border: 0 !important;
-  border-radius: 16px !important;
-  bottom: 8px !important;
-  box-shadow: 0 24px 70px rgba(23, 19, 19, 0.24) !important;
-  height: min(732px, calc(100dvh - 16px)) !important;
-  left: auto !important;
-  max-height: calc(100dvh - 16px) !important;
-  max-width: calc(100vw - 16px) !important;
-  outline: none !important;
-  overflow: hidden !important;
-  position: fixed !important;
-  right: 8px !important;
-  top: auto !important;
-  width: min(424px, calc(100vw - 16px)) !important;
-  z-index: 2147483647 !important;
+/* Otto inline widget — size the container; Otto places the iframe here automatically.
+   !important is required because Otto's shim.js injects its own
+   "#otto-widget-iframe-container { width: 400px; height: 700px }" rule after
+   the stylesheet loads, which otherwise wins the cascade. */
+#otto-widget-iframe-container {
+  width: 100% !important;
+  min-height: 560px !important;
+  height: clamp(560px, 76vh, 900px) !important;
+  background: var(--white);
 }
 
-/* Strip any direct wrapper div Otto injects around its iframe */
+/* Force the iframe to fill the container and override any floating styles Otto may set */
+#otto-widget-iframe-container iframe {
+  display: block !important;
+  position: static !important;
+  inset: auto !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 560px !important;
+  max-width: none !important;
+  max-height: none !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  z-index: auto !important;
+  color-scheme: light;
+}
+
+/* Strip any outer wrapper div Otto injects around its iframe */
 body > div:has(> #televet-widget-iframe) {
   background: transparent !important;
   border: 0 !important;
@@ -15806,17 +15817,13 @@ body > div:has(> #televet-widget-iframe) {
     bottom: env(safe-area-inset-bottom, 0px);
   }
 
-  #televet-widget-iframe {
-    border-radius: 0 !important;
-    bottom: 0 !important;
-    box-shadow: none !important;
-    height: 100dvh !important;
-    left: 0 !important;
-    max-height: 100dvh !important;
-    max-width: 100vw !important;
-    right: 0 !important;
-    top: 0 !important;
-    width: 100vw !important;
+  .otto-inline-widget-wrapper #televet-widget-iframe {
+    position: static !important;
+    inset: auto !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
   }
 
   .chat-support-widget:has(.chat-support-panel) {
@@ -22066,295 +22073,263 @@ body:has(.standalone-studio-shell) {
   }
 }
 
-.live-chat-page-hero {
+/* Hide floating chat widget on the online help page — user is already here */
+body:has(.online-help-body) .chat-support-widget {
+  display: none !important;
+}
+
+/* ── Online Help page ────────────────────────────────────────────────────── */
+
+/* Header */
+.online-help-header {
   background: var(--cream);
-  padding: clamp(56px, 8vw, 104px) 0 clamp(34px, 6vw, 72px);
+  padding: clamp(32px, 5vw, 52px) 0 clamp(20px, 3vw, 32px);
 }
 
-.live-chat-page-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(280px, 420px);
-  gap: clamp(22px, 5vw, 56px);
-  align-items: center;
-}
-
-.live-chat-page-grid h1 {
-  max-width: 780px;
-  margin: 0;
+.online-help-header h1 {
+  max-width: 720px;
+  margin: 10px 0 0;
   color: var(--ink);
   font-family: var(--font-serif), Georgia, serif;
-  font-size: clamp(44px, 7vw, 76px);
-  line-height: 1.02;
+  font-size: clamp(30px, 5vw, 50px);
+  line-height: 1.06;
 }
 
-.live-chat-page-grid p {
-  max-width: 680px;
-  margin: 18px 0 0;
+.online-help-header p {
+  max-width: 580px;
+  margin: 10px 0 0;
   color: var(--body);
-  font-size: 18px;
-  font-weight: 600;
-  line-height: 1.7;
-}
-
-.live-chat-page-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 26px;
-}
-
-.live-chat-page-actions .btn {
-  gap: 8px;
-}
-
-.live-chat-page-media {
-  position: relative;
-  min-height: 420px;
-}
-
-.live-chat-page-media > img {
-  width: 100%;
-  height: 420px;
-  object-fit: cover;
-  border-radius: 8px;
-  box-shadow: 0 22px 62px rgba(23, 19, 19, 0.14);
-}
-
-.live-chat-page-card {
-  position: absolute;
-  right: 18px;
-  bottom: 18px;
-  max-width: min(330px, calc(100% - 36px));
-  display: grid;
-  gap: 12px;
-  border: 1px solid rgba(169, 27, 27, 0.14);
-  border-radius: 8px;
-  background: var(--white);
-  box-shadow: 0 20px 56px rgba(23, 19, 19, 0.08);
-  padding: clamp(22px, 4vw, 32px);
-}
-
-.live-chat-page-card svg {
-  color: var(--red);
-}
-
-.live-chat-page-card h2 {
-  margin: 0;
-  color: var(--ink);
-  font-family: var(--font-serif), Georgia, serif;
-  font-size: clamp(26px, 4vw, 36px);
-  line-height: 1.08;
-}
-
-.live-chat-page-card p {
-  margin: 0;
   font-size: 15px;
-}
-
-.live-chat-location-switcher {
-  display: flex;
-  margin: 0 0 20px;
-}
-
-.live-chat-location-choice {
-  display: inline-grid;
-  grid-template-columns: 42px minmax(0, 1fr);
-  gap: 12px;
-  align-items: center;
-  width: min(100%, 420px);
-  border: 1px solid rgba(169, 27, 27, 0.22);
-  border-radius: 8px;
-  background: rgba(169, 27, 27, 0.06);
-  color: var(--ink);
-  padding: 14px 16px;
-  text-decoration: none;
-  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
-}
-
-.live-chat-location-choice:hover,
-.live-chat-location-choice:focus-visible {
-  border-color: rgba(169, 27, 27, 0.42);
-  box-shadow: 0 14px 34px rgba(23, 19, 19, 0.08);
-  transform: translateY(-1px);
-}
-
-.live-chat-location-choice svg {
-  display: grid;
-  place-self: center;
-  color: var(--red);
-}
-
-.live-chat-location-choice span {
-  display: grid;
-  gap: 3px;
-  min-width: 0;
-}
-
-.live-chat-location-choice strong {
-  display: block;
-  font-size: 16px;
-  font-weight: 950;
-  line-height: 1.2;
-}
-
-.live-chat-location-choice small {
-  display: block;
-  color: var(--body);
-  font-size: 12px;
-  font-weight: 850;
-  letter-spacing: 0.06em;
-  line-height: 1.2;
-  text-transform: uppercase;
-}
-
-.live-chat-bottom-location-card {
-  display: grid;
-  grid-template-columns: minmax(280px, 0.44fr) minmax(0, 1fr);
-  gap: clamp(22px, 4vw, 42px);
-  align-items: center;
-  border: 1px solid rgba(169, 27, 27, 0.14);
-  border-radius: 8px;
-  background: var(--white);
-  box-shadow: 0 18px 52px rgba(23, 19, 19, 0.06);
-  padding: clamp(18px, 3vw, 26px);
-}
-
-.live-chat-bottom-location-card > img {
-  width: 100%;
-  height: auto;
-  min-height: 290px;
-  max-height: 420px;
-  object-fit: cover;
-  border-radius: 6px;
-}
-
-.live-chat-bottom-location-card h2 {
-  max-width: 680px;
-  margin: 0;
-  color: var(--ink);
-  font-family: var(--font-serif), Georgia, serif;
-  font-size: clamp(30px, 4vw, 46px);
-  line-height: 1.08;
-}
-
-.live-chat-bottom-location-card p {
-  max-width: 680px;
-  margin: 16px 0 0;
-  color: var(--body);
-  font-size: 16px;
   font-weight: 600;
-  line-height: 1.7;
+  line-height: 1.65;
 }
 
-.live-chat-bottom-details {
-  display: grid;
-  gap: 10px;
-  margin-top: 18px;
-}
-
-.live-chat-bottom-details p,
-.live-chat-bottom-details a {
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
-  margin: 0;
-  color: var(--ink);
-  font-size: 15px;
-  font-weight: 850;
-  line-height: 1.45;
-  text-decoration: none;
-}
-
-.live-chat-bottom-details svg {
-  flex: 0 0 auto;
-  color: var(--red);
-  margin-top: 1px;
-}
-
-.otto-inline-widget-wrapper {
-  position: relative;
-  width: 100%;
-  min-height: 640px;
-  overflow: hidden;
-  border: 1px solid rgba(169, 27, 27, 0.14);
-  border-radius: 8px;
+/* Tab nav */
+.online-help-nav {
   background: var(--white);
-  box-shadow: 0 18px 52px rgba(23, 19, 19, 0.06);
+  border-bottom: 1px solid #d3d1c7;
 }
 
-.otto-inline-widget-wrapper::before {
-  content: "Loading live chat...";
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  color: var(--body);
-  font-size: 14px;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+.online-help-tab-row {
+  display: flex;
+  align-items: stretch;
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin-bottom: -1px; /* overlap nav border-bottom so active underline sits on it */
 }
 
-.otto-inline-widget-wrapper.is-ready::before,
-.otto-inline-widget-wrapper:has(iframe)::before {
+.online-help-tab-row::-webkit-scrollbar {
   display: none;
 }
 
-.otto-inline-widget-wrapper iframe {
-  width: 100%;
-  min-height: 640px;
-  border: 0;
+.online-help-tab-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 14px 18px 13px;
+  color: #888780;
+  font-size: 14.5px;
+  font-weight: 650;
+  text-decoration: none;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+  flex-shrink: 0;
 }
 
-@media (max-width: 860px) {
-  .live-chat-page-grid {
+.online-help-tab-link:hover,
+.online-help-tab-link:focus-visible {
+  color: var(--ink);
+}
+
+.online-help-tab-link[aria-current="page"] {
+  color: #993c1d;
+  border-bottom-color: #993c1d;
+  font-weight: 750;
+}
+
+/* Location switcher */
+.online-help-location-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0 14px;
+  font-size: 13px;
+}
+
+.online-help-location-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #888780;
+  font-weight: 650;
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.online-help-location-link:hover,
+.online-help-location-link:focus-visible {
+  color: var(--ink);
+}
+
+.online-help-location-link.is-current {
+  color: var(--ink);
+  font-weight: 850;
+}
+
+.online-help-location-divider {
+  color: #d3d1c7;
+  user-select: none;
+}
+
+/* Body */
+.online-help-body {
+  padding: clamp(24px, 4vw, 36px) 0 clamp(48px, 7vw, 72px);
+}
+
+/* Partner callout */
+.online-help-callout {
+  border-left: 3px solid #712b13;
+  border-radius: 0 4px 4px 0;
+  background: #faece7;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+}
+
+.online-help-callout strong {
+  display: block;
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 850;
+  line-height: 1.35;
+  margin-bottom: 5px;
+}
+
+.online-help-callout p {
+  margin: 0;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+/* Widget card */
+.online-help-widget-card {
+  border: 1px solid #d3d1c7;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 36px;
+}
+
+.online-help-widget-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 16px;
+  border-bottom: 1px solid #d3d1c7;
+  background: var(--white);
+}
+
+.online-help-widget-clinic-name {
+  font-size: 14px;
+  font-weight: 850;
+  color: var(--ink);
+}
+
+.online-help-powered-by {
+  font-size: 12px;
+  font-weight: 700;
+  color: #888780;
+  white-space: nowrap;
+}
+
+/* Other ways to reach us */
+.online-help-contact-section {
+  border-top: 1px solid #d3d1c7;
+  padding-top: 26px;
+  margin-bottom: 16px;
+}
+
+.online-help-contact-section h2 {
+  margin: 0 0 20px;
+  color: var(--ink);
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: clamp(22px, 3vw, 28px);
+  line-height: 1.15;
+}
+
+.online-help-contact-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border: 1px solid #d3d1c7;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.online-help-contact-col {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 16px 20px;
+  border-right: 1px solid #d3d1c7;
+}
+
+.online-help-contact-col:last-child {
+  border-right: 0;
+}
+
+.online-help-contact-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 850;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: #888780;
+  line-height: 1.3;
+}
+
+.online-help-contact-value {
+  display: block;
+  font-size: clamp(16px, 2.2vw, 19px);
+  font-weight: 850;
+  color: #993c1d;
+  text-decoration: none;
+  line-height: 1.3;
+  transition: opacity 0.15s;
+}
+
+.online-help-contact-value:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Small-print disclaimer */
+.online-help-disclaimer {
+  margin: 0;
+  font-size: 12px;
+  color: #b4b2a9;
+  line-height: 1.65;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .online-help-tab-link {
+    padding: 12px 14px 11px;
+    font-size: 13.5px;
+  }
+
+  .online-help-contact-grid {
     grid-template-columns: 1fr;
   }
 
-  .live-chat-page-media {
-    min-height: 360px;
+  .online-help-contact-col {
+    border-right: 0;
+    border-bottom: 1px solid #d3d1c7;
+    padding: 14px 16px;
   }
 
-  .live-chat-page-media > img {
-    height: 360px;
-  }
-
-  .live-chat-bottom-location-card {
-    grid-template-columns: 1fr;
-  }
-
-  .live-chat-bottom-location-card > img {
-    max-height: 360px;
-  }
-}
-
-@media (max-width: 600px) {
-  .live-chat-page-hero {
-    padding-top: 42px;
-  }
-
-  .live-chat-page-actions .btn {
-    width: 100%;
-  }
-
-  .live-chat-page-media {
-    min-height: 0;
-  }
-
-  .live-chat-page-media > img {
-    height: 320px;
-  }
-
-  .live-chat-page-card {
-    position: relative;
-    right: auto;
-    bottom: auto;
-    max-width: none;
-    margin-top: 12px;
-  }
-
-  .otto-inline-widget-wrapper,
-  .otto-inline-widget-wrapper iframe {
-    min-height: 700px;
+  .online-help-contact-col:last-child {
+    border-bottom: 0;
   }
 }
