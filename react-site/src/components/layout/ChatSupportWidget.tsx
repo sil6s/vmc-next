@@ -9,6 +9,10 @@ import type { PublicLocation } from "@/lib/settings/public";
 type LocationKey = "fortThomas" | "independence";
 type RequestType = "TalkToStaff" | "RequestAppointment" | "RequestRxRefill" | "RequestMedicalRecords" | "RequestVirtualConsult";
 type IconComponent = (props: SVGProps<SVGSVGElement> & { size?: number }) => React.ReactElement;
+type OpeningState = {
+  location: LocationKey;
+  requestType: RequestType;
+};
 
 type OttoWidget = {
   initialize?: (clinicId: string, options?: Record<string, unknown>) => void;
@@ -175,6 +179,14 @@ const helpActions = [
   }
 ] satisfies { label: string; description: string; requestType: RequestType; icon: IconComponent }[];
 
+const requestTypeLabels: Record<RequestType, string> = {
+  RequestAppointment: "appointment options",
+  RequestRxRefill: "refill requests",
+  RequestMedicalRecords: "medical records",
+  RequestVirtualConsult: "virtual consultations",
+  TalkToStaff: "general inquiries"
+};
+
 function isLocationKey(value: string | null): value is LocationKey {
   return value === "fortThomas" || value === "independence";
 }
@@ -195,6 +207,7 @@ export function ChatSupportWidget({
   const [isOttoReady, setIsOttoReady] = useState(false);
   const [isOttoWindowOpen, setIsOttoWindowOpen] = useState(false);
   const [isOpening, setIsOpening] = useState(false);
+  const [openingState, setOpeningState] = useState<OpeningState | null>(null);
   const [statusMessage, setStatusMessage] = useState("");
   const [helpLocation, setHelpLocation] = useState<LocationKey>("fortThomas");
   const [isMobilePanel, setIsMobilePanel] = useState(false);
@@ -266,49 +279,21 @@ export function ChatSupportWidget({
   useEffect(() => {
     const updateOttoWindowState = () => {
       const ottoFrame = document.querySelector<HTMLIFrameElement>("#televet-widget-iframe");
-      const isOpen = Boolean(ottoFrame?.isConnected);
-
-      if (ottoFrame) {
-        const isMobile = window.matchMedia("(max-width: 760px)").matches;
-        const frameStyles: Partial<Record<keyof CSSStyleDeclaration, string>> = isMobile
-          ? {
-              border: "0",
-              borderRadius: "0",
-              bottom: "0",
-              height: "100dvh",
-              left: "0",
-              maxHeight: "100dvh",
-              maxWidth: "100vw",
-              position: "fixed",
-              right: "0",
-              top: "0",
-              width: "100vw",
-              zIndex: "2147483647"
-            }
-          : {
-              border: "0",
-              borderRadius: "16px",
-              bottom: "8px",
-              boxShadow: "0 24px 70px rgba(23, 19, 19, 0.24)",
-              height: "min(732px, calc(100dvh - 16px))",
-              left: "auto",
-              maxHeight: "calc(100dvh - 16px)",
-              maxWidth: "calc(100vw - 16px)",
-              position: "fixed",
-              right: "8px",
-              top: "auto",
-              width: "min(424px, calc(100vw - 16px))",
-              zIndex: "2147483647"
-            };
-
-        Object.entries(frameStyles).forEach(([property, value]) => {
-          if (!value) return;
-          ottoFrame.style.setProperty(property.replace(/[A-Z]/g, (match) => `-${match.toLowerCase()}`), value, "important");
-        });
-      }
+      const ottoFrameStyles = ottoFrame ? window.getComputedStyle(ottoFrame) : null;
+      const isOpen = Boolean(
+        ottoFrame?.isConnected &&
+        ottoFrameStyles &&
+        ottoFrameStyles.display !== "none" &&
+        ottoFrameStyles.visibility !== "hidden" &&
+        ottoFrameStyles.opacity !== "0"
+      );
 
       document.body.classList.toggle("otto-window-open", isOpen);
       setIsOttoWindowOpen(isOpen);
+
+      if (isOpen) {
+        setIsOpening(false);
+      }
     };
 
     updateOttoWindowState();
@@ -383,17 +368,34 @@ export function ChatSupportWidget({
     }
 
     setIsOpening(true);
+    setOpeningState({ location: locationKey, requestType });
     setExpanded(false);
 
     try {
+      // Destroy any previous instance first
+      window.otto.widget.destroy?.();
+
+      // Guard: Otto sometimes fires onClose/onMinimize/onDismiss immediately
+      // during initialize() while cleaning up a prior session. Only allow
+      // destroy() once the widget has actually opened (~5s iframe handshake).
+      let widgetOpened = false;
+      const safeDestroy = () => {
+        if (widgetOpened) window.otto?.widget?.destroy?.();
+      };
+
       window.otto.widget.initialize?.(clinicId, {
         isOpen: true,
         showPreview: false,
-        selectRequestType: requestType
+        selectRequestType: requestType,
+        onClose: safeDestroy,
+        onMinimize: safeDestroy,
+        onDismiss: safeDestroy
       });
 
       window.setTimeout(() => {
+        widgetOpened = true;
         setIsOpening(false);
+        setOpeningState(null);
       }, 5000);
     } catch (error) {
       console.error("Failed to open chat widget", error);
@@ -401,6 +403,7 @@ export function ChatSupportWidget({
       setHelpLocation(locationKey);
       setStatusMessage(`Chat could not open. You can call ${location.name} at ${location.phone}.`);
       setIsOpening(false);
+      setOpeningState(null);
     }
   };
 
@@ -437,7 +440,7 @@ export function ChatSupportWidget({
     ...widgetStyle,
     right: isMobilePanel ? 14 : 24,
     bottom: isMobilePanel ? 86 : 96,
-    display: isOttoWindowOpen ? "none" : "grid",
+    display: isOttoWindowOpen || isOpening ? "none" : "grid",
     width: widgetStyle?.width || "min(620px, calc(100vw - 32px))",
     justifyItems: widgetStyle?.justifyItems || "end",
     gap: 12,
@@ -496,8 +499,66 @@ export function ChatSupportWidget({
     padding: 16
   };
 
+  const openingLocation = openingState ? locationMap[openingState.location] : null;
+  const loadingPanelStyle: CSSProperties = isMobilePanel
+    ? {
+        position: "fixed",
+        inset: 0,
+        zIndex: 2147483646,
+        display: "grid",
+        placeItems: "center",
+        width: "100vw",
+        height: "100dvh",
+        background: "var(--cream)",
+        color: "var(--ink)",
+        padding: 24
+      }
+    : {
+        position: "fixed",
+        right: 8,
+        bottom: 8,
+        zIndex: 2147483646,
+        display: "grid",
+        placeItems: "center",
+        width: "min(424px, calc(100vw - 16px))",
+        height: "min(732px, calc(100dvh - 16px))",
+        border: "1px solid rgba(169, 27, 27, 0.16)",
+        borderRadius: 16,
+        background: "var(--cream)",
+        boxShadow: "0 24px 70px rgba(23, 19, 19, 0.24)",
+        color: "var(--ink)",
+        padding: 24
+      };
+
   return (
-    <div className="chat-support-widget" style={shellStyle}>
+    <>
+      {isOpening && openingState && openingLocation && !isOttoWindowOpen && (
+        <div className="chat-support-loading-panel" role="status" aria-live="polite" style={loadingPanelStyle}>
+          <div style={{ display: "grid", justifyItems: "center", gap: 14, textAlign: "center", maxWidth: 290 }}>
+            <span
+              style={{
+                display: "grid",
+                placeItems: "center",
+                width: 54,
+                height: 54,
+                borderRadius: 999,
+                background: "rgba(169, 27, 27, 0.09)",
+                color: "var(--red)"
+              }}
+            >
+              <LoaderIcon size={26} className="chat-support-spinner" />
+            </span>
+            <span style={{ display: "grid", gap: 5 }}>
+              <strong style={{ fontSize: 18, fontWeight: 950, lineHeight: 1.15 }}>Opening {openingLocation.name} help</strong>
+              <small style={{ color: "var(--body)", fontSize: 13, fontWeight: 750, lineHeight: 1.45 }}>
+                Loading Otto&apos;s {requestTypeLabels[openingState.requestType]} screen.
+              </small>
+            </span>
+          </div>
+        </div>
+      )}
+
+      <div className="chat-support-widget" style={shellStyle}>
         {expanded && (
         <div
           aria-describedby="vmc-chat-support-description"
@@ -663,6 +724,7 @@ export function ChatSupportWidget({
           </span>
         </button>
         )}
-    </div>
+      </div>
+    </>
   );
 }
