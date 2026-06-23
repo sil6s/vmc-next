@@ -130,6 +130,7 @@ export default async function HomePage() {
     excerpt: post.excerpt,
     category: post.category,
     imageUrl: post.featuredImage || "/images/veterinary-care-hero.jpg",
+    imageAlt: post.featuredImageAlt || `${post.title} — Veterinary Medical Centers Northern Kentucky`,
     readingTime: post.readingTime || "Pet care resource"
   }));
 
@@ -166,7 +167,7 @@ export default async function HomePage() {
         tone="white"
         eyebrow="Find Care"
         title="Find the right care for your pet"
-        intro="Whether your pet is due for a checkup, showing new symptoms, or starting care with our team for the first time, we’ll help you find the right next step."
+        intro="Whether your pet needs a routine checkup, is showing new symptoms, or you’re switching to a local veterinarian in Northern Kentucky for the first time, we’ll help you find the right next step at our Fort Thomas or Independence clinic."
       >
         <HomeCareFinder />
       </Section>
@@ -194,7 +195,7 @@ export default async function HomePage() {
         tone="white"
         eyebrow="Vet Services"
         title="Vet services for dogs and cats in Northern Kentucky"
-        intro="From first visits and vaccines to dental cleanings, surgery, diagnostics, and ongoing wellness, our vet team helps pets stay healthy through every stage of life."
+        intro="From first visits and vaccines to dental cleanings, surgery, diagnostics, and ongoing wellness, our Northern Kentucky vet team helps dogs and cats stay healthy through every stage of life — at our vet in Fort Thomas and our vet in Independence, Kentucky."
       >
         <HomeServiceTabs />
       </Section>
@@ -219,7 +220,7 @@ export default async function HomePage() {
         <div className="first-visit-home">
           <div>
             <p>
-              Starting with a new veterinarian should feel simple. We’ll review your pet’s history, talk through your concerns, complete a nose-to-tail exam, and help you understand the best next steps for your pet’s health.
+              Starting with a new veterinarian in Northern Kentucky should feel simple. At our locally owned veterinary clinic, we review your pet’s history, talk through your concerns, complete a nose-to-tail exam, and help you understand the best next steps — whether you’re visiting our vet in Fort Thomas or our vet in Independence.
             </p>
             <Button href="/new-patients/">Plan Your First Visit</Button>
           </div>

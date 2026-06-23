@@ -11,6 +11,7 @@ export type HomeResourcePost = {
   excerpt: string;
   category: string;
   imageUrl: string;
+  imageAlt: string;
   readingTime: string;
 };
 
@@ -34,7 +35,7 @@ export function HomeResourceCarousel({ posts, total }: { posts: HomeResourcePost
             <Link className="home-resource-thumb" href={`/resources/${post.slug}/`} tabIndex={-1} aria-hidden="true">
               <Image
                 src={post.imageUrl}
-                alt=""
+                alt={post.imageAlt}
                 fill
                 sizes="(max-width: 700px) 90vw, 340px"
               />

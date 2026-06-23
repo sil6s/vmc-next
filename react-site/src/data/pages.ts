@@ -2,15 +2,15 @@ export const pages = {
   home: {
     title: "Veterinary Medical Centers",
     seo: {
-      title: "Northern Kentucky Vet for Dogs & Cats | Fort Thomas & Independence",
-      description: "Locally owned Northern Kentucky vet care for dogs and cats, with convenient Fort Thomas and Independence locations. Schedule your pet's visit today."
+      title: "Northern Kentucky Vet for Dogs & Cats | VMC",
+      description: "Locally owned veterinary clinic in Northern Kentucky serving dogs and cats at Fort Thomas and Independence. Same-week appointments available — schedule a visit today."
     },
     hero: {
       eyebrow: "Veterinary Medical Centers",
       title: "Northern Kentucky vet for dogs and cats,",
       emphasis: "built around real relationships",
       body:
-        "Veterinary Medical Centers is a locally owned Northern Kentucky veterinary practice for dogs and cats, with convenient Fort Thomas and Independence locations, relationship-based care, and easy appointment scheduling.",
+        "Veterinary Medical Centers is a locally owned veterinary clinic built around real relationships between our team, your pet, and your family. Our Northern Kentucky veterinarian teams serve dogs and cats at convenient Fort Thomas and Independence locations, with same-week appointments and easy online scheduling.",
       image: "/images/cat-closeup-hero.png",
       imageAlt: "Cat receiving a gentle veterinary exam at Veterinary Medical Centers",
       badgeTitle: "Same-week appointments",
