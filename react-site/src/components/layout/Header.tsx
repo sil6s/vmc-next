@@ -9,7 +9,6 @@ import { locations as locationPages } from "@/data/locations";
 import { site } from "@/data/site";
 import type { PublicLocation } from "@/lib/settings/public";
 import { getMessages, localizedHref, type Locale } from "@/lib/i18n";
-import { PatientPortalDialog } from "./PatientPortalDialog";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -98,17 +97,18 @@ export function Header({
   locale = "en",
   ctaHref = "/book-appointment/",
   locations,
+  onlinePortalUrl = "/patient-portal-online-booking/",
   pharmacyUrl = "/online-vet-pharmacy-northern-kentucky-cincinnati/",
   showBookingButton = true
 }: {
   locale?: Locale;
   ctaHref?: string;
   locations?: ReadonlyArray<HeaderLocation>;
+  onlinePortalUrl?: string;
   pharmacyUrl?: string;
   showBookingButton?: boolean;
 }) {
   const [open, setOpen] = useState(false);
-  const [portalOpen, setPortalOpen] = useState(false);
   const publicLocations = locations || site.locations;
   const copy = getMessages(locale);
   const navigationLabels: Record<string, string> = {
@@ -145,10 +145,10 @@ export function Header({
 
         <div className="desktop-actions">
           <SiteSearch />
-          <button type="button" className="utility-button" onClick={() => setPortalOpen(true)}>
+          <UtilityAction href={onlinePortalUrl}>
             <UserRound aria-hidden="true" size={15} />
             {copy.patientPortal}
-          </button>
+          </UtilityAction>
           <UtilityAction href={pharmacyUrl}>
             <ShoppingBag aria-hidden="true" size={15} />
             {copy.onlinePharmacy}
@@ -226,17 +226,14 @@ export function Header({
                 <Phone aria-hidden="true" size={18} />
                 {copy.callUsNow}
               </a>
-              <button
-                type="button"
-                className="mobile-action-portal"
-                onClick={() => {
-                  setOpen(false);
-                  setPortalOpen(true);
-                }}
+              <a
+                href={onlinePortalUrl}
+                target={isExternalHref(onlinePortalUrl) ? "_blank" : undefined}
+                rel={isExternalHref(onlinePortalUrl) ? "noopener noreferrer" : undefined}
               >
                 <UserRound aria-hidden="true" size={18} />
                 {copy.patientPortal}
-              </button>
+              </a>
               <a className="mobile-pharmacy" href={pharmacyUrl} target={isExternalHref(pharmacyUrl) ? "_blank" : undefined} rel={isExternalHref(pharmacyUrl) ? "noopener noreferrer" : undefined}>
                 <ShoppingBag aria-hidden="true" size={18} />
                 {copy.onlinePharmacy}
@@ -245,7 +242,6 @@ export function Header({
           </SheetContent>
         </Sheet>
       </div>
-      <PatientPortalDialog open={portalOpen} onOpenChange={setPortalOpen} locations={publicLocations} />
     </header>
   );
 }

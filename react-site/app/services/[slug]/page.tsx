@@ -176,7 +176,7 @@ export default async function ServicePage({ params }: Params) {
         { label: "Call Independence", href: `tel:${site.locations[1].tel}` }
       ];
   const appointmentDialogProps = {
-    portalUrl: settings.externalLinks.onlinePortalUrl,
+    portalUrl: "/patient-portal-online-booking/",
     pharmacyUrl: settings.externalLinks.pharmacyUrl,
     liveChatEnabled: settings.liveChat.liveChatEnabled,
     locations: settings.publicLocations

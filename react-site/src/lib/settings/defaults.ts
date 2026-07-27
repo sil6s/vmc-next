@@ -36,7 +36,7 @@ export const defaultLiveChatSettings: LiveChatSettings = {
 };
 
 export const defaultExternalLinks: ExternalLinks = {
-  onlinePortalUrl: "/patient-portal-online-booking/",
+  onlinePortalUrl: "https://care.televet.com/login",
   pharmacyUrl: "https://nky-vet.ourvet.com/pet/",
   bookAppointmentUrl: "/book-appointment/",
   newPatientFormUrl: "/new-patient-registration-form/",

@@ -142,7 +142,7 @@ export default async function NewPatientsPage() {
   return (
     <>
       <NewPatientsExperience
-        portalUrl={settings.externalLinks.onlinePortalUrl}
+        portalUrl="/patient-portal-online-booking/"
         pharmacyUrl={settings.externalLinks.pharmacyUrl}
       />
       <Breadcrumbs items={crumbs.map((item) => ({ label: item.name, href: item.path }))} />

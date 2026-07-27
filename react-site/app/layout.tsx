@@ -77,6 +77,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           locale={locale}
           ctaHref={bookingHref}
           locations={settings.publicLocations}
+          onlinePortalUrl="/patient-portal-online-booking/"
           pharmacyUrl={settings.externalLinks.pharmacyUrl}
           showBookingButton={settings.quickControls.websiteBookingButton}
         />
@@ -97,11 +98,15 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         <Footer
           locale={locale}
           locations={settings.publicLocations}
-          onlinePortalUrl={settings.externalLinks.onlinePortalUrl}
+          onlinePortalUrl="/patient-portal-online-booking/"
           pharmacyUrl={settings.externalLinks.pharmacyUrl}
         />
         {settings.liveChat.liveChatEnabled && (
-          <ChatSupportWidget locations={settings.publicLocations} appointmentHref={bookingHref} />
+          <ChatSupportWidget
+            locations={settings.publicLocations}
+            appointmentHref={bookingHref}
+            hideLauncher={pathname === "/book-appointment/"}
+          />
         )}
         <JsonLd data={[organizationSchema(settings), websiteSchema(settings.siteUrl)]} />
         <UmamiTracker />

@@ -51,7 +51,7 @@ export const site = {
   tagline: "Fort Thomas & Independence, Kentucky",
   legal: "Fear-Free Certified. Licensed in KY and OH.",
   email: "information@nky.vet",
-  portalExternalUrl: "/patient-portal-online-booking/",
+  portalExternalUrl: "https://care.televet.com/login",
   pharmacyExternalUrl: "https://nky-vet.ourvet.com/pet/",
   googleTagManagerId: "GTM-K9VSFT44",
   socialImage: "/images/vmc-social-media.jpg",

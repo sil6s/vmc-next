@@ -167,10 +167,12 @@ function isLocationKey(value: string | null): value is LocationKey {
 }
 
 export function ChatSupportWidget({
-  locations
+  locations,
+  hideLauncher = false
 }: {
   locations?: PublicLocation[];
   appointmentHref?: string;
+  hideLauncher?: boolean;
 }) {
   const [expanded, setExpanded] = useState(false);
   const [isFooterVisible, setIsFooterVisible] = useState(false);
@@ -561,7 +563,7 @@ export function ChatSupportWidget({
         </div>
         )}
 
-        {!expanded && !isFooterVisible && !isMobilePanel && (
+        {!expanded && !hideLauncher && !isFooterVisible && !isMobilePanel && (
         <div className="chat-support-greeting" role="status" style={greetingStyle}>
           <span className="chat-support-greeting-avatar">
             <Image
@@ -582,7 +584,7 @@ export function ChatSupportWidget({
         </div>
         )}
 
-        {!expanded && (
+        {!expanded && !hideLauncher && (
         <button
           aria-controls={PANEL_ID}
           aria-expanded={expanded}

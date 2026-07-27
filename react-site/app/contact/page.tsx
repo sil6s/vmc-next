@@ -263,7 +263,7 @@ export default async function ContactPage() {
             icon={UserRound}
             title="Patient portal"
             description="Access records, invoices, and appointment history."
-            href={settings.externalLinks.onlinePortalUrl}
+            href="/patient-portal-online-booking/"
             action="Open Portal"
           />
         </div>

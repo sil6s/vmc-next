@@ -60,7 +60,7 @@ export const locationSchema = z.object({
 export const locationsSchema = z.array(locationSchema).min(1);
 
 export const externalLinksSchema = z.object({
-  onlinePortalUrl: optionalUrl.min(1, "Online portal URL is required."),
+  onlinePortalUrl: externalUrl.min(1, "Online portal URL is required."),
   pharmacyUrl: externalUrl.min(1, "Pharmacy URL is required."),
   bookAppointmentUrl: optionalUrl,
   newPatientFormUrl: optionalUrl,

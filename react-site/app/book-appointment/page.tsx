@@ -33,7 +33,7 @@ export default async function BookAppointmentPage({ searchParams }: PageProps) {
     <>
       {useClassicFlow ? (
         <BookAppointmentExperience
-          portalUrl={settings.externalLinks.onlinePortalUrl}
+          portalUrl="/patient-portal-online-booking/"
           pharmacyUrl={settings.externalLinks.pharmacyUrl}
           liveChatEnabled={settings.liveChat.liveChatEnabled}
           locations={settings.publicLocations}
