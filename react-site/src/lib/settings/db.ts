@@ -1,5 +1,7 @@
 import { Pool } from "pg";
 
+const SETTINGS_SCHEMA_LOCK = "vmc_settings_schema";
+
 type GlobalWithPool = typeof globalThis & {
   vmcSettingsPool?: Pool;
   vmcSettingsMigration?: Promise<void>;
@@ -35,7 +37,13 @@ export async function ensureSettingsTables() {
   }
 
   if (!globalForPool.vmcSettingsMigration) {
-    globalForPool.vmcSettingsMigration = getPool().query(`
+    globalForPool.vmcSettingsMigration = (async () => {
+      const client = await getPool().connect();
+
+      try {
+        await client.query("begin");
+        await client.query("select pg_advisory_xact_lock(hashtext($1))", [SETTINGS_SCHEMA_LOCK]);
+        await client.query(`
       create table if not exists users (
         email text primary key,
         name text,
@@ -132,7 +140,15 @@ export async function ensureSettingsTables() {
       );
 
       alter table new_patient_submissions add column if not exists uploaded_file_objects jsonb not null default '[]'::jsonb;
-    `).then(() => undefined);
+    `);
+        await client.query("commit");
+      } catch (error) {
+        await client.query("rollback").catch(() => undefined);
+        throw error;
+      } finally {
+        client.release();
+      }
+    })();
   }
 
   return globalForPool.vmcSettingsMigration;
