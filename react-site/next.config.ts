@@ -34,13 +34,18 @@ const nextConfig: NextConfig = {
           { key: "X-Robots-Tag", value: "noindex, nofollow" }
         ]
       },
-      {
-        // Long cache for static assets
-        source: "/(_next/static|images|favicon.png)(.*)",
-        headers: [
-          { key: "Cache-Control", value: "public, max-age=31536000, immutable" }
-        ]
-      }
+      // Long cache for static assets — production only. Turbopack dev chunk
+      // filenames aren't content-hashed the way production build output is,
+      // so caching them for a year in dev makes edits invisible until the
+      // browser cache is manually cleared.
+      ...(process.env.NODE_ENV === "production"
+        ? [
+            {
+              source: "/(_next/static|images|favicon.png)(.*)",
+              headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }]
+            }
+          ]
+        : [])
     ];
   },
   async redirects() {

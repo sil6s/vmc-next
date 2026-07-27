@@ -1,3 +1,4 @@
+import { BookAppointmentClinicChoice } from "@/components/sections/BookAppointmentClinicChoice";
 import { BookAppointmentExperience } from "@/components/sections/BookAppointmentExperience";
 import { Breadcrumbs } from "@/components/sections/Breadcrumbs";
 import { headers } from "next/headers";
@@ -14,7 +15,7 @@ export const metadata = pageMetadata({
 });
 
 type PageProps = {
-  searchParams?: Promise<{ type?: string }>;
+  searchParams?: Promise<{ type?: string; flow?: string }>;
 };
 
 export default async function BookAppointmentPage({ searchParams }: PageProps) {
@@ -23,17 +24,25 @@ export default async function BookAppointmentPage({ searchParams }: PageProps) {
   const locale = isLocale(localeHeader) ? localeHeader : "en";
   const params = await searchParams;
   const initialMode = params?.type === "new" || params?.type === "existing" ? params.type : "choose";
+  // Deep links from the New Patients page (?type=new / ?type=existing) and the
+  // classic choose screen (?flow=classic) keep using the original flow. Everything
+  // else lands on the simplified clinic-choice screen that routes into Otto.
+  const useClassicFlow = initialMode !== "choose" || params?.flow === "classic";
 
   return (
     <>
-      <BookAppointmentExperience
-        portalUrl={settings.externalLinks.onlinePortalUrl}
-        pharmacyUrl={settings.externalLinks.pharmacyUrl}
-        liveChatEnabled={settings.liveChat.liveChatEnabled}
-        locations={settings.publicLocations}
-        initialMode={initialMode}
-        locale={locale}
-      />
+      {useClassicFlow ? (
+        <BookAppointmentExperience
+          portalUrl={settings.externalLinks.onlinePortalUrl}
+          pharmacyUrl={settings.externalLinks.pharmacyUrl}
+          liveChatEnabled={settings.liveChat.liveChatEnabled}
+          locations={settings.publicLocations}
+          initialMode={initialMode}
+          locale={locale}
+        />
+      ) : (
+        <BookAppointmentClinicChoice locations={settings.publicLocations} />
+      )}
       <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Book Appointment", href: "/book-appointment/" }]} />
       <JsonLd
         data={[

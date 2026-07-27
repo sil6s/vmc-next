@@ -36,7 +36,7 @@ export const defaultLiveChatSettings: LiveChatSettings = {
 };
 
 export const defaultExternalLinks: ExternalLinks = {
-  onlinePortalUrl: "https://tvmcft.use1.ezyvet.com/external/portal/main/login?id=2",
+  onlinePortalUrl: "/patient-portal-online-booking/",
   pharmacyUrl: "https://nky-vet.ourvet.com/pet/",
   bookAppointmentUrl: "/book-appointment/",
   newPatientFormUrl: "/new-patient-registration-form/",

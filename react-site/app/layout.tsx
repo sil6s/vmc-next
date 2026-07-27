@@ -77,7 +77,6 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
           locale={locale}
           ctaHref={bookingHref}
           locations={settings.publicLocations}
-          onlinePortalUrl={settings.externalLinks.onlinePortalUrl}
           pharmacyUrl={settings.externalLinks.pharmacyUrl}
           showBookingButton={settings.quickControls.websiteBookingButton}
         />
