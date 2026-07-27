@@ -6,7 +6,6 @@ import { Command as CommandPrimitive } from "cmdk";
 import {
   ArrowRight,
   BookOpen,
-  CalendarDays,
   LayoutGrid,
   MapPin,
   MessageCircle,
@@ -63,11 +62,7 @@ const CATEGORY_ICON: Record<SearchCategory, React.ReactNode> = {
 
 /* ─── Detect OS for keyboard hint ────────────────────────────────────────── */
 function useIsMac() {
-  const [isMac, setIsMac] = useState(false);
-  useEffect(() => {
-    setIsMac(navigator.platform.toUpperCase().includes("MAC"));
-  }, []);
-  return isMac;
+  return typeof navigator !== "undefined" && navigator.platform.toUpperCase().includes("MAC");
 }
 
 /* ─── Result item ─────────────────────────────────────────────────────────── */
@@ -123,12 +118,10 @@ export function SiteSearch() {
 
   // Focus input when dialog opens
   useEffect(() => {
-    if (open) {
-      // Small delay for the dialog entrance animation
-      const t = setTimeout(() => inputRef.current?.focus(), 50);
-      return () => clearTimeout(t);
-    }
-    setQuery("");
+    if (!open) return;
+    // Small delay for the dialog entrance animation
+    const t = setTimeout(() => inputRef.current?.focus(), 50);
+    return () => clearTimeout(t);
   }, [open]);
 
   const handleSelect = useCallback(
@@ -165,7 +158,13 @@ export function SiteSearch() {
       </button>
 
       {/* Dialog */}
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog
+        open={open}
+        onOpenChange={(nextOpen) => {
+          setOpen(nextOpen);
+          if (!nextOpen) setQuery("");
+        }}
+      >
         <DialogContent
           className="site-search-dialog"
           showClose={false}

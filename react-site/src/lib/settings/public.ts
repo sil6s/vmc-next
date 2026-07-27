@@ -1,8 +1,10 @@
 import { site } from "@/data/site";
 import { isGoogleMapsEmbedUrl, isGoogleMapsUrl } from "@/lib/google-maps";
-import { formatBusinessHour, formatPhoneForTel } from "./defaults";
+import { defaultDashboardSettings, formatBusinessHour, formatPhoneForTel } from "./defaults";
 import { getDashboardSettings } from "./settings";
 import type { DashboardSettings, ManagedLocation } from "./types";
+
+let hasWarnedAboutSettingsFallback = false;
 
 export function managedAddress(location: ManagedLocation) {
   return `${location.streetAddress}, ${location.city}, ${location.state} ${location.zipCode}`;
@@ -30,7 +32,18 @@ export function publicLocation(location: ManagedLocation) {
 }
 
 export async function getPublicSettings() {
-  const settings = await getDashboardSettings();
+  let settings: DashboardSettings;
+
+  try {
+    settings = await getDashboardSettings();
+  } catch (error) {
+    if (!hasWarnedAboutSettingsFallback) {
+      console.warn("Falling back to default public settings because dashboard settings could not be loaded.", error);
+      hasWarnedAboutSettingsFallback = true;
+    }
+    settings = defaultDashboardSettings;
+  }
+
   return {
     ...settings,
     publicLocations: settings.locations.map(publicLocation),

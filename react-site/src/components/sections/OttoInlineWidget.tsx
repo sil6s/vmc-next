@@ -33,12 +33,13 @@ export function OttoInlineWidget({
   clinicName?: string;
   requestType?: string;
 }) {
-  const [loading, setLoading] = useState(true);
+  const widgetKey = `${clinicId}:${requestType || ""}`;
+  const [loadedWidgetKey, setLoadedWidgetKey] = useState<string | null>(null);
   const initialized = useRef(false);
+  const loading = loadedWidgetKey !== widgetKey;
 
   useEffect(() => {
     initialized.current = false;
-    setLoading(true);
 
     const w = window as OttoWindow;
 
@@ -72,12 +73,12 @@ export function OttoInlineWidget({
         if (requestType) {
           widget.selectRequestType?.(requestType);
         }
-        setLoading(false);
+        setLoadedWidgetKey(widgetKey);
         window.clearInterval(interval);
         return;
       }
       if (++attempts > 60) {
-        setLoading(false);
+        setLoadedWidgetKey(widgetKey);
         window.clearInterval(interval);
       }
     }, 400);
@@ -86,7 +87,7 @@ export function OttoInlineWidget({
       window.clearInterval(interval);
       try { w.otto?.widget?.destroy?.(); } catch { /* ignore */ }
     };
-  }, [clinicId, requestType]);
+  }, [clinicId, requestType, widgetKey]);
 
   return (
     <div className="otto-widget-frame">

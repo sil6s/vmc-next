@@ -9,15 +9,24 @@ type GlobalWithPool = typeof globalThis & {
 
 const globalForPool = globalThis as GlobalWithPool;
 
+function databaseUrl() {
+  return (
+    process.env.PGHOSTNEW_DATABASE_URL ||
+    process.env.PGHOSTNEW_POSTGRES_URL ||
+    process.env.DATABASE_URL ||
+    process.env.POSTGRES_URL
+  );
+}
+
 export function hasDatabase() {
-  return Boolean(process.env.DATABASE_URL || process.env.POSTGRES_URL);
+  return Boolean(databaseUrl());
 }
 
 export function getPool() {
-  const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+  const connectionString = databaseUrl();
 
   if (!connectionString) {
-    throw new Error("DATABASE_URL or POSTGRES_URL is required for persistent dashboard settings.");
+    throw new Error("A Neon/Postgres connection string is required for persistent dashboard settings.");
   }
 
   if (!globalForPool.vmcSettingsPool) {

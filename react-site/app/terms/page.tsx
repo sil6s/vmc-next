@@ -143,7 +143,7 @@ export default function TermsPage() {
             </p>
             <p>
               Always seek the guidance of a licensed veterinarian with any questions you may have regarding
-              your pet's health, medical conditions, medications, or treatment plans. Never disregard
+              your pet&apos;s health, medical conditions, medications, or treatment plans. Never disregard
               professional veterinary advice or delay seeking it because of information you have read on this
               website.
             </p>
@@ -192,7 +192,7 @@ export default function TermsPage() {
               of the possibility of such damages.
             </p>
             <p>
-              This website and its content are provided on an "as is" and "as available" basis without any
+              This website and its content are provided on an &quot;as is&quot; and &quot;as available&quot; basis without any
               warranties of any kind, express or implied, including accuracy, completeness, fitness for a
               particular purpose, or non-infringement.
             </p>
@@ -213,7 +213,7 @@ export default function TermsPage() {
           <PolicySection id="changes" title="Changes to These Terms">
             <p>
               Veterinary Medical Centers may update or revise these Terms of Service at any time. When changes
-              are made, we will update the "Last Updated" date at the top of this page.
+              are made, we will update the &quot;Last Updated&quot; date at the top of this page.
             </p>
             <p>
               Continued use of the website after changes are posted constitutes your acceptance of the revised

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { AlertCircle, KeyRound, Mail } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { TurnstileField } from "@/components/forms/TurnstileField";
@@ -9,6 +10,7 @@ import { createClient } from "@/lib/supabase/client";
 const CODE_LENGTH = 8;
 
 export function PasskeySignInForm({ callbackUrl }: { callbackUrl: string }) {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [digits, setDigits] = useState<string[]>(Array(CODE_LENGTH).fill(""));
   const [state, setState] = useState<"idle" | "sending" | "sent" | "verifying" | "error">("idle");
@@ -60,7 +62,7 @@ export function PasskeySignInForm({ callbackUrl }: { callbackUrl: string }) {
       setState("sent");
       setErrorMessage("That code didn't work — check it or request a new one.");
     } else {
-      window.location.href = callbackUrl;
+      router.push(callbackUrl);
     }
   };
 
