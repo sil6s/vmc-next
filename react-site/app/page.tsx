@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { headers } from "next/headers";
-import { CalendarCheck, Clock, Clock3, FileText, HandHeart, HeartHandshake, MapPin, MessageSquareText, PawPrint, Phone, ShieldCheck, Stethoscope } from "lucide-react";
+import { CalendarCheck, Clock, Clock3, FileText, GraduationCap, HandHeart, Heart, HeartHandshake, MapPin, MessageSquareText, PawPrint, Phone, ShieldCheck, Stethoscope } from "lucide-react";
 import { FAQSection } from "@/components/sections/FAQSection";
 import { Hero } from "@/components/sections/Hero";
 import { HomeCareFinder } from "@/components/sections/HomeCareFinder";
@@ -34,40 +35,40 @@ export async function generateMetadata(): Promise<Metadata> {
 
 const localCards = [
   {
-    title: "Local relationships",
+    title: "We listen before recommending",
     text:
-      "Veterinary Medical Centers is rooted in Northern Kentucky, with a vet team that gets to know your pet's history, your goals, and what helps visits feel easier over time.",
+      "Every visit starts with your pet's history and your concerns, not a script. We take time to understand what's going on before we suggest what to do about it.",
     icon: HandHeart
   },
   {
-    title: "Clear communication",
+    title: "Clear answers without pressure",
     text:
-      "We explain what we see, what matters now, what can wait, and what each recommendation means before moving forward.",
+      "We explain what's urgent, what's preventive, and what can wait in plain language, so you can make decisions with confidence instead of on the spot.",
     icon: MessageSquareText
   },
   {
-    title: "Practical care plans",
+    title: "Familiar faces at future visits",
     text:
-      "Care should fit your pet and your family. Our team talks through options, costs, timing, and next steps in plain language.",
-    icon: ShieldCheck
+      "The same local team gets to know your pet over time, so each visit builds on the last instead of starting over with a stranger.",
+    icon: Clock3
   },
   {
-    title: "Dog and cat care",
+    title: "Support after you return home",
     text:
-      "From routine wellness to dental care, surgery planning, sick visits, and senior support, we care for dogs and cats at both NKY locations.",
-    icon: PawPrint
-  },
-  {
-    title: "Calm, comfortable visits",
-    text:
-      "We work to make each visit feel as low-stress as possible with gentle handling, patient pacing, and a team that understands pets may need time to settle in.",
+      "Care doesn't end at checkout. Our team is here for follow-up questions after your visit, not just during it.",
     icon: HeartHandshake
   },
   {
-    title: "Continuity over time",
+    title: "Care shaped around your pet",
     text:
-      "By caring for your pet across life stages, we can notice changes earlier, track ongoing needs, and recommend next steps with more context.",
-    icon: Clock3
+      "From routine wellness to dental care, surgery planning, sick visits, and senior support, your pet's care plan is built around their needs, not a standard script.",
+    icon: PawPrint
+  },
+  {
+    title: "Two convenient local clinics",
+    text:
+      "Fort Thomas and Independence give Northern Kentucky families a nearby, locally owned option for dogs and cats.",
+    icon: MapPin
   }
 ];
 
@@ -97,6 +98,12 @@ const serviceAreaChips = ["Fort Thomas", "Independence", "Newport", "Bellevue", 
 
 function officialLocationName(shortName: string) {
   return shortName === "Fort Thomas" ? "Veterinary Medical Centers of Fort Thomas" : "Veterinary Medical Centers of Independence";
+}
+
+function locationTagline(shortName: string) {
+  return shortName === "Fort Thomas"
+    ? "Neighborhood veterinary care on Memorial Parkway"
+    : "Personalized care for families throughout central Kenton County";
 }
 
 function MapEmbed({ src, title }: { src: string; title: string }) {
@@ -151,7 +158,7 @@ export default async function HomePage() {
           <div className="home-hero-new-here" aria-label="New client next steps">
             <div>
               <strong>New here?</strong>
-              <p>New to Northern Kentucky Veterinary Medical Centers? Start with a wellness visit, request an appointment, or message our team with questions.</p>
+              <p>We&rsquo;ll help you feel prepared from the moment you book — request an appointment, ask a question, or start with a wellness visit.</p>
             </div>
             <div className="hero-actions">
               <Button href="/book-appointment/">Request an Appointment</Button>
@@ -161,6 +168,14 @@ export default async function HomePage() {
           </div>
         )}
       />
+
+      <div className="home-love-banner">
+        <p className="home-love-banner-inner">
+          <Heart aria-hidden="true" size={13} />
+          Locally owned, proudly caring for Northern Kentucky pets
+        </p>
+      </div>
+
       <TrustBar items={pages.home.ticker} />
 
       <Section
@@ -170,13 +185,14 @@ export default async function HomePage() {
         intro="Whether your pet needs a routine checkup, is showing new symptoms, or you’re switching to a local veterinarian in Northern Kentucky for the first time, we’ll help you find the right next step at our Fort Thomas or Independence clinic."
       >
         <HomeCareFinder />
+        <p className="home-reassurance-line">If you&rsquo;re worried, reach out. Our team can help you determine the next step.</p>
       </Section>
 
       <Section
         tone="cream"
         eyebrow="Local Vet Center"
-        title="A locally owned vet center that treats you like neighbors"
-        intro="Veterinary Medical Centers is rooted in Northern Kentucky. Our care is personal, calm, practical, and relationship-based, whether your pet needs everyday wellness or help with more complex health needs."
+        title="Local ownership means your pet is never just another appointment"
+        intro="Veterinary Medical Centers was built around long-term relationships with Northern Kentucky families. Our team takes the time to understand your pet's personality, history, and needs so each visit feels personal rather than transactional."
       >
         <div className="card-grid">
           {localCards.map(({ title, text, icon: Icon }) => (
@@ -197,6 +213,7 @@ export default async function HomePage() {
         title="Vet services for dogs and cats in Northern Kentucky"
         intro="From first visits and vaccines to dental cleanings, surgery, diagnostics, and ongoing wellness, our Northern Kentucky vet team helps dogs and cats stay healthy through every stage of life — at our vet in Fort Thomas and our vet in Independence, Kentucky."
       >
+        <p className="home-section-lede">Whatever brings you in, we&rsquo;ll meet your pet with patience and help you understand the next step. You don&rsquo;t need to have all the answers before calling.</p>
         <HomeServiceTabs />
       </Section>
 
@@ -210,6 +227,7 @@ export default async function HomePage() {
             </article>
           ))}
         </div>
+        <p className="home-reassurance-line">Not sure what kind of appointment your pet needs? We&rsquo;ll help.</p>
         <div className="hero-actions">
           <Button href="/new-patients/">Start as a New Client</Button>
           <Button href="/new-patients/" variant="ghost">What to bring to your first visit</Button>
@@ -222,6 +240,7 @@ export default async function HomePage() {
             <p>
               Starting with a new veterinarian in Northern Kentucky should feel simple. At our locally owned veterinary clinic, we review your pet’s history, talk through your concerns, complete a nose-to-tail exam, and help you understand the best next steps — whether you’re visiting our vet in Fort Thomas or our vet in Independence.
             </p>
+            <p className="home-reassurance-line">A new clinic can feel unfamiliar. We&rsquo;ll walk you through it.</p>
             <Button href="/new-patients/">Plan Your First Visit</Button>
           </div>
           <div className="first-visit-card-grid">
@@ -244,6 +263,7 @@ export default async function HomePage() {
         intro="With two convenient Veterinary Medical Centers locations in Northern Kentucky, our team is here to support dogs, cats, and the people who love them."
         className="home-locations-section"
       >
+        <p className="home-section-lede">Two local clinics. One shared commitment to knowing your pet and caring for them well.</p>
         <div className="home-location-grid">
           {locations.map((location, index) => (
             <article className="home-location-card" key={location.slug}>
@@ -255,6 +275,7 @@ export default async function HomePage() {
                 <h3>
                   <Link href={`/locations/${location.slug}/`}>{officialLocationName(location.shortName)}</Link>
                 </h3>
+                <p className="home-location-tagline">{locationTagline(location.shortName)}</p>
                 <p>
                   {location.shortName === "Fort Thomas"
                     ? "Veterinary Medical Centers of Fort Thomas provides local veterinary care for dogs and cats in Fort Thomas and nearby Northern Kentucky communities, including wellness visits, preventive care, dental care, diagnostics, surgery support, and everyday guidance."
@@ -302,9 +323,31 @@ export default async function HomePage() {
         </div>
       </Section>
 
+      <Section tone="white" eyebrow="A Note From Dr. Kristi" title="Meet the person behind Veterinary Medical Centers" className="section-compact home-kristi-section">
+        <div className="doctor-spotlight home-kristi-intro">
+          <div className="doctor-spotlight-media">
+            <Image
+              src="/images/kristi-baker-headshot-vertical.jpg"
+              alt="Dr. Kristi Baker, owner and veterinarian at Veterinary Medical Centers"
+              fill
+              sizes="(max-width: 860px) 100vw, 45vw"
+            />
+          </div>
+          <div className="doctor-spotlight-copy">
+            <p>Dr. Kristi Baker brings more than two decades of veterinary experience to pets and families across Northern Kentucky, combining practical medical guidance with a calm, approachable style.</p>
+            <blockquote className="doctor-spotlight-quote">Better care starts with listening carefully, explaining clearly, and knowing the pet and family in front of us.</blockquote>
+            <p className="doctor-spotlight-signature" aria-hidden="true">Dr. Kristi</p>
+            <ul className="doctor-spotlight-facts">
+              <li><GraduationCap aria-hidden="true" size={15} /> Ross University School of Veterinary Medicine — DVM, 2000&ndash;2003</li>
+              <li><GraduationCap aria-hidden="true" size={15} /> Purdue University — Clinical Rotation, Veterinary Medicine, 2003&ndash;2004</li>
+            </ul>
+          </div>
+        </div>
+      </Section>
+
       <TeamSection staffSettings={settings.staff} personProfiles={staffProfiles} />
 
-      <Section tone="white" eyebrow="Pawstimonials" title="Pawstimonials from pets and their people">
+      <Section tone="white" eyebrow="Reviews" title="Kind words from Northern Kentucky pet families">
         <HomeTestimonials />
       </Section>
 
@@ -332,6 +375,7 @@ export default async function HomePage() {
           <p className="eyebrow">Next Steps</p>
           <h2>Ready to schedule a visit with your Northern Kentucky vet team?</h2>
           <p>Choose your location, request an appointment, or call our team. We’ll help you find the right next step for your dog or cat.</p>
+          <p className="cta-footnote">From our Northern Kentucky family to yours, we&rsquo;re here when your pet needs us.</p>
           <div className="hero-actions">
             <Button href="/book-appointment/" variant="secondary">Request an Appointment</Button>
             <Button href="/contact/#message-form" variant="ghost">Message Our Team</Button>

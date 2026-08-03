@@ -15,6 +15,8 @@ export type LocationPage = {
   imageAlt: string;
   introHeading: string;
   intro: string[];
+  cityImage?: string;
+  cityImageAlt?: string;
   quickFacts: {
     parking: string;
     petsSeen: string;
@@ -27,25 +29,13 @@ export type LocationPage = {
   personalStoryHeading: string;
   personalStory: string[];
   personalHighlights: string[];
-  cincinnatiCta?: {
-    headline: string;
-    subhead: string;
-    body: string;
-    tip: string;
-  };
+  doctorImage?: string;
+  doctorImageAlt?: string;
+  doctorQuote?: string;
   servicesHeading: string;
-  communitiesHeading: string;
-  communitiesIntro: string;
   communities: string[];
-  communitiesSearchCopy: string;
-  ownershipHeading: string;
-  ownershipCopy: string[];
-  bakerHeading: string;
-  bakerCopy: string[];
   directionsHeading: string;
   directionsCopy: string;
-  crossLinkHeading: string;
-  crossLinkCopy: string;
   crossLinkCta: string;
   crossLinkSlug: string;
   faqs: FAQ[];
@@ -64,18 +54,19 @@ export const locations: LocationPage[] = [
     keyword: "vet in Fort Thomas KY",
     h1: "Vet in Fort Thomas KY for Dogs, Cats, and Local Families",
     heroBody:
-      "Veterinary Medical Centers serve Fort Thomas pets with locally owned, relationship-based veterinary care on Memorial Parkway, close to Highlands High School, Tower Park, Riggs Memorial Park, and nearby Northern Kentucky neighborhoods.",
+      "On Memorial Parkway, our Fort Thomas team gets to know you and your pet by name. Dr. Kristi Baker and her team listen first, explain what they find in plain language, and stay in your corner long after the appointment ends.",
     address: "2000 Memorial Parkway, Fort Thomas, KY 41075",
     phone: "(859) 442-4420",
     tel: "+18594424420",
     image: "/images/fort-thomas-clinic.jpg",
     imageAlt: "Veterinary Medical Centers Fort Thomas clinic exterior on Memorial Parkway",
-    introHeading: "Local Veterinary Care in Fort Thomas KY",
+    introHeading: "A Locally Owned Vet in Fort Thomas KY",
     intro: [
-      "Veterinary Medical Centers is a locally owned vet in Fort Thomas KY providing care for dogs and cats through every stage of life. Our Fort Thomas clinic is located on Memorial Parkway, making it convenient for families near Highlands High School, Tower Park, Riggs Memorial Park, downtown Fort Thomas, Highland Heights, Newport, Bellevue, Dayton, Southgate, and nearby Cincinnati communities.",
-      "We focus on relationship-based veterinary medicine. That means we take time to understand your pet's history, explain recommendations clearly, and help you make decisions that fit your pet's health, comfort, and long-term wellbeing.",
-      "For many local families, a veterinary clinic needs to be close enough for routine care and steady enough to build trust over time. Our Fort Thomas team supports everyday wellness, new symptoms, dental concerns, surgical planning, and senior pet care with the same standard of communication across visits."
+      "Veterinary Medical Centers is a locally owned vet in Fort Thomas KY, caring for dogs and cats on Memorial Parkway near Highlands High School and Tower Park. We see families from Fort Thomas, Highland Heights, Newport, Bellevue, Dayton, Southgate, and nearby Cincinnati neighborhoods.",
+      "We practice relationship-based medicine: we take time to learn your pet's history, explain what we find in terms you can act on, and check in after visits so you're never left guessing about next steps."
     ],
+    cityImage: "/images/fort-thomas-town.webp",
+    cityImageAlt: "Fort Thomas Kentucky community near Veterinary Medical Centers of Fort Thomas",
     quickFacts: {
       parking: "On-site parking available",
       petsSeen: "Dogs, cats, puppies, and kittens",
@@ -83,88 +74,60 @@ export const locations: LocationPage[] = [
       nearby: "Highland Heights, Newport, Bellevue, Dayton, Southgate, Cold Spring, Alexandria, Silver Grove, Cincinnati"
     },
     trustChips: ["Locally owned", "Dogs and cats", "Northern Kentucky", "Convenient Memorial Parkway location"],
-    personalStoryHeading: "A Fort Thomas Veterinarian Who Calls This Home",
+    personalStoryHeading: "Meet Dr. Kristi Baker",
     personalStory: [
-      "Dr. Kristi Baker doesn't just work in Fort Thomas — she lives here. Her kids attend Fort Thomas City Schools. Her family is woven into this neighborhood, and her investment in this community goes well beyond clinic hours.",
-      "That personal stake shapes everything about how Veterinary Medical Centers of Fort Thomas operates. Care is relationship-based, decisions are made close to home, and the team genuinely knows the families it serves.",
-      "When you bring your pet here, you're trusting a practice owned by someone who understands what it means to be a Fort Thomas family — because she is one."
+      "Dr. Kristi Baker doesn't just work in Fort Thomas — she lives here, and her kids attend Fort Thomas City Schools. That stake in the community shapes how she practices: she listens before she recommends, explains what she's seeing in plain terms, and gets to know each pet well enough to notice when something's off.",
+      "Because Veterinary Medical Centers is independently owned, care decisions are made here, by people who know your pet's history, instead of being routed through a corporate call center or a rotating cast of providers."
     ],
     personalHighlights: [
       "Dr. Baker lives in Fort Thomas with her husband and two children",
       "Her kids attend Fort Thomas City Schools",
       "Independently owned and operated — no corporate chain",
-      "Long-term relationships with Fort Thomas and Campbell County families",
-      "Serving dogs and cats in this community through every life stage"
+      "Long-term relationships with Fort Thomas and Campbell County families"
     ],
-    cincinnatiCta: {
-      headline: "Cincinnati Pet Owners: You're Closer Than You Think",
-      subhead: "About 10 minutes from downtown via I-471 N",
-      body: "If you live in Cincinnati or just across the river, Veterinary Medical Centers of Fort Thomas is one of the most convenient locally owned vet options in the area. Take I-471 North into Kentucky, exit at Exit 5 (Memorial Parkway), and you're here — with on-site parking waiting. No meters. No blocks to walk. Just pull in and you're at the door. Families from Clifton, Mount Lookout, Hyde Park, and Anderson Township make the short drive regularly.",
-      tip: "I-471 N → Exit 5 (Memorial Pkwy) → left on Memorial Pkwy → clinic on the right. On-site parking available."
-    },
+    doctorImage: "/images/kristi-baker-headshot-vertical.jpg",
+    doctorImageAlt: "Dr. Kristi Baker, owner and veterinarian at Veterinary Medical Centers of Fort Thomas",
+    doctorQuote: "Better care starts with listening carefully, explaining clearly, and knowing the pet and family in front of us.",
     whyHeading: "Why Fort Thomas Families Choose Veterinary Medical Centers",
     whyCards: [
       {
-        title: "Convenient Memorial Parkway Location",
+        title: "Easy to Reach, Easy to Park",
         text:
-          "Our Fort Thomas clinic is easy to access for families near Highlands High School, Tower Park, Riggs Memorial Park, downtown Fort Thomas, and nearby river city communities."
+          "On-site parking right at the door, near Highlands High School and Tower Park — and about 10 minutes from downtown Cincinnati via I-471 N, Exit 5."
       },
       {
-        title: "Locally Owned Veterinary Care",
+        title: "Locally Owned, Locally Decided",
         text:
-          "As a locally owned veterinary clinic, decisions are made close to the pets and families we serve, not by a distant corporate office."
+          "Care decisions are made here by people who know your pet, not by a distant corporate office."
       },
       {
-        title: "Relationship-Based Medicine",
+        title: "Your Pet's History, Remembered",
         text:
-          "We focus on continuity, trust, and clear communication so families can make informed decisions over time."
+          "The same team sees your pet visit after visit, so changes in behavior or health are easier to catch early."
       },
       {
-        title: "Full-Service Dog and Cat Care",
+        title: "Full-Service Care for Dogs and Cats",
         text:
-          "From wellness exams and vaccines to dental care, diagnostics, surgery, and sick visits, your pet can receive many essential services from one trusted team."
+          "Wellness exams, dental care, diagnostics, surgery, and sick visits, handled by one team from puppyhood through senior years."
       },
       {
-        title: "Low-Stress Visits",
+        title: "Calmer, Clearer Visits",
         text:
-          "Our team uses calm communication and thoughtful handling to help make visits more comfortable for pets and their people."
-      },
-      {
-        title: "Northern Kentucky Community Roots",
-        text:
-          "Our team is connected to the communities we serve and understands the needs of local pet families."
+          "We explain findings and options in plain language and use gentle handling to keep visits low-stress for pets and owners."
       }
     ],
     servicesHeading: "Veterinary Services Available in Fort Thomas KY",
-    communitiesHeading: "Veterinary Care Near Fort Thomas and Nearby NKY Communities",
-    communitiesIntro:
-      "Our Fort Thomas clinic is convenient for pet owners throughout Campbell County and the river cities, including families who want local veterinary care without crossing into a larger corporate clinic setting.",
     communities: ["Fort Thomas", "Highland Heights", "Newport", "Bellevue", "Dayton", "Southgate", "Cold Spring", "Alexandria", "Silver Grove", "Cincinnati neighborhoods across the river"],
-    communitiesSearchCopy:
-      "If you are searching for a vet near Fort Thomas KY, a dog vet near Newport KY, or a cat vet near Highland Heights KY, our Memorial Parkway location is designed to be easy to access and simple to visit.",
-    ownershipHeading: "What Makes Veterinary Medical Centers Different?",
-    ownershipCopy: [
-      "Choosing a veterinarian is not only about finding the closest clinic. It is about finding a team that knows your pet, listens to your concerns, explains options clearly, and helps you plan for long-term health.",
-      "Veterinary Medical Centers is locally owned and relationship-focused, which means care is centered on the pet and the family, not a corporate playbook. We want families to understand what is urgent, what is preventive, and what can be watched over time."
-    ],
-    bakerHeading: "A Fort Thomas Veterinary Team Rooted in Northern Kentucky",
-    bakerCopy: [
-      "Dr. Kristi Baker's approach to veterinary care is shaped by a belief that better relationships lead to better care. At Veterinary Medical Centers, families are not rushed through a one-size-fits-all process.",
-      "The team takes time to understand each pet, explain recommendations, and support owners through routine care and more complex decisions. As a locally owned veterinary clinic, Veterinary Medical Centers can focus on thoughtful medicine, continuity, comfort, and trust."
-    ],
     directionsHeading: "Directions to Our Fort Thomas Veterinary Clinic",
     directionsCopy:
-      "Our Fort Thomas location is on Memorial Parkway near familiar local landmarks, including Highlands High School, Tower Park, Riggs Memorial Park, and the Northern Kentucky Water District area. The clinic offers on-site parking to make arrival easier for pets and families.",
-    crossLinkHeading: "Need a Vet Closer to Kenton County?",
-    crossLinkCopy:
-      "Veterinary Medical Centers also has an Independence location on Madison Pike for families closer to central Northern Kentucky, Taylor Mill, Covington, Erlanger, and surrounding communities.",
+      "Our Fort Thomas clinic sits on Memorial Parkway near Highlands High School, Tower Park, and Riggs Memorial Park, with on-site parking right at the door. Cincinnati families come across regularly — take I-471 N to Exit 5 (Memorial Parkway), turn left, and the clinic is on your right, about 10 minutes from downtown.",
     crossLinkCta: "View Independence Location",
     crossLinkSlug: "vet-in-independence-ky",
     faqs: [
       {
-        question: "Where is your Fort Thomas veterinary clinic located?",
+        question: "Where is your vet in Fort Thomas KY located?",
         answer:
-          "Our Fort Thomas clinic is located at 2000 Memorial Parkway, Fort Thomas, KY 41075, near local landmarks such as Highlands High School, Tower Park, Riggs Memorial Park, and nearby Northern Kentucky neighborhoods."
+          "Our Fort Thomas clinic is at 2000 Memorial Parkway, Fort Thomas, KY 41075, near Highlands High School, Tower Park, and Riggs Memorial Park."
       },
       {
         question: "Do you accept new patients at the Fort Thomas location?",
@@ -174,26 +137,17 @@ export const locations: LocationPage[] = [
       {
         question: "What veterinary services are available in Fort Thomas?",
         answer:
-          "Our Fort Thomas clinic provides wellness exams, vaccinations, puppy and kitten care, sick visits, diagnostics, dental care, surgery-related consultations, parasite prevention, senior pet care, and nutrition guidance."
-      },
-      {
-        question: "Do you see both dogs and cats?",
-        answer: "Yes. Veterinary Medical Centers provide veterinary care for dogs, cats, puppies, and kittens."
-      },
-      {
-        question: "What communities are near the Fort Thomas clinic?",
-        answer:
-          "Our Fort Thomas location is convenient for Highland Heights, Newport, Bellevue, Dayton, Southgate, Cold Spring, Alexandria, Silver Grove, and nearby Cincinnati communities."
-      },
-      {
-        question: "How do I prepare for my first visit?",
-        answer:
-          "Bring your pet's vaccine records, medication list, previous medical records if available, and any questions or concerns you want to discuss with the veterinary team."
+          "Our Fort Thomas clinic provides wellness exams, vaccinations, puppy and kitten care, sick visits, dental care, diagnostics, surgery-related consultations, and senior pet care."
       },
       {
         question: "Is Veterinary Medical Centers locally owned?",
         answer:
           "Yes. Veterinary Medical Centers is locally owned and focused on relationship-based veterinary care for Northern Kentucky pets and families."
+      },
+      {
+        question: "How do I prepare for my first visit?",
+        answer:
+          "Bring your pet's vaccine records, medication list, previous medical records if available, and any questions or concerns you want to discuss with the veterinary team."
       },
       {
         question: "Do you offer same-day or urgent appointments?",
@@ -227,6 +181,8 @@ export const locations: LocationPage[] = [
       "This was the first clinic Dr. Kristi Baker opened, and it reflects the foundation of the practice: careful communication, preventive care, individualized treatment, and long-term relationships with local pet families.",
       "The Independence clinic supports busy families across central Northern Kentucky with practical appointment flow, clear recommendations, and a team that focuses on your pet's needs instead of a one-size-fits-all model."
     ],
+    cityImage: "/images/indepedence-town.webp",
+    cityImageAlt: "Independence Kentucky community near Veterinary Medical Centers of Independence",
     quickFacts: {
       parking: "On-site parking available",
       petsSeen: "Dogs, cats, puppies, and kittens",
@@ -281,28 +237,11 @@ export const locations: LocationPage[] = [
       }
     ],
     servicesHeading: "Veterinary Services Available in Independence KY",
-    communitiesHeading: "Veterinary Care Near Independence and Kenton County Communities",
-    communitiesIntro:
-      "Our Independence clinic serves families across central Northern Kentucky who want a local vet close to home, work, school, and everyday routines.",
     communities: ["Independence", "Taylor Mill", "Ryland Heights", "Covington", "Latonia", "Edgewood", "Erlanger", "Kenton County", "Florence", "Cold Spring"],
-    communitiesSearchCopy:
-      "If you are searching for a vet near Independence KY, a dog vet near Taylor Mill KY, or a cat vet near Covington KY, our Madison Pike location offers convenient access to full-service veterinary care.",
-    ownershipHeading: "What Makes Veterinary Medical Centers of Independence Different?",
-    ownershipCopy: [
-      "Choosing a veterinarian is not only about finding the closest clinic. It is about finding a team that knows your pet, listens to your concerns, explains options clearly, and helps you plan for long-term health.",
-      "Veterinary Medical Centers of Independence is locally owned and relationship-focused. The clinic gives families a local alternative to corporate veterinary models while still supporting preventive, medical, dental, and surgical care for dogs and cats."
-    ],
-    bakerHeading: "The First Veterinary Medical Centers Location Dr. Baker Opened",
-    bakerCopy: [
-      "Veterinary Medical Centers of Independence holds a special place in the practice because it was the first clinic Dr. Kristi Baker opened. The location reflects the reason she became a practice owner: to create a veterinary clinic where medical decisions are personal, careful, and rooted in what is best for each pet.",
-      "The Independence clinic is not built around corporate volume or rushed appointments. It is built around relationship-based care, clear communication, and long-term support for dogs, cats, and their families."
-    ],
+    doctorQuote: "Better care starts with listening carefully, explaining clearly, and knowing the pet and family in front of us.",
     directionsHeading: "Directions to Our Independence Veterinary Clinic",
     directionsCopy:
       "Our Independence location is on Madison Pike, making it convenient for pet owners across Independence, Taylor Mill, Ryland Heights, Covington, Latonia, Edgewood, Erlanger, and central Kenton County. The clinic offers on-site parking for a simpler visit experience.",
-    crossLinkHeading: "Need a Vet Closer to Campbell County?",
-    crossLinkCopy:
-      "Veterinary Medical Centers also has a Fort Thomas location on Memorial Parkway for families closer to Fort Thomas, Newport, Highland Heights, Bellevue, Dayton, Southgate, Cold Spring, and nearby Cincinnati communities.",
     crossLinkCta: "View Fort Thomas Location",
     crossLinkSlug: "vet-in-fort-thomas-ky",
     faqs: [

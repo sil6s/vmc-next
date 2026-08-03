@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Instrument_Sans, Playfair_Display } from "next/font/google";
+import { Caveat, Instrument_Sans, Playfair_Display } from "next/font/google";
 import { headers } from "next/headers";
 import "easymde/dist/easymde.min.css";
 import "./globals.css";
@@ -26,6 +26,12 @@ const sans = Instrument_Sans({
 const serif = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-serif",
+  display: "swap"
+});
+
+const script = Caveat({
+  subsets: ["latin"],
+  variable: "--font-script",
   display: "swap"
 });
 
@@ -70,7 +76,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
   const bookingHref = "/book-appointment/";
 
   return (
-    <html lang={locale === "zh" ? "zh-Hans" : locale} className={`${sans.variable} ${serif.variable}`}>
+    <html lang={locale === "zh" ? "zh-Hans" : locale} className={`${sans.variable} ${serif.variable} ${script.variable}`}>
       <body suppressHydrationWarning>
         <AnnouncementBanner announcement={settings.announcement} />
         <Header

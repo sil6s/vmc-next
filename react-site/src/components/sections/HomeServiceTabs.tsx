@@ -17,6 +17,7 @@ type ServiceItem = {
 type ServiceGroup = {
   id: string;
   label: string;
+  tagline: string;
   icon: typeof ShieldCheck;
   services: ServiceItem[];
 };
@@ -25,6 +26,7 @@ const serviceGroups: ServiceGroup[] = [
   {
     id: "wellness",
     label: "Wellness",
+    tagline: "Protect the routines and moments you share.",
     icon: ShieldCheck,
     services: [
       {
@@ -56,6 +58,7 @@ const serviceGroups: ServiceGroup[] = [
   {
     id: "dental",
     label: "Dental",
+    tagline: "Confident smiles and comfortable check-ups.",
     icon: SmilePlus,
     services: [
       {
@@ -87,6 +90,7 @@ const serviceGroups: ServiceGroup[] = [
   {
     id: "sick-diagnostics",
     label: "Sick Visits",
+    tagline: "Find answers when your pet isn't acting like themselves.",
     icon: Microscope,
     services: [
       {
@@ -118,6 +122,7 @@ const serviceGroups: ServiceGroup[] = [
   {
     id: "surgery",
     label: "Surgery",
+    tagline: "Careful preparation and steady support through recovery.",
     icon: Scissors,
     services: [
       {
@@ -149,6 +154,7 @@ const serviceGroups: ServiceGroup[] = [
   {
     id: "puppy-kitten",
     label: "Puppy & Kitten",
+    tagline: "Help your new companion start life healthy.",
     icon: Baby,
     services: [
       {
@@ -180,6 +186,7 @@ const serviceGroups: ServiceGroup[] = [
   {
     id: "senior",
     label: "Senior Care",
+    tagline: "Extra care and attention for your lifelong companion.",
     icon: HeartPulse,
     services: [
       {
@@ -236,6 +243,8 @@ export function HomeServiceTabs() {
           );
         })}
       </div>
+
+      <p className="home-service-tagline">{active.tagline}</p>
 
       <div
         className="home-service-grid"

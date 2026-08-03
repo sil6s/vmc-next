@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { Button } from "@/components/ui/Button";
 import { Section } from "@/components/ui/Section";
 
@@ -6,13 +7,15 @@ export function CTASection({
   title = "Ready to schedule an appointment?",
   body = "Call either clinic, request an appointment online, or send a message and our team will help you choose the right next step.",
   primary = { label: "Book Appointment", href: "/book-appointment/" },
-  secondary = { label: "New Patients", href: "/new-patients/" }
+  secondary = { label: "New Patients", href: "/new-patients/" },
+  footnote
 }: {
   eyebrow?: string;
   title?: string;
   body?: string;
   primary?: { label: string; href: string };
   secondary?: { label: string; href: string };
+  footnote?: ReactNode;
 }) {
   return (
     <Section tone="red">
@@ -24,6 +27,7 @@ export function CTASection({
           <Button href={primary.href} variant="secondary">{primary.label}</Button>
           <Button href={secondary.href} variant="ghost">{secondary.label}</Button>
         </div>
+        {footnote && <p className="cta-footnote">{footnote}</p>}
       </div>
     </Section>
   );

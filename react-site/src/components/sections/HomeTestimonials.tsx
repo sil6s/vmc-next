@@ -2,7 +2,7 @@ import Image from "next/image";
 import { PawPrint, Star } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
-const pawstimonials = [
+export const pawstimonials = [
   {
     pet: "Edith",
     owner: "Edith’s pet parent",
@@ -38,10 +38,27 @@ const pawstimonials = [
 ];
 
 export function HomeTestimonials() {
+  const featured = pawstimonials.find((item) => item.pet === "Wilson") || pawstimonials[0];
+  const secondary = pawstimonials.filter((item) => item.pet !== featured.pet).slice(0, 2);
+
   return (
     <div className="pawstimonials">
-      <div className="pawstimonial-grid">
-        {pawstimonials.map((item) => (
+      <article className="pawstimonial-featured">
+        <div className="pawstimonial-featured-image">
+          <Image src={featured.image} alt={featured.alt} fill sizes="(max-width: 760px) 100vw, 42vw" />
+        </div>
+        <div className="pawstimonial-featured-body">
+          <div className="pawstimonial-stars" role="img" aria-label="Five star rating">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <Star key={star} size={15} fill="currentColor" />
+            ))}
+          </div>
+          <p>“{featured.quote}”</p>
+          <small>{featured.owner} · {featured.community}</small>
+        </div>
+      </article>
+      <div className="pawstimonial-grid pawstimonial-grid-secondary">
+        {secondary.map((item) => (
           <article className="pawstimonial-card" key={item.pet}>
             <div className="pawstimonial-image">
               <Image src={item.image} alt={item.alt} width={520} height={340} sizes="(max-width: 720px) 100vw, 25vw" />

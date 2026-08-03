@@ -10,7 +10,7 @@ export const pages = {
       title: "Northern Kentucky vet for dogs and cats,",
       emphasis: "built around real relationships",
       body:
-        "Veterinary Medical Centers is a locally owned veterinary clinic built around real relationships between our team, your pet, and your family. Our Northern Kentucky veterinarian teams serve dogs and cats at convenient Fort Thomas and Independence locations, with same-week appointments and easy online scheduling.",
+        "From first checkups to lifelong care, our locally owned veterinary team takes time to know your pet, listen to your concerns, and explain every recommendation clearly. Visit us in Fort Thomas or Independence for thoughtful care from people who treat your pet like family.",
       image: "/images/cat-closeup-hero.png",
       imageAlt: "Cat receiving a gentle veterinary exam at Veterinary Medical Centers",
       badgeTitle: "Same-week appointments",

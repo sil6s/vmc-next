@@ -2,23 +2,23 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, Award, BookOpenText, Car, CheckCircle, Clock, ExternalLink, HeartPulse, MapPin, Navigation, Phone, ShieldCheck, Sparkles, Star, Stethoscope, PawPrint } from "lucide-react";
+import { BadgeCheck, Building2, Car, CheckCircle, Clock, ExternalLink, Heart, HeartHandshake, HeartPulse, MapPin, MessageSquareText, Navigation, Phone, ShieldCheck, Sparkles, Star, Stethoscope, PawPrint, UsersRound } from "lucide-react";
 import { Breadcrumbs } from "@/components/sections/Breadcrumbs";
 import { CTASection } from "@/components/sections/CTASection";
 import { FAQSection } from "@/components/sections/FAQSection";
+import { pawstimonials } from "@/components/sections/HomeTestimonials";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { locations, getLocation } from "@/data/locations";
 import { getCityPage, getCityPageSlugs } from "@/data/cityPages";
 import type { CityPage } from "@/data/cityPages";
 import { serviceHubServices } from "@/data/serviceHub";
-import { site } from "@/data/site";
+import { absoluteUrl, site } from "@/data/site";
 import { testimonials } from "@/data/testimonials";
 import { pageMetadata } from "@/lib/metadata";
 import { onlineHelpPath, type OnlineHelpLocationSlug } from "@/lib/online-help";
 import { getPublicSettings } from "@/lib/settings/public";
-import { breadcrumbSchema, cityPageVeterinaryCareSchema, faqSchema, JsonLd, locationVeterinaryCareSchema, serviceListSchema, webpageSchema } from "@/lib/schema";
-import { getBlogPosts } from "@/sanity/posts";
+import { breadcrumbSchema, cityPageVeterinaryCareSchema, faqSchema, JsonLd, locationVeterinaryCareSchema, personSchema, serviceListSchema, webpageSchema } from "@/lib/schema";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -26,15 +26,9 @@ const serviceLinks = [
   "pet-wellness-exams",
   "dog-cat-vaccinations",
   "puppy-kitten-care",
-  "senior-pet-care",
   "sick-pet-visits",
-  "veterinary-diagnostics",
   "pet-dental-care",
-  "spay-neuter-surgery",
-  "soft-tissue-surgery",
-  "parasite-prevention",
-  "skin-ear-allergy-care",
-  "nutrition-weight-guidance"
+  "senior-pet-care"
 ];
 
 const firstVisitSteps = [
@@ -45,6 +39,25 @@ const firstVisitSteps = [
   ["Meet with the veterinary team", "Your veterinarian examines your pet, explains findings, and answers questions."],
   ["Leave with a clear care plan", "You leave with practical guidance, follow-up timing, and a clear plan for your pet."]
 ];
+
+const carePhilosophy = [
+  ["Listening comes first", "Every visit starts with hearing your concerns before we start looking for answers.", MessageSquareText],
+  ["One team, not a rotation", "The same familiar faces see your pet over time, so changes are easier to notice and explain.", UsersRound],
+  ["Locally owned, locally decided", "Care decisions are made here, by people who know your pet, not a distant corporate office.", Building2],
+  ["Clear next steps, always", "You leave knowing what we found, why it matters, and what to do next.", BadgeCheck]
+] as const;
+
+function renderHeadlineAccent(headline: string, accent: string) {
+  const index = headline.indexOf(accent);
+  if (index === -1) return headline;
+  return (
+    <>
+      {headline.slice(0, index)}
+      <em>{accent}</em>
+      {headline.slice(index + accent.length)}
+    </>
+  );
+}
 
 export function generateStaticParams() {
   const locationSlugs = locations.map((location) => ({ slug: location.slug }));
@@ -342,7 +355,7 @@ export default async function LocationPage({ params }: Params) {
   }
 
   const onlineHelpLocationSlug = ONLINE_HELP_LOCATION_SLUGS[location.slug];
-  const [settings, resourcePosts] = await Promise.all([getPublicSettings(), getBlogPosts(8)]);
+  const settings = await getPublicSettings();
   const siteLocation =
     settings.publicLocations.find((item) => item.name === location.shortName) ||
     site.locations.find((item) => item.name === location.shortName) ||
@@ -351,7 +364,11 @@ export default async function LocationPage({ params }: Params) {
   const locationServices = serviceLinks
     .map((serviceSlug) => serviceHubServices.find((service) => service.slug === serviceSlug))
     .filter((service): service is (typeof serviceHubServices)[number] => Boolean(service));
-  const locationResources = resourcePosts.slice(0, 3);
+  const scopedTestimonials = testimonials.filter((review) => review.location.startsWith(location.shortName));
+  const generalTestimonials = testimonials.filter(
+    (review) => !review.location.startsWith("Fort Thomas") && !review.location.startsWith("Independence")
+  );
+  const locationTestimonials = [...scopedTestimonials, ...generalTestimonials].slice(0, 3);
 
   const crumbs = [
     { name: "Home", path: "/" },
@@ -366,15 +383,12 @@ export default async function LocationPage({ params }: Params) {
         <Container>
           <div className="location-hero-grid">
             <div className="location-hero-copy">
-              <p className="eyebrow">Veterinary Medical Centers</p>
-              <h1>{location.h1}</h1>
+              <p className="eyebrow">Veterinary Medical Centers of {location.shortName}</p>
+              <h1>{renderHeadlineAccent(location.h1, `${location.shortName} KY`)}</h1>
               <p>{location.heroBody}</p>
               <div className="hero-actions">
                 <Button href="/book-appointment/">Book Appointment</Button>
-                <Button href={`tel:${location.tel}`} variant="ghost">Call {location.shortName}</Button>
-              </div>
-              <div className="location-chip-row">
-                {location.trustChips.map((chip) => <span key={chip}>{chip}</span>)}
+                <Button href="#meet-the-team" variant="ghost">Meet Dr. Baker &amp; the Team</Button>
               </div>
             </div>
             <div className="location-hero-media">
@@ -400,18 +414,92 @@ export default async function LocationPage({ params }: Params) {
       <Breadcrumbs items={crumbs.map((item) => ({ label: item.name, href: item.path }))} />
 
       {/* ── About This Location ── */}
-      <section className="location-section location-section-white">
+      <section className="location-section location-section-white location-intro-section">
         <Container>
-          <div className="location-about">
-            <p className="eyebrow">{location.keyword}</p>
-            <h2>{location.introHeading}</h2>
-            {location.intro.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+          <div className="city-story-grid">
+            <div className="location-about">
+              <p className="eyebrow">{location.keyword}</p>
+              <h2>{location.introHeading}</h2>
+              {location.intro.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+              <div className="location-story-reassurance">
+                <HeartHandshake aria-hidden="true" size={16} />
+                <span>New here? That&rsquo;s okay. We&rsquo;ll help you know what to bring and what to expect.</span>
+              </div>
+              <div className="location-story-benefits">
+                <span><Building2 aria-hidden="true" size={15} /> Locally owned</span>
+                <span><Heart aria-hidden="true" size={15} /> Caring for {location.shortName} families</span>
+                <span><PawPrint aria-hidden="true" size={15} /> Dogs and cats welcomed by name</span>
+              </div>
+            </div>
+            {location.cityImage && (
+              <div className="city-story-media">
+                <Image
+                  src={location.cityImage}
+                  alt={location.cityImageAlt || `${location.shortName}, Kentucky`}
+                  fill
+                  sizes="(max-width: 860px) 100vw, 42vw"
+                />
+              </div>
+            )}
+          </div>
+        </Container>
+      </section>
+
+      {/* ── Meet the Doctor ── */}
+      <section className="location-section location-section-cream" id="meet-the-team">
+        <Container>
+          <div className="doctor-spotlight">
+            <div
+              className={location.doctorImage ? "doctor-spotlight-media" : "doctor-spotlight-media doctor-spotlight-media-placeholder"}
+              aria-hidden={location.doctorImage ? undefined : "true"}
+            >
+              {location.doctorImage ? (
+                <Image
+                  src={location.doctorImage}
+                  alt={location.doctorImageAlt || location.personalStoryHeading}
+                  fill
+                  sizes="(max-width: 860px) 100vw, 38vw"
+                />
+              ) : (
+                <PawPrint size={48} />
+              )}
+            </div>
+            <div className="doctor-spotlight-copy">
+              <p className="eyebrow">Meet the Team</p>
+              <h2>{location.personalStoryHeading}</h2>
+              {location.personalStory.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+              {location.doctorQuote && (
+                <>
+                  <blockquote className="doctor-spotlight-quote">{location.doctorQuote}</blockquote>
+                  <p className="doctor-spotlight-signature" aria-hidden="true">Dr. Kristi</p>
+                </>
+              )}
+              <ul className="doctor-spotlight-facts">
+                {location.personalHighlights.map((item) => (
+                  <li key={item}>
+                    <CheckCircle aria-hidden="true" size={15} />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="doctor-beliefs">
+              {carePhilosophy.map(([title, text, Icon]) => (
+                <div className="doctor-belief" key={title}>
+                  <Icon aria-hidden="true" size={22} />
+                  <div>
+                    <h3>{title}</h3>
+                    <p>{text}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </Container>
       </section>
 
       {/* ── Clinic Details ── */}
-      <section className="location-section location-section-cream">
+      <section className="location-section location-section-white">
         <Container>
           <div className="location-section-head location-details-head">
             <p className="eyebrow">Visit Information</p>
@@ -538,47 +626,13 @@ export default async function LocationPage({ params }: Params) {
         </Container>
       </section>
 
-      {/* ── Cincinnati CTA (Fort Thomas only) ── */}
-      {location.cincinnatiCta && (
-        <section className="location-section location-section-cream">
-          <Container>
-            <div className="location-cincinnati-cta">
-              <div className="location-cincinnati-copy">
-                <p className="eyebrow">{location.cincinnatiCta.subhead}</p>
-                <h2>{location.cincinnatiCta.headline}</h2>
-                <p>{location.cincinnatiCta.body}</p>
-                <div className="location-cincinnati-tip">
-                  <Navigation aria-hidden="true" size={16} />
-                  <span>{location.cincinnatiCta.tip}</span>
-                </div>
-                <div className="hero-actions">
-                  <Button href="/book-appointment/">Book an Appointment</Button>
-                  <Button href={siteLocation.mapUrl} variant="ghost">Get Directions</Button>
-                </div>
-              </div>
-              <aside className="location-cincinnati-card">
-                <Sparkles aria-hidden="true" size={24} />
-                <h3>Why Fort Thomas?</h3>
-                <ul>
-                  <li><CheckCircle aria-hidden="true" size={15} /> On-site parking — no meters or street hunting</li>
-                  <li><CheckCircle aria-hidden="true" size={15} /> ~10 minutes from downtown Cincinnati</li>
-                  <li><CheckCircle aria-hidden="true" size={15} /> Off I-471 N, Exit 5 — easy in and out</li>
-                  <li><CheckCircle aria-hidden="true" size={15} /> Locally owned, not a corporate chain</li>
-                  <li><CheckCircle aria-hidden="true" size={15} /> Dogs and cats of all ages welcome</li>
-                </ul>
-              </aside>
-            </div>
-          </Container>
-        </section>
-      )}
-
       {/* ── Veterinary Services ── */}
-      <section className="location-section location-section-white">
+      <section className="location-section location-section-cream">
         <Container>
           <div className="location-section-head">
             <p className="eyebrow">Veterinary Services</p>
             <h2>{location.servicesHeading}</h2>
-            <p>Full-service care for dogs and cats — from wellness visits and vaccines to dental care, diagnostics, surgery consultations, and senior pet support.</p>
+            <p>Six of the most requested services at our {location.shortName} clinic — from first puppy and kitten visits through senior pet care.</p>
           </div>
           <div className="location-service-grid">
             {locationServices.map((service) => (
@@ -590,11 +644,14 @@ export default async function LocationPage({ params }: Params) {
               </article>
             ))}
           </div>
+          <div className="hero-actions location-timeline-actions">
+            <Button href="/services/" variant="ghost">View All Services</Button>
+          </div>
         </Container>
       </section>
 
       {/* ── Why This Clinic ── */}
-      <section className="location-section location-section-cream">
+      <section className="location-section location-section-white">
         <Container>
           <div className="location-section-head">
             <p className="eyebrow">Why This Location</p>
@@ -612,43 +669,52 @@ export default async function LocationPage({ params }: Params) {
         </Container>
       </section>
 
-      {/* ── Personal Story / Locally Owned ── */}
+      {/* ── Pets Photo Strip ── */}
       <section className="location-section location-section-white">
         <Container>
-          <div className="location-personal-grid">
-            <div className="location-about">
-              <p className="eyebrow">Locally & Independently Owned</p>
-              <h2>{location.personalStoryHeading}</h2>
-              {location.personalStory.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-            </div>
-            <aside className="location-highlights-card">
-              <Award aria-hidden="true" size={24} />
-              <h3>What this means for your pet</h3>
-              <ul className="location-feature-list">
-                {location.personalHighlights.map((item) => (
-                  <li key={item}>
-                    <CheckCircle aria-hidden="true" size={16} />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-            </aside>
+          <div className="location-section-head">
+            <p className="eyebrow">Familiar Faces</p>
+            <h2>Pets of {location.shortName}</h2>
+            <p>Real patients from the Veterinary Medical Centers family, shared with their owners&rsquo; permission.</p>
+          </div>
+          <div className="pet-strip">
+            {pawstimonials.map((pet) => (
+              <figure className="pet-strip-card" key={pet.pet}>
+                <div className="pet-strip-media">
+                  <Image src={pet.image} alt={pet.alt} fill sizes="(max-width: 640px) 45vw, 190px" />
+                </div>
+                <figcaption>
+                  <strong>{pet.pet}</strong>
+                  <span>{pet.community}</span>
+                </figcaption>
+              </figure>
+            ))}
           </div>
         </Container>
       </section>
 
-      {/* ── Nearby Communities ── */}
+      {/* ── Reviews ── */}
       <section className="location-section location-section-cream">
         <Container>
           <div className="location-section-head">
-            <p className="eyebrow">Nearby Communities</p>
-            <h2>{location.communitiesHeading}</h2>
-            <p>{location.communitiesIntro}</p>
+            <p className="eyebrow">What Pet Owners Say</p>
+            <h2>What {location.shortName} Pet Owners Say</h2>
+            <p>Real reviews from families who bring their dogs and cats to our {location.shortName} clinic.</p>
           </div>
-          <div className="community-chip-grid">
-            {location.communities.map((community) => <span key={community}>{community}</span>)}
+          <div className="location-review-grid">
+            {locationTestimonials.map((review) => (
+              <article className="location-review-card" key={review.name}>
+                <div className="location-review-stars" role="img" aria-label="Five star rating">
+                  {[...Array(5)].map((_, i) => <Star key={i} aria-hidden="true" size={15} />)}
+                </div>
+                <p>{review.text}</p>
+                <footer>
+                  <strong>{review.name}</strong>
+                  <span>{review.location}</span>
+                </footer>
+              </article>
+            ))}
           </div>
-          <p className="location-local-search">{location.communitiesSearchCopy}</p>
         </Container>
       </section>
 
@@ -678,109 +744,33 @@ export default async function LocationPage({ params }: Params) {
         </Container>
       </section>
 
-      {/* ── Reviews ── */}
-      <section className="location-section location-section-cream">
-        <Container>
-          <div className="location-section-head">
-            <p className="eyebrow">What Pet Owners Say</p>
-            <h2>Trusted by Northern Kentucky pet families.</h2>
-            <p>Pet owners choose Veterinary Medical Centers because they want local care that feels personal, clear, and consistent.</p>
-          </div>
-          <div className="location-review-grid">
-            {testimonials.slice(0, 3).map((review) => (
-              <article className="location-review-card" key={review.name}>
-                <div className="location-review-stars" role="img" aria-label="Five star rating">
-                  {[...Array(5)].map((_, i) => <Star key={i} aria-hidden="true" size={15} />)}
-                </div>
-                <p>{review.text}</p>
-                <footer>
-                  <strong>{review.name}</strong>
-                  <span>{review.location}</span>
-                </footer>
-              </article>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      {/* ── Online Help ── */}
-      {onlineHelpLocationSlug && (
-        <section className="location-section location-section-white">
-          <Container>
-            <div className="location-section-head">
-              <p className="eyebrow">Connect Online</p>
-              <h2>Reach our {location.shortName} team.</h2>
-              <p>Request an appointment, ask a question, or connect with our {location.shortName} team directly.</p>
-            </div>
-            <div className="live-chat-page-actions">
-              <Link className="btn btn-primary" href={onlineHelpPath(onlineHelpLocationSlug, "appointment")}>
-                Request Appointment
-              </Link>
-              <Link className="btn btn-ghost" href={onlineHelpPath(onlineHelpLocationSlug, "refill")}>
-                Request Refill
-              </Link>
-              <Link className="btn btn-ghost" href={onlineHelpPath(onlineHelpLocationSlug, "records")}>
-                Request Records
-              </Link>
-              <Link className="btn btn-ghost" href={onlineHelpPath(onlineHelpLocationSlug, "general")}>
-                General Inquiry
-              </Link>
-            </div>
-          </Container>
-        </section>
-      )}
-
-      {/* ── Other Location Cross-Link ── */}
-      {relatedLocation && (
-        <section className="location-section location-section-cream">
-          <Container>
-            <div className="location-cross-link">
-              <div>
-                <p className="eyebrow">Our Other Location</p>
-                <h2>{location.crossLinkHeading}</h2>
-                <p>{location.crossLinkCopy}</p>
-              </div>
-              <Button href={`/locations/${relatedLocation.slug}/`}>{location.crossLinkCta}</Button>
-            </div>
-          </Container>
-        </section>
-      )}
-
-      {/* ── Related Resources ── */}
-      {locationResources.length > 0 && (
-        <section className="location-section location-section-white">
-          <Container>
-            <div className="location-section-head">
-              <p className="eyebrow">Pet Care Resources</p>
-              <h2>Helpful guides before or after your {location.shortName} visit.</h2>
-              <p>Browse practical education from the Veterinary Medical Centers team, then call us if you want help applying it to your pet.</p>
-            </div>
-            <div className="location-resource-grid">
-              {locationResources.map((post) => (
-                <article className="location-resource-card" key={post.slug}>
-                  <BookOpenText aria-hidden="true" size={20} />
-                  <p className="eyebrow">{post.category}</p>
-                  <h3>
-                    <Link href={`/resources/${post.slug}/`}>{post.title}</Link>
-                  </h3>
-                  <p>{post.excerpt}</p>
-                  <Link href={`/resources/${post.slug}/`}>
-                    Read resource <ArrowRight aria-hidden="true" size={15} />
-                  </Link>
-                </article>
-              ))}
-            </div>
-          </Container>
-        </section>
-      )}
-
-      <FAQSection faqs={location.faqs} title={`Questions about our ${location.shortName} vet clinic.`} />
+      <FAQSection faqs={location.faqs} title={`Questions about our vet in ${location.shortName} KY.`} />
 
       <CTASection
-        title={`Ready to visit our ${location.shortName} location?`}
+        title={`Ready to Visit a Vet in ${location.shortName} KY?`}
         body={`Call our ${location.shortName} team, request an appointment online, or complete your new patient form before your first visit.`}
         primary={{ label: "Book Appointment", href: "/book-appointment/" }}
         secondary={{ label: "New Patient Information", href: "/new-patients/" }}
+        footnote={
+          <>
+            Existing patient?{" "}
+            {onlineHelpLocationSlug && (
+              <>
+                <Link href={onlineHelpPath(onlineHelpLocationSlug, "refill")}>Request a refill</Link>
+                {" · "}
+                <Link href={onlineHelpPath(onlineHelpLocationSlug, "records")}>Request records</Link>
+                {" · "}
+                <Link href={onlineHelpPath(onlineHelpLocationSlug, "general")}>Ask a question</Link>
+              </>
+            )}
+            {relatedLocation && (
+              <>
+                {" — "}
+                <Link href={`/locations/${relatedLocation.slug}/`}>{location.crossLinkCta}</Link>.
+              </>
+            )}
+          </>
+        }
       />
 
       <JsonLd
@@ -789,7 +779,16 @@ export default async function LocationPage({ params }: Params) {
           locationVeterinaryCareSchema(location, `/locations/${location.slug}/`),
           serviceListSchema(locationServices.map((service) => ({ name: service.title, description: service.shortDescription, path: `/services/${service.slug}/` }))),
           breadcrumbSchema(crumbs),
-          faqSchema(location.faqs)
+          faqSchema(location.faqs),
+          personSchema({
+            name: "Dr. Kristi Baker",
+            jobTitle: "Practice Owner & Veterinarian",
+            credentials: "DVM",
+            path: `/locations/${location.slug}/`,
+            image: location.doctorImage ? absoluteUrl(location.doctorImage) : undefined,
+            description:
+              "Dr. Kristi Baker brings more than two decades of veterinary experience to pets and families across Northern Kentucky, combining practical medical guidance with a calm, approachable style."
+          })
         ]}
       />
     </>
