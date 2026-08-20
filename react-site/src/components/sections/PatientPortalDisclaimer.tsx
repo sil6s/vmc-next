@@ -1,8 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ExternalLink, ShieldCheck } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { ArrowRight, UserRoundCheck } from "lucide-react";
 import { ShadButton } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 
@@ -17,40 +16,35 @@ export function PatientPortalDisclaimer({ portalUrl }: { portalUrl: string }) {
     <section className="portal-gateway">
       <Container>
         <div className="portal-gateway-card">
+          <span className="portal-gateway-icon" aria-hidden="true">
+            <UserRoundCheck size={28} />
+          </span>
           <p className="eyebrow">Patient Portal</p>
-          <h1>You&rsquo;re about to leave our site</h1>
+          <h1>Continue to your patient portal</h1>
           <p>
-            This link takes you to our technology partner, Otto, to access the patient portal — appointment
-            history, records, and account tools.
+            The VMC patient portal is powered by Otto. You can use it to access appointments, records, messages,
+            and account tools for your pet&apos;s care.
           </p>
 
-          <Alert className="portal-gateway-alert" tone="default">
-            <ShieldCheck aria-hidden="true" size={18} />
-            <div>
-              <AlertTitle>Veterinary Medical Centers is still independently owned</AlertTitle>
-              <AlertDescription>
-                Otto is a third-party technology partner, not a corporate owner. VMC remains independently owned
-                and operated right here in Northern Kentucky.
-              </AlertDescription>
-            </div>
-          </Alert>
-
           <p className="portal-gateway-help">
-            Having trouble with the portal? <Link href="/contact/">Contact us directly</Link> and our team will
-            help.
+            Having trouble with the portal? <Link href="/contact/">Contact us directly</Link> and our team will help.
           </p>
 
           <div className="portal-gateway-actions">
-            <ShadButton asChild variant="secondary">
-              <Link href="/">Cancel</Link>
-            </ShadButton>
             <ShadButton asChild variant="primary">
               <a href={portalUrl} target={external ? "_blank" : undefined} rel={external ? "noopener noreferrer" : undefined}>
-                Continue to Otto
-                <ExternalLink aria-hidden="true" size={16} />
+                Open Patient Portal
+                <ArrowRight aria-hidden="true" size={16} />
               </a>
             </ShadButton>
+            <ShadButton asChild variant="secondary">
+              <Link href="/">Back to VMC</Link>
+            </ShadButton>
           </div>
+
+          <p className="portal-gateway-note">
+            VMC remains locally and independently owned. Otto provides our portal technology.
+          </p>
         </div>
       </Container>
     </section>

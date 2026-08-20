@@ -129,15 +129,35 @@ export function serviceListSchema(items: { name: string; description: string; pa
   };
 }
 
-export function veterinaryServiceSchema(service: ServiceDetail, path: string) {
+export function veterinaryServiceSchema(service: ServiceDetail, path: string, descriptionOverride?: string) {
+  const url = absoluteUrl(path);
+  const keywords = [
+    service.focusKeyword,
+    ...(service.secondaryKeywords || []),
+    service.title,
+    `${service.title} Northern Kentucky`,
+    `${service.title} Fort Thomas KY`,
+    `${service.title} Independence KY`
+  ].filter(Boolean);
+
   return {
     "@context": "https://schema.org",
     "@type": "Service",
+    "@id": `${url}#service`,
     name: service.title,
-    description: service.metaDescription || service.shortDescription,
+    description: descriptionOverride || service.fullDescription || service.metaDescription || service.shortDescription,
     serviceType: "Veterinary care",
+    category: service.serviceCategory,
+    keywords,
     areaServed: service.locationRelevance.length ? service.locationRelevance : ["Northern Kentucky", "Fort Thomas KY", "Independence KY"],
-    url: absoluteUrl(path),
+    url,
+    mainEntityOfPage: {
+      "@id": `${url}#webpage`
+    },
+    audience: {
+      "@type": "Audience",
+      audienceType: "Pet owners"
+    },
     provider: {
       "@type": "VeterinaryCare",
       "@id": `${site.siteUrl}/#organization`,

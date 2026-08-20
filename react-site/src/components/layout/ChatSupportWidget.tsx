@@ -138,12 +138,12 @@ const fallbackLocations = {
 const helpActions = [
   {
     label: "Book an appointment",
-    description: "Find a time that works for you",
-    request: "appointment",
+    description: "Direct booking when times are available",
+    request: "direct-booking",
     icon: CalendarDaysIcon
   },
   {
-    label: "Request med & food refill",
+    label: "Request medication or food refill",
     description: "Prescriptions and diet food refills",
     request: "refill",
     icon: PillIcon
@@ -159,6 +159,12 @@ const helpActions = [
     description: "Video visit with our care team",
     request: "virtual-consult",
     icon: VideoIcon
+  },
+  {
+    label: "General inquiry",
+    description: "General inquiry for our care team",
+    request: "general",
+    icon: MessageCircleIcon
   }
 ] satisfies { label: string; description: string; request: OnlineHelpRequestSlug; icon: IconComponent }[];
 
@@ -293,38 +299,31 @@ export function ChatSupportWidget({
   };
 
   const widgetStyle: CSSProperties | undefined = expanded
-    ? isMobilePanel
-      ? {
-          position: "fixed",
-          inset: 0,
-          right: 0,
-          bottom: 0,
-          width: "100vw",
-          justifyItems: "stretch",
-          alignItems: "stretch"
-        }
-      : { width: "min(400px, calc(100vw - 32px))" }
+    ? {
+        position: "fixed",
+        inset: 0,
+        right: 0,
+        bottom: 0,
+        width: "100vw",
+        height: "100dvh",
+        justifyItems: "stretch",
+        alignItems: "stretch"
+      }
     : undefined;
 
-  const panelStyle: CSSProperties = isMobilePanel
-    ? {
-        width: "100%",
-        minHeight: "100dvh",
-        maxHeight: "100dvh",
-        borderRadius: 0,
-        overflowY: "auto",
-        padding: "16px 16px calc(16px + env(safe-area-inset-bottom, 0px))"
-      }
-    : {
-        width: "100%",
-        maxHeight: "min(880px, calc(100dvh - 80px))",
-        overflowY: "auto"
-      };
+  const panelStyle: CSSProperties = {
+    width: "100%",
+    minHeight: "100dvh",
+    maxHeight: "100dvh",
+    borderRadius: 0,
+    overflowY: "auto",
+    padding: isMobilePanel ? "22px 18px calc(22px + env(safe-area-inset-bottom, 0px))" : "34px clamp(24px, 5vw, 64px)"
+  };
 
   const shellStyle: CSSProperties = {
     ...widgetStyle,
-    right: isMobilePanel ? 14 : 24,
-    bottom: isMobilePanel ? 86 : 96,
+    right: expanded ? 0 : isMobilePanel ? 14 : 24,
+    bottom: expanded ? 0 : isMobilePanel ? 86 : 96,
     display: isOpening ? "none" : "grid",
     width: widgetStyle?.width || "min(620px, calc(100vw - 32px))",
     justifyItems: widgetStyle?.justifyItems || "end",
@@ -354,6 +353,8 @@ export function ChatSupportWidget({
     border: "1px solid rgba(169, 27, 27, 0.14)",
     borderRadius: 999,
     background: "rgba(169, 27, 27, 0.05)",
+    minHeight: isMobilePanel ? 72 : 66,
+    alignItems: "center",
     padding: 4
   };
 
@@ -362,64 +363,53 @@ export function ChatSupportWidget({
     gridTemplateColumns: "34px minmax(0, 1fr) 18px",
     gap: 11,
     alignItems: "center",
-    minHeight: 62,
+    minHeight: isMobilePanel ? 62 : 54,
     border: "1px solid rgba(169, 27, 27, 0.12)",
     borderRadius: 9,
     background: "var(--white)",
     color: "var(--ink)",
     cursor: "pointer",
-    padding: "12px 13px",
+    padding: isMobilePanel ? "12px 13px" : "10px 12px",
     font: "inherit",
     textAlign: "left"
   };
 
-  const contactCardStyle: CSSProperties = {
-    display: "grid",
-    gridTemplateColumns: isMobilePanel ? "1fr" : "minmax(0, 1fr) auto",
-    gap: 14,
+  const callButtonStyle: CSSProperties = {
+    display: "inline-flex",
+    minHeight: 40,
     alignItems: "center",
-    borderRadius: 12,
-    background: "var(--ink)",
-    color: "var(--white)",
-    padding: 16
+    justifyContent: "center",
+    gap: 8,
+    border: "1px solid rgba(169, 27, 27, 0.16)",
+    borderRadius: 8,
+    background: "rgba(169, 27, 27, 0.06)",
+    color: "var(--red)",
+    padding: "0 13px",
+    fontSize: 12,
+    fontWeight: 950,
+    letterSpacing: "0.04em",
+    textTransform: "uppercase"
   };
 
   const openingLocation = openingState ? locationMap[openingState.location] : null;
-  const loadingPanelStyle: CSSProperties = isMobilePanel
-    ? {
-        position: "fixed",
-        inset: 0,
-        zIndex: 2147483646,
-        display: "grid",
-        placeItems: "center",
-        width: "100vw",
-        height: "100dvh",
-        background: "var(--cream)",
-        color: "var(--ink)",
-        padding: 24
-      }
-    : {
-        position: "fixed",
-        right: 8,
-        bottom: 8,
-        zIndex: 2147483646,
-        display: "grid",
-        placeItems: "center",
-        width: "min(424px, calc(100vw - 16px))",
-        height: "min(732px, calc(100dvh - 16px))",
-        border: "1px solid rgba(169, 27, 27, 0.16)",
-        borderRadius: 16,
-        background: "var(--cream)",
-        boxShadow: "0 24px 70px rgba(23, 19, 19, 0.24)",
-        color: "var(--ink)",
-        padding: 24
-      };
+  const loadingPanelStyle: CSSProperties = {
+    position: "fixed",
+    inset: 0,
+    zIndex: 2147483646,
+    display: "grid",
+    placeItems: "center",
+    width: "100vw",
+    height: "100dvh",
+    background: "#fcfaf6",
+    color: "var(--ink)",
+    padding: 24
+  };
 
   return (
     <>
       {isOpening && openingState && openingLocation && (
         <div className="chat-support-loading-panel" role="status" aria-live="polite" style={loadingPanelStyle}>
-          <div style={{ display: "grid", justifyItems: "center", gap: 14, textAlign: "center", maxWidth: 290 }}>
+          <div style={{ display: "grid", justifyItems: "center", gap: 14, textAlign: "center", maxWidth: 340 }}>
             <span
               style={{
                 display: "grid",
@@ -455,12 +445,12 @@ export function ChatSupportWidget({
           style={panelStyle}
         >
           <div className="chat-support-panel-head">
-            <span>
-              <MessageCircleIcon size={18} />
-            </span>
             <div>
-              <h2 id="vmc-chat-support-title">{locationMap[helpLocation].name} help center</h2>
-              <p id="vmc-chat-support-description">Book appointments, request refills, or chat with our team.</p>
+              <p className="eyebrow">VMC Help Center</p>
+              <h2 id="vmc-chat-support-title">
+                Help for your pet, <em>right here.</em>
+              </h2>
+              <p id="vmc-chat-support-description">Book a visit, request a refill, get records, or reach our care team.</p>
             </div>
             <button className="chat-support-close" type="button" aria-label="Close chat support panel" onClick={closePanel}>
               <XIcon size={18} />
@@ -481,15 +471,17 @@ export function ChatSupportWidget({
                     disabled={isSelected}
                     onClick={() => chooseLocation(locationKey)}
                     style={{
-                      minHeight: 38,
                       border: 0,
                       borderRadius: 999,
                       background: isSelected ? "var(--white)" : "transparent",
                       color: isSelected ? "var(--ink)" : "var(--body)",
                       cursor: isSelected ? "default" : "pointer",
                       font: "inherit",
-                      fontSize: 12,
-                      fontWeight: 950,
+                      minHeight: isMobilePanel ? 56 : 52,
+                      fontSize: isMobilePanel ? 16 : 16,
+                      fontWeight: 750,
+                      letterSpacing: 0,
+                      textTransform: "none",
                       boxShadow: isSelected ? "0 8px 22px rgba(23, 19, 19, 0.08)" : undefined
                     }}
                   >
@@ -522,42 +514,9 @@ export function ChatSupportWidget({
               })}
             </div>
 
-            <div className="chat-support-contact-card" style={contactCardStyle}>
-              <div>
-                <strong style={{ display: "block", fontSize: 15, fontWeight: 950, lineHeight: 1.2 }}>Need to talk to someone?</strong>
-                <small style={{ display: "block", marginTop: 4, color: "rgba(255, 255, 255, 0.78)", fontSize: 12.5, fontWeight: 700, lineHeight: 1.4 }}>
-                  Message our team or call {locationMap[helpLocation].phone} for urgent concerns.
-                </small>
-              </div>
-              <button
-                type="button"
-                disabled={isOpening}
-                onClick={() => openHelpPage(helpLocation, "general")}
-                style={{
-                  display: "inline-flex",
-                  minHeight: 40,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: 7,
-                  border: 0,
-                  borderRadius: 7,
-                  background: "var(--white)",
-                  color: "var(--ink)",
-                  cursor: "pointer",
-                  padding: "0 13px",
-                  font: "inherit",
-                  fontSize: 12,
-                  fontWeight: 950
-                }}
-              >
-                General inquiry
-                <ArrowRightIcon size={15} />
-              </button>
-            </div>
-
-            <p className="chat-support-availability is-ready" aria-live="polite">
-              Choose an option and we&apos;ll open the right secure request page.
-            </p>
+            <a href={`tel:${locationMap[helpLocation].tel}`} style={callButtonStyle}>
+              Call {locationMap[helpLocation].name} {locationMap[helpLocation].phone}
+            </a>
             {statusMessage && <p className="chat-support-status" role="status">{statusMessage}</p>}
           </div>
         </div>

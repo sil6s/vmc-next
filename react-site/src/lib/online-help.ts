@@ -2,9 +2,14 @@ import { OTTO_CLINIC_IDS } from "@/lib/otto";
 
 export type OnlineHelpLocationSlug = "fort-thomas" | "independence";
 export type OnlineHelpLocationKey = "fortThomas" | "independence";
-export type OnlineHelpRequestSlug = "appointment" | "refill" | "records" | "virtual-consult" | "general";
+export type OnlineHelpRequestSlug =
+  | "direct-booking"
+  | "refill"
+  | "records"
+  | "virtual-consult"
+  | "general";
 export type OnlineHelpRequestType =
-  | "RequestAppointment"
+  | "DirectBooking"
   | "RequestRxRefill"
   | "RequestMedicalRecords"
   | "RequestVirtualConsult"
@@ -64,24 +69,24 @@ export const onlineHelpRequests: Record<
     disclaimer: string;
   }
 > = {
-  appointment: {
-    slug: "appointment",
-    requestType: "RequestAppointment",
+  "direct-booking": {
+    slug: "direct-booking",
+    requestType: "DirectBooking",
     label: "Book an appointment",
-    tabLabel: "Book an appointment",
-    shortLabel: "appointment options",
-    description: "Request a visit with the clinic team.",
-    calloutTitle: "Booking is handled by Otto, our scheduling partner",
+    tabLabel: "Book appointment",
+    shortLabel: "direct booking",
+    description: "Book directly through Otto when online times are available.",
+    calloutTitle: "Direct booking is handled by Otto, our scheduling partner",
     calloutBody:
-      "If the assistant below doesn't load or can't help, call or email us using the contact options at the bottom of the page — our team can book you directly.",
+      "If online times are available, Otto can help you book directly. For urgent or same-day needs, call the clinic.",
     disclaimer:
-      "Otto is a third-party scheduling assistant. Requests submitted through Otto are reviewed by our staff and aren't confirmed appointments until you receive a follow-up call or message from Veterinary Medical Centers."
+      "Otto is a third-party scheduling assistant. Direct booking availability may vary by clinic, appointment type, and schedule."
   },
   refill: {
     slug: "refill",
     requestType: "RequestRxRefill",
-    label: "Request med & food refill",
-    tabLabel: "Med & food refill",
+    label: "Request medication or food refill",
+    tabLabel: "Medication or food refill",
     shortLabel: "refill requests",
     description: "Ask for prescription or diet food refill support.",
     calloutTitle: "Refill requests are handled by Otto, our scheduling partner",

@@ -109,6 +109,15 @@ const careOptions = [
   }
 ];
 
+const careEyebrows: Record<string, string> = {
+  "new-pets": "New Pet Care",
+  wellness: "Preventive Care",
+  dental: "Dental Care",
+  skin: "Skin & Ear Care",
+  surgery: "Surgery Planning",
+  sick: "Sick Pet Care"
+};
+
 export function HomeCareFinder() {
   const [activeId, setActiveId] = useState(careOptions[0].id);
   const active = careOptions.find((option) => option.id === activeId) || careOptions[0];
@@ -141,7 +150,7 @@ export function HomeCareFinder() {
           <span className="home-care-icon">
             <Icon aria-hidden="true" size={26} strokeWidth={2.2} />
           </span>
-          <p className="home-care-best">{active.bestFor}</p>
+          <p className="home-care-best">{careEyebrows[active.id]}</p>
           <h3>{active.title}</h3>
           <p>{active.copy}</p>
         </div>

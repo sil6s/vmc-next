@@ -41,6 +41,7 @@ import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { site } from "@/data/site";
+import { onlineHelpPath } from "@/lib/online-help";
 import {
   genderOptions,
   indoorOutdoorOptions,
@@ -193,7 +194,7 @@ const appointmentCopy: Record<Locale, {
     existingPatient: "Existing patient", existingPatientBody: "Use the portal, call a clinic, or send a non-urgent message.", existingPatientDetail: "Best for current clients scheduling follow-ups, refills, records, or routine care.",
     continue: "Continue", continueHelp: "We’ll guide you to the correct next step based on your selection.", existingEyebrow: "Existing clients",
     existingTitle: "Choose the best way to reach us.", existingIntro: "Your pet is already established with our team. Pick the option that matches what you need today.",
-    patientPortal: "Patient portal", portalBody: "Best for online booking, account access, records, and routine client tools.", callLocationBody: "Best for same-day needs, urgent questions, or scheduling help.",
+    patientPortal: "Book appointment online", portalBody: "Direct online booking plus account access, records, and routine client tools.", callLocationBody: "Best for same-day needs, urgent questions, or scheduling help.",
     liveChat: "Live chat", liveChatBody: "Best for quick general questions during business hours.", availableNow: "Available now", unavailable: "Currently unavailable",
     contactForm: "Contact form", contactFormBody: "Best for non-urgent questions, follow-ups, billing, records, or refill questions.", onlinePharmacy: "Online pharmacy",
     pharmacyBody: "Best for eligible refills, preventives, and trusted pet medications.", backToOptions: "Back to options"
@@ -804,7 +805,7 @@ function ExistingPanel({
         <p>{copy.existingIntro}</p>
       </div>
       <div className="book-existing-grid">
-        <a className="book-existing-card is-featured" href={portalUrl} target={portalUrl.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer">
+        <a className="book-existing-card is-featured" href={localizedHref(onlineHelpPath("fort-thomas", "direct-booking"), locale)}>
           <FileText aria-hidden="true" />
           <span>
             <strong>{copy.patientPortal}</strong>
@@ -852,10 +853,10 @@ function ExistingPanel({
             </span>
           </span>
         )}
-        <a className="book-existing-card" href={localizedHref("/contact/#message-form", locale)}>
+        <a className="book-existing-card" href={localizedHref(onlineHelpPath("fort-thomas", "general"), locale)}>
           <FileText aria-hidden="true" />
           <span>
-            <strong>{copy.contactForm}</strong>
+            <strong>Message through Otto</strong>
             <small>{copy.contactFormBody}</small>
           </span>
         </a>

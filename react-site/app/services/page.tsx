@@ -1,7 +1,23 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { headers } from "next/headers";
-import { MapPin, Phone, Stethoscope } from "lucide-react";
+import {
+  AlertCircle,
+  ArrowRight,
+  Baby,
+  CalendarCheck,
+  ClipboardCheck,
+  Ear,
+  HeartHandshake,
+  MapPin,
+  MessageCircle,
+  Phone,
+  Scale,
+  Scissors,
+  Smile,
+  Stethoscope
+} from "lucide-react";
 import { Breadcrumbs } from "@/components/sections/Breadcrumbs";
 import { CTASection } from "@/components/sections/CTASection";
 import { FAQSection } from "@/components/sections/FAQSection";
@@ -10,7 +26,6 @@ import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { locations } from "@/data/locations";
 import { localizedSeo } from "@/data/localized-seo";
-import { serviceCategoryLabels, type ServiceCategory } from "@/data/serviceHub";
 import { site } from "@/data/site";
 import { pageMetadata } from "@/lib/metadata";
 import { isLocale, localizedLanguageAlternates } from "@/lib/i18n";
@@ -18,137 +33,90 @@ import { breadcrumbSchema, faqSchema, JsonLd, organizationSchema, serviceListSch
 import { getServiceHubCards } from "@/sanity/services";
 
 const seo = {
-  title: "Veterinary Services in Northern Kentucky | Dog & Cat Vet Care",
+  title: "Veterinary Services in Northern Kentucky | Dog & Cat Care",
   description:
-    "Explore veterinary services for dogs and cats in Northern Kentucky, including wellness exams, vaccines, dental care, surgery, diagnostics, and sick visits."
+    "Veterinary services for dogs and cats in Northern Kentucky, including wellness exams, vaccinations, dental care, diagnostics, surgery, and sick visits."
 };
-
-const carePaths: { label: string; description: string; category: ServiceCategory }[] = [
-  { label: "Preventive care", description: "Wellness, vaccines, parasite prevention, and nutrition.", category: "preventiveCare" },
-  { label: "Sick or urgent concerns", description: "New symptoms, diagnostics, skin, ear, and allergy care.", category: "medicalCare" },
-  { label: "Dental care", description: "Oral exams, dental cleanings, and treatment planning.", category: "dentalSurgery" },
-  { label: "Surgery and diagnostics", description: "Soft tissue surgery, spay and neuter, and lab work.", category: "dentalSurgery" }
-];
-
-const categories = [
-  {
-    title: "Preventive Care",
-    copy: "Routine care helps protect your pet's health and gives your family a clear plan before small concerns become bigger problems.",
-    items: ["Wellness exams", "Vaccinations", "Parasite prevention", "Nutrition and weight guidance"]
-  },
-  {
-    title: "Medical Care",
-    copy: "When something feels off, our team can evaluate symptoms, recommend testing, and explain practical treatment options.",
-    items: ["Sick visits", "Diagnostics", "Skin and ear concerns", "Chronic condition support"]
-  },
-  {
-    title: "Dental, Surgical & Life Stage Care",
-    copy: "For changing needs, dental concerns, or procedures, we focus on preparation, communication, comfort, and follow-through.",
-    items: ["Pet dental care", "Spay and neuter", "Soft tissue surgery", "Puppy, kitten, and senior care"]
-  }
-];
 
 const situationCards = [
   {
-    title: "My pet seems healthy but is due for care",
-    services: [
-      ["Wellness Exam", "pet-wellness-exams"],
-      ["Vaccinations", "dog-cat-vaccinations"],
-      ["Parasite Prevention", "parasite-prevention"]
-    ]
+    title: "Due for a checkup",
+    label: "Wellness exam",
+    href: "/services/pet-wellness-exams/"
   },
   {
-    title: "My pet is sick or acting different",
-    services: [
-      ["Sick Pet Visit", "sick-pet-visits"],
-      ["Diagnostics", "veterinary-diagnostics"],
-      ["Skin, Ear & Allergy Care", "skin-ear-allergy-care"]
-    ]
+    title: "Not feeling like themselves",
+    label: "Sick pet visit",
+    href: "/services/sick-pet-visits/"
   },
   {
-    title: "My pet has bad breath or trouble chewing",
-    services: [
-      ["Dental Care", "pet-dental-care"],
-      ["Wellness Exam", "pet-wellness-exams"],
-      ["Senior Pet Care", "senior-pet-care"]
-    ]
+    title: "New puppy or kitten",
+    label: "First-year care",
+    href: "/services/puppy-kitten-care/"
   },
   {
-    title: "I have a new puppy or kitten",
-    services: [
-      ["Puppy & Kitten Care", "puppy-kitten-care"],
-      ["Vaccinations", "dog-cat-vaccinations"],
-      ["Parasite Prevention", "parasite-prevention"]
-    ]
+    title: "Worried about teeth or breath",
+    label: "Pet dental care",
+    href: "/services/pet-dental-care/"
   },
   {
-    title: "My pet may need surgery",
-    services: [
-      ["Spay & Neuter", "spay-neuter-surgery"],
-      ["Soft Tissue Surgery", "soft-tissue-surgery"],
-      ["Diagnostics", "veterinary-diagnostics"]
-    ]
+    title: "Itchy or shaking their head",
+    label: "Skin & ear care",
+    href: "/services/skin-ear-allergy-care/"
   },
   {
-    title: "My pet is getting older",
-    services: [
-      ["Senior Pet Care", "senior-pet-care"],
-      ["Diagnostics", "veterinary-diagnostics"],
-      ["Nutrition & Weight Guidance", "nutrition-weight-guidance"]
-    ]
+    title: "Getting older",
+    label: "Senior pet care",
+    href: "/services/senior-pet-care/"
+  },
+  {
+    title: "Weight or nutrition questions",
+    label: "Nutrition guidance",
+    href: "/services/nutrition-weight-guidance/"
+  },
+  {
+    title: "May need surgery",
+    label: "Surgery consult",
+    href: "/services/soft-tissue-surgery/"
   }
 ];
 
+const situationIcons = [CalendarCheck, AlertCircle, Baby, Smile, Ear, HeartHandshake, Scale, Scissors];
+
 const visitSteps = [
-  ["Schedule the right appointment", "Choose the service that best fits your pet's needs or contact us for help deciding."],
-  ["Share your concerns", "Tell us about symptoms, behavior changes, lifestyle, diet, medications, or previous records."],
-  ["Meet with our veterinary team", "We examine your pet, answer your questions, and explain what we are seeing in plain language."],
-  ["Review recommendations", "Your veterinarian may recommend preventive care, diagnostics, treatment, dental care, or follow-up steps."],
-  ["Leave with a clear plan", "We make sure you understand next steps, medications, home care, and when to return."]
+  ["Tell us what's going on", "Share symptoms, questions, behavior changes, medications, diet, or anything you've noticed at home."],
+  ["We'll take a careful look", "Your veterinarian examines your pet and talks through what they find in clear, practical language."],
+  ["We'll explain the options", "If testing or treatment may help, we'll explain why, what it involves, and what choices make sense."],
+  ["You leave with a plan", "You'll know what to do at home, what to watch for, and when to come back."]
 ];
 
 const resourceLinks = [
   {
-    title: "First Vet Visit in Northern Kentucky",
-    description: "New patient details, forms, records, and what to expect before your first VMC visit.",
+    title: "New to VMC?",
+    description: "What to expect before your first visit, including forms, records, and how to prepare.",
     href: "/new-patients/"
   },
   {
-    title: "Northern Kentucky Vet Near Me",
-    description: "Learn how our Fort Thomas and Independence locations serve nearby NKY communities.",
-    href: "/vet-near-me/"
+    title: "When your pet isn't feeling well",
+    description: "A simple guide to deciding when to call and what details are helpful for our team.",
+    href: "/resources/"
   },
   {
-    title: "Pet Dental Care in Northern Kentucky",
-    description: "See how dental exams, cleanings, and treatment planning support long-term comfort.",
-    href: "/services/pet-dental-care/"
-  },
-  {
-    title: "Pet Soft Tissue Surgery in Northern Kentucky",
-    description: "Review common surgical care, preparation, monitoring, and recovery support.",
-    href: "/services/soft-tissue-surgery/"
-  },
-  {
-    title: "About Veterinary Medical Centers",
-    description: "Meet the locally owned team behind VMC's relationship-based veterinary care.",
-    href: "/about/"
-  },
-  {
-    title: "Contact Veterinary Medical Centers",
-    description: "Call, request an appointment, or choose the VMC location that is closest to home.",
-    href: "/book-appointment/"
+    title: "Caring for pets through every life stage",
+    description: "Guidance for puppies, kittens, adult pets, and senior dogs and cats.",
+    href: "/resources/"
   }
 ];
 
 const servicesFaqs = [
   {
-    question: "What veterinary services do you offer?",
+    question: "What if I don't know which appointment to choose?",
     answer:
-      "We offer wellness exams, vaccines, puppy and kitten care, dental care, diagnostics, sick visits, senior pet care, parasite prevention, spay and neuter, and select soft tissue surgery for dogs and cats."
+      "That's common. Tell us what you've noticed at home and our team can help you choose between a wellness visit, sick appointment, dental visit, diagnostics, surgery consult, or another next step."
   },
   {
     question: "Do you care for both dogs and cats?",
-    answer: "Yes. Veterinary Medical Centers provide veterinary care for dogs, cats, puppies, and kittens."
+    answer: "Yes. Our Fort Thomas and Independence clinics provide veterinary care for dogs, cats, puppies, and kittens."
   },
   {
     question: "How often should my pet see a veterinarian?",
@@ -156,7 +124,17 @@ const servicesFaqs = [
       "Most pets benefit from at least one wellness exam each year. Puppies, kittens, senior pets, and pets with ongoing health conditions may need more frequent visits."
   },
   {
-    question: "Do you offer pet dental cleanings?",
+    question: "What should I bring?",
+    answer:
+      "Bring vaccine records, medication names and doses, previous medical records if you have them, adoption paperwork for new pets, and any questions you want to ask."
+  },
+  {
+    question: "Can you help if my pet is sick?",
+    answer:
+      "Yes. We see sick pet visits for many non-emergency concerns, including appetite changes, coughing, vomiting, diarrhea, limping, itching, ear problems, and behavior changes."
+  },
+  {
+    question: "Do you offer dental care?",
     answer:
       "Yes. We provide dental evaluations and professional dental care recommendations for dogs and cats. Dental care can help with bad breath, tartar, discomfort, and oral disease."
   },
@@ -166,19 +144,14 @@ const servicesFaqs = [
       "Yes. Our team provides spay and neuter procedures and select soft tissue surgeries. We discuss preparation, monitoring, pain control, and recovery instructions before surgery."
   },
   {
-    question: "Which location should I choose?",
+    question: "What if I think it's an emergency?",
     answer:
-      "Choose the Fort Thomas or Independence location based on what is most convenient for your family. If you are unsure, contact our team and we can help."
+      "If your pet is having severe trouble breathing, collapse, uncontrolled bleeding, repeated seizures, or another emergency, contact an emergency veterinary hospital right away. For less urgent symptoms, call us and we can help you decide what to do next."
   },
   {
-    question: "What should I bring to my pet's first visit?",
+    question: "Can I choose either location?",
     answer:
-      "Bring any available vaccine records, medication information, previous medical records, adoption paperwork, and a list of questions or concerns."
-  },
-  {
-    question: "What if my pet needs urgent or emergency care?",
-    answer:
-      "If your pet is experiencing severe symptoms or a medical emergency, contact an emergency veterinary hospital right away. For non-emergency concerns, call our team and we can help determine the right next step."
+      "Yes. Choose the Fort Thomas or Independence clinic that is easiest for your family. Both locations care for dogs and cats and can help you find the right appointment."
   }
 ];
 
@@ -209,59 +182,63 @@ export default async function ServicesPage() {
           <div className="services-hero-grid">
             <div className="services-hero-copy">
               <p className="eyebrow">Veterinary Services in Northern Kentucky</p>
-              <h1>Veterinary Care for Dogs & Cats in Northern Kentucky</h1>
+              <h1>
+                <span>Care that starts</span>{" "}
+                <span className="hero-title-accent">with knowing your pet.</span>
+              </h1>
               <p>
-                From routine wellness exams and vaccines to dental care, diagnostics, surgery, and sick visits,
-                Veterinary Medical Centers of Northern Kentucky provides relationship-based care for pets across Fort
-                Thomas, Independence, and nearby NKY communities.
+                From first checkups to sick visits, pet dental care, veterinary diagnostics, surgery, and the everyday
+                questions in between, our Fort Thomas and Independence teams are here to help dogs and cats feel their
+                best.
               </p>
               <div className="hero-actions">
-                <Button href="/book-appointment/">Book an Appointment</Button>
-                <Button href={`tel:${site.locations[0].tel}`} variant="ghost">Call Our Team</Button>
+                <Button href="/book-appointment/">Request an Appointment</Button>
+                <Button href={`tel:${site.locations[0].tel}`} variant="ghost">Not sure what your pet needs? Call us</Button>
               </div>
-              <ul className="services-trust-list" aria-label="Veterinary Medical Centers service highlights">
-                <li>Locally owned veterinary care</li>
-                <li>Two convenient NKY locations</li>
-                <li>Dogs, cats, puppies, and kittens</li>
-                <li>Preventive, medical, dental, and surgical services</li>
-              </ul>
             </div>
-            <aside className="care-path-card" aria-label="Choose your veterinary care path">
-              <div className="popular-services-icon">
-                <Stethoscope aria-hidden="true" size={32} />
+            <div className="services-hero-photo">
+              <Image
+                src="/images/blog/dog-on-exam-table.jpg"
+                alt="Dog resting on an exam table during a veterinary visit at Veterinary Medical Centers"
+                fill
+                priority
+                sizes="(max-width: 900px) 100vw, 520px"
+              />
+              <div className="services-hero-note">
+                <Stethoscope aria-hidden="true" size={20} />
+                <span>Wellness exams, vaccinations, sick pet visits, dental care, diagnostics, surgery, puppy and kitten care, and senior pet care.</span>
               </div>
-              <p className="eyebrow">Choose Your Care Path</p>
-              <h2>Start with the care your pet needs.</h2>
-              <div className="care-path-list">
-                {carePaths.map((path) => (
-                  <a key={path.label} href="#service-browser">
-                    <strong>{path.label}</strong>
-                    <span>{path.description}</span>
-                    <small>{serviceCategoryLabels[path.category]}</small>
-                  </a>
-                ))}
-              </div>
-            </aside>
+            </div>
           </div>
         </Container>
       </section>
 
       <Breadcrumbs items={crumbs.map((item) => ({ label: item.name, href: item.path }))} />
 
-      <section className="services-section services-section-white">
+      <section className="services-section services-section-paper">
         <Container>
-          <div className="section-heading">
-            <p className="eyebrow">Service Finder</p>
-            <h2>Find the right care path for your pet.</h2>
+          <div className="services-intro-grid">
+            <div className="section-heading section-heading-left">
+              <p className="eyebrow">What can we help with today?</p>
+              <h2>Start with what you&apos;ve noticed.</h2>
+            </div>
             <p>
-              Start with a broad care type, then use the service browser below to compare specific appointments and
-              next steps.
+              You don&apos;t need to know which appointment to book. Choose what sounds closest and we&apos;ll point you
+              in the right direction.
             </p>
           </div>
-          <nav className="service-finder" aria-label="Veterinary care category links">
-            {carePaths.map((path) => (
-              <a key={path.label} href="#service-browser">{path.label}</a>
-            ))}
+          <nav className="situation-link-grid" aria-label="Choose veterinary care by what you are noticing">
+            {situationCards.map((card, index) => {
+              const Icon = situationIcons[index] || Stethoscope;
+              return (
+              <Link className="situation-link-card" href={card.href} key={card.title}>
+                <Icon aria-hidden="true" size={20} />
+                <span>{card.title}</span>
+                <small>{card.label}</small>
+                <ArrowRight aria-hidden="true" size={18} />
+              </Link>
+              );
+            })}
           </nav>
         </Container>
       </section>
@@ -269,43 +246,58 @@ export default async function ServicesPage() {
       <section className="services-section services-section-cream">
         <Container>
           <div className="section-heading">
-            <p className="eyebrow">Browse Services</p>
-            <h2>Explore veterinary services by care type.</h2>
+            <p className="eyebrow">Our Veterinary Services</p>
+            <h2>Whatever brings you in, we&apos;ll help you understand what comes next.</h2>
             <p>
-              Choose a care category to quickly find the right service for your dog or cat. Each service includes clear
-              next steps, what to expect, and when to schedule an appointment.
+              Browse our veterinary services or start with what you&apos;ve noticed at home. If you&apos;re unsure
+              which appointment fits, our team can help.
             </p>
           </div>
           <ServiceBrowser services={services} />
         </Container>
       </section>
 
-      <section className="services-section services-section-white">
+      <section className="services-local-section">
         <Container>
-          <div className="section-heading">
-            <p className="eyebrow">Choose by Situation</p>
-            <h2>What does your pet need help with?</h2>
-            <p>
-              If you do not know the service name yet, start with what you are noticing. These common situations point
-              to helpful appointment types.
-            </p>
-          </div>
-          <div className="situation-grid">
-            {situationCards.map((card) => (
-              <details className="situation-card" key={card.title}>
-                <summary>{card.title}</summary>
-                <div>
-                  <p>Recommended services:</p>
-                  <ul>
-                    {card.services.map(([label, slug]) => (
-                      <li key={slug}>
-                        <Link href={`/services/${slug}/`}>{label}</Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </details>
-            ))}
+          <div className="services-local-grid">
+            <div className="services-local-photo">
+              <Image
+                src="/images/kristi-baker-horiztonal.jpg"
+                alt="Dr. Kristi Baker with a veterinary patient in Northern Kentucky"
+                fill
+                sizes="(max-width: 900px) 100vw, 520px"
+              />
+            </div>
+            <div>
+              <p className="eyebrow">Locally Owned Veterinary Care</p>
+              <h2>Locally owned. Personally invested.</h2>
+              <p>
+                Veterinary Medical Centers cares for Northern Kentucky pets through our Fort Thomas and Independence
+                clinics. We&apos;re locally and independently owned, and we believe veterinary care works best when you
+                know the people caring for your pet.
+              </p>
+              <p>
+                You&apos;ll see familiar faces, talk with a real care team, and leave knowing what we found, what
+                matters, and what to do next.
+              </p>
+              <div className="services-values">
+                <article>
+                  <MessageCircle aria-hidden="true" size={22} />
+                  <h3>We listen first</h3>
+                  <p>Tell us what you&apos;ve noticed at home. That context matters.</p>
+                </article>
+                <article>
+                  <ClipboardCheck aria-hidden="true" size={22} />
+                  <h3>We explain the why</h3>
+                  <p>You should understand every recommendation before making a decision.</p>
+                </article>
+                <article>
+                  <HeartHandshake aria-hidden="true" size={22} />
+                  <h3>We stay with you</h3>
+                  <p>From puppy and kitten visits through senior care, we&apos;re here for the long relationship.</p>
+                </article>
+              </div>
+            </div>
           </div>
         </Container>
       </section>
@@ -314,45 +306,19 @@ export default async function ServicesPage() {
         <Container>
           <div>
             <p className="eyebrow">Need Help Choosing?</p>
-            <h2>Not sure which service your pet needs?</h2>
+            <h2>You don&apos;t have to know which appointment to choose.</h2>
             <p>
-              You do not have to diagnose the problem before reaching out. Tell us what you are noticing and our team
-              can help guide you toward the right appointment type.
+              Tell us what you&apos;ve noticed. Our team can help you decide whether your pet needs a wellness visit,
+              sick appointment, dental care, diagnostics, surgery, or something else.
             </p>
             <p className="services-emergency-note">
               If your pet is experiencing a medical emergency, contact an emergency veterinary hospital right away.
             </p>
           </div>
           <div className="services-help-actions">
-            <Button href="/book-appointment/" variant="secondary">Request an Appointment</Button>
+            <Button href="/book-appointment/" variant="secondary">Help Me Choose</Button>
             <Button href={`tel:${site.locations[0].tel}`} variant="ghost">Call Fort Thomas</Button>
             <Button href={`tel:${site.locations[1].tel}`} variant="ghost">Call Independence</Button>
-          </div>
-        </Container>
-      </section>
-
-      <section className="services-section services-section-white">
-        <Container>
-          <div className="section-heading">
-            <p className="eyebrow">Care Categories</p>
-            <h2>Care organized around your pet&apos;s needs.</h2>
-            <p>
-              The service browser is for choosing a specific appointment. These categories show how our team thinks
-              about your pet&apos;s care plan over time.
-            </p>
-          </div>
-          <div className="service-category-grid">
-            {categories.map((category) => (
-              <article className="service-category-card" key={category.title}>
-                <h3>{category.title}</h3>
-                <p>{category.copy}</p>
-                <ul>
-                  {category.items.map((item) => (
-                    <li key={item}>{item}</li>
-                  ))}
-                </ul>
-              </article>
-            ))}
           </div>
         </Container>
       </section>
@@ -360,31 +326,39 @@ export default async function ServicesPage() {
       <section className="services-section services-section-cream">
         <Container>
           <div className="section-heading">
-            <p className="eyebrow">Northern Kentucky Locations</p>
-            <h2>Veterinary services near you in Northern Kentucky.</h2>
-            <p>With two Northern Kentucky locations, Veterinary Medical Centers make it easier to choose care close to home.</p>
+            <p className="eyebrow">Fort Thomas & Independence</p>
+            <h2>Two clinics. One team that knows Northern Kentucky.</h2>
+            <p>
+              Choose the location that&apos;s easiest for your family. Both VMC clinics care for dogs and cats and can
+              help you find the right appointment if you&apos;re unsure where to start.
+            </p>
           </div>
           <div className="services-location-grid">
             {locations.map((location) => (
               <article className="services-location-card" key={location.slug}>
-                <MapPin aria-hidden="true" size={24} />
-                <h3>{location.slug === "fort-thomas" ? "Fort Thomas Veterinary Medical Centers" : "Independence Veterinary Medical Centers"}</h3>
-                <p>
-                  {location.slug === "fort-thomas"
-                    ? "Convenient for families in Fort Thomas, Newport, Highland Heights, Bellevue, Dayton, Cold Spring, Southgate, and nearby Cincinnati neighborhoods."
-                    : "Convenient for families in Independence, Taylor Mill, Erlanger, Covington, Kenton County, and surrounding Northern Kentucky communities."}
-                </p>
-                <address>{location.address}</address>
-                <a className="services-phone" href={`tel:${location.tel}`}>
-                  <Phone aria-hidden="true" size={16} />
-                  {location.phone}
-                </a>
-                <p className="services-hours">Monday-Friday: 8:00 AM-6:00 PM</p>
-                <div className="inline-actions">
-                  <Link className="btn btn-primary" href={`/locations/${location.slug}/`}>Book This Location</Link>
-                  <a className="btn btn-ghost" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location.address)}`} target="_blank" rel="noopener noreferrer">
-                    Get Directions
+                <div className="services-location-image">
+                  <Image src={location.image} alt={location.imageAlt} fill sizes="(max-width: 900px) 100vw, 560px" />
+                </div>
+                <div className="services-location-body">
+                  <MapPin aria-hidden="true" size={24} />
+                  <h3>{location.slug === "vet-in-fort-thomas-ky" ? "Fort Thomas Veterinary Medical Center" : "Independence Veterinary Medical Center"}</h3>
+                  <p>
+                    {location.slug === "vet-in-fort-thomas-ky"
+                      ? "Your neighborhood veterinary team on Memorial Parkway."
+                      : "Local veterinary care on Madison Pike."}
+                  </p>
+                  <address>{location.address}</address>
+                  <a className="services-phone" href={`tel:${location.tel}`}>
+                    <Phone aria-hidden="true" size={16} />
+                    {location.phone}
                   </a>
+                  <p className="services-hours">Monday-Friday: 8:00 AM-6:00 PM</p>
+                  <div className="inline-actions">
+                    <Link className="btn btn-primary" href={`/locations/${location.slug}/`}>Request Appointment</Link>
+                    <a className="btn btn-ghost" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location.address)}`} target="_blank" rel="noopener noreferrer">
+                      Get Directions
+                    </a>
+                  </div>
                 </div>
               </article>
             ))}
@@ -394,14 +368,18 @@ export default async function ServicesPage() {
 
       <section className="services-section services-section-white">
         <Container>
-          <div className="section-heading">
-            <p className="eyebrow">Visit Flow</p>
-            <h2>What to expect at your pet&apos;s visit.</h2>
+          <div className="services-visit-heading">
+            <p className="eyebrow">What To Expect</p>
+            <h2>You&apos;ll always know what happens next.</h2>
+            <p>
+              Our visits are built around clear communication, careful exams, and practical next steps for your pet and
+              your family.
+            </p>
           </div>
           <div className="visit-steps">
             {visitSteps.map(([title, copy], index) => (
               <article className="visit-step" key={title}>
-                <span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                <span aria-hidden="true">{index + 1}</span>
                 <h3>{title}</h3>
                 <p>{copy}</p>
               </article>
@@ -412,13 +390,16 @@ export default async function ServicesPage() {
 
       <section className="services-section services-section-cream">
         <Container>
-          <div className="section-heading">
-            <p className="eyebrow">Helpful Resources</p>
-            <h2>Helpful pet care resources.</h2>
+          <div className="section-heading section-heading-with-link">
+            <div>
+              <p className="eyebrow">Helpful Resources</p>
+              <h2>A few guides before you visit.</h2>
+            </div>
+            <Link href="/resources/">View all pet care resources</Link>
           </div>
           <div className="resource-card-grid">
             {resourceLinks.map((resource) => (
-              <article className="resource-card" key={resource.href}>
+              <article className="resource-card" key={resource.title}>
                 <h3>{resource.title}</h3>
                 <p>{resource.description}</p>
                 <Link href={resource.href}>View resource</Link>
@@ -428,11 +409,11 @@ export default async function ServicesPage() {
         </Container>
       </section>
 
-      <FAQSection faqs={servicesFaqs} title="Common questions about veterinary services in Northern Kentucky." />
+      <FAQSection faqs={servicesFaqs} title="Common questions about caring for your pet at VMC." />
       <CTASection
-        title="Schedule veterinary care for your dog or cat."
-        body="Whether your pet is due for a checkup, needs dental care, or is showing new symptoms, Veterinary Medical Centers of Northern Kentucky is here to help."
-        primary={{ label: "Book an Appointment", href: "/book-appointment/" }}
+        title="Your pet doesn't have to fit neatly into a service category."
+        body="Tell us what's going on. Whether your pet is due for routine care, isn't feeling like themselves, or you're simply not sure what they need, our team can help you figure out the next step. Fort Thomas · Independence · Dogs and cats welcome."
+        primary={{ label: "Request an Appointment", href: "/book-appointment/" }}
         secondary={{ label: "Call Our Team", href: `tel:${site.locations[0].tel}` }}
       />
       <JsonLd

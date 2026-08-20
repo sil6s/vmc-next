@@ -202,6 +202,9 @@ export async function getServiceCardsByCategory(category: ServiceCategory, local
 }
 
 export async function getServiceDetail(slug: string, locale: Locale = "en") {
+  const fallback = getStaticServiceDetail(slug);
+  if (fallback) return fallback;
+
   if (sanityEnabled) {
     try {
       const service = await client.fetch<SanityServiceDetail | null>(SERVICE_QUERY, { slug, locale }, options);
@@ -215,16 +218,18 @@ export async function getServiceDetail(slug: string, locale: Locale = "en") {
 }
 
 export async function getServiceDetailSlugs() {
+  const staticSlugs = serviceHubServices.map((service) => service.slug);
+
   if (sanityEnabled) {
     try {
       const slugs = await client.fetch<{ slug: string }[]>(SERVICE_SLUGS_QUERY, {}, options);
-      if (slugs.length) return slugs.map((item) => item.slug);
+      if (slugs.length) return Array.from(new Set([...staticSlugs, ...slugs.map((item) => item.slug)]));
     } catch {
-      return [];
+      return staticSlugs;
     }
   }
 
-  return [];
+  return staticSlugs;
 }
 
 export async function getRelatedServiceCards(service: ServiceDetail, locale: Locale = "en") {

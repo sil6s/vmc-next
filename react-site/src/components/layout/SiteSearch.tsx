@@ -62,7 +62,13 @@ const CATEGORY_ICON: Record<SearchCategory, React.ReactNode> = {
 
 /* ─── Detect OS for keyboard hint ────────────────────────────────────────── */
 function useIsMac() {
-  return typeof navigator !== "undefined" && navigator.platform.toUpperCase().includes("MAC");
+  const [isMac, setIsMac] = useState(false);
+
+  useEffect(() => {
+    setIsMac(navigator.platform.toUpperCase().includes("MAC"));
+  }, []);
+
+  return isMac;
 }
 
 /* ─── Result item ─────────────────────────────────────────────────────────── */

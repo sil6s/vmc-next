@@ -3,8 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, ChevronRight, Clock, MapPin, Phone } from "lucide-react";
-import { locations } from "@/data/locations";
-import { onlineHelpLocations, onlineHelpPath, type OnlineHelpLocationSlug } from "@/lib/online-help";
+import { onlineHelpPath, type OnlineHelpLocationSlug } from "@/lib/online-help";
 
 const CLINIC_PHOTOS: Record<OnlineHelpLocationSlug, { src: string; alt: string }> = {
   "fort-thomas": {
@@ -16,14 +15,6 @@ const CLINIC_PHOTOS: Record<OnlineHelpLocationSlug, { src: string; alt: string }
     alt: "Veterinary Medical Centers Independence clinic exterior on Madison Pike"
   }
 };
-
-function clinicTags(slug: OnlineHelpLocationSlug): string[] {
-  const helpLocation = onlineHelpLocations[slug];
-  const clinic = locations.find((item) => item.slug === helpLocation.locationSlug);
-  // Drop the first chip ("Locally owned") since that's already covered by the
-  // independence banner shown above the card list.
-  return clinic ? clinic.trustChips.slice(1) : [];
-}
 
 export function ClinicCard({
   slug,
@@ -49,12 +40,10 @@ export function ClinicCard({
   const photo = CLINIC_PHOTOS[slug];
 
   if (variant === "wide") {
-    const tags = clinicTags(slug);
-
     return (
       <Link
         className={`clinic-wide-card${isClosest ? " is-closest" : ""}`}
-        href={onlineHelpPath(slug, "appointment")}
+        href={onlineHelpPath(slug, "direct-booking")}
         onClick={onClick}
       >
         <div className="clinic-wide-card-photo-frame">
@@ -64,8 +53,8 @@ export function ClinicCard({
             alt={photo.alt}
             width={640}
             height={360}
+            loading="eager"
           />
-          {isClosest && <span className="portal-choice-badge clinic-wide-card-badge">Closest to you</span>}
         </div>
         <div className="clinic-wide-card-body">
           <strong className="clinic-wide-card-name">{name}</strong>
@@ -91,17 +80,8 @@ export function ClinicCard({
               </span>
             )}
           </div>
-          {tags.length > 0 && (
-            <div className="clinic-wide-card-tags">
-              {tags.map((tag) => (
-                <span key={tag} className="clinic-wide-card-tag">
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
           <span className="clinic-wide-card-cta">
-            Request appointment
+            Book appointment
             <ArrowRight aria-hidden="true" size={17} />
           </span>
         </div>
@@ -112,7 +92,7 @@ export function ClinicCard({
   return (
     <Link
       className={`portal-choice-card${isClosest ? " is-closest" : ""}`}
-      href={onlineHelpPath(slug, "appointment")}
+      href={onlineHelpPath(slug, "direct-booking")}
       onClick={onClick}
     >
       <Image className="portal-choice-card-photo" src={photo.src} alt={photo.alt} width={88} height={88} />
