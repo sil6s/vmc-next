@@ -11,7 +11,7 @@ import { getPublicSettings } from "@/lib/settings/public";
 const seo = {
   title: "New Patients | Book Your First Vet Visit in Northern Kentucky",
   description:
-    "New to Veterinary Medical Centers? Book your first dog or cat visit at our Fort Thomas or Independence, KY clinics."
+    "Looking for a veterinarian in Northern Kentucky? New dog and cat patients can book a first visit with Veterinary Medical Centers in Fort Thomas or Independence, KY."
 };
 
 const crumbs = [
@@ -45,7 +45,7 @@ const bookingSteps = [
     kicker: "Confirmation",
     title: "Review everything and you're all set.",
     text:
-      "Check your information, complete the new-client deposit, and confirm the appointment. You'll receive your booking details when you're finished."
+      "Review your information and confirm the appointment. You'll receive your booking details when you're finished."
   }
 ];
 
@@ -110,7 +110,7 @@ export default async function NewPatientsPage() {
         eyebrow="New to Veterinary Medical Centers?"
         title="Welcome."
         emphasis="We&rsquo;d love to meet your pet."
-        body="Whether you&rsquo;ve just brought home a new pet, recently moved to Northern Kentucky, or are looking for a veterinary team closer to home, we&rsquo;re glad you found us. Our Fort Thomas and Independence teams care for dogs and cats through first visits, everyday checkups, unexpected worries, and all the years that come after."
+        body="Whether you&rsquo;ve just brought home a new pet, recently moved to Northern Kentucky, or are looking for a local veterinarian closer to home, we&rsquo;re glad you found us. Our Fort Thomas and Independence veterinary teams welcome new dogs and cats for first visits, preventive care, everyday checkups, and unexpected worries."
         image="/images/vet-stock2.jpg"
         imageAlt="Veterinary Medical Centers team member caring for a pet"
         primaryCta={{ label: "Book Your First Visit", href: "#choose-clinic" }}
@@ -131,8 +131,8 @@ export default async function NewPatientsPage() {
           <div className="vmc-about-copy">
             <p>
               Veterinary Medical Centers is a locally and independently owned veterinary practice with clinics in Fort
-              Thomas and Independence. We care for Northern Kentucky pets through the routine days, the worried phone
-              calls, the first visits, and the harder moments too.
+              Thomas and Independence. As a Northern Kentucky veterinarian for dogs and cats, we care for pets through
+              routine wellness visits, worried phone calls, first appointments, and the harder moments too.
             </p>
             <p>
               We believe good veterinary care starts with listening. We want to know what you&apos;ve noticed at home,
@@ -168,8 +168,8 @@ export default async function NewPatientsPage() {
               Choose the clinic that feels <span className="vmc-accent">closest to home.</span>
             </h2>
             <p>
-              Both VMC locations welcome new patients. Choose whichever clinic is most convenient for your family and
-              we&apos;ll take you through the correct new-client booking process.
+              Both VMC locations welcome new patients. Choose the Fort Thomas or Independence veterinary clinic that is
+              most convenient for your family, and we&apos;ll guide you through the new-patient booking process.
             </p>
           </div>
 
@@ -272,35 +272,6 @@ export default async function NewPatientsPage() {
                 </div>
               </article>
             ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="vmc-deposit">
-        <div className="vmc-wrap">
-          <div className="vmc-deposit-card">
-            <div className="vmc-deposit-amount">$63.60</div>
-            <div>
-              <p className="vmc-eyebrow">New-client deposit</p>
-              <h2>Reserved for you and your pet.</h2>
-              <p>
-                A $63.60 deposit is collected when you reserve your first appointment. It is <strong>not an additional
-                charge</strong>. The deposit goes toward the cost of your visit.
-              </p>
-              <p>
-                We&apos;re a small, locally owned veterinary practice, and every appointment represents time our team
-                sets aside specifically for a patient. The deposit helps us hold that time for you and your pet while
-                keeping appointments available for other families who need care.
-              </p>
-              <p>
-                Once you&apos;re booked, that appointment is yours. We&apos;ll be getting ready to meet you.
-              </p>
-              <p className="vmc-deposit-note">
-                Cancellation policy: if you need to cancel or reschedule, please call your clinic as soon as possible so
-                we can offer that appointment time to another pet. New-client deposits are applied to the scheduled
-                visit. Missed appointments or late cancellations may result in forfeiture of the deposit.
-              </p>
-            </div>
           </div>
         </div>
       </section>

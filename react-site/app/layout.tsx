@@ -11,9 +11,8 @@ import { LocalizedStaticPage } from "@/components/layout/LocalizedStaticPage";
 import { LocalizedStaticLinks } from "@/components/layout/LocalizedStaticLinks";
 import { TranslationBanner } from "@/components/layout/TranslationBanner";
 import { UnavailableTranslationBanner } from "@/components/layout/UnavailableTranslationBanner";
-import { StaticPageTranslator } from "@/components/layout/StaticPageTranslator";
 import { UmamiTracker } from "@/components/layout/UmamiTracker";
-import { isExactStructureLocalizedPath, isLocale, isLocalizedInteractivePath } from "@/lib/i18n";
+import { isLocale, isStandaloneLocalizedPath } from "@/lib/i18n";
 import { getPublicSettings } from "@/lib/settings/public";
 import { JsonLd, organizationSchema, websiteSchema } from "@/lib/schema";
 
@@ -94,8 +93,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         )}
         <main id="main">
           <LocalizedStaticLinks locale={locale} />
-          {locale !== "en" && pageTranslated && isExactStructureLocalizedPath(pathname) && <StaticPageTranslator locale={locale} />}
-          {locale !== "en" && pageTranslated && !isLocalizedInteractivePath(pathname) && !isExactStructureLocalizedPath(pathname) ? (
+          {locale !== "en" && pageTranslated && isStandaloneLocalizedPath(pathname) ? (
             <LocalizedStaticPage locale={locale} pathname={pathname} />
           ) : (
             children

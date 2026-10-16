@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Logo } from "@/components/layout/Logo";
 import Image from "next/image";
 import { navigation, utilityNavigation } from "@/data/navigation";
 import { site } from "@/data/site";
@@ -59,7 +60,7 @@ export async function Footer({
     <footer className="site-footer">
       <div className="footer-grid">
         <div>
-          <Link href={localizedHref("/", locale)} className="footer-logo-text">Veterinary Medical Centers</Link>
+          <Logo href={localizedHref("/", locale)} className="footer-logo" />
           <p>{site.tagline}</p>
           <p>{copy.localCare}</p>
           <LanguageSelector locale={locale} label={copy.language} compact />

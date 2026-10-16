@@ -25,6 +25,12 @@ export const localizedStaticPaths = [
 
 export const localizedInteractivePaths = ["/book-appointment/"] as const;
 export const exactStructureLocalizedPaths = ["/", "/about/", "/services/"] as const;
+const localizedClinicPaths = [
+  "/locations/vet-in-fort-thomas-ky/",
+  "/locations/fort-thomas/",
+  "/locations/vet-in-independence-ky/",
+  "/locations/independence/"
+] as const;
 
 const excludedLocalePrefixes = ["/api/", "/dashboard/", "/login/", "/not-authorized/", "/studio/"] as const;
 
@@ -49,7 +55,11 @@ export function stripLocale(pathname: string) {
 
 export function isLocalizedStaticPath(pathname: string) {
   const normalized = pathname.endsWith("/") ? pathname : `${pathname}/`;
-  return localizedStaticPaths.includes(normalized as (typeof localizedStaticPaths)[number]) || normalized.startsWith("/services/");
+  return (
+    localizedStaticPaths.includes(normalized as (typeof localizedStaticPaths)[number]) ||
+    localizedClinicPaths.includes(normalized as (typeof localizedClinicPaths)[number]) ||
+    normalized.startsWith("/services/")
+  );
 }
 
 export function isExactStructureLocalizedPath(pathname: string) {
@@ -60,6 +70,15 @@ export function isExactStructureLocalizedPath(pathname: string) {
 export function isLocalizedInteractivePath(pathname: string) {
   const normalized = pathname.endsWith("/") ? pathname : `${pathname}/`;
   return localizedInteractivePaths.includes(normalized as (typeof localizedInteractivePaths)[number]);
+}
+
+export function isStandaloneLocalizedPath(pathname: string) {
+  const normalized = pathname.endsWith("/") ? pathname : `${pathname}/`;
+  return (
+    (!isLocalizedInteractivePath(normalized) &&
+      localizedStaticPaths.includes(normalized as (typeof localizedStaticPaths)[number])) ||
+    localizedClinicPaths.includes(normalized as (typeof localizedClinicPaths)[number])
+  );
 }
 
 export function isPublicLocalePath(pathname: string) {

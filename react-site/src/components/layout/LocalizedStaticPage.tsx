@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, CalendarCheck, FileText, MapPin, PawPrint, Phone, Stethoscope } from "lucide-react";
 import { localizedStaticPages } from "@/data/localized-static-pages";
+import { getLocation, type LocationPage } from "@/data/locations";
 import { localizedHref, type Locale } from "@/lib/i18n";
 import { site } from "@/data/site";
 import { Button } from "@/components/ui/Button";
@@ -124,11 +125,120 @@ const supportingCopy: Record<Exclude<Locale, "en">, {
   }
 };
 
+function clinicCopy(locale: Exclude<Locale, "en">, location: LocationPage) {
+  const clinic = location.shortName;
+  const copy = {
+    es: {
+      eyebrow: "Clínica veterinaria local",
+      title: `Veterinario en ${clinic}, Kentucky, para perros y gatos`,
+      body: `Veterinary Medical Centers ofrece atención veterinaria local y atenta para perros y gatos cerca de ${clinic}. Nuestro equipo le ayuda con visitas de bienestar, vacunas, enfermedades y atención continua.`,
+      careTitle: "Atención clara para cada etapa de la vida",
+      careBody: `Desde la primera visita hasta los años de mascota mayor, nuestro equipo de ${clinic} se toma el tiempo para escuchar, explicar sus opciones y ayudarle a decidir el siguiente paso.`,
+      servicesTitle: "Servicios veterinarios para su mascota",
+      servicesBody: "Ofrecemos exámenes de bienestar, vacunas, atención dental, diagnóstico, visitas por enfermedad y orientación preventiva para perros y gatos.",
+      book: "Solicitar una cita",
+      call: "Llamar a la clínica"
+    },
+    fr: {
+      eyebrow: "Clinique vétérinaire locale",
+      title: `Vétérinaire à ${clinic}, Kentucky, pour chiens et chats`,
+      body: `Veterinary Medical Centers propose des soins vétérinaires locaux et attentionnés pour les chiens et les chats près de ${clinic}. Notre équipe vous accompagne pour le bien-être, les vaccins, les maladies et le suivi continu.`,
+      careTitle: "Des soins clairs à chaque étape de la vie",
+      careBody: `De la première visite aux années de vieillesse, notre équipe de ${clinic} prend le temps d’écouter, d’expliquer vos options et de vous aider à choisir la prochaine étape.`,
+      servicesTitle: "Services vétérinaires pour votre animal",
+      servicesBody: "Nous proposons des examens de santé, des vaccins, des soins dentaires, des diagnostics, des consultations pour maladie et des conseils préventifs pour les chiens et les chats.",
+      book: "Demander un rendez-vous",
+      call: "Appeler la clinique"
+    },
+    hi: {
+      eyebrow: "स्थानीय पशु चिकित्सा क्लिनिक",
+      title: `${clinic}, Kentucky में कुत्तों और बिल्लियों के लिए पशु चिकित्सक`,
+      body: `Veterinary Medical Centers ${clinic} के पास कुत्तों और बिल्लियों के लिए स्थानीय, ध्यानपूर्ण पशु चिकित्सा प्रदान करता है। हमारी टीम वेलनेस, टीकाकरण, बीमारी और निरंतर देखभाल में मदद करती है।`,
+      careTitle: "जीवन के हर चरण के लिए स्पष्ट देखभाल",
+      careBody: `पहली यात्रा से लेकर वरिष्ठ वर्षों तक, हमारी ${clinic} टीम सुनने, विकल्प समझाने और अगला कदम तय करने में मदद करने के लिए समय लेती है।`,
+      servicesTitle: "आपके पालतू पशु के लिए सेवाएँ",
+      servicesBody: "हम कुत्तों और बिल्लियों के लिए वेलनेस जांच, टीकाकरण, दंत चिकित्सा, निदान, बीमारी की यात्राएँ और निवारक मार्गदर्शन प्रदान करते हैं।",
+      book: "अपॉइंटमेंट का अनुरोध करें",
+      call: "क्लिनिक को कॉल करें"
+    },
+    zh: {
+      eyebrow: "本地兽医诊所",
+      title: `${clinic}, Kentucky 的犬猫兽医服务`,
+      body: `Veterinary Medical Centers 为 ${clinic} 附近的犬猫提供贴心的本地兽医服务。我们的团队可协助健康检查、疫苗接种、疾病就诊和持续照护。`,
+      careTitle: "伴随宠物每个生命阶段的清晰照护",
+      careBody: `从初次就诊到老年阶段，我们的 ${clinic} 团队都会认真倾听、解释选择，并帮助您决定下一步。`,
+      servicesTitle: "为您的宠物提供的兽医服务",
+      servicesBody: "我们为犬猫提供健康检查、疫苗接种、牙科护理、诊断、疾病就诊和预防指导。",
+      book: "预约就诊",
+      call: "致电诊所"
+    }
+  } as const;
+
+  return copy[locale];
+}
+
+function LocalizedClinicPage({ locale, location }: { locale: Exclude<Locale, "en">; location: LocationPage }) {
+  const copy = clinicCopy(locale, location);
+  const bookingHref = localizedHref("/book-appointment/", locale);
+  const serviceLabels: Record<Exclude<Locale, "en">, readonly string[]> = {
+    es: ["Bienestar", "Vacunas", "Atención dental"],
+    fr: ["Bien-être", "Vaccins", "Soins dentaires"],
+    hi: ["वेलनेस", "टीकाकरण", "दंत देखभाल"],
+    zh: ["健康检查", "疫苗接种", "牙科护理"]
+  };
+
+  return (
+    <>
+      <section className="localized-page-hero">
+        <div className="localized-page-hero-copy">
+          <p className="eyebrow">{copy.eyebrow}</p>
+          <h1>{copy.title}</h1>
+          <p>{copy.body}</p>
+          <div className="hero-actions">
+            <Button href={bookingHref}>{copy.book}</Button>
+            <Button href={`tel:${location.tel}`} variant="ghost">{copy.call}</Button>
+          </div>
+        </div>
+        <div className="localized-page-hero-image">
+          <Image src={location.image} alt="" fill priority sizes="(max-width: 900px) 100vw, 48vw" />
+        </div>
+      </section>
+
+      <Section tone="white" eyebrow={location.address} title={copy.careTitle} intro={copy.careBody}>
+        <div className="quick-links-grid">
+          <a className="quick-link-card" href={`tel:${location.tel}`}>
+            <span><strong>{location.phone}</strong><small>{copy.call}</small></span>
+            <Phone aria-hidden="true" size={18} />
+          </a>
+          <Link className="quick-link-card" href={bookingHref}>
+            <span><strong>{copy.book}</strong><small>{location.address}</small></span>
+            <CalendarCheck aria-hidden="true" size={18} />
+          </Link>
+        </div>
+      </Section>
+
+      <Section tone="cream" eyebrow="Veterinary Medical Centers" title={copy.servicesTitle} intro={copy.servicesBody}>
+        <div className="card-grid">
+          {serviceLabels[locale].map((label) => (
+            <article className="card" key={label}><h3>{label}</h3><p>{copy.servicesBody}</p></article>
+          ))}
+        </div>
+      </Section>
+    </>
+  );
+}
+
 export function LocalizedStaticPage({ locale, pathname }: { locale: Exclude<Locale, "en">; pathname: string }) {
   const content = localizedStaticPages[locale][pathname];
+  const locationSlug = pathname.match(/^\/locations\/([^/]+)\/?$/)?.[1];
+  const location = locationSlug ? getLocation(locationSlug) : undefined;
   const visuals = pageVisuals[pathname] || pageVisuals["/"];
   const supporting = supportingCopy[locale];
   const secondaryHref = pathname === "/vet-near-me/" ? "/locations/" : pathname === "/about/" ? "/services/" : "/contact/";
+  if (!content && location) {
+    return <LocalizedClinicPage locale={locale} location={location} />;
+  }
+
   if (!content) {
     return null;
   }

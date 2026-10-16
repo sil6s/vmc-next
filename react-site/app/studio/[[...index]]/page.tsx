@@ -1,23 +1,11 @@
-import type { Metadata } from "next";
-import { SanityStudioClient } from "@/components/dashboard/SanityStudioClient";
-import { requireAdminSession } from "@/lib/admin-auth";
+import { redirect } from "next/navigation";
 
-export const dynamic = "force-dynamic";
+// Keep the familiar /studio URL, but use Sanity's own authentication and
+// permissions instead of the retired site-admin/Supabase gate.
+const studioUrl =
+  process.env.SANITY_STUDIO_URL ||
+  "https://www.sanity.io/@o16as6XUr/studio/u77ghhfbtjfpm8zpe99guvsx/veterinary-medical-center";
 
-export const metadata: Metadata = {
-  title: "Sanity Studio | Veterinary Medical Centers",
-  robots: {
-    index: false,
-    follow: false
-  }
-};
-
-export default async function StudioPage() {
-  await requireAdminSession("/studio/");
-
-  return (
-    <div className="standalone-studio-shell">
-      <SanityStudioClient />
-    </div>
-  );
+export default function StudioPage() {
+  redirect(studioUrl);
 }
