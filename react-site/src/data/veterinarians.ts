@@ -244,7 +244,8 @@ export const veterinarians: Veterinarian[] = [
       { label: "Pet wellness exams", href: "/services/pet-wellness-exams/" },
       { label: "Skin, ear & allergy care", href: "/services/skin-ear-allergy-care/" },
       { label: "Veterinary diagnostics", href: "/services/veterinary-diagnostics/" },
-      { label: "Puppy & kitten care", href: "/services/puppy-kitten-care/" }
+      { label: "Puppy & kitten care", href: "/services/puppy-kitten-care/" },
+      { label: "Guide: best cat vets in Cincinnati & NKY", href: "/guides/cat-vets-cincinnati-northern-kentucky/" }
     ],
     faqs: [
       {

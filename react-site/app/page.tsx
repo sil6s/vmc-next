@@ -243,6 +243,7 @@ export default async function HomePage() {
           ))}
         </div>
         <p className="home-cincy-link"><Link className="text-link" href="/locations/vet-near-cincinnati-oh/">Looking for a vet in Cincinnati? Our Fort Thomas clinic is about 10 minutes from downtown →</Link></p>
+        <p className="home-cincy-link home-guide-link">Comparing vets? Read our <Link href="/guides/best-vets-cincinnati-northern-kentucky/">guide to the best vets in Cincinnati &amp; Northern Kentucky</Link>.</p>
       </Section>
 
       <Section tone="white" eyebrow="Local trust" title="Kind words from Northern Kentucky pet families">

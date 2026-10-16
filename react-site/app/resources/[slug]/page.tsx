@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { formatReviewDate, lastReviewedDate } from "@/lib/review-date";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -41,7 +42,8 @@ import { Container } from "@/components/ui/Container";
 import { Separator } from "@/components/ui/separator";
 import { absoluteUrl, site } from "@/data/site";
 import { pageMetadata } from "@/lib/metadata";
-import { articleSchema, breadcrumbSchema, JsonLd } from "@/lib/schema";
+import { articleSchema, breadcrumbSchema, faqSchema, JsonLd, locationVeterinaryCareSchema } from "@/lib/schema";
+import { locations } from "@/data/locations";
 import { authorDisplayName, authorProfilePath, authorTitleLine } from "@/sanity/authors";
 import { urlFor } from "@/sanity/image";
 import { getBlogPost, getBlogSlugs, getRelatedBlogPosts, type BlogAuthor, type BlogPost } from "@/sanity/posts";
@@ -407,6 +409,23 @@ function ResourceHero({ post, resourceLabel, readTime }: { post: BlogPost; resou
               <CalendarDays aria-hidden="true" size={16} />
               {displayDate(post.date)}
             </span>
+            {post.updatedAt && post.updatedAt.slice(0, 10) > post.date.slice(0, 10) && (
+              <span>
+                <CalendarDays aria-hidden="true" size={16} />
+                Updated {displayDate(post.updatedAt)}
+              </span>
+            )}
+            {post.reviewedBy && post.lastReviewedAt ? (
+              <span>
+                <Stethoscope aria-hidden="true" size={16} />
+                Medically reviewed by {authorDisplayName(post.reviewedBy)} · {displayDate(post.lastReviewedAt)}
+              </span>
+            ) : (
+              <span>
+                <CheckCircle2 aria-hidden="true" size={16} />
+                Content reviewed {formatReviewDate(lastReviewedDate())}
+              </span>
+            )}
             <span>
               <Clock3 aria-hidden="true" size={16} />
               {readTime}
@@ -448,6 +467,7 @@ function AuthorOrReviewCard({ post, readTime }: { post: BlogPost; readTime: stri
         <CardContent>
           <div className="resource-editorial-author-stack">
             <ArticleAuthorCard label="Written by" author={post.author} />
+            {post.reviewedBy && post.lastReviewedAt && <ArticleAuthorCard label="Medically reviewed by" author={post.reviewedBy} />}
           </div>
           <Separator />
           <div className="resource-editorial-info-list">
@@ -984,9 +1004,26 @@ function BottomCTASection() {
   );
 }
 
+// Re-render at least every 6 hours so the "Reviewed" date stays current (see src/lib/review-date.ts).
+export const revalidate = 21600;
+
 export async function generateStaticParams() {
   const slugs = await getBlogSlugs();
   return slugs.map((slug) => ({ slug }));
+}
+
+/** Parses "### Question" + answer blocks from an article's FAQ markdown for FAQPage structured data. */
+function parseFaqMarkdown(markdown?: string) {
+  if (!markdown) return [];
+  return markdown
+    .split(/^###\s+/m)
+    .slice(1)
+    .map((block) => {
+      const [question, ...rest] = block.split("\n");
+      const answer = rest.join("\n").replace(/\*\*|__/g, "").replace(/\[([^\]]+)\]\([^)]+\)/g, "$1").trim();
+      return { question: question.trim(), answer };
+    })
+    .filter((faq) => faq.question && faq.answer);
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
@@ -1015,6 +1052,7 @@ export default async function ResourceArticlePage({ params }: Params) {
     { name: post.title, path: `/resources/${post.slug}/` }
   ];
   const resourceLabel = resourceTypeLabels[post.resourceType];
+  const articleFaqs = parseFaqMarkdown(post.faqMarkdown);
   const readTime = readingTime(post, markdownBody);
 
   return (
@@ -1030,8 +1068,16 @@ export default async function ResourceArticlePage({ params }: Params) {
 
       <JsonLd
         data={[
-          articleSchema({ ...post, schemaImage: schemaImageUrl(post), canonicalUrl: post.seo.canonicalUrl }),
-          breadcrumbSchema(crumbs)
+          articleSchema({
+            ...post,
+            schemaImage: schemaImageUrl(post),
+            canonicalUrl: post.seo.canonicalUrl,
+            lastReviewed: lastReviewedDate(),
+            citations: post.externalLinks.map((link) => link.href)
+          }),
+          breadcrumbSchema(crumbs),
+          ...(articleFaqs.length ? [faqSchema(articleFaqs)] : []),
+          ...locations.map((location) => locationVeterinaryCareSchema(location, `/locations/${location.slug}/`))
         ]}
       />
     </>

@@ -1,8 +1,15 @@
 import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 import { isLocale, isLocalizedStaticPath, isPublicLocalePath } from "@/lib/i18n";
+import { retiredBlogRedirects } from "@/data/blogRedirects";
 
 export async function proxy(request: NextRequest) {
+  // Retired blog posts (October 2026): permanent redirect to the closest new article, guide, or service page.
+  const retired = request.nextUrl.pathname.match(/^\/(?:resources|blog)\/([a-z0-9-]+)\/?$/);
+  if (retired && retiredBlogRedirects[retired[1]]) {
+    return NextResponse.redirect(new URL(retiredBlogRedirects[retired[1]], request.url), 308);
+  }
+
   const requestHeaders = new Headers(request.headers);
   const segments = request.nextUrl.pathname.split("/").filter(Boolean);
   const requestedLocale = segments[0];

@@ -47,6 +47,9 @@ export function authorTitleLine(author: Pick<BlogAuthor, "credentials" | "title"
 }
 
 export function authorProfilePath(author: Pick<BlogAuthor, "slug">) {
+  // Dr. Baker's complete, maintained biography lives with the practice team,
+  // rather than in the generic CMS author archive.
+  if (author.slug === "kristi-baker") return "/team/dr-kristi-baker/";
   return author.slug ? `/resources/authors/${author.slug}/` : undefined;
 }
 

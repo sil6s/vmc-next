@@ -19,6 +19,7 @@ const seo = {
 };
 
 const hubLinks = [
+  { icon: BookOpenText, title: "Choosing a vet guides", text: "Compare local vets, cat-friendly clinics, and how to book fast.", href: "/guides/" },
   { icon: BookOpenText, title: "New patient guide", text: "What to expect, what to bring, and how to book your first visit.", href: "/new-patients/" },
   { icon: Stethoscope, title: "Veterinary services", text: "Wellness, dental care, surgery, diagnostics, vaccines, and sick visits.", href: "/services/" },
   { icon: CalendarCheck, title: "Patient portal", text: "Book online and manage your pet's records and reminders.", href: "/patient-portal-online-booking/" },

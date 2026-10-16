@@ -281,6 +281,7 @@ export default function CincinnatiVetPage() {
             <ol>
               {ownershipChecks.map((item) => <li key={item}>{item}</li>)}
             </ol>
+            <p className="city-ownership-more"><Link href="/guides/independent-vs-corporate-vets/">Read our guide: independent vs. corporate vet clinics →</Link></p>
           </div>
           <aside className="cincy-vmc-owned">
             <p className="eyebrow">Veterinary Medical Centers</p>
@@ -324,7 +325,7 @@ export default function CincinnatiVetPage() {
             <span>{cincinnatiEmergency.phone}</span>
           </article>
         </div>
-        <p className="cincy-others-note">Listings are provided for convenience; please confirm hours and details with each clinic. Want free parking and a team that knows your pet? <Link href="/book-appointment/">Book with our Fort Thomas clinic</Link>, about 10 minutes from downtown.</p>
+        <p className="cincy-others-note">Listings are provided for convenience; please confirm hours and details with each clinic. Want free parking and a team that knows your pet? <Link href="/book-appointment/">Book with our Fort Thomas clinic</Link>, about 10 minutes from downtown. Comparing options? Read <Link href="/guides/cincinnati-vs-northern-kentucky-vets/">Cincinnati vs. Northern Kentucky vets</Link> and <Link href="/guides/best-vets-cincinnati-northern-kentucky/">our guide to local veterinarians</Link>.</p>
       </Section>
 
       <FAQSection faqs={cincinnatiFaqs} title="Questions from Cincinnati pet owners" />

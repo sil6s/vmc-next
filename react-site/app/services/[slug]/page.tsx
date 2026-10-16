@@ -571,6 +571,25 @@ export default async function ServicePage({ params }: Params) {
               </section>
             )}
 
+            {service.relatedResources && service.relatedResources.length > 0 && (
+              <section className="nky-section">
+                <div className="nky-section-head">
+                  <p className="nky-eyebrow">Pet care articles</p>
+                  <AccentHeading children="Learn more about" accent={`${service.title.toLowerCase()}.`} />
+                </div>
+                <div className="service-related-articles">
+                  {service.relatedResources.filter((article) => article?.slug).map((article) => (
+                    <Link key={article.slug} href={`/resources/${article.slug}/`} className="service-related-article">
+                      {article.category && <small>{article.category}</small>}
+                      <strong>{article.title}</strong>
+                      {article.excerpt && <p>{article.excerpt}</p>}
+                      <span>Read article →</span>
+                    </Link>
+                  ))}
+                </div>
+              </section>
+            )}
+
             {service.faqs.length > 0 && (
               <section className="nky-section">
                 <div className="nky-section-head">

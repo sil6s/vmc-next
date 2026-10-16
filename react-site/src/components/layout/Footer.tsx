@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Image from "next/image";
-import { BookOpenText, LockKeyhole } from "lucide-react";
 import { navigation, utilityNavigation } from "@/data/navigation";
 import { site } from "@/data/site";
 import type { PublicLocation } from "@/lib/settings/public";
@@ -131,19 +130,22 @@ export async function Footer({
         </section>
       )}
 
+      <nav className="footer-guides" aria-label="Pet owner guides">
+        <span>Pet owner guides</span>
+        <Link href="/guides/best-vets-cincinnati-northern-kentucky/">Best vets in Cincinnati &amp; NKY</Link>
+        <Link href="/guides/cat-vets-cincinnati-northern-kentucky/">Best cat vets</Link>
+        <Link href="/guides/independent-vs-corporate-vets/">Independent vs. corporate vets</Link>
+        <Link href="/guides/quick-vet-appointments-northern-kentucky/">Getting a vet appointment fast</Link>
+        <Link href="/guides/cincinnati-vs-northern-kentucky-vets/">Cincinnati vs. NKY vets</Link>
+        <Link href="/guides/">All guides →</Link>
+      </nav>
+
       <div className="footer-bottom">
         <span>Copyright {new Date().getFullYear()} {site.name}. {copy.allRightsReserved}</span>
         <span className="footer-legal-links">
           <span>{site.legal}</span>
           <Link href={localizedHref("/privacy-policy/", locale)}>{copy.privacy}</Link>
-          <Link className="footer-admin-link" href="/login/?callbackUrl=%2Fstudio%2F" rel="nofollow">
-            <BookOpenText aria-hidden="true" size={13} />
-            {copy.contentPortal}
-          </Link>
-          <Link className="footer-admin-link" href="/login/" rel="nofollow">
-            <LockKeyhole aria-hidden="true" size={13} />
-            {copy.adminPortal}
-          </Link>
+          <Link href="/ai-business-profile/">AI Business Profile</Link>
         </span>
       </div>
     </footer>

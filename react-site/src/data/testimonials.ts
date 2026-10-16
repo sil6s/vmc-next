@@ -14,6 +14,13 @@ export const testimonials = [
       "From the moment we walked in, everything felt calm and thoughtful. The team took time to help my cat feel comfortable."
   },
   {
+    initials: "SG",
+    name: "Sandra G.",
+    location: "Independence, KY",
+    text:
+      "The Independence team was friendly, informative, and kind to my pet and me. It is wonderful to have found a permanent place for our care."
+  },
+  {
     initials: "TB",
     name: "Tiffany B.",
     location: "Northern Kentucky",

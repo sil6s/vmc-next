@@ -1,8 +1,10 @@
 import type { MetadataRoute } from "next";
 import { locations } from "@/data/locations";
 import { getCityPageSlugs } from "@/data/cityPages";
+import { cityLandings } from "@/data/cityLandings";
 import { site } from "@/data/site";
 import { veterinarians } from "@/data/veterinarians";
+import { guides } from "@/data/guides";
 import { sitemapStaticRoutes } from "@/lib/routes";
 import { getBlogPosts } from "@/sanity/posts";
 import { getServiceDetailSlugs } from "@/sanity/services";
@@ -20,15 +22,18 @@ function priority(route: string): number {
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [posts, serviceSlugs] = await Promise.all([getBlogPosts(500), getServiceDetailSlugs()]);
 
-  const cityRoutes = getCityPageSlugs().map((slug) => `/locations/${slug}/`);
+  const citySlugs = Array.from(new Set([...getCityPageSlugs(), ...cityLandings.map((page) => page.slug)]));
+  const cityRoutes = citySlugs.map((slug) => `/locations/${slug}/`);
   const locationRoutes = locations.map((location) => `/locations/${location.slug}/`);
   const serviceRoutes = serviceSlugs.map((slug) => `/services/${slug}/`);
   const teamRoutes = veterinarians.map((vet) => `/team/${vet.slug}/`);
+  const guideRoutes = ["/guides/", ...guides.map((guide) => `/guides/${guide.slug}/`)];
   const resourceRoutes = posts.map((post) => `/resources/${post.slug}/`);
 
   const allRoutes = [
     ...sitemapStaticRoutes,
     ...teamRoutes,
+    ...guideRoutes,
     ...locationRoutes,
     ...cityRoutes,
     ...serviceRoutes,

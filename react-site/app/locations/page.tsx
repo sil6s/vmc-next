@@ -1,289 +1,231 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Baby, Clock, HeartPulse, MapPin, Microscope, Phone, Scissors, ShieldCheck, SmilePlus } from "lucide-react";
+import { Building2, CalendarCheck, Check, HeartHandshake, MapPin, PawPrint, Stethoscope } from "lucide-react";
+import { Breadcrumbs } from "@/components/sections/Breadcrumbs";
+import { FAQSection } from "@/components/sections/FAQSection";
+import { FinalInvitation } from "@/components/sections/FinalInvitation";
 import { Hero } from "@/components/sections/Hero";
-import { Button } from "@/components/ui/Button";
 import { Section } from "@/components/ui/Section";
+import { cityLandings } from "@/data/cityLandings";
 import { locations } from "@/data/locations";
 import { site } from "@/data/site";
 import { pageMetadata } from "@/lib/metadata";
 import { getPublicSettings } from "@/lib/settings/public";
-import { breadcrumbSchema, JsonLd, locationVeterinaryCareSchema, webpageSchema } from "@/lib/schema";
+import { breadcrumbSchema, faqSchema, JsonLd, locationVeterinaryCareSchema, webpageSchema } from "@/lib/schema";
 
 const seo = {
-  title: "Veterinary Locations in Fort Thomas & Independence | VMC",
-  description: "Visit Veterinary Medical Centers in Fort Thomas or Independence, KY for locally owned dog and cat care in Northern Kentucky."
+  title: "Northern Kentucky Vet Clinics | Fort Thomas & Independence | VMC",
+  description:
+    "Two locally owned vet clinics in Northern Kentucky: Fort Thomas on Memorial Parkway and Independence on Madison Pike. Find your nearest clinic, hours, and directions."
 };
-
-const chooseCards = [
-  {
-    title: "Choose Fort Thomas if...",
-    items: [
-      "You are near Fort Thomas, Newport, Bellevue, Dayton, or Highland Heights",
-      "You want quick access from nearby Cincinnati-area communities",
-      "You prefer the Memorial Parkway location"
-    ]
-  },
-  {
-    title: "Choose Independence if...",
-    items: [
-      "You are near Independence, Taylor Mill, Alexandria, Covington, or Erlanger",
-      "You want care close to Madison Pike",
-      "You prefer the Independence clinic team"
-    ]
-  }
-];
-
-const serviceCards = [
-  {
-    title: "Wellness and prevention",
-    text: "Routine exams, vaccines, parasite prevention, and guidance for every life stage.",
-    href: "/services/pet-wellness-exams/",
-    icon: ShieldCheck
-  },
-  {
-    title: "Dental care",
-    text: "Oral exams, dental recommendations, and care planning to support your pet’s comfort and health.",
-    href: "/services/pet-dental-care/",
-    icon: SmilePlus
-  },
-  {
-    title: "Sick visits and diagnostics",
-    text: "Care for new symptoms, changes in behavior, and health concerns that need a closer look.",
-    href: "/services/sick-pet-visits/",
-    icon: Microscope
-  },
-  {
-    title: "Surgery support",
-    text: "Practical surgical guidance, pre-visit communication, and follow-up support when procedures are needed.",
-    href: "/services/soft-tissue-surgery/",
-    icon: Scissors
-  },
-  {
-    title: "Puppy and kitten care",
-    text: "Early-life exams, vaccine planning, prevention, and new pet guidance.",
-    href: "/services/puppy-kitten-care/",
-    icon: Baby
-  },
-  {
-    title: "Senior pet care",
-    text: "Monitoring, comfort-focused recommendations, and care planning for aging dogs and cats.",
-    href: "/services/senior-pet-care/",
-    icon: HeartPulse
-  }
-];
-
-const serviceAreaChips = [
-  "Fort Thomas",
-  "Independence",
-  "Newport",
-  "Bellevue",
-  "Dayton",
-  "Highland Heights",
-  "Alexandria",
-  "Taylor Mill",
-  "Covington",
-  "Erlanger",
-  "Edgewood",
-  "Cincinnati-area pet owners"
-];
 
 export const metadata = pageMetadata({ ...seo, path: "/locations/" });
 
-function officialLocationName(shortName: string) {
-  return shortName === "Fort Thomas" ? "Veterinary Medical Centers of Fort Thomas" : "Veterinary Medical Centers of Independence";
-}
+const clinicDetails = {
+  "fort-thomas": {
+    tagline: "Our neighborhood clinic on Memorial Parkway, near Highlands High School and Tower Park.",
+    personal: "Owned by Dr. Kristi Baker, who lives right here in Fort Thomas.",
+    chooseIf: [
+      "You live in Fort Thomas, Newport, Bellevue, Highland Heights, Cold Spring, or Alexandria",
+      "You're coming from Cincinnati (about 10 minutes from downtown)",
+      "You'd like to see Dr. Valeria Dib-Vázquez for feline-focused care"
+    ]
+  },
+  independence: {
+    tagline: "Our hometown clinic on Madison Pike, caring for Kenton County pets since 2008.",
+    personal: "Where Dr. Baker's practice took root, and still its foundation.",
+    chooseIf: [
+      "You live in Independence, Taylor Mill, Edgewood, Erlanger, Florence, or Walton",
+      "You're in southern Covington or Latonia (straight down Madison Pike)",
+      "You want easy access from central Kenton and Boone counties"
+    ]
+  }
+} as const;
 
-function locationSummary(shortName: string) {
-  return shortName === "Fort Thomas"
-    ? "Veterinary Medical Centers of Fort Thomas provides local veterinary care for dogs and cats in Fort Thomas and nearby Northern Kentucky communities."
-    : "Veterinary Medical Centers of Independence provides trusted veterinary care for dogs and cats in Independence, KY and surrounding Northern Kentucky communities.";
-}
+const sameEverywhere = [
+  { icon: Building2, title: "Locally owned", text: "Both clinics are owned by Dr. Kristi Baker. No corporate parent." },
+  { icon: Stethoscope, title: "Full-service care", text: "Wellness, dental, surgery, diagnostics, and sick visits at either location." },
+  { icon: PawPrint, title: "Dogs and cats, every age", text: "Puppies and kittens through senior years, welcomed by name." },
+  { icon: CalendarCheck, title: "Easy booking", text: "Book online for either clinic, any time, or call to talk it through." }
+];
 
-function nearbyCopy(shortName: string) {
-  return shortName === "Fort Thomas"
-    ? "Serving Fort Thomas, Newport, Bellevue, Dayton, Highland Heights, and nearby Cincinnati-area pet owners."
-    : "Serving Independence, Alexandria, Taylor Mill, Covington, Latonia, Edgewood, Erlanger, and nearby Northern Kentucky communities.";
-}
+const serviceLinks = [
+  ["Wellness exams", "/services/pet-wellness-exams/"],
+  ["Vaccinations", "/services/dog-cat-vaccinations/"],
+  ["Pet dental care", "/services/pet-dental-care/"],
+  ["Spay & neuter", "/services/spay-neuter-surgery/"],
+  ["Sick pet visits", "/services/sick-pet-visits/"],
+  ["Senior pet care", "/services/senior-pet-care/"]
+];
 
-function careAvailable(shortName: string) {
-  return shortName === "Fort Thomas"
-    ? ["Wellness visits", "Preventive care", "Dental care", "Diagnostics", "Surgery support", "Senior pet care"]
-    : ["Wellness visits", "Preventive care", "Dental care", "Diagnostics", "Surgery", "Ongoing health guidance"];
-}
-
-function townImage(shortName: string) {
-  return shortName === "Fort Thomas" ? "/images/fort-thomas-town.webp" : "/images/indepedence-town.webp";
-}
-
-function townImageAlt(shortName: string) {
-  return shortName === "Fort Thomas"
-    ? "Fort Thomas Kentucky community near Veterinary Medical Centers of Fort Thomas"
-    : "Independence Kentucky community near Veterinary Medical Centers of Independence";
-}
-
-function MapEmbed({ src, title }: { src: string; title: string }) {
-  return (
-    <div className="locations-map-embed">
-      <iframe
-        src={src}
-        title={title}
-        width="100%"
-        height="340"
-        style={{ border: 0 }}
-        allowFullScreen
-        loading="lazy"
-        referrerPolicy="no-referrer-when-downgrade"
-      />
-    </div>
-  );
-}
+const locationFaqs = [
+  {
+    question: "Where are your vet clinics in Northern Kentucky?",
+    answer:
+      "We have two vet clinics in Northern Kentucky: Veterinary Medical Center of Fort Thomas at 2000 Memorial Parkway, Fort Thomas, KY 41075, and Veterinary Medical Center of Independence at 4147 Madison Pike, Independence, KY 41051."
+  },
+  {
+    question: "Which clinic should I choose?",
+    answer:
+      "Choose whichever is closer or easier for your day. Fort Thomas is convenient for Campbell County and Cincinnati, while Independence is convenient for Kenton and Boone counties. Covington families often use either."
+  },
+  {
+    question: "Do both clinics offer the same services?",
+    answer: "Yes. Both offer wellness exams, vaccines, dental care, surgery, diagnostics, sick visits, and senior care for dogs and cats."
+  },
+  {
+    question: "What are your hours?",
+    answer:
+      "Both clinics are open Monday through Friday, 8:00 AM to 6:00 PM. Fort Thomas has rotating Saturday hours (call ahead), and Independence is closed weekends."
+  },
+  {
+    question: "Are both locations accepting new patients?",
+    answer: "Yes. Book online any time, or call Fort Thomas at (859) 442-4420 or Independence at (859) 356-2242."
+  }
+];
 
 export default async function LocationsPage() {
   const settings = await getPublicSettings();
+  const clinics = locations.map((location) => {
+    const id = location.shortName === "Fort Thomas" ? "fort-thomas" : "independence";
+    const publicLocation = settings.publicLocations.find((item) => item.id === id) || site.locations.find((item) => item.id === id)!;
+    const towns = cityLandings.filter((city) => city.clinics.includes(id));
+    return { location, id, publicLocation, towns, details: clinicDetails[id] };
+  });
 
   return (
     <>
       <Hero
-        eyebrow="Our Locations"
-        title="Veterinary care in Fort Thomas and Independence"
-        body="Choose the Veterinary Medical Centers location that fits your day. Both clinics provide full-service veterinary care for dogs and cats with the same relationship-based approach, clear communication, and practical care planning."
+        eyebrow="Our locations"
+        title="Two Northern Kentucky vet clinics,"
+        emphasis="one family of care."
+        body="Visit us in Fort Thomas or Independence. Both clinics are locally owned, care for dogs and cats, and share the same relationship-first approach."
         image="/images/fort-thomas-clinic.jpg"
-        imageAlt="Veterinary Medical Centers Fort Thomas veterinary clinic exterior"
-        primaryCta={{ label: "Book Appointment", href: "/book-appointment/" }}
-        secondaryCta={{ label: "New Patients", href: "/new-patients/" }}
-        tertiaryCta={{ label: "View Locations", href: "#locations" }}
+        imageAlt="Veterinary Medical Center of Fort Thomas, one of two vet clinics in Northern Kentucky"
+        primaryCta={{ label: "Book an Appointment", href: "/book-appointment/" }}
+        secondaryCta={{ label: "Find Your Clinic", href: "#clinics" }}
+        showStats={false}
+        inlineEmphasis
+        compact
       />
 
-      <Section
-        tone="white"
-        eyebrow="Locations"
-        title="Two convenient Northern Kentucky veterinary clinics"
-        intro="Both Veterinary Medical Centers locations care for dogs and cats with the same standard of practical, relationship-based medicine. Choose the clinic closest to you, then call, request an appointment, or get directions."
-        className="locations-intro-section"
-      >
-        <div className="locations-choose-heading">
-          <h3>Which location is right for you?</h3>
-        </div>
-        <div className="locations-choose-grid" aria-label="Choose the right VMC location">
-          {chooseCards.map((card) => (
-            <article className="locations-choose-card" key={card.title}>
-              <h3>{card.title}</h3>
-              <ul>
-                {card.items.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </article>
-          ))}
-        </div>
-      </Section>
-
-      <Section id="locations" tone="cream" eyebrow="Compare Locations" title="Choose your Veterinary Medical Centers location" className="locations-feature-section">
-        <div className="locations-feature-list">
-          {locations.map((location, index) => {
-            const officialName = officialLocationName(location.shortName);
-            return (
-              <article className="locations-feature-card" key={location.slug}>
-                <div className="locations-feature-media">
-                  <Image src={townImage(location.shortName)} alt={townImageAlt(location.shortName)} width={720} height={520} sizes="(max-width: 980px) 100vw, 44vw" />
-                </div>
-                <div className="locations-feature-copy">
-                  <p className="location-kicker">
-                    <MapPin aria-hidden="true" size={15} />
-                    Northern Kentucky veterinary clinic
-                  </p>
-                  <h3>{officialName}</h3>
-                  <p>{locationSummary(location.shortName)}</p>
-                  <p>Here, your pet is treated as a long-term patient, not a one-time visit. Our team explains recommendations clearly and helps you make confident care decisions.</p>
-
-                  <div className="locations-care-block">
-                    <strong>Care available</strong>
-                    <div>
-                      {careAvailable(location.shortName).map((item) => (
-                        <span key={item}>{item}</span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="home-location-details">
-                    <address>
-                      <MapPin aria-hidden="true" size={17} />
-                      {location.address}
-                    </address>
-                    <a href={`tel:${location.tel}`} aria-label={`Call ${officialName} at ${location.phone}`}>
-                      <Phone aria-hidden="true" size={17} />
-                      {location.phone}
-                    </a>
-                    <p>
-                      <Clock aria-hidden="true" size={17} />
-                      {settings.publicLocations[index]?.hours[0] || site.locations[index].hours[0]}
-                    </p>
-                  </div>
-
-                  <p className="home-location-nearby">{nearbyCopy(location.shortName)}</p>
-
-                  <MapEmbed src={settings.publicLocations[index]?.mapEmbedUrl || site.locations[index].mapEmbedUrl} title={`Map to ${officialName}`} />
-
-                  <div className="location-card-actions">
-                    <a className="btn btn-primary" href={`tel:${location.tel}`}>
-                      Call {location.shortName}
-                    </a>
-                    <a className="btn btn-ghost" href={settings.publicLocations[index]?.mapUrl || site.locations[index].mapUrl} target="_blank" rel="noopener noreferrer">
-                      Get Directions
-                    </a>
-                    <Link className="btn btn-ghost" href="/book-appointment/">
-                      Request Appointment
-                    </Link>
-                  </div>
-                </div>
-              </article>
-            );
-          })}
-        </div>
-      </Section>
-
-      <Section tone="white" eyebrow="Services" title="What both VMC locations offer">
-        <div className="locations-service-grid">
-          {serviceCards.map(({ title, text, href, icon: Icon }) => (
-            <article className="locations-service-card" key={title}>
-              <Icon aria-hidden="true" size={22} />
-              <h3>{title}</h3>
-              <p>{text}</p>
-              <Link href={href}>Learn more</Link>
-            </article>
-          ))}
-        </div>
-      </Section>
-
-      <Section tone="cream" eyebrow="Service Area" title="Veterinary care across Northern Kentucky">
-        <p className="section-narrow-copy">
-          Our clinics serve pets and families across Fort Thomas, Independence, Newport, Bellevue, Dayton, Highland Heights, Alexandria, Taylor Mill, Covington, Erlanger, Edgewood, and nearby Cincinnati-area communities. <Link className="text-link" href="/locations/vet-near-cincinnati-oh/">Looking for a vet in Cincinnati?</Link>
+      <div className="home-love-banner">
+        <p className="home-love-banner-inner contact-phone-strip">
+          <MapPin aria-hidden="true" size={13} />
+          <span>Fort Thomas <a href={`tel:${clinics[0].location.tel}`}>{clinics[0].location.phone}</a></span>
+          <span aria-hidden="true">·</span>
+          <span>Independence <a href={`tel:${clinics[1].location.tel}`}>{clinics[1].location.phone}</a></span>
         </p>
-        <div className="service-area-chips" aria-label="Northern Kentucky communities served">
-          {serviceAreaChips.map((community) => (
-            <span key={community}>{community}</span>
+      </div>
+
+      <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Locations", href: "/locations/" }]} />
+
+      <Section id="clinics" tone="cream" eyebrow="Find your clinic" title={<>Our vet clinics in <em>Northern Kentucky.</em></>} intro="Pick the clinic that's easiest for your family. You'll get the same locally owned team and the same standard of care at both." className="locations-clinics-section">
+        <div className="locations-clinic-grid">
+          {clinics.map(({ location, id, publicLocation, towns, details }) => (
+            <article className="locations-clinic-card" key={id}>
+              <Link className="locations-clinic-photo" href={`/locations/${location.slug}/`} aria-label={`Visit the ${location.shortName} clinic page`}>
+                <Image src={location.image} alt={location.imageAlt} fill sizes="(max-width: 900px) 100vw, 50vw" />
+                <span>{location.shortName}, KY</span>
+              </Link>
+              <div className="locations-clinic-body">
+                <h3><Link href={`/locations/${location.slug}/`}>Veterinary Medical Center of {location.shortName}</Link></h3>
+                <p className="locations-clinic-tagline">{details.tagline}</p>
+                <p className="locations-clinic-personal"><HeartHandshake aria-hidden="true" size={16} /> {details.personal}</p>
+                <div className="home-location-details">
+                  <address>{location.address}</address>
+                  <a href={`tel:${location.tel}`}>{location.phone}</a>
+                  <p className="home-location-weekday-hours">Monday–Friday <span>·</span> 8 AM–6 PM</p>
+                  <details className="home-location-full-hours">
+                    <summary>Full hours</summary>
+                    <ul>{publicLocation.hours.map((line) => <li key={line}>{line}</li>)}</ul>
+                  </details>
+                </div>
+                <div className="locations-clinic-towns">
+                  <strong>Popular with families from</strong>
+                  <div>
+                    {towns.map((city) => <Link key={city.slug} href={`/locations/${city.slug}/`}>{city.city}</Link>)}
+                    {id === "fort-thomas" && <Link href="/locations/vet-near-cincinnati-oh/">Cincinnati</Link>}
+                  </div>
+                </div>
+                <div className="locations-clinic-actions">
+                  <Link className="btn btn-primary" href="/book-appointment/">Book at {location.shortName}</Link>
+                  <Link className="btn btn-ghost" href={`/locations/${location.slug}/`}>Visit clinic page</Link>
+                  <a className="text-link" href={publicLocation.mapUrl} target="_blank" rel="noopener noreferrer">Directions →</a>
+                </div>
+              </div>
+              <div className="locations-clinic-map">
+                <iframe src={publicLocation.mapEmbedUrl} title={`Map to Veterinary Medical Center of ${location.shortName}`} loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen />
+              </div>
+            </article>
           ))}
         </div>
       </Section>
 
-      <Section tone="red" className="locations-final-section">
-        <div className="cta-panel">
-          <p className="eyebrow">Next Steps</p>
-          <h2>Ready to schedule with your Northern Kentucky vet team?</h2>
-          <p>Call either clinic, request an appointment online, or send a message and our team will help you choose the right next step.</p>
-          <div className="hero-actions">
-            <Button href="/book-appointment/" variant="secondary">Book Appointment</Button>
-            <Button href="/new-patients/" variant="ghost">New Patients</Button>
-            <Button href="/contact/#chat-support" variant="ghost">Contact the Team</Button>
+      <Section tone="dark" eyebrow="Not sure which one?" title={<>A quick guide to <em>choosing your clinic.</em></>} intro="Both are great options. Here's how most Northern Kentucky families decide." className="home-life-stages">
+        <div className="contact-path-grid">
+          {clinics.map(({ location, id, details }) => (
+            <article className="home-life-stage-card locations-choose" key={id}>
+              <MapPin aria-hidden="true" size={25} />
+              <h3>Choose {location.shortName} if&hellip;</h3>
+              <ul>
+                {details.chooseIf.map((item) => <li key={item}><Check aria-hidden="true" size={15} />{item}</li>)}
+              </ul>
+              <Link href={`/locations/${location.slug}/`}>Explore the {location.shortName} clinic →</Link>
+            </article>
+          ))}
+        </div>
+        <p className="contact-emergency-note">Live in Covington? Both clinics are about 15–20 minutes away. <Link href="/locations/vet-near-covington-ky/">See Covington options →</Link></p>
+      </Section>
+
+      <Section tone="white" eyebrow="Same care, either clinic" title={<>Two locations. <em>One standard of care.</em></>} className="home-little-things">
+        <div className="home-little-things-layout">
+          <div>
+            <p>Whichever clinic you choose, you&rsquo;re choosing the same locally owned practice and the same commitment to knowing your pet by name.</p>
+            <Link className="text-link services-team-link" href="/team/">Meet our veterinarians →</Link>
+          </div>
+          <div className="home-little-things-list">
+            {sameEverywhere.map(({ icon: Icon, title, text }) => (
+              <article key={title}><span><Icon aria-hidden="true" size={18} /></span><div><h3>{title}</h3><p>{text}</p></div></article>
+            ))}
           </div>
         </div>
+        <nav className="locations-service-links" aria-label="Veterinary services at both clinics">
+          <span>Available at both clinics:</span>
+          {serviceLinks.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}
+          <Link href="/services/">All services →</Link>
+        </nav>
       </Section>
+
+      <Section tone="cream" eyebrow="Areas we serve" title={<>Find a vet <em>near your town.</em></>} intro="Families visit our two clinics from across Northern Kentucky and Cincinnati. Pick your town to see directions, drive times, and local options." className="locations-towns-section">
+        <div className="locations-towns">
+          {clinics.map(({ location, id, towns }) => (
+            <div key={id}>
+              <h3><Link href={`/locations/${location.slug}/`}>Near our {location.shortName} clinic</Link></h3>
+              <div className="service-area-chips">
+                {towns.map((city) => <Link key={city.slug} href={`/locations/${city.slug}/`}>Vet in {city.city}, KY</Link>)}
+                {id === "fort-thomas" && <Link href="/locations/vet-near-cincinnati-oh/">Vet in Cincinnati, OH</Link>}
+              </div>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <FAQSection faqs={locationFaqs} title="Questions about our Northern Kentucky vet clinics" />
+
+      <FinalInvitation
+        actions={<>
+          <Link className="btn btn-secondary" href="/book-appointment/">Book an Appointment</Link>
+          <a className="btn btn-ghost" href={`tel:${clinics[0].location.tel}`}>Call Fort Thomas</a>
+          <a className="btn btn-ghost" href={`tel:${clinics[1].location.tel}`}>Call Independence</a>
+        </>}
+      />
 
       <JsonLd
         data={[
-          webpageSchema("/locations/", seo.title, seo.description),
+          { ...webpageSchema("/locations/", seo.title, seo.description), "@type": "CollectionPage" },
           breadcrumbSchema([{ name: "Home", path: "/" }, { name: "Locations", path: "/locations/" }]),
+          faqSchema(locationFaqs),
           ...locations.map((location) => locationVeterinaryCareSchema(location, `/locations/${location.slug}/`))
         ]}
       />

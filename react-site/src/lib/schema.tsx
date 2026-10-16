@@ -294,6 +294,20 @@ export function personSchema(person: {
   };
 }
 
+/** Authors/reviewers: the practice itself is an Organization; individuals are Persons with a profile URL. */
+function personOrOrg(person?: { name?: string; slug?: string; credentials?: string }) {
+  if (!person?.name || person.name === site.name || person.slug === "veterinary-medical-centers") {
+    return { "@type": "Organization", "@id": `${site.siteUrl}/#organization`, name: site.name, url: site.siteUrl };
+  }
+  return {
+    "@type": "Person",
+    name: person.name,
+    ...(person.credentials ? { honorificSuffix: person.credentials } : {}),
+    ...(person.slug ? { url: absoluteUrl(`/resources/authors/${person.slug}/`) } : {}),
+    worksFor: { "@id": `${site.siteUrl}/#organization` }
+  };
+}
+
 export function articleSchema(post: {
   title: string;
   slug: string;
@@ -303,9 +317,15 @@ export function articleSchema(post: {
   featuredImage?: string;
   schemaImage?: string;
   canonicalUrl?: string;
-  author?: { name?: string };
+  author?: { name?: string; slug?: string; credentials?: string };
+  reviewedBy?: { name?: string; slug?: string; credentials?: string };
+  /** Medical review date (only set after a genuine veterinary review). */
+  lastReviewedAt?: string;
   category?: string;
   tags?: string[];
+  /** Weekly content-review date (see src/lib/review-date.ts). */
+  lastReviewed?: string;
+  citations?: string[];
 }) {
   const articleUrl = canonicalUrl(post.canonicalUrl || `/resources/${post.slug}/`);
 
@@ -319,15 +339,19 @@ export function articleSchema(post: {
     url: articleUrl,
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": articleUrl
+      "@id": articleUrl,
+      // A genuine medical review (named veterinarian + date) takes precedence over the weekly content review.
+      ...(post.reviewedBy?.name && post.lastReviewedAt
+        ? { lastReviewed: post.lastReviewedAt.slice(0, 10), reviewedBy: personOrOrg(post.reviewedBy) }
+        : post.lastReviewed
+          ? { lastReviewed: post.lastReviewed, reviewedBy: { "@type": "Organization", "@id": `${site.siteUrl}/#organization`, name: site.name } }
+          : {})
     },
+    ...(post.citations?.length ? { citation: post.citations } : {}),
     image: post.schemaImage || (post.featuredImage ? absoluteUrl(post.featuredImage) : undefined),
     articleSection: post.category,
     keywords: post.tags?.join(", "),
-    author: {
-      "@type": post.author?.name ? "Person" : "Organization",
-      name: post.author?.name || site.name
-    },
+    author: personOrOrg(post.author),
     publisher: {
       "@type": "Organization",
       "@id": `${site.siteUrl}/#organization`,

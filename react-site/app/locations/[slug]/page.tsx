@@ -11,6 +11,10 @@ import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { locations, getLocation } from "@/data/locations";
 import { getCityPage, getCityPageSlugs } from "@/data/cityPages";
+import { cityLandings, getCityLanding } from "@/data/cityLandings";
+import { CityLandingPage } from "@/components/sections/CityLandingPage";
+import { ClinicLocationPage } from "@/components/sections/ClinicLocationPage";
+import { getClinicPage } from "@/data/clinicPages";
 import type { CityPage } from "@/data/cityPages";
 import { serviceHubServices } from "@/data/serviceHub";
 import { absoluteUrl, site } from "@/data/site";
@@ -62,15 +66,23 @@ function renderHeadlineAccent(headline: string, accent: string) {
 export function generateStaticParams() {
   const locationSlugs = locations.map((location) => ({ slug: location.slug }));
   // vet-near-cincinnati-oh has its own dedicated page in app/locations/vet-near-cincinnati-oh/.
-  const citySlugs = getCityPageSlugs().filter((slug) => slug !== "vet-near-cincinnati-oh").map((slug) => ({ slug }));
-  return [...locationSlugs, ...citySlugs];
+  const landingSlugs = cityLandings.map((page) => page.slug);
+  const citySlugs = getCityPageSlugs()
+    .filter((slug) => slug !== "vet-near-cincinnati-oh" && !landingSlugs.includes(slug))
+    .map((slug) => ({ slug }));
+  return [...locationSlugs, ...landingSlugs.map((slug) => ({ slug })), ...citySlugs];
 }
 
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const location = getLocation(slug);
   if (location) {
-    return pageMetadata({ ...location.seo, path: `/locations/${location.slug}/`, image: location.image });
+    const clinicPage = getClinicPage(location.slug);
+    return pageMetadata({ ...(clinicPage?.seo || location.seo), path: `/locations/${location.slug}/`, image: location.image });
+  }
+  const landing = getCityLanding(slug);
+  if (landing) {
+    return pageMetadata({ ...landing.seo, path: `/locations/${landing.slug}/` });
   }
   const cityPage = getCityPage(slug);
   if (cityPage) {
@@ -350,6 +362,8 @@ export default async function LocationPage({ params }: Params) {
   const { slug } = await params;
   const location = getLocation(slug);
   if (!location) {
+    const landing = getCityLanding(slug);
+    if (landing) return <CityLandingPage page={landing} />;
     const cityPage = getCityPage(slug);
     if (!cityPage) notFound();
     return <CityPageView cityPage={cityPage} />;
@@ -361,6 +375,10 @@ export default async function LocationPage({ params }: Params) {
     settings.publicLocations.find((item) => item.name === location.shortName) ||
     site.locations.find((item) => item.name === location.shortName) ||
     site.locations[0];
+  const clinicPage = getClinicPage(location.slug);
+  if (clinicPage) {
+    return <ClinicLocationPage page={clinicPage} location={location} publicLocation={siteLocation} />;
+  }
   const relatedLocation = locations.find((item) => item.slug === location.crossLinkSlug);
   const locationServices = serviceLinks
     .map((serviceSlug) => serviceHubServices.find((service) => service.slug === serviceSlug))

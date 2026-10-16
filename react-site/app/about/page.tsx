@@ -19,6 +19,7 @@ import { FinalInvitation } from "@/components/sections/FinalInvitation";
 import { Hero } from "@/components/sections/Hero";
 import { TeamSection } from "@/components/sections/TeamSection";
 import { Section } from "@/components/ui/Section";
+import { cityLandings } from "@/data/cityLandings";
 import { cityPages } from "@/data/cityPages";
 import { locations } from "@/data/locations";
 import { pages } from "@/data/pages";
@@ -122,7 +123,9 @@ const resourceLinks = [
   ["Veterinary services for dogs and cats", "/services/"],
   ["Online pharmacy & refills", "/online-vet-pharmacy-northern-kentucky-cincinnati/"],
   ["Patient portal", "/patient-portal-online-booking/"],
-  ["Contact our team", "/contact/"]
+  ["Contact our team", "/contact/"],
+  ["Practice fact sheet & business profile", "/ai-business-profile/"],
+  ["Guides: choosing a vet in Cincinnati & NKY", "/guides/"]
 ];
 
 export default async function AboutPage() {
@@ -130,7 +133,14 @@ export default async function AboutPage() {
   const locale = isLocale(localeHeader) ? localeHeader : "en";
   const seo = locale === "en" ? pages.about.seo : localizedSeo[locale]["/about/"];
   const pagePath = locale === "en" ? "/about/" : `/${locale}/about/`;
-  const nearbyCities = cityPages.filter((page) => page.pageType === "nearby_city");
+  // City SEO landing pages first (grouped by their featured clinic), then remaining nearby-city pages.
+  const landingSlugs = new Set(cityLandings.map((page) => page.slug));
+  const nearbyCities = [
+    ...cityLandings.map((page) => ({ slug: page.slug, city: page.city, state: page.state, href: `/locations/${page.slug}/`, clinic: page.clinics[0] === "fort-thomas" ? "Fort Thomas" : "Independence" })),
+    ...cityPages
+      .filter((page) => page.pageType === "nearby_city" && !landingSlugs.has(page.slug))
+      .map((page) => ({ slug: page.slug, city: page.city, state: page.state, href: `${page.canonicalPath}/`, clinic: page.nearest.location }))
+  ];
 
   return (
     <>
@@ -236,8 +246,8 @@ export default async function AboutPage() {
             <div key={location.slug}>
               <h3><Link href={`/locations/${location.slug}/`}>Near our {location.shortName} clinic</Link></h3>
               <ul>
-                {nearbyCities.filter((page) => page.nearest.location === location.shortName).map((page) => (
-                  <li key={page.slug}><Link href={`${page.canonicalPath}/`}>Vet near {page.city}, {page.state}</Link></li>
+                {nearbyCities.filter((page) => page.clinic === location.shortName).map((page) => (
+                  <li key={page.slug}><Link href={page.href}>Vet in {page.city}, {page.state}</Link></li>
                 ))}
               </ul>
             </div>
