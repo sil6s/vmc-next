@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
-import Image from "next/image";
 import type { SVGProps } from "react";
 import {
   locationKeyToOnlineHelpSlug,
@@ -181,7 +180,7 @@ export function ChatSupportWidget({
   hideLauncher?: boolean;
 }) {
   const [expanded, setExpanded] = useState(false);
-  const [isFooterVisible, setIsFooterVisible] = useState(false);
+  const [hasScrolled, setHasScrolled] = useState(false);
   const [, setSelectedLocation] = useState<LocationKey | null>(() => {
     if (typeof window === "undefined") return null;
     const savedLocation = window.localStorage.getItem(SELECTED_LOCATION_KEY);
@@ -224,15 +223,15 @@ export function ChatSupportWidget({
   }, []);
 
   useEffect(() => {
-    const footer = document.querySelector(".site-footer");
-    if (!footer) return;
-
-    const observer = new IntersectionObserver(([entry]) => setIsFooterVisible(Boolean(entry?.isIntersecting)), {
-      rootMargin: "0px 0px -12% 0px",
-      threshold: 0.05
-    });
-    observer.observe(footer);
-    return () => observer.disconnect();
+    // Reveal the chat bubble only after the visitor starts scrolling, then keep it.
+    const reveal = () => {
+      if (window.scrollY < 160) return;
+      setHasScrolled(true);
+      window.removeEventListener("scroll", reveal);
+    };
+    reveal();
+    window.addEventListener("scroll", reveal, { passive: true });
+    return () => window.removeEventListener("scroll", reveal);
   }, []);
 
   useEffect(() => {
@@ -322,28 +321,13 @@ export function ChatSupportWidget({
 
   const shellStyle: CSSProperties = {
     ...widgetStyle,
-    right: expanded ? 0 : isMobilePanel ? 14 : 24,
-    bottom: expanded ? 0 : isMobilePanel ? 86 : 96,
+    right: expanded ? 0 : undefined,
+    bottom: expanded ? 0 : undefined,
     display: isOpening ? "none" : "grid",
     width: widgetStyle?.width || "min(620px, calc(100vw - 32px))",
     justifyItems: widgetStyle?.justifyItems || "end",
     gap: 12,
     pointerEvents: "none"
-  };
-
-  const greetingStyle: CSSProperties = {
-    display: "grid",
-    gridTemplateColumns: "38px minmax(0, 1fr)",
-    gap: 10,
-    alignItems: "start",
-    width: "min(380px, 100%)",
-    border: "1px solid rgba(169, 27, 27, 0.15)",
-    borderRadius: 12,
-    background: "rgba(255, 252, 247, 0.98)",
-    boxShadow: "0 18px 48px rgba(23, 19, 19, 0.16)",
-    color: "var(--ink)",
-    padding: "13px 14px",
-    backdropFilter: "blur(14px)"
   };
 
   const toggleStyle: CSSProperties = {
@@ -522,47 +506,26 @@ export function ChatSupportWidget({
         </div>
         )}
 
-        {!expanded && !hideLauncher && !isFooterVisible && !isMobilePanel && (
-        <div className="chat-support-greeting" role="status" style={greetingStyle}>
-          <span className="chat-support-greeting-avatar">
-            <Image
-              src="/images/kristi-baker-headshot-vertical.jpg"
-              alt="Kristi Baker"
-              width={36}
-              height={36}
-              className="chat-support-greeting-avatar-img"
-            />
-            <span className="chat-support-greeting-avatar-dot" aria-hidden="true" />
-          </span>
-          <span>
-            <strong style={{ display: "block", color: "var(--ink)", fontSize: 13, fontWeight: 950 }}>Veterinary Medical Centers</strong>
-            <small style={{ display: "block", marginTop: 3, color: "var(--body)", fontSize: 12.5, fontWeight: 700, lineHeight: 1.42 }}>
-              Hi there! Need to book a visit, refill a prescription, or reach the care team? We&apos;re here to help.
-            </small>
-          </span>
-        </div>
-        )}
-
         {!expanded && !hideLauncher && (
         <button
           aria-controls={PANEL_ID}
           aria-expanded={expanded}
-          aria-label={isOpening ? "Opening help options..." : "Open help options"}
+          aria-hidden={!hasScrolled || undefined}
+          aria-label={isOpening ? "Opening help options..." : "Chat with Veterinary Medical Centers"}
           aria-busy={isOpening || undefined}
-          className={isOpening ? "chat-support-button is-loading" : "chat-support-button"}
+          className={`chat-support-button chat-support-bubble${hasScrolled ? " is-visible" : ""}${isOpening ? " is-loading" : ""}`}
           ref={buttonRef}
+          tabIndex={hasScrolled ? undefined : -1}
+          title="Questions? Chat with us"
           type="button"
           disabled={isOpening}
           onClick={openPanel}
           suppressHydrationWarning
         >
           {isOpening
-            ? <LoaderIcon size={22} className="chat-support-spinner" />
-            : <MessageCircleIcon size={25} strokeWidth={2.4} className="chat-support-button-icon" />}
-          <span className="chat-support-button-label">
-            <strong>{isOpening ? "Connecting…" : "Get help now"}</strong>
-            <small>{isOpening ? "Opening your request page." : "Book, refill, message, or get records."}</small>
-          </span>
+            ? <LoaderIcon size={24} className="chat-support-spinner" />
+            : <MessageCircleIcon size={27} strokeWidth={2.3} className="chat-support-button-icon" />}
+          <span className="chat-support-bubble-dot" aria-hidden="true" />
         </button>
         )}
       </div>

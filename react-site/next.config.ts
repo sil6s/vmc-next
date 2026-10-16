@@ -51,6 +51,11 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: "/new-patient-registration-form/",
+        destination: "/new-patients/",
+        permanent: true
+      },
+      {
         source: "/service-item/:slug/",
         destination: "/services/:slug/",
         permanent: true

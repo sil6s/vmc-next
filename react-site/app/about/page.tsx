@@ -3,27 +3,31 @@ import Image from "next/image";
 import Link from "next/link";
 import { headers } from "next/headers";
 import {
-  BadgeCheck,
+  Baby,
   Building2,
+  Heart,
   HeartHandshake,
-  MapPin,
   MessageSquareText,
   PawPrint,
+  ShieldCheck,
+  Sparkles,
   Stethoscope,
   UsersRound
 } from "lucide-react";
 import { FAQSection } from "@/components/sections/FAQSection";
+import { FinalInvitation } from "@/components/sections/FinalInvitation";
 import { Hero } from "@/components/sections/Hero";
+import { TeamSection } from "@/components/sections/TeamSection";
 import { Section } from "@/components/ui/Section";
+import { cityPages } from "@/data/cityPages";
 import { locations } from "@/data/locations";
 import { pages } from "@/data/pages";
 import { localizedSeo } from "@/data/localized-seo";
-import { site } from "@/data/site";
+import { absoluteUrl, site } from "@/data/site";
+import { veterinarians } from "@/data/veterinarians";
 import { pageMetadata } from "@/lib/metadata";
 import { isLocale, localizedLanguageAlternates } from "@/lib/i18n";
-import { getPublicSettings } from "@/lib/settings/public";
 import { JsonLd, breadcrumbSchema, faqSchema, locationVeterinaryCareSchema, personSchema, webpageSchema } from "@/lib/schema";
-import { fetchAboutPersonProfiles, profileImageAlt, profileImageUrl } from "@/sanity/personProfiles";
 
 export async function generateMetadata(): Promise<Metadata> {
   const localeHeader = (await headers()).get("x-vmc-locale");
@@ -34,6 +38,16 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const aboutFaqs = [
+  {
+    question: "Who are the veterinarians at Veterinary Medical Centers?",
+    answer:
+      "Our Northern Kentucky veterinarians are Dr. Kristi Baker, DVM (practice owner), Dr. Rebecca Golatzki, DVM, and Dr. Valeria Dib-Vázquez, DVM. Together they care for dogs and cats at our Fort Thomas and Independence clinics."
+  },
+  {
+    question: "How much experience do your veterinarians have?",
+    answer:
+      "Our doctors bring more than 55 years of combined veterinary experience, including general practice, emergency medicine, surgery, dentistry, and feline-focused care."
+  },
   {
     question: "Is Veterinary Medical Centers independently owned?",
     answer:
@@ -86,277 +100,185 @@ const aboutFaqs = [
   }
 ];
 
-const whyCards = [
-  {
-    title: "Independent ownership",
-    text: "VMC is led locally, so decisions are made close to the pets, clients, and communities the team serves.",
-    icon: Building2
-  },
-  {
-    title: "Continuity of care",
-    text: "Familiar faces help your pet's history, preferences, and long-term health needs stay connected from visit to visit.",
-    icon: UsersRound
-  },
-  {
-    title: "Comfort-focused handling",
-    text: "The team uses a Fear Free mindset where possible, with thoughtful pacing and handling that respects each pet.",
-    icon: HeartHandshake
-  },
-  {
-    title: "Full-service medicine",
-    text: "Dogs and cats can receive wellness care, sick visits, dental care, surgery, senior support, and ongoing guidance.",
-    icon: Stethoscope
-  },
-  {
-    title: "Clear communication",
-    text: "Recommendations are explained in practical language so families understand what matters now and what comes next.",
-    icon: MessageSquareText
-  },
-  {
-    title: "Local NKY roots",
-    text: "With clinics in Fort Thomas and Independence, VMC supports pet owners across Northern Kentucky and Greater Cincinnati.",
-    icon: MapPin
-  }
+const differences = [
+  { title: "Independent ownership", text: "VMC is owned by Dr. Kristi Baker, so decisions are made here, close to the pets and families we serve.", icon: Building2 },
+  { title: "Familiar faces", text: "Seeing the same team over time keeps your pet's history, preferences, and health needs connected.", icon: UsersRound },
+  { title: "A gentler visit", text: "Fear Free–minded handling and thoughtful pacing help nervous pets settle in.", icon: HeartHandshake },
+  { title: "Clear next steps", text: "We explain what we find in plain language, so you leave knowing the plan and your options.", icon: MessageSquareText }
 ];
 
 const serviceCards = [
-  ["Wellness & Preventive Care", "Routine exams, vaccines, and prevention help your local vet team catch changes early.", "/services/"],
-  ["Puppy & Kitten Care", "First visits, vaccine timing, parasite prevention, and new pet guidance for a confident start.", "/services/puppy-kitten-care/"],
-  ["Dental Care", "Oral health support for bad breath, tartar, chewing changes, and preventive dental planning.", "/services/pet-dental-care/"],
-  ["Sick Visits & Medical Care", "Practical help when your pet is vomiting, limping, coughing, not eating, or acting differently.", "/services/sick-pet-visits/"],
-  ["Surgery & Soft Tissue Procedures", "Procedure planning with preparation, monitoring, pain control, and recovery instructions.", "/services/soft-tissue-surgery/"],
-  ["Senior Pet Care", "Closer monitoring for aging dogs and cats, mobility changes, dental needs, and chronic conditions.", "/services/senior-pet-care/"],
-  ["Online Pharmacy & Refills", "Approved medication, preventive, and refill support through VMC online tools.", "/online-vet-pharmacy-northern-kentucky-cincinnati/"]
-];
-
-const comparisonRows = [
-  ["Familiar team over time", "Continuity of care across visits"],
-  ["Clear answers", "Practical explanations, costs, and next steps"],
-  ["Less stressful visits", "Comfort-focused handling and thoughtful pacing"],
-  ["Local accountability", "Decisions made close to the community"],
-  ["Convenient care", "Fort Thomas and Independence locations"]
+  { title: "Puppies & kittens", text: "First exams, vaccines, prevention, and all the new-pet questions.", href: "/services/puppy-kitten-care/", cta: "Explore early-life care", icon: Baby },
+  { title: "Wellness & prevention", text: "Routine exams, vaccinations, and steady preventive care for grown-up pets.", href: "/services/pet-wellness-exams/", cta: "Explore wellness care", icon: PawPrint },
+  { title: "Dental care", text: "Help for bad breath, tartar, and chewing changes, plus preventive dental plans.", href: "/services/pet-dental-care/", cta: "Explore dental care", icon: Sparkles },
+  { title: "Sick visits", text: "Practical help when your pet is vomiting, limping, coughing, or just not themselves.", href: "/services/sick-pet-visits/", cta: "Explore sick visits", icon: Stethoscope },
+  { title: "Surgery", text: "Spay, neuter, and soft tissue procedures with careful monitoring and recovery plans.", href: "/services/soft-tissue-surgery/", cta: "Explore surgery", icon: ShieldCheck },
+  { title: "Senior sweethearts", text: "Support for comfort, mobility, screening, and changing needs.", href: "/services/senior-pet-care/", cta: "Explore senior care", icon: Heart }
 ];
 
 const resourceLinks = [
+  ["Meet our veterinarians", "/team/"],
   ["New patient information", "/new-patients/"],
-  ["Vet services for dogs and cats", "/services/"],
-  ["First vet visit guide", "/new-patients/"],
-  ["Pet dental care", "/services/pet-dental-care/"],
-  ["Soft tissue surgery", "/services/soft-tissue-surgery/"],
-  ["Online pharmacy", "/online-vet-pharmacy-northern-kentucky-cincinnati/"],
+  ["Veterinary services for dogs and cats", "/services/"],
+  ["Online pharmacy & refills", "/online-vet-pharmacy-northern-kentucky-cincinnati/"],
   ["Patient portal", "/patient-portal-online-booking/"],
-  ["Contact Veterinary Medical Centers", "/contact/"]
-];
-
-const externalResources = [
-  ["AVMA pet owner resources", "https://www.avma.org/resources/pet-owners"],
-  ["Fear Free Happy Homes", "https://www.fearfreehappyhomes.com/"],
-  ["ASPCA pet care resources", "https://www.aspca.org/pet-care"],
-  ["Cat Friendly Homes", "https://catfriendly.com/"]
+  ["Contact our team", "/contact/"]
 ];
 
 export default async function AboutPage() {
-  const [settings, personProfiles] = await Promise.all([getPublicSettings(), fetchAboutPersonProfiles()]);
   const localeHeader = (await headers()).get("x-vmc-locale");
   const locale = isLocale(localeHeader) ? localeHeader : "en";
   const seo = locale === "en" ? pages.about.seo : localizedSeo[locale]["/about/"];
   const pagePath = locale === "en" ? "/about/" : `/${locale}/about/`;
-  const sanityDoctors = personProfiles.filter((profile) => profile.profileType === "doctor" && profile.visible !== false);
-  const visibleDoctors = sanityDoctors.length ? sanityDoctors : settings.staff.doctors.filter((doctor) => doctor.isVisible);
+  const nearbyCities = cityPages.filter((page) => page.pageType === "nearby_city");
 
   return (
     <>
       <Hero
         eyebrow="About Veterinary Medical Centers"
-        title="Independently Owned Veterinary Care in Northern Kentucky"
-        body="Veterinary Medical Centers is an independently owned vet in Northern Kentucky serving dogs and cats from Fort Thomas, Independence, and nearby communities with compassionate full-service care."
+        title="Northern Kentucky veterinarians,"
+        emphasis="locally owned."
+        body="Veterinary Medical Centers is a team of Northern Kentucky veterinarians caring for dogs and cats in Fort Thomas and Independence, KY. Owned by Dr. Kristi Baker, we know your pet's name, their history, and you."
         image="/images/fort-thomas-clinic.jpg"
-        imageAlt="Veterinary Medical Centers Fort Thomas KY veterinary clinic location"
+        imageAlt="Veterinary Medical Center of Fort Thomas, home to locally owned Northern Kentucky veterinarians"
         badgeTitle="Licensed in KY & OH"
         badgeSub="Led by Dr. Kristi Baker"
-        primaryCta={{ label: "Book Appointment", href: "/book-appointment/" }}
-        secondaryCta={{ label: "Choose a Location", href: "/locations/" }}
-        tertiaryCta={{ label: "Meet Our Team", href: "#team" }}
+        primaryCta={{ label: "Book an Appointment", href: "/book-appointment/" }}
+        secondaryCta={{ label: "Meet Our Veterinarians", href: "/team/" }}
+        showStats={false}
+        inlineEmphasis
+        compact
       />
 
-      <div className="home-trust-row" aria-label="About Veterinary Medical Centers highlights">
-        {["Independently owned", "Two Northern Kentucky locations", "Dogs and cats", "Fear Free approach", "Licensed in KY & OH"].map((item) => (
-          <span key={item}>{item}</span>
-        ))}
+      <div className="home-love-banner">
+        <p className="home-love-banner-inner">
+          <Heart aria-hidden="true" size={13} />
+          Independently owned · Two Northern Kentucky clinics · Dogs &amp; cats
+        </p>
       </div>
 
-      <Section tone="white" eyebrow="Why VMC" title="Why families choose Veterinary Medical Centers">
-        <div className="card-grid">
-          {whyCards.map(({ title, text, icon: Icon }) => (
-            <article className="card" key={title}>
-              <span className="icon-mark"><Icon aria-hidden="true" size={22} /></span>
-              <h3>{title}</h3>
-              <p>{text}</p>
-            </article>
-          ))}
-        </div>
-      </Section>
-
-      <Section tone="cream" eyebrow="Our Story" title="Built for families who want care that feels personal.">
-        <div className="about-story-grid">
-          <div className="about-story-copy">
-            <p>Veterinary Medical Centers exist for pet owners who want more than a quick transaction. Independent ownership allows the team to focus on steady relationships, clear communication, and care plans that make sense for each pet and family.</p>
-            <p>When a vet team knows your dog or cat over time, the small details matter more. Changes in appetite, mobility, behavior, dental health, or comfort are easier to understand when they are part of an ongoing story instead of a one-time appointment.</p>
-            <p>That is why VMC combines medical care with emotional comfort. The team supports wellness exams, sick visits, dentistry, surgery, and senior care while helping pets feel safer and owners feel more informed.</p>
+      <Section tone="white" className="home-vmc-introduction">
+        <div className="home-vmc-editorial">
+          <div className="home-vmc-copy">
+            <p className="eyebrow">Our story</p>
+            <h2>Pets are family. <em>We treat them that way.</em></h2>
+            <p>The dog who claims the middle of the couch. The cat who only settles on one lap. Pets aren&rsquo;t just part of the household. They&rsquo;re part of the family, and they deserve care that reflects it.</p>
+            <p>As <strong>independently owned Northern Kentucky veterinarians</strong>, we answer to the families we serve, not a corporate office. That lets us slow down, get to know your whole household, and build care plans that fit real life, budgets, and personalities included.</p>
+            <p>When the same team knows your dog or cat over the years, small changes in appetite, mobility, or behavior are easier to catch <strong>as part of an ongoing story</strong>, not a one-time appointment. From first puppy visits to senior years, we&rsquo;re here for every chapter.</p>
+            <Link className="text-link" href="/team/">Meet the veterinarians →</Link>
           </div>
-          <aside className="about-callout-card">
-            <h3>Personal care looks like:</h3>
-            <ul>
-              {["Clear answers", "Familiar faces", "Comfort-focused visits", "Practical next steps", "Local accountability"].map((item) => (
-                <li key={item}><BadgeCheck aria-hidden="true" size={17} />{item}</li>
-              ))}
-            </ul>
-          </aside>
-        </div>
-      </Section>
-
-      <Section id="team" tone="white" eyebrow="Our Team" title="Meet Dr. Baker and the care team">
-        <div className="about-team-grid">
-          {visibleDoctors.map((doctor) => {
-            const id = "_id" in doctor ? doctor._id : doctor.id;
-            const imageUrl = "_id" in doctor ? profileImageUrl(doctor) : doctor.imageUrl;
-            const imageAlt = "_id" in doctor ? profileImageAlt(doctor) : doctor.imageAlt || `${doctor.name}, ${doctor.role} at Veterinary Medical Centers`;
-            const bio = "_id" in doctor ? doctor.bio || doctor.briefDescription || "" : doctor.bio;
-            return (
-            <article className="about-doctor-card" key={id}>
-              <figure className={imageUrl ? "about-doctor-photo" : "about-doctor-photo about-doctor-photo-placeholder"} aria-hidden={imageUrl ? undefined : "true"}>
-                {imageUrl ? (
-                  <Image src={imageUrl} alt={imageAlt} fill sizes="(max-width: 760px) 100vw, 50vw" />
-                ) : (
-                  <PawPrint size={42} />
-                )}
-              </figure>
-              <div>
-                <p className="eyebrow">{doctor.role}</p>
-                <h3>{doctor.name}</h3>
-                <p>{bio}</p>
-                {doctor.name.toLowerCase().includes("kristi") && (
-                  <blockquote>Better care starts with listening carefully, explaining clearly, and knowing the pet and family in front of us.</blockquote>
-                )}
-              </div>
-            </article>
-            );
-          })}
-          <article className="about-team-card">
-            <h3>Care team, RVTs, and client support</h3>
-            <p>Office leadership, registered veterinary technicians, assistants, and client service team members help make each visit organized, calmer, and easier to understand.</p>
-          </article>
-        </div>
-      </Section>
-
-      <Section tone="cream" eyebrow="Locations" title="Two locations, one standard of care">
-        <div className="about-location-grid">
-          {locations.map((location, index) => (
-            <article className="about-location-card" key={location.slug}>
-              <Image src={location.image} alt={location.imageAlt} width={720} height={460} />
-              <div>
-                <h3>{location.shortName}</h3>
-                <p>{location.shortName === "Fort Thomas" ? "Convenient for Fort Thomas, Highland Heights, Bellevue, Newport, Dayton, Cold Spring, and nearby Cincinnati neighborhoods." : "Convenient for Independence, Taylor Mill, Covington, Latonia, Erlanger, Florence, and central Northern Kentucky."}</p>
-                <address>{location.address}</address>
-                <a className="text-link" href={`tel:${location.tel}`}>{location.phone}</a>
-                <div className="inline-actions">
-                  <Link className="btn btn-primary" href="/book-appointment/">Book at this location</Link>
-                  <a className="btn btn-ghost" href={site.locations[index].mapUrl} target="_blank" rel="noopener noreferrer">Get directions</a>
-                  <Link className="text-link" href={`/locations/${location.slug}/`}>View location page</Link>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-      </Section>
-
-      <Section tone="white" eyebrow="Care" title="Full-service veterinary care for dogs and cats">
-        <div className="about-service-grid">
-          {serviceCards.map(([title, text, href]) => (
-            <article className="about-service-card" key={title}>
-              <PawPrint aria-hidden="true" size={18} />
-              <h3>{title}</h3>
-              <p>{text}</p>
-              <Link href={href}>Learn more</Link>
-            </article>
-          ))}
-        </div>
-      </Section>
-
-      <Section tone="cream" eyebrow="Independent Care" title="What makes independent veterinary care different?">
-        <div className="about-comparison">
-          {comparisonRows.map(([want, support]) => (
-            <div key={want}>
-              <span>{want}</span>
-              <strong>{support}</strong>
-            </div>
-          ))}
-        </div>
-      </Section>
-
-      <Section tone="white" eyebrow="Resources" title="Helpful resources for pet owners">
-        <div className="about-resource-grid">
-          <div>
-            <h3>VMC resources</h3>
-            <ul>
-              {resourceLinks.map(([label, href]) => (
-                <li key={href}><Link href={href}>{label}</Link></li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <h3>Trusted pet care resources</h3>
-            <ul>
-              {externalResources.map(([label, href]) => (
-                <li key={href}><a href={href} target="_blank" rel="noopener noreferrer">{label}</a></li>
-              ))}
-            </ul>
+          <div className="home-vmc-image">
+            <Image src="/images/family-pets-couch.jpg" alt="Northern Kentucky family relaxing on the couch with their poodle and cat" fill sizes="(max-width: 760px) 100vw, 48vw" />
           </div>
         </div>
       </Section>
 
-      <FAQSection faqs={aboutFaqs} title="Questions about Veterinary Medical Centers" />
+      <TeamSection
+        id="team"
+        eyebrow="Our veterinarians"
+        title={<>Meet your <em>Northern Kentucky veterinarians.</em></>}
+        intro="Three doctors with more than 55 years of combined experience, from emergency medicine to feline-focused care, and one shared belief: good care starts with listening. Tap any doctor to read their full bio."
+      />
 
-      <Section tone="red">
-        <div className="cta-panel">
-          <p className="eyebrow">Next Steps</p>
-          <h2>Ready for veterinary care that feels more personal?</h2>
-          <p>Whether your pet needs a first visit, a wellness exam, dental care, surgery, or help with a health concern, VMC is here to make the next step clear.</p>
-          <div className="hero-actions">
-            <Link className="btn btn-secondary" href="/book-appointment/">Book Appointment</Link>
-            <a className="btn btn-ghost" href={`tel:${site.locations[0].tel}`}>Call Fort Thomas</a>
-            <a className="btn btn-ghost" href={`tel:${site.locations[1].tel}`}>Call Independence</a>
-            <Link className="btn btn-ghost" href="/services/">View Services</Link>
-          </div>
-          <div className="about-cta-strip">
-            {site.locations.map((location) => (
-              <address key={location.id}>
-                <strong>{location.name}</strong>
-                <span>{location.address}</span>
-                <a href={`tel:${location.tel}`}>{location.phone}</a>
-              </address>
+      <Section tone="white" eyebrow="The VMC difference" title={<>Why families <em>choose us.</em></>} className="home-little-things">
+        <div className="home-little-things-layout">
+          <p>Good veterinary care isn&rsquo;t only about the exam room. It&rsquo;s about making space for your questions, helping nervous pets settle in, and making sure you leave knowing what comes next.</p>
+          <div className="home-little-things-list">
+            {differences.map(({ title, text, icon: Icon }) => (
+              <article key={title}><span><Icon aria-hidden="true" size={18} /></span><div><h3>{title}</h3><p>{text}</p></div></article>
             ))}
           </div>
         </div>
       </Section>
 
+      <Section tone="dark" eyebrow="Care at every age" title={<>Full-service care for <em>dogs and cats.</em></>} intro="From first vaccines to gray whiskers, our team is here for the everyday questions and the visits that need a little more time." className="home-life-stages">
+        <div className="about-care-grid">
+          {serviceCards.map(({ title, text, href, cta, icon: Icon }) => (
+            <Link href={href} className="home-life-stage-card" key={title}>
+              <Icon aria-hidden="true" size={25} />
+              <h3>{title}</h3>
+              <p>{text}</p>
+              <span>{cta} →</span>
+            </Link>
+          ))}
+        </div>
+        <Link className="text-link about-care-all" href="/services/">View all veterinary services →</Link>
+      </Section>
+
+      <Section tone="cream" eyebrow="Locations" title={<>Two clinics. <em>One standard of care.</em></>} className="home-locations-section">
+        <div className="home-location-grid">
+          {locations.map((location, index) => (
+            <article className="home-location-card" key={location.slug}>
+              <div className="home-location-image">
+                <Image src={location.image} alt={location.imageAlt} fill sizes="(max-width: 760px) 100vw, 50vw" />
+              </div>
+              <div className="home-location-copy">
+                <h3><Link href={`/locations/${location.slug}/`}>{location.shortName}, KY</Link></h3>
+                <p className="home-location-official">Veterinary Medical Center of {location.shortName}</p>
+                <div className="home-location-details">
+                  <p>{location.shortName === "Fort Thomas" ? "Convenient for Fort Thomas, Highland Heights, Bellevue, Newport, Dayton, Cold Spring, and nearby Cincinnati neighborhoods." : "Convenient for Independence, Taylor Mill, Covington, Latonia, Erlanger, Florence, and central Northern Kentucky."}</p>
+                  <address>{location.address}</address>
+                  <a href={`tel:${location.tel}`}>{location.phone}</a>
+                </div>
+              </div>
+              <div className="inline-actions">
+                <Link className="btn btn-primary" href="/book-appointment/">Book Appointment</Link>
+                <a className="text-link" href={site.locations[index].mapUrl} target="_blank" rel="noopener noreferrer">Get Directions</a>
+              </div>
+            </article>
+          ))}
+        </div>
+      </Section>
+
+      <Section tone="white" eyebrow="Communities we serve" title={<>Veterinarians for <em>every corner of Northern Kentucky.</em></>} intro="Families visit our two clinics from across Campbell, Kenton, and Boone counties, plus Greater Cincinnati. Find the clinic closest to you." className="about-communities">
+        <div className="about-community-grid">
+          {locations.map((location) => (
+            <div key={location.slug}>
+              <h3><Link href={`/locations/${location.slug}/`}>Near our {location.shortName} clinic</Link></h3>
+              <ul>
+                {nearbyCities.filter((page) => page.nearest.location === location.shortName).map((page) => (
+                  <li key={page.slug}><Link href={`${page.canonicalPath}/`}>Vet near {page.city}, {page.state}</Link></li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <FAQSection faqs={aboutFaqs} title="Questions about Veterinary Medical Centers" />
+
+      <Section tone="warm" eyebrow="Helpful next steps" title={<>New here? <em>Start with these.</em></>} className="home-relationship-section">
+        <div className="about-next-links">
+          {resourceLinks.map(([label, href]) => (
+            <Link key={href + label} href={href}>{label} →</Link>
+          ))}
+        </div>
+      </Section>
+
+      <FinalInvitation
+        actions={<>
+          <Link className="btn btn-secondary" href="/book-appointment/">Book an Appointment</Link>
+          <a className="btn btn-ghost" href={`tel:${site.locations[0].tel}`}>Call Fort Thomas</a>
+          <a className="btn btn-ghost" href={`tel:${site.locations[1].tel}`}>Call Independence</a>
+        </>}
+      />
+
       <JsonLd
         data={[
-          webpageSchema(pagePath, seo.title, seo.description),
+          { ...webpageSchema(pagePath, seo.title, seo.description), "@type": "AboutPage", about: { "@id": `${site.siteUrl}/#organization` } },
           breadcrumbSchema([{ name: "Home", path: "/" }, { name: "About", path: "/about/" }]),
           faqSchema(aboutFaqs),
-          ...visibleDoctors.map((doctor) => {
-            const isSanityProfile = "_id" in doctor;
-            const education = isSanityProfile ? doctor.education?.split("\n").filter(Boolean) || [] : doctor.education;
-            return personSchema({
-              name: doctor.name,
-              jobTitle: doctor.role,
-              credentials: isSanityProfile ? doctor.credentials : education.find((item) => item.toLowerCase().includes("doctor")) || undefined,
-              path: "/about/",
-              image: isSanityProfile ? profileImageUrl(doctor) || undefined : doctor.imageUrl || undefined,
-              description: isSanityProfile ? doctor.bio || doctor.briefDescription : doctor.bio
-            });
-          }),
+          ...veterinarians.map((vet) =>
+            personSchema({
+              name: vet.name,
+              jobTitle: vet.role,
+              credentials: vet.credentials,
+              path: `/team/${vet.slug}/`,
+              url: `/team/${vet.slug}/`,
+              image: vet.image ? absoluteUrl(vet.image) : undefined,
+              description: vet.summary
+            })
+          ),
           ...locations.map((location) => locationVeterinaryCareSchema(location, `/locations/${location.slug}/`))
         ]}
       />

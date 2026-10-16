@@ -3,7 +3,6 @@ import Image from "next/image";
 import { BookOpenText, LockKeyhole } from "lucide-react";
 import { navigation, utilityNavigation } from "@/data/navigation";
 import { site } from "@/data/site";
-import { NewsletterForm } from "@/components/forms/NewsletterForm";
 import type { PublicLocation } from "@/lib/settings/public";
 import { getMessages, localizedHref, type Locale } from "@/lib/i18n";
 import { urlFor } from "@/sanity/image";
@@ -47,8 +46,7 @@ export async function Footer({
   const resourceArticles = await getBlogPosts(4);
   const utilityLinks = [
     { label: copy.patientPortal, href: onlinePortalUrl || utilityNavigation[0].href },
-    { label: copy.onlinePharmacy, href: pharmacyUrl || utilityNavigation[1].href },
-    { label: copy.newPatientForm, href: utilityNavigation[2].href }
+    { label: copy.onlinePharmacy, href: pharmacyUrl || utilityNavigation[1].href }
   ];
   const navigationLabels: Record<string, string> = {
     About: copy.about,
@@ -60,20 +58,6 @@ export async function Footer({
 
   return (
     <footer className="site-footer">
-      <div className="newsletter">
-        <div>
-          <strong>{copy.stayInLoop}</strong>
-          <p>{copy.newsletterBody}</p>
-        </div>
-        <NewsletterForm
-          emailLabel={copy.emailAddress}
-          emailPlaceholder={copy.emailPlaceholder}
-          subscribeLabel={copy.subscribe}
-          successMessage={copy.newsletterThanks}
-          invalidMessage={copy.invalidEmail}
-        />
-      </div>
-
       <div className="footer-grid">
         <div>
           <Link href={localizedHref("/", locale)} className="footer-logo-text">Veterinary Medical Centers</Link>
@@ -110,6 +94,7 @@ export async function Footer({
               <a href={`tel:${location.tel}`}>{location.phone}</a>
             </address>
           ))}
+          <Link className="footer-cincy-link" href={localizedHref("/locations/vet-near-cincinnati-oh/", locale)}>Vet in Cincinnati? We&rsquo;re 10 minutes from downtown →</Link>
         </div>
       </div>
 

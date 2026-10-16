@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import Link from "next/link";
 import { CalendarCheck, Check, HeartHandshake, MapPin, MessageCircle, Phone } from "lucide-react";
+import { Hero } from "@/components/sections/Hero";
 import { locations } from "@/data/locations";
 import { pageMetadata } from "@/lib/metadata";
 import { breadcrumbSchema, JsonLd, organizationSchema, webpageSchema } from "@/lib/schema";
@@ -104,43 +106,19 @@ export default async function NewPatientsPage() {
 
   return (
     <main className="vmc-new">
-      <section className="vmc-new-hero">
-        <div className="vmc-wrap vmc-new-hero-grid">
-          <div>
-            <p className="vmc-eyebrow">New to Veterinary Medical Centers?</p>
-            <h1>
-              Welcome.<br />
-              <span className="vmc-accent">We&apos;d love to meet your pet.</span>
-            </h1>
-            <p className="vmc-hero-copy">
-              Whether you&apos;ve just brought home a new pet, recently moved to Northern Kentucky, or are simply looking
-              for a veterinary team closer to home, we&apos;re glad you found us.
-            </p>
-            <p className="vmc-hero-copy">
-              Our Fort Thomas and Independence teams care for dogs and cats through first visits, everyday checkups,
-              unexpected worries, and all the years that come after.
-            </p>
-            <div className="vmc-hero-actions">
-              <a href="#choose-clinic" className="vmc-btn vmc-btn-red">Book Your First Visit -&gt;</a>
-              <a href="#call-us" className="vmc-btn vmc-btn-outline">Prefer to Call?</a>
-            </div>
-          </div>
-
-          <div className="vmc-hero-photo">
-            <Image
-              src="/images/vet-stock2.jpg"
-              alt="Veterinary Medical Centers team member caring for a pet"
-              fill
-              priority
-              sizes="(max-width: 900px) 100vw, 46vw"
-            />
-            <div className="vmc-photo-note">
-              <strong>Real people. Local care.</strong>
-              <span>Two Northern Kentucky clinics, one VMC team.</span>
-            </div>
-          </div>
-        </div>
-      </section>
+      <Hero
+        eyebrow="New to Veterinary Medical Centers?"
+        title="Welcome."
+        emphasis="We&rsquo;d love to meet your pet."
+        body="Whether you&rsquo;ve just brought home a new pet, recently moved to Northern Kentucky, or are looking for a veterinary team closer to home, we&rsquo;re glad you found us. Our Fort Thomas and Independence teams care for dogs and cats through first visits, everyday checkups, unexpected worries, and all the years that come after."
+        image="/images/vet-stock2.jpg"
+        imageAlt="Veterinary Medical Centers team member caring for a pet"
+        primaryCta={{ label: "Book Your First Visit", href: "#choose-clinic" }}
+        secondaryCta={{ label: "Prefer to Call?", href: "#call-us" }}
+        showStats={false}
+        inlineEmphasis
+        compact
+      />
 
       <section className="vmc-about">
         <div className="vmc-wrap vmc-about-grid">
@@ -218,7 +196,7 @@ export default async function NewPatientsPage() {
                   Cincinnati neighborhoods.
                 </p>
                 <div className="vmc-location-actions">
-                  <a href="/online-help/fort-thomas/direct-booking/" className="vmc-btn vmc-btn-red">Book with Fort Thomas -&gt;</a>
+                  <Link href="/online-help/fort-thomas/direct-booking/" className="vmc-btn vmc-btn-red">Book with Fort Thomas -&gt;</Link>
                   <a href={`tel:${ftPublic?.tel || fortThomas.tel}`} className="vmc-btn vmc-btn-outline">Call</a>
                 </div>
               </div>
@@ -246,7 +224,7 @@ export default async function NewPatientsPage() {
                   Kentucky.
                 </p>
                 <div className="vmc-location-actions">
-                  <a href="/online-help/independence/direct-booking/" className="vmc-btn vmc-btn-red">Book with Independence -&gt;</a>
+                  <Link href="/online-help/independence/direct-booking/" className="vmc-btn vmc-btn-red">Book with Independence -&gt;</Link>
                   <a href={`tel:${indPublic?.tel || independence.tel}`} className="vmc-btn vmc-btn-outline">Call</a>
                 </div>
               </div>
@@ -480,7 +458,7 @@ export default async function NewPatientsPage() {
               and confirmation.
             </p>
             <div className="vmc-book-grid">
-              <a href="/online-help/fort-thomas/direct-booking/" className="vmc-book-choice">
+              <Link href="/online-help/fort-thomas/direct-booking/" className="vmc-book-choice">
                 <span className="vmc-book-label">Book your first visit with</span>
                 <h3>Fort Thomas</h3>
                 <p>2000 Memorial Parkway<br />Fort Thomas, KY 41075</p>
@@ -488,8 +466,8 @@ export default async function NewPatientsPage() {
                   <span>Book with Fort Thomas</span>
                   <span className="vmc-book-arrow" aria-hidden="true">-&gt;</span>
                 </div>
-              </a>
-              <a href="/online-help/independence/direct-booking/" className="vmc-book-choice">
+              </Link>
+              <Link href="/online-help/independence/direct-booking/" className="vmc-book-choice">
                 <span className="vmc-book-label">Book your first visit with</span>
                 <h3>Independence</h3>
                 <p>4147 Madison Pike<br />Independence, KY 41051</p>
@@ -497,7 +475,7 @@ export default async function NewPatientsPage() {
                   <span>Book with Independence</span>
                   <span className="vmc-book-arrow" aria-hidden="true">-&gt;</span>
                 </div>
-              </a>
+              </Link>
             </div>
             <div className="vmc-final-help">
               <strong>Would you rather talk to us first?</strong>

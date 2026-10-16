@@ -16,9 +16,9 @@ const pageVisuals: Record<string, { hero: string; heroAlt: string; sections: rea
     sections: ["/images/veterinary-care-hero.jpg", "/images/vet-stock2.jpg", "/images/fort-thomas-clinic.jpg"]
   },
   "/about/": {
-    hero: "/images/kristi-baker-horiztonal.jpg",
+    hero: "/images/kristi-baker-portrait.webp",
     heroAlt: "Veterinary Medical Centers veterinary team",
-    sections: ["/images/kristi-baker-headshot-vertical.jpg", "/images/fort-thomas-clinic.jpg", "/images/independence-clinic.jpg"]
+    sections: ["/images/kristi-baker-portrait.webp", "/images/fort-thomas-clinic.jpg", "/images/independence-clinic.jpg"]
   },
   "/services/": {
     hero: "/images/veterinary-care-hero.jpg",

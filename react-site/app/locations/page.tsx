@@ -258,7 +258,7 @@ export default async function LocationsPage() {
 
       <Section tone="cream" eyebrow="Service Area" title="Veterinary care across Northern Kentucky">
         <p className="section-narrow-copy">
-          Our clinics serve pets and families across Fort Thomas, Independence, Newport, Bellevue, Dayton, Highland Heights, Alexandria, Taylor Mill, Covington, Erlanger, Edgewood, and nearby Cincinnati-area communities.
+          Our clinics serve pets and families across Fort Thomas, Independence, Newport, Bellevue, Dayton, Highland Heights, Alexandria, Taylor Mill, Covington, Erlanger, Edgewood, and nearby Cincinnati-area communities. <Link className="text-link" href="/locations/vet-near-cincinnati-oh/">Looking for a vet in Cincinnati?</Link>
         </p>
         <div className="service-area-chips" aria-label="Northern Kentucky communities served">
           {serviceAreaChips.map((community) => (

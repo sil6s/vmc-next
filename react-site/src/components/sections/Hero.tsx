@@ -18,11 +18,12 @@ type HeroProps = {
   afterActions?: ReactNode;
   showStats?: boolean;
   inlineEmphasis?: boolean;
+  compact?: boolean;
 };
 
-export function Hero({ eyebrow, title, emphasis, body, image, imageAlt = "", badgeTitle, badgeSub, primaryCta, secondaryCta, tertiaryCta, afterActions, showStats = true, inlineEmphasis = false }: HeroProps) {
+export function Hero({ eyebrow, title, emphasis, body, image, imageAlt = "", badgeTitle, badgeSub, primaryCta, secondaryCta, tertiaryCta, afterActions, showStats = true, inlineEmphasis = false, compact = false }: HeroProps) {
   return (
-    <section className="hero">
+    <section className={`hero${compact ? " hero-compact" : ""}`}>
       <div className="hero-copy">
         {eyebrow && <p className="eyebrow">{eyebrow}</p>}
         <h1 className={inlineEmphasis ? "hero-title-inline" : undefined}>

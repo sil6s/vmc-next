@@ -2,15 +2,14 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { headers } from "next/headers";
-import { CalendarCheck, Clock, Clock3, FileText, GraduationCap, HandHeart, Heart, HeartHandshake, MapPin, MessageSquareText, PawPrint, Phone, ShieldCheck, Stethoscope } from "lucide-react";
+import { Baby, CalendarCheck, FileText, Heart, HeartHandshake, MapPin, MessageCircle, PawPrint, ShieldCheck, Sparkles } from "lucide-react";
 import { FAQSection } from "@/components/sections/FAQSection";
+import { FinalInvitation } from "@/components/sections/FinalInvitation";
 import { Hero } from "@/components/sections/Hero";
-import { HomeCareFinder } from "@/components/sections/HomeCareFinder";
 import { HomeResourceCarousel } from "@/components/sections/HomeResourceCarousel";
-import { HomeServiceTabs } from "@/components/sections/HomeServiceTabs";
 import { HomeTestimonials } from "@/components/sections/HomeTestimonials";
+import { MobileBookingBar } from "@/components/sections/MobileBookingBar";
 import { TeamSection } from "@/components/sections/TeamSection";
-import { TrustBar } from "@/components/sections/TrustBar";
 import { Button } from "@/components/ui/Button";
 import { Section } from "@/components/ui/Section";
 import { homeFaqs } from "@/data/faqs";
@@ -18,11 +17,11 @@ import { locations } from "@/data/locations";
 import { pages } from "@/data/pages";
 import { localizedSeo } from "@/data/localized-seo";
 import { site } from "@/data/site";
+import { veterinarians } from "@/data/veterinarians";
 import { pageMetadata } from "@/lib/metadata";
 import { isLocale, localizedLanguageAlternates } from "@/lib/i18n";
 import { getPublicSettings } from "@/lib/settings/public";
 import { breadcrumbSchema, faqSchema, JsonLd, locationVeterinaryCareSchema, webpageSchema } from "@/lib/schema";
-import { fetchHomepagePersonProfiles } from "@/sanity/personProfiles";
 import { getBlogPosts } from "@/sanity/posts";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -33,94 +32,40 @@ export async function generateMetadata(): Promise<Metadata> {
   return pageMetadata({ ...seo, path, languages: localizedLanguageAlternates("/") });
 }
 
-const localCards = [
-  {
-    title: "We listen before recommending",
-    text:
-      "Every visit starts with your pet's history and your concerns, not a script. We take time to understand what's going on before we suggest what to do about it.",
-    icon: HandHeart
-  },
-  {
-    title: "Clear answers without pressure",
-    text:
-      "We explain what's urgent, what's preventive, and what can wait in plain language, so you can make decisions with confidence instead of on the spot.",
-    icon: MessageSquareText
-  },
-  {
-    title: "Familiar faces at future visits",
-    text:
-      "The same local team gets to know your pet over time, so each visit builds on the last instead of starting over with a stranger.",
-    icon: Clock3
-  },
-  {
-    title: "Support after you return home",
-    text:
-      "Care doesn't end at checkout. Our team is here for follow-up questions after your visit, not just during it.",
-    icon: HeartHandshake
-  },
-  {
-    title: "Care shaped around your pet",
-    text:
-      "From routine wellness to dental care, surgery planning, sick visits, and senior support, your pet's care plan is built around their needs, not a standard script.",
-    icon: PawPrint
-  },
-  {
-    title: "Two convenient local clinics",
-    text:
-      "Fort Thomas and Independence give Northern Kentucky families a nearby, locally owned option for dogs and cats.",
-    icon: MapPin
-  }
-];
-
-const newClientSteps = [
-  ["Choose your location", "Pick the Fort Thomas vet location or Independence vet location based on what is easiest for your day."],
-  ["Schedule your visit", "Request an appointment online or call your local Veterinary Medical Centers team for help choosing the right appointment type."],
-  ["Send or bring records", "Vaccine history, medications, prior exam notes, and adoption paperwork help us understand your pet faster."],
-  ["Meet your vet team", "We take time to learn your pet's history, answer questions, and complete a thoughtful exam."],
-  ["Leave with a clear care plan", "You leave with practical recommendations, follow-up timing, and next steps for your dog or cat."]
-];
-
 const toolLinks = [
-  { title: "Schedule an Appointment", text: "Request a visit with your local vet team.", href: "/book-appointment/", icon: CalendarCheck },
-  { title: "Request a Refill", text: "Use the pharmacy path for eligible medication support.", href: "/online-vet-pharmacy-northern-kentucky-cincinnati/", icon: Stethoscope },
-  { title: "Access Pet Records", text: "Use the patient portal for records and online booking.", href: "/patient-portal-online-booking/", icon: FileText },
-  { title: "Online Pharmacy", text: "Shop trusted products and refill options online.", href: "/online-vet-pharmacy-northern-kentucky-cincinnati/", icon: PawPrint },
-  { title: "New Client Forms", text: "Start your first visit paperwork before you arrive.", href: "/new-patient-registration-form/", icon: ShieldCheck }
+  { title: "General inquiry", text: "Send a non-urgent question to our care team.", href: "/online-help/fort-thomas/general/", icon: MessageCircle },
+  { title: "Book an appointment", text: "Request a visit through Otto.", href: "/online-help/fort-thomas/direct-booking/", icon: CalendarCheck },
+  { title: "Medical records", text: "Request records for your pet through Otto.", href: "/online-help/fort-thomas/records/", icon: FileText },
+  { title: "Online pharmacy", text: "Shop approved products and refill options.", href: "/online-vet-pharmacy-northern-kentucky-cincinnati/", icon: PawPrint }
 ];
 
 const firstVisitCards = [
-  ["Before your appointment", "Bring vaccine records, medication details, and any questions you want to discuss."],
-  ["During the exam", "We’ll review your pet’s lifestyle, health history, symptoms, and complete a thorough physical exam."],
-  ["After the visit", "You’ll leave with clear recommendations, prevention guidance, and follow-up instructions if needed."]
+  ["Choose your location", "Pick Fort Thomas or Independence, whichever is easiest for your family."],
+  ["Schedule your pet’s visit", "Book online or call our team when you would rather talk through the next step."],
+  ["Meet your veterinary team", "We’ll get to know your pet, answer your questions, and make a clear plan together."]
 ];
 
-const serviceAreaChips = ["Fort Thomas", "Independence", "Newport", "Bellevue", "Dayton", "Highland Heights", "Alexandria", "Cold Spring", "Cincinnati-area pet owners"];
+// Shown and marked up together so the FAQ schema always matches the visible questions.
+const homePageFaqs = homeFaqs.slice(0, 8);
+
+const popularServices = [
+  ["Dog & cat vaccinations", "/services/dog-cat-vaccinations/"],
+  ["Pet dental care", "/services/pet-dental-care/"],
+  ["Sick pet visits", "/services/sick-pet-visits/"],
+  ["Spay & neuter", "/services/spay-neuter-surgery/"],
+  ["Diagnostics", "/services/veterinary-diagnostics/"],
+  ["Skin & allergy care", "/services/skin-ear-allergy-care/"]
+];
+
+const quickAccessLinks = [
+  { label: "Book an appointment", detail: "Schedule through our online portal", href: "/patient-portal-online-booking/", icon: CalendarCheck },
+  { label: "New to our practice?", detail: "Plan a comfortable first visit", href: "/new-patients/", icon: HeartHandshake },
+  { label: "Fort Thomas", detail: "Memorial Parkway location", href: "/locations/vet-in-fort-thomas-ky/", icon: MapPin },
+  { label: "Independence", detail: "Madison Pike location", href: "/locations/vet-in-independence-ky/", icon: MapPin }
+];
 
 function officialLocationName(shortName: string) {
-  return shortName === "Fort Thomas" ? "Veterinary Medical Centers of Fort Thomas" : "Veterinary Medical Centers of Independence";
-}
-
-function locationTagline(shortName: string) {
-  return shortName === "Fort Thomas"
-    ? "Neighborhood veterinary care on Memorial Parkway"
-    : "Personalized care for families throughout central Kenton County";
-}
-
-function MapEmbed({ src, title }: { src: string; title: string }) {
-  return (
-    <div className="home-map-embed">
-      <iframe
-        src={src}
-        title={title}
-        width="100%"
-        height="300"
-        style={{ border: 0 }}
-        allowFullScreen
-        loading="lazy"
-        referrerPolicy="no-referrer-when-downgrade"
-      />
-    </div>
-  );
+  return shortName === "Fort Thomas" ? "Veterinary Medical Center of Fort Thomas" : "Veterinary Medical Center of Independence";
 }
 
 export default async function HomePage() {
@@ -130,14 +75,16 @@ export default async function HomePage() {
   const locale = isLocale(localeHeader) ? localeHeader : "en";
   const seo = locale === "en" ? pages.home.seo : localizedSeo[locale]["/"];
   const pagePath = locale === "en" ? "/" : `/${locale}/`;
-  const [resourceGuides, staffProfiles] = await Promise.all([getBlogPosts(24), fetchHomepagePersonProfiles()]);
-  const carouselPosts = resourceGuides.slice(0, 8).map((post) => ({
+  const onlineBookingHref = "/book-appointment/";
+  const primaryPhone = settings.publicLocations[0]?.tel || site.locations[0].tel;
+  const resourceGuides = await getBlogPosts(24);
+  const carouselPosts = resourceGuides.slice(0, 3).map((post) => ({
     slug: post.slug,
     title: post.title,
     excerpt: post.excerpt,
     category: post.category,
     imageUrl: post.featuredImage || "/images/veterinary-care-hero.jpg",
-    imageAlt: post.featuredImageAlt || `${post.title} — Veterinary Medical Centers Northern Kentucky`,
+    imageAlt: post.featuredImageAlt || `${post.title} from Veterinary Medical Centers in Northern Kentucky`,
     readingTime: post.readingTime || "Pet care resource"
   }));
 
@@ -150,24 +97,14 @@ export default async function HomePage() {
         body={hero.body}
         image={hero.image}
         imageAlt={hero.imageAlt}
-        badgeTitle={hero.badgeTitle}
-        badgeSub={hero.badgeSub}
+        primaryCta={{ label: "Book an Appointment", href: onlineBookingHref }}
+        secondaryCta={{ label: "About Us", href: "/about/" }}
         showStats={false}
         inlineEmphasis
-        afterActions={(
-          <div className="home-hero-new-here" aria-label="New client next steps">
-            <div>
-              <strong>New here?</strong>
-              <p>We&rsquo;ll help you feel prepared from the moment you book — request an appointment, ask a question, or start with a wellness visit.</p>
-            </div>
-            <div className="hero-actions">
-              <Button href="/book-appointment/">Request an Appointment</Button>
-              <Button href="/contact/#message-form" variant="ghost">Message Our Team</Button>
-              <Button href="/services/" variant="ghost">Explore Services</Button>
-            </div>
-          </div>
-        )}
+        compact
       />
+
+      <MobileBookingBar bookingHref={onlineBookingHref} phone={primaryPhone} />
 
       <div className="home-love-banner">
         <p className="home-love-banner-inner">
@@ -176,81 +113,91 @@ export default async function HomePage() {
         </p>
       </div>
 
-      <TrustBar items={pages.home.ticker} />
+      <nav className="home-quick-access" aria-label="Quick access">
+        {quickAccessLinks.map(({ label, detail, href, icon: Icon }) => (
+          <Link href={href} key={label} className="home-quick-access-link">
+            <Icon aria-hidden="true" size={19} />
+            <span><strong>{label}</strong><small>{detail}</small></span>
+          </Link>
+        ))}
+      </nav>
 
       <Section
+        id="meet-vmc"
         tone="white"
-        eyebrow="Find Care"
-        title="Find the right care for your pet"
-        intro="Whether your pet needs a routine checkup, is showing new symptoms, or you’re switching to a local veterinarian in Northern Kentucky for the first time, we’ll help you find the right next step at our Fort Thomas or Independence clinic."
+        className="home-vmc-introduction"
       >
-        <HomeCareFinder />
-        <p className="home-reassurance-line">If you&rsquo;re worried, reach out. Our team can help you determine the next step.</p>
-      </Section>
-
-      <Section
-        tone="cream"
-        eyebrow="Local Vet Center"
-        title="Local ownership means your pet is never just another appointment"
-        intro="Veterinary Medical Centers was built around long-term relationships with Northern Kentucky families. Our team takes the time to understand your pet's personality, history, and needs so each visit feels personal rather than transactional."
-      >
-        <div className="card-grid">
-          {localCards.map(({ title, text, icon: Icon }) => (
-            <article className="card" key={title}>
-              <span className="icon-mark">
-                <Icon aria-hidden="true" size={22} strokeWidth={2.2} />
-              </span>
-              <h3>{title}</h3>
-              <p>{text}</p>
-            </article>
-          ))}
+        <div className="home-vmc-editorial">
+          <div className="home-vmc-copy">
+            <p className="eyebrow">Welcome to VMC</p>
+            <h2>A little more personal. <em>A lot more like home.</em></h2>
+            <p>For families looking for a <strong>Northern Kentucky vet</strong>, Veterinary Medical Centers is a locally owned practice with teams in Fort Thomas and Independence. We care for dogs and cats through the everyday moments, the new concerns, and the visits that need a little more time.</p>
+            <p>Our team takes the time to hear what you have noticed, <strong>explain what we find, and make decisions with you.</strong> That relationship between your family, your pet, and the people caring for them guides every visit.</p>
+            <Link className="text-link" href="/about/">Get to know your Northern Kentucky veterinarians →</Link>
+          </div>
+          <div className="home-vmc-image">
+            <Image src="/images/home-vmc-cat.webp" alt="Cat resting comfortably at home" fill sizes="(max-width: 760px) 100vw, 48vw" />
+          </div>
         </div>
       </Section>
 
-      <Section
-        tone="white"
-        eyebrow="Vet Services"
-        title="Vet services for dogs and cats in Northern Kentucky"
-        intro="From first visits and vaccines to dental cleanings, surgery, diagnostics, and ongoing wellness, our Northern Kentucky vet team helps dogs and cats stay healthy through every stage of life — at our vet in Fort Thomas and our vet in Independence, Kentucky."
-      >
-        <p className="home-section-lede">Whatever brings you in, we&rsquo;ll meet your pet with patience and help you understand the next step. You don&rsquo;t need to have all the answers before calling.</p>
-        <HomeServiceTabs />
+      <Section tone="dark" eyebrow="Care at every age" title={<>From first pawprints to <em>gray whiskers.</em></>} intro="As your Northern Kentucky vet, we are here for the first vaccines, the everyday questions, and the changes that come with senior years. Explore thoughtful care for every chapter of your pet&rsquo;s life, with a team ready to help you decide what comes next." className="home-life-stages">
+        <div className="home-life-stage-layout">
+          <div className="home-life-stage-image">
+            <Image src="/images/life-stage-dogs.jpg" alt="Adult dog and puppy sharing a gentle moment outdoors" fill sizes="(max-width: 760px) 100vw, 38vw" />
+          </div>
+          <div className="home-life-stage-grid">
+            <Link href="/services/puppy-kitten-care/" className="home-life-stage-card">
+              <Baby aria-hidden="true" size={25} />
+              <h3>Puppies &amp; kittens</h3>
+              <p>First exams, vaccines, prevention, and all the new-pet questions.</p>
+              <span>Explore early-life care →</span>
+            </Link>
+            <Link href="/services/pet-wellness-exams/" className="home-life-stage-card">
+              <PawPrint aria-hidden="true" size={25} />
+              <h3>Grown-up companions</h3>
+              <p>Routine wellness, vaccinations, and steady preventive care.</p>
+              <span>Explore wellness care →</span>
+            </Link>
+            <Link href="/services/senior-pet-care/" className="home-life-stage-card">
+              <Sparkles aria-hidden="true" size={25} />
+              <h3>Senior sweethearts</h3>
+              <p>Support for comfort, mobility, screening, and changing needs.</p>
+              <span>Explore senior care →</span>
+            </Link>
+          </div>
+        </div>
+        <nav className="home-service-links" aria-label="Popular veterinary services">
+          <span>Popular services:</span>
+          {popularServices.map(([label, href]) => <Link key={href} href={href}>{label}</Link>)}
+          <Link href="/services/">All services →</Link>
+        </nav>
       </Section>
 
-      <Section tone="cream" eyebrow="New Clients" title="New to our vet center? Here’s what to expect">
-        <div className="home-new-client-steps">
-          {newClientSteps.map(([title, text], index) => (
-            <article key={title}>
-              <span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-              <h3>{title}</h3>
-              <p>{text}</p>
-            </article>
-          ))}
-        </div>
-        <p className="home-reassurance-line">Not sure what kind of appointment your pet needs? We&rsquo;ll help.</p>
-        <div className="hero-actions">
-          <Button href="/new-patients/">Start as a New Client</Button>
-          <Button href="/new-patients/" variant="ghost">What to bring to your first visit</Button>
+      <Section tone="white" eyebrow="The VMC difference" title={<>Little things. <em>Lots of love.</em></>} className="home-little-things">
+        <div className="home-little-things-layout">
+          <p>Good veterinary care is not only about the exam room. It is about making space for your questions, helping nervous pets settle in, and making sure you leave knowing what comes next.</p>
+          <div className="home-little-things-list">
+            <article><span><Heart aria-hidden="true" size={18} fill="currentColor" /></span><div><h3>Time to listen</h3><p>We want to hear what you are noticing at home.</p></div></article>
+            <article><span><PawPrint aria-hidden="true" size={18} /></span><div><h3>A gentler visit</h3><p>Patient handling can make a meaningful difference for pets.</p></div></article>
+            <article><span><ShieldCheck aria-hidden="true" size={18} /></span><div><h3>Clear next steps</h3><p>You should understand the plan and the options in front of you.</p></div></article>
+          </div>
         </div>
       </Section>
 
-      <Section tone="white" eyebrow="First Visit" title="What to expect at your first visit">
-        <div className="first-visit-home">
+      <TeamSection />
+
+      <Section tone="cream" eyebrow="Your First Visit" title="A visit that feels clear from the start">
+        <div className="new-client-editorial">
+          <div className="new-client-photo"><Image src="/images/vet-stock2.jpg" alt="Pet owner speaking with a veterinary professional during a dog visit" fill sizes="(max-width: 860px) 100vw, 45vw" /></div>
           <div>
             <p>
-              Starting with a new veterinarian in Northern Kentucky should feel simple. At our locally owned veterinary clinic, we review your pet’s history, talk through your concerns, complete a nose-to-tail exam, and help you understand the best next steps — whether you’re visiting our vet in Fort Thomas or our vet in Independence.
+              Starting with a new veterinarian in Northern Kentucky should feel simple. At our locally owned veterinary clinic, we review your pet&rsquo;s history, talk through your concerns, complete a nose-to-tail exam, and help you understand the next steps, whether you visit Fort Thomas or Independence.
             </p>
-            <p className="home-reassurance-line">A new clinic can feel unfamiliar. We&rsquo;ll walk you through it.</p>
-            <Button href="/new-patients/">Plan Your First Visit</Button>
-          </div>
-          <div className="first-visit-card-grid">
-            {firstVisitCards.map(([title, text], index) => (
-              <article key={title}>
-                <span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
-                <h3>{title}</h3>
-                <p>{text}</p>
-              </article>
-            ))}
+            <ol className="new-client-steps">
+              {firstVisitCards.map(([title, text], index) => <li key={title}><span>{String(index + 1).padStart(2, "0")}</span><div><h3>{title}</h3><p>{text}</p></div></li>)}
+            </ol>
+            <div className="hero-actions"><a className="btn btn-primary" href={onlineBookingHref} data-analytics-event="new_patient_booking_click">Book Your First Visit</a><Button href="/new-patients/" variant="ghost">What to Expect</Button></div>
           </div>
         </div>
       </Section>
@@ -259,103 +206,93 @@ export default async function HomePage() {
         id="locations"
         tone="white"
         eyebrow="Northern Kentucky Locations"
-        title="Choose your Northern Kentucky veterinary location"
-        intro="With two convenient Veterinary Medical Centers locations in Northern Kentucky, our team is here to support dogs, cats, and the people who love them."
+        title={<>Two Northern Kentucky vet clinics, <em>close to home.</em></>}
+        intro="Visit us in Fort Thomas or Independence, KY. Both clinics care for dogs and cats, and families come from across Campbell, Kenton, and Boone counties and Greater Cincinnati."
         className="home-locations-section"
       >
-        <p className="home-section-lede">Two local clinics. One shared commitment to knowing your pet and caring for them well.</p>
         <div className="home-location-grid">
           {locations.map((location, index) => (
             <article className="home-location-card" key={location.slug}>
+              <div className="home-location-image">
+                <Image src={location.image} alt={location.imageAlt} fill sizes="(max-width: 760px) 100vw, 50vw" />
+              </div>
               <div className="home-location-copy">
-                <p className="location-kicker">
-                  <MapPin aria-hidden="true" size={15} />
-                  Northern Kentucky location
-                </p>
                 <h3>
-                  <Link href={`/locations/${location.slug}/`}>{officialLocationName(location.shortName)}</Link>
+                  <Link href={`/locations/${location.slug}/`}>{location.shortName}</Link>
                 </h3>
-                <p className="home-location-tagline">{locationTagline(location.shortName)}</p>
-                <p>
-                  {location.shortName === "Fort Thomas"
-                    ? "Veterinary Medical Centers of Fort Thomas provides local veterinary care for dogs and cats in Fort Thomas and nearby Northern Kentucky communities, including wellness visits, preventive care, dental care, diagnostics, surgery support, and everyday guidance."
-                    : "Veterinary Medical Centers of Independence provides trusted veterinary care for dogs and cats in Independence, KY and nearby Northern Kentucky communities, including wellness visits, preventive care, dental care, diagnostics, surgery, and ongoing health guidance."}
-                </p>
+                <p className="home-location-official">{officialLocationName(location.shortName)}</p>
                 <div className="home-location-details">
-                  <address>
-                    <MapPin aria-hidden="true" size={17} />
-                    {location.address}
-                  </address>
+                  <address>{location.address}</address>
                   <a href={`tel:${location.tel}`} aria-label={`Call ${officialLocationName(location.shortName)} at ${location.phone}`}>
-                    <Phone aria-hidden="true" size={17} />
                     {location.phone}
                   </a>
-                  <p>
-                    <Clock aria-hidden="true" size={17} />
-                    {settings.publicLocations[index]?.hours[0] || site.locations[index].hours[0]}
-                  </p>
+                  <p className="home-location-weekday-hours">Monday–Friday <span>·</span> 8 AM–6 PM</p>
+                  <details className="home-location-full-hours">
+                    <summary>Full hours</summary>
+                    <ul>
+                      {(settings.publicLocations[index]?.hours || site.locations[index].hours).map((hours) => <li key={hours}>{hours}</li>)}
+                    </ul>
+                  </details>
                 </div>
-                <p className="home-location-nearby">
-                  {location.shortName === "Fort Thomas"
-                    ? "Serving Fort Thomas, Newport, Bellevue, Dayton, Highland Heights, and nearby Cincinnati-area pet owners."
-                    : "Serving Independence, Alexandria, Taylor Mill, Covington, Erlanger, and nearby Northern Kentucky pet owners."}
-                </p>
               </div>
-              <MapEmbed src={settings.publicLocations[index]?.mapEmbedUrl || site.locations[index].mapEmbedUrl} title={`Map to ${officialLocationName(location.shortName)}`} />
               <div className="inline-actions">
-                <a className="btn btn-primary" href={settings.publicLocations[index]?.mapUrl || site.locations[index].mapUrl} target="_blank" rel="noopener noreferrer">Get Directions</a>
-                <a className="btn btn-ghost" href={`tel:${location.tel}`}>Call This Location</a>
-                <Link className="btn btn-ghost" href="/book-appointment/">Request Appointment</Link>
+                <a className="btn btn-primary" href={onlineBookingHref} data-analytics-event="location_booking_click">Book Appointment</a>
+                <a className="text-link" href={settings.publicLocations[index]?.mapUrl || site.locations[index].mapUrl} target="_blank" rel="noopener noreferrer">Get Directions</a>
               </div>
             </article>
           ))}
         </div>
+        <p className="home-cincy-link"><Link className="text-link" href="/locations/vet-near-cincinnati-oh/">Looking for a vet in Cincinnati? Our Fort Thomas clinic is about 10 minutes from downtown →</Link></p>
       </Section>
 
-      <Section tone="cream" eyebrow="Local Service Area" title="Local veterinary care across Northern Kentucky">
-        <p className="section-narrow-copy">
-          We proudly care for pets from Fort Thomas, Independence, Newport, Bellevue, Dayton, Highland Heights, Alexandria, Cold Spring, and nearby Cincinnati-area communities.
-        </p>
-        <div className="service-area-chips" aria-label="Northern Kentucky communities served">
-          {serviceAreaChips.map((community) => (
-            <span key={community}>{community}</span>
-          ))}
-        </div>
-      </Section>
-
-      <Section tone="white" eyebrow="A Note From Dr. Kristi" title="Meet the person behind Veterinary Medical Centers" className="section-compact home-kristi-section">
-        <div className="doctor-spotlight home-kristi-intro">
-          <div className="doctor-spotlight-media">
-            <Image
-              src="/images/kristi-baker-headshot-vertical.jpg"
-              alt="Dr. Kristi Baker, owner and veterinarian at Veterinary Medical Centers"
-              fill
-              sizes="(max-width: 860px) 100vw, 45vw"
-            />
-          </div>
-          <div className="doctor-spotlight-copy">
-            <p>Dr. Kristi Baker brings more than two decades of veterinary experience to pets and families across Northern Kentucky, combining practical medical guidance with a calm, approachable style.</p>
-            <blockquote className="doctor-spotlight-quote">Better care starts with listening carefully, explaining clearly, and knowing the pet and family in front of us.</blockquote>
-            <p className="doctor-spotlight-signature" aria-hidden="true">Dr. Kristi</p>
-            <ul className="doctor-spotlight-facts">
-              <li><GraduationCap aria-hidden="true" size={15} /> Ross University School of Veterinary Medicine — DVM, 2000&ndash;2003</li>
-              <li><GraduationCap aria-hidden="true" size={15} /> Purdue University — Clinical Rotation, Veterinary Medicine, 2003&ndash;2004</li>
-            </ul>
-          </div>
-        </div>
-      </Section>
-
-      <TeamSection staffSettings={settings.staff} personProfiles={staffProfiles} />
-
-      <Section tone="white" eyebrow="Reviews" title="Kind words from Northern Kentucky pet families">
+      <Section tone="white" eyebrow="Local trust" title="Kind words from Northern Kentucky pet families">
+        <p className="home-review-intro">VMC has grown through the trust of local pet families. Their experiences are the clearest reflection of the care we work to provide every day.</p>
         <HomeTestimonials />
       </Section>
+
+      <Section tone="warm" className="home-relationship-section">
+        <div className="home-relationship-feature">
+          <div className="home-relationship-copy">
+            <p className="eyebrow">More than a visit</p>
+            <h2>A relationship built on <em>care.</em></h2>
+            <p>As a locally owned Northern Kentucky vet, we believe the best care starts with knowing the pet in front of us and the people who love them. From the first puppy visit to the slower senior years, our team listens, explains, and stays a steady partner in your pet&rsquo;s health.</p>
+            <div className="home-relationship-links">
+              <Link className="btn btn-primary" href="/team/">Meet our veterinarians</Link>
+              <Link className="text-link" href="/about/">Our story →</Link>
+            </div>
+          </div>
+          <figure className="home-relationship-quote">
+            <div className="home-relationship-avatars">
+              {veterinarians.map((vet) => (
+                <Link key={vet.slug} href={`/team/${vet.slug}/`} className={vet.image ? undefined : "is-placeholder"} aria-label={`${vet.name}, ${vet.credentials}`}>
+                  {vet.image ? <Image src={vet.image} alt="" width={56} height={56} /> : <span aria-hidden="true">{vet.shortName.replace("Dr. ", "").charAt(0)}</span>}
+                </Link>
+              ))}
+            </div>
+            <blockquote>&ldquo;{veterinarians[0].quote}&rdquo;</blockquote>
+            <figcaption><strong>{veterinarians[0].name}, {veterinarians[0].credentials}</strong> Practice owner</figcaption>
+          </figure>
+        </div>
+        <dl className="home-relationship-stats">
+          <div><dt>2</dt><dd>Northern Kentucky clinics</dd></div>
+          <div><dt>3</dt><dd>Veterinarians who know you by name</dd></div>
+          <div><dt>55+</dt><dd>Years of combined experience</dd></div>
+          <div><dt>1</dt><dd>Locally owned practice, no corporate office</dd></div>
+        </dl>
+      </Section>
+
+      <FinalInvitation
+        actions={<>
+          <Link className="btn btn-secondary" href="/online-help/fort-thomas/direct-booking/" data-analytics-event="online_booking_click">Request an Appointment</Link>
+          <Link className="btn btn-ghost" href="/online-help/fort-thomas/general/">Contact Our Team</Link>
+        </>}
+      />
 
       <Section tone="cream" eyebrow="Pet Care Guides" title="Helpful pet care guides from your local vet team">
         <HomeResourceCarousel posts={carouselPosts} total={resourceGuides.length} />
       </Section>
 
-      <Section tone="white" eyebrow="Online Tools" title="Manage your pet’s care online">
+      <Section tone="white" eyebrow="Online tools" title="Manage your pet’s care online" className="home-tools-section">
         <div className="quick-links-grid">
           {toolLinks.map(({ title, text, href, icon: Icon }) => (
             <Link href={href} className="quick-link-card" key={title}>
@@ -369,25 +306,12 @@ export default async function HomePage() {
         </div>
       </Section>
 
-      <FAQSection faqs={homeFaqs} title="Common questions about vet care in Northern Kentucky" />
-      <Section tone="red">
-        <div className="cta-panel">
-          <p className="eyebrow">Next Steps</p>
-          <h2>Ready to schedule a visit with your Northern Kentucky vet team?</h2>
-          <p>Choose your location, request an appointment, or call our team. We’ll help you find the right next step for your dog or cat.</p>
-          <p className="cta-footnote">From our Northern Kentucky family to yours, we&rsquo;re here when your pet needs us.</p>
-          <div className="hero-actions">
-            <Button href="/book-appointment/" variant="secondary">Request an Appointment</Button>
-            <Button href="/contact/#message-form" variant="ghost">Message Our Team</Button>
-            <Button href={`tel:${settings.publicLocations[0]?.tel || site.locations[0].tel}`} variant="ghost">Call the Clinic</Button>
-          </div>
-        </div>
-      </Section>
+      <FAQSection faqs={homePageFaqs} title="Questions about our Northern Kentucky vet clinics" />
       <JsonLd
         data={[
           webpageSchema(pagePath, seo.title, seo.description),
           breadcrumbSchema([{ name: "Home", path: "/" }]),
-          faqSchema(homeFaqs),
+          faqSchema(homePageFaqs),
           ...locations.map((location) => locationVeterinaryCareSchema(location, `/locations/${location.slug}/`))
         ]}
       />

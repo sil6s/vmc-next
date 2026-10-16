@@ -85,7 +85,7 @@ export const locations: LocationPage[] = [
       "Independently owned and operated — no corporate chain",
       "Long-term relationships with Fort Thomas and Campbell County families"
     ],
-    doctorImage: "/images/kristi-baker-headshot-vertical.jpg",
+    doctorImage: "/images/kristi-baker-portrait.webp",
     doctorImageAlt: "Dr. Kristi Baker, owner and veterinarian at Veterinary Medical Centers of Fort Thomas",
     doctorQuote: "Better care starts with listening carefully, explaining clearly, and knowing the pet and family in front of us.",
     whyHeading: "Why Fort Thomas Families Choose Veterinary Medical Centers",

@@ -9,21 +9,23 @@ import {
   CalendarCheck,
   ClipboardCheck,
   Ear,
+  Heart,
   HeartHandshake,
-  MapPin,
   MessageCircle,
-  Phone,
+  Microscope,
   Scale,
   Scissors,
+  ShieldCheck,
   Smile,
   Stethoscope
 } from "lucide-react";
 import { Breadcrumbs } from "@/components/sections/Breadcrumbs";
-import { CTASection } from "@/components/sections/CTASection";
 import { FAQSection } from "@/components/sections/FAQSection";
+import { FinalInvitation } from "@/components/sections/FinalInvitation";
+import { Hero } from "@/components/sections/Hero";
 import { ServiceBrowser } from "@/components/sections/ServiceBrowser";
-import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
+import { Section } from "@/components/ui/Section";
 import { locations } from "@/data/locations";
 import { localizedSeo } from "@/data/localized-seo";
 import { site } from "@/data/site";
@@ -33,9 +35,9 @@ import { breadcrumbSchema, faqSchema, JsonLd, organizationSchema, serviceListSch
 import { getServiceHubCards } from "@/sanity/services";
 
 const seo = {
-  title: "Veterinary Services in Northern Kentucky | Dog & Cat Care",
+  title: "Animal Hospital in Northern Kentucky | Vet Services | VMC",
   description:
-    "Veterinary services for dogs and cats in Northern Kentucky, including wellness exams, vaccinations, dental care, diagnostics, surgery, and sick visits."
+    "Full-service Northern Kentucky animal hospital for dogs and cats: wellness exams, vaccines, dental care, surgery, diagnostics, and sick visits in Fort Thomas & Independence."
 };
 
 const situationCards = [
@@ -90,33 +92,64 @@ const visitSteps = [
   ["You leave with a plan", "You'll know what to do at home, what to watch for, and when to come back."]
 ];
 
-const resourceLinks = [
+const carePillars = [
   {
-    title: "New to VMC?",
-    description: "What to expect before your first visit, including forms, records, and how to prepare.",
-    href: "/new-patients/"
+    icon: ShieldCheck,
+    title: "Preventive care",
+    text: "Yearly exams, vaccines, and parasite prevention that catch small changes before they become big ones.",
+    links: [
+      ["Wellness exams", "/services/pet-wellness-exams/"],
+      ["Vaccinations", "/services/dog-cat-vaccinations/"],
+      ["Parasite prevention", "/services/parasite-prevention/"],
+      ["Puppy & kitten care", "/services/puppy-kitten-care/"]
+    ]
   },
   {
-    title: "When your pet isn't feeling well",
-    description: "A simple guide to deciding when to call and what details are helpful for our team.",
-    href: "/resources/"
+    icon: Microscope,
+    title: "Medical & diagnostic care",
+    text: "Sick visits, testing, and ongoing support when your pet isn't feeling like themselves.",
+    links: [
+      ["Sick pet visits", "/services/sick-pet-visits/"],
+      ["Diagnostics", "/services/veterinary-diagnostics/"],
+      ["Skin, ear & allergy care", "/services/skin-ear-allergy-care/"],
+      ["Senior pet care", "/services/senior-pet-care/"]
+    ]
   },
   {
-    title: "Caring for pets through every life stage",
-    description: "Guidance for puppies, kittens, adult pets, and senior dogs and cats.",
-    href: "/resources/"
+    icon: Scissors,
+    title: "Surgery & dental care",
+    text: "Planned procedures with careful monitoring, pain control, and clear recovery instructions.",
+    links: [
+      ["Pet dental care", "/services/pet-dental-care/"],
+      ["Spay & neuter", "/services/spay-neuter-surgery/"],
+      ["Soft tissue surgery", "/services/soft-tissue-surgery/"],
+      ["Nutrition & weight", "/services/nutrition-weight-guidance/"]
+    ]
   }
+] as const;
+
+const hospitalValues = [
+  { icon: MessageCircle, title: "We listen first", text: "Tell us what you've noticed at home. That context shapes every exam." },
+  { icon: ClipboardCheck, title: "We explain the why", text: "You'll understand every recommendation and its options before deciding." },
+  { icon: HeartHandshake, title: "We stay with you", text: "From the first puppy visit through senior care, the same team knows your pet." },
+  { icon: Heart, title: "A gentler visit", text: "Fear Free–minded handling and thoughtful pacing help nervous pets settle in." }
 ];
 
 const servicesFaqs = [
   {
+    question: "Is Veterinary Medical Centers a full-service animal hospital?",
+    answer:
+      "Yes. Veterinary Medical Centers is a full-service animal hospital in Northern Kentucky for dogs and cats. We provide wellness exams, vaccinations, sick visits, diagnostics, dental care, spay and neuter surgery, soft tissue surgery, and senior pet care."
+  },
+  {
+    question: "Where is your animal hospital in Northern Kentucky?",
+    answer:
+      "We have two Northern Kentucky animal hospital locations: Fort Thomas at 2000 Memorial Parkway and Independence at 4147 Madison Pike. Both care for dogs and cats."
+  },
+  {
     question: "What if I don't know which appointment to choose?",
     answer:
       "That's common. Tell us what you've noticed at home and our team can help you choose between a wellness visit, sick appointment, dental visit, diagnostics, surgery consult, or another next step."
-  },
-  {
-    question: "Do you care for both dogs and cats?",
-    answer: "Yes. Our Fort Thomas and Independence clinics provide veterinary care for dogs, cats, puppies, and kittens."
   },
   {
     question: "How often should my pet see a veterinarian?",
@@ -177,245 +210,133 @@ export default async function ServicesPage() {
 
   return (
     <>
-      <section className="services-hero">
-        <Container>
-          <div className="services-hero-grid">
-            <div className="services-hero-copy">
-              <p className="eyebrow">Veterinary Services in Northern Kentucky</p>
-              <h1>
-                <span>Care that starts</span>{" "}
-                <span className="hero-title-accent">with knowing your pet.</span>
-              </h1>
-              <p>
-                From first checkups to sick visits, pet dental care, veterinary diagnostics, surgery, and the everyday
-                questions in between, our Fort Thomas and Independence teams are here to help dogs and cats feel their
-                best.
-              </p>
-              <div className="hero-actions">
-                <Button href="/book-appointment/">Request an Appointment</Button>
-                <Button href={`tel:${site.locations[0].tel}`} variant="ghost">Not sure what your pet needs? Call us</Button>
-              </div>
-            </div>
-            <div className="services-hero-photo">
-              <Image
-                src="/images/blog/dog-on-exam-table.jpg"
-                alt="Dog resting on an exam table during a veterinary visit at Veterinary Medical Centers"
-                fill
-                priority
-                sizes="(max-width: 900px) 100vw, 520px"
-              />
-              <div className="services-hero-note">
-                <Stethoscope aria-hidden="true" size={20} />
-                <span>Wellness exams, vaccinations, sick pet visits, dental care, diagnostics, surgery, puppy and kitten care, and senior pet care.</span>
-              </div>
-            </div>
-          </div>
-        </Container>
-      </section>
+      <Hero
+        eyebrow="Veterinary services"
+        title="Full-service animal hospital in"
+        emphasis="Northern Kentucky."
+        body="Wellness care, dental care, surgery, diagnostics, and sick visits for dogs and cats, all from one locally owned team in Fort Thomas and Independence."
+        image="/images/blog/dog-on-exam-table.jpg"
+        imageAlt="Dog resting on an exam table at a Northern Kentucky animal hospital"
+        primaryCta={{ label: "Book an Appointment", href: "/book-appointment/" }}
+        secondaryCta={{ label: "Help Me Choose", href: `tel:${site.locations[0].tel}` }}
+        showStats={false}
+        inlineEmphasis
+        compact
+      />
+
+      <div className="home-love-banner">
+        <p className="home-love-banner-inner">
+          <Heart aria-hidden="true" size={13} />
+          Wellness · Dental · Surgery · Diagnostics · Dogs &amp; cats
+        </p>
+      </div>
 
       <Breadcrumbs items={crumbs.map((item) => ({ label: item.name, href: item.path }))} />
 
-      <section className="services-section services-section-paper">
-        <Container>
-          <div className="services-intro-grid">
-            <div className="section-heading section-heading-left">
-              <p className="eyebrow">What can we help with today?</p>
-              <h2>Start with what you&apos;ve noticed.</h2>
-            </div>
-            <p>
-              You don&apos;t need to know which appointment to book. Choose what sounds closest and we&apos;ll point you
-              in the right direction.
-            </p>
-          </div>
-          <nav className="situation-link-grid" aria-label="Choose veterinary care by what you are noticing">
-            {situationCards.map((card, index) => {
-              const Icon = situationIcons[index] || Stethoscope;
-              return (
+      <Section tone="white" eyebrow="What can we help with today?" title={<>Start with what <em>you&rsquo;ve noticed.</em></>} intro="You don't need to know which appointment to book. Pick what sounds closest and we'll point you in the right direction." className="services-start-section">
+        <nav className="situation-link-grid" aria-label="Choose veterinary care by what you are noticing">
+          {situationCards.map((card, index) => {
+            const Icon = situationIcons[index] || Stethoscope;
+            return (
               <Link className="situation-link-card" href={card.href} key={card.title}>
                 <Icon aria-hidden="true" size={20} />
                 <span>{card.title}</span>
                 <small>{card.label}</small>
                 <ArrowRight aria-hidden="true" size={18} />
               </Link>
-              );
-            })}
-          </nav>
-        </Container>
-      </section>
+            );
+          })}
+        </nav>
+      </Section>
 
-      <section className="services-section services-section-cream">
+      <Section tone="dark" eyebrow="Care under one roof" title={<>Everything a Northern Kentucky <em>animal hospital should be.</em></>} intro="From routine prevention to surgery, our veterinarians handle the full range of dog and cat care, so your pet's history stays with one team that knows them." className="home-life-stages">
+        <div className="services-pillar-grid">
+          {carePillars.map(({ icon: Icon, title, text, links }) => (
+            <article className="home-life-stage-card services-pillar" key={title}>
+              <Icon aria-hidden="true" size={25} />
+              <h3>{title}</h3>
+              <p>{text}</p>
+              <ul>
+                {links.map(([label, href]) => <li key={href}><Link href={href}>{label} →</Link></li>)}
+              </ul>
+            </article>
+          ))}
+        </div>
+      </Section>
+
+      <section className="services-section services-section-cream services-browser-section">
         <Container>
           <div className="section-heading">
-            <p className="eyebrow">Our Veterinary Services</p>
-            <h2>Whatever brings you in, we&apos;ll help you understand what comes next.</h2>
-            <p>
-              Browse our veterinary services or start with what you&apos;ve noticed at home. If you&apos;re unsure
-              which appointment fits, our team can help.
-            </p>
+            <p className="eyebrow">All veterinary services</p>
+            <h2>Animal hospital services for <em>dogs and cats.</em></h2>
+            <p>Browse every service we offer at our Fort Thomas and Independence clinics. Not sure which fits? Our team can help you choose.</p>
           </div>
           <ServiceBrowser services={services} />
         </Container>
       </section>
 
-      <section className="services-local-section">
-        <Container>
-          <div className="services-local-grid">
-            <div className="services-local-photo">
-              <Image
-                src="/images/kristi-baker-horiztonal.jpg"
-                alt="Dr. Kristi Baker with a veterinary patient in Northern Kentucky"
-                fill
-                sizes="(max-width: 900px) 100vw, 520px"
-              />
-            </div>
-            <div>
-              <p className="eyebrow">Locally Owned Veterinary Care</p>
-              <h2>Locally owned. Personally invested.</h2>
-              <p>
-                Veterinary Medical Centers cares for Northern Kentucky pets through our Fort Thomas and Independence
-                clinics. We&apos;re locally and independently owned, and we believe veterinary care works best when you
-                know the people caring for your pet.
-              </p>
-              <p>
-                You&apos;ll see familiar faces, talk with a real care team, and leave knowing what we found, what
-                matters, and what to do next.
-              </p>
-              <div className="services-values">
-                <article>
-                  <MessageCircle aria-hidden="true" size={22} />
-                  <h3>We listen first</h3>
-                  <p>Tell us what you&apos;ve noticed at home. That context matters.</p>
-                </article>
-                <article>
-                  <ClipboardCheck aria-hidden="true" size={22} />
-                  <h3>We explain the why</h3>
-                  <p>You should understand every recommendation before making a decision.</p>
-                </article>
-                <article>
-                  <HeartHandshake aria-hidden="true" size={22} />
-                  <h3>We stay with you</h3>
-                  <p>From puppy and kitten visits through senior care, we&apos;re here for the long relationship.</p>
-                </article>
-              </div>
-            </div>
-          </div>
-        </Container>
-      </section>
-
-      <section className="services-help-cta">
-        <Container>
+      <Section tone="white" eyebrow="Why families choose us" title={<>An animal hospital that <em>knows your pet.</em></>} className="home-little-things">
+        <div className="home-little-things-layout">
           <div>
-            <p className="eyebrow">Need Help Choosing?</p>
-            <h2>You don&apos;t have to know which appointment to choose.</h2>
-            <p>
-              Tell us what you&apos;ve noticed. Our team can help you decide whether your pet needs a wellness visit,
-              sick appointment, dental care, diagnostics, surgery, or something else.
-            </p>
-            <p className="services-emergency-note">
-              If your pet is experiencing a medical emergency, contact an emergency veterinary hospital right away.
-            </p>
+            <p>Vet visits shouldn&rsquo;t feel rushed. As a locally owned practice, we give every visit room for questions and every pet a team that remembers them.</p>
+            <Link className="text-link services-team-link" href="/team/">Meet our veterinarians →</Link>
           </div>
-          <div className="services-help-actions">
-            <Button href="/book-appointment/" variant="secondary">Help Me Choose</Button>
-            <Button href={`tel:${site.locations[0].tel}`} variant="ghost">Call Fort Thomas</Button>
-            <Button href={`tel:${site.locations[1].tel}`} variant="ghost">Call Independence</Button>
+          <div className="home-little-things-list">
+            {hospitalValues.map(({ icon: Icon, title, text }) => (
+              <article key={title}><span><Icon aria-hidden="true" size={18} /></span><div><h3>{title}</h3><p>{text}</p></div></article>
+            ))}
           </div>
-        </Container>
-      </section>
+        </div>
+      </Section>
 
-      <section className="services-section services-section-cream">
-        <Container>
-          <div className="section-heading">
-            <p className="eyebrow">Fort Thomas & Independence</p>
-            <h2>Two clinics. One team that knows Northern Kentucky.</h2>
-            <p>
-              Choose the location that&apos;s easiest for your family. Both VMC clinics care for dogs and cats and can
-              help you find the right appointment if you&apos;re unsure where to start.
-            </p>
-          </div>
-          <div className="services-location-grid">
-            {locations.map((location) => (
-              <article className="services-location-card" key={location.slug}>
-                <div className="services-location-image">
-                  <Image src={location.image} alt={location.imageAlt} fill sizes="(max-width: 900px) 100vw, 560px" />
-                </div>
-                <div className="services-location-body">
-                  <MapPin aria-hidden="true" size={24} />
-                  <h3>{location.slug === "vet-in-fort-thomas-ky" ? "Fort Thomas Veterinary Medical Center" : "Independence Veterinary Medical Center"}</h3>
-                  <p>
-                    {location.slug === "vet-in-fort-thomas-ky"
-                      ? "Your neighborhood veterinary team on Memorial Parkway."
-                      : "Local veterinary care on Madison Pike."}
-                  </p>
+      <Section tone="warm" eyebrow="What to expect" title={<>You&rsquo;ll always know <em>what happens next.</em></>}>
+        <div className="visit-steps">
+          {visitSteps.map(([title, copy], index) => (
+            <article className="visit-step" key={title}>
+              <span aria-hidden="true">{index + 1}</span>
+              <h3>{title}</h3>
+              <p>{copy}</p>
+            </article>
+          ))}
+        </div>
+        <p className="services-emergency-note"><AlertCircle aria-hidden="true" size={16} /> Think it&rsquo;s an emergency? Contact an emergency veterinary hospital right away.</p>
+      </Section>
+
+      <Section tone="cream" eyebrow="Fort Thomas & Independence" title={<>Two animal hospital locations in <em>Northern Kentucky.</em></>} className="home-locations-section">
+        <div className="home-location-grid">
+          {locations.map((location, index) => (
+            <article className="home-location-card" key={location.slug}>
+              <div className="home-location-image">
+                <Image src={location.image} alt={location.imageAlt} fill sizes="(max-width: 760px) 100vw, 50vw" />
+              </div>
+              <div className="home-location-copy">
+                <h3><Link href={`/locations/${location.slug}/`}>{location.shortName}, KY</Link></h3>
+                <p className="home-location-official">Veterinary Medical Center of {location.shortName}</p>
+                <div className="home-location-details">
                   <address>{location.address}</address>
-                  <a className="services-phone" href={`tel:${location.tel}`}>
-                    <Phone aria-hidden="true" size={16} />
-                    {location.phone}
-                  </a>
-                  <p className="services-hours">Monday-Friday: 8:00 AM-6:00 PM</p>
-                  <div className="inline-actions">
-                    <Link className="btn btn-primary" href={`/locations/${location.slug}/`}>Request Appointment</Link>
-                    <a className="btn btn-ghost" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(location.address)}`} target="_blank" rel="noopener noreferrer">
-                      Get Directions
-                    </a>
-                  </div>
+                  <a href={`tel:${location.tel}`}>{location.phone}</a>
+                  <p className="home-location-weekday-hours">Monday–Friday <span>·</span> 8 AM–6 PM</p>
                 </div>
-              </article>
-            ))}
-          </div>
-        </Container>
-      </section>
+              </div>
+              <div className="inline-actions">
+                <Link className="btn btn-primary" href="/book-appointment/">Book Appointment</Link>
+                <a className="text-link" href={site.locations[index].mapUrl} target="_blank" rel="noopener noreferrer">Get Directions</a>
+              </div>
+            </article>
+          ))}
+        </div>
+      </Section>
 
-      <section className="services-section services-section-white">
-        <Container>
-          <div className="services-visit-heading">
-            <p className="eyebrow">What To Expect</p>
-            <h2>You&apos;ll always know what happens next.</h2>
-            <p>
-              Our visits are built around clear communication, careful exams, and practical next steps for your pet and
-              your family.
-            </p>
-          </div>
-          <div className="visit-steps">
-            {visitSteps.map(([title, copy], index) => (
-              <article className="visit-step" key={title}>
-                <span aria-hidden="true">{index + 1}</span>
-                <h3>{title}</h3>
-                <p>{copy}</p>
-              </article>
-            ))}
-          </div>
-        </Container>
-      </section>
+      <FAQSection faqs={servicesFaqs} title="Questions about our Northern Kentucky animal hospital" />
 
-      <section className="services-section services-section-cream">
-        <Container>
-          <div className="section-heading section-heading-with-link">
-            <div>
-              <p className="eyebrow">Helpful Resources</p>
-              <h2>A few guides before you visit.</h2>
-            </div>
-            <Link href="/resources/">View all pet care resources</Link>
-          </div>
-          <div className="resource-card-grid">
-            {resourceLinks.map((resource) => (
-              <article className="resource-card" key={resource.title}>
-                <h3>{resource.title}</h3>
-                <p>{resource.description}</p>
-                <Link href={resource.href}>View resource</Link>
-              </article>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      <FAQSection faqs={servicesFaqs} title="Common questions about caring for your pet at VMC." />
-      <CTASection
-        title="Your pet doesn't have to fit neatly into a service category."
-        body="Tell us what's going on. Whether your pet is due for routine care, isn't feeling like themselves, or you're simply not sure what they need, our team can help you figure out the next step. Fort Thomas · Independence · Dogs and cats welcome."
-        primary={{ label: "Request an Appointment", href: "/book-appointment/" }}
-        secondary={{ label: "Call Our Team", href: `tel:${site.locations[0].tel}` }}
+      <FinalInvitation
+        actions={<>
+          <Link className="btn btn-secondary" href="/book-appointment/">Book an Appointment</Link>
+          <a className="btn btn-ghost" href={`tel:${site.locations[0].tel}`}>Call Fort Thomas</a>
+          <a className="btn btn-ghost" href={`tel:${site.locations[1].tel}`}>Call Independence</a>
+        </>}
       />
+
       <JsonLd
         data={[
           webpageSchema(pagePath, metadataSeo.title, metadataSeo.description),

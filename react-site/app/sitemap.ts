@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 import { locations } from "@/data/locations";
 import { getCityPageSlugs } from "@/data/cityPages";
 import { site } from "@/data/site";
+import { veterinarians } from "@/data/veterinarians";
 import { sitemapStaticRoutes } from "@/lib/routes";
 import { getBlogPosts } from "@/sanity/posts";
 import { getServiceDetailSlugs } from "@/sanity/services";
@@ -22,10 +23,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const cityRoutes = getCityPageSlugs().map((slug) => `/locations/${slug}/`);
   const locationRoutes = locations.map((location) => `/locations/${location.slug}/`);
   const serviceRoutes = serviceSlugs.map((slug) => `/services/${slug}/`);
+  const teamRoutes = veterinarians.map((vet) => `/team/${vet.slug}/`);
   const resourceRoutes = posts.map((post) => `/resources/${post.slug}/`);
 
   const allRoutes = [
     ...sitemapStaticRoutes,
+    ...teamRoutes,
     ...locationRoutes,
     ...cityRoutes,
     ...serviceRoutes,

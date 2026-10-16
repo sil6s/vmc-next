@@ -268,10 +268,20 @@ export function personSchema(person: {
   image?: string;
   credentials?: string;
   description?: string;
+  url?: string;
+  alumniOf?: string[];
+  knowsLanguage?: string[];
+  knowsAbout?: string[];
+  workLocationIds?: string[];
 }) {
   return {
     "@context": "https://schema.org",
     "@type": "Person",
+    ...(person.url ? { url: absoluteUrl(person.url) } : {}),
+    ...(person.alumniOf?.length ? { alumniOf: person.alumniOf.map((name) => ({ "@type": "CollegeOrUniversity", name })) } : {}),
+    ...(person.knowsLanguage?.length ? { knowsLanguage: person.knowsLanguage } : {}),
+    ...(person.knowsAbout?.length ? { knowsAbout: person.knowsAbout } : {}),
+    ...(person.workLocationIds?.length ? { workLocation: person.workLocationIds.map((id) => ({ "@id": id })) } : {}),
     "@id": `${absoluteUrl(person.path)}#${person.name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`,
     name: person.name,
     jobTitle: person.jobTitle,

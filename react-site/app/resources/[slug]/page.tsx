@@ -13,7 +13,6 @@ import {
   CalendarDays,
   CheckCircle2,
   Clock3,
-  FileText,
   FolderOpen,
   HeartPulse,
   Lightbulb,
@@ -356,7 +355,7 @@ function fallbackArticle(post: BlogPost): FallbackArticle {
   };
 }
 
-function ResourceActions({ includeNewPatient = false, className = "" }: { includeNewPatient?: boolean; className?: string }) {
+function ResourceActions({ className = "" }: { className?: string }) {
   return (
     <div className={`resource-editorial-actions ${className}`}>
       <ShadButton asChild>
@@ -371,14 +370,6 @@ function ResourceActions({ includeNewPatient = false, className = "" }: { includ
           Contact Our Team
         </Link>
       </ShadButton>
-      {includeNewPatient && (
-        <ShadButton asChild variant="ghost">
-          <Link href="/new-patient-registration-form/" aria-label="Open the new patient form">
-            <FileText aria-hidden="true" size={17} />
-            New Patient Form
-          </Link>
-        </ShadButton>
-      )}
     </div>
   );
 }
@@ -549,7 +540,7 @@ function BottomCTA() {
               </p>
             </div>
           </div>
-          <ResourceActions includeNewPatient />
+          <ResourceActions />
         </div>
 
         <div className="resource-location-map-grid" aria-label="Veterinary Medical Centers office locations">

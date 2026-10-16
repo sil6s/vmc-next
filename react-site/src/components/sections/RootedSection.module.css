@@ -1,0 +1,401 @@
+/*
+  Fonts: point --font-serif / --font-sans at your next/font variables
+  (Playfair Display and Inter) or the fallbacks below are used.
+*/
+.rooted {
+  --whitesmoke: #f8f8f8;
+  --slate: #484850;
+  --firebrick: #a81818;
+  --firebrick-dark: #8f1414;
+  --antique: #f0e8d8;
+  --ink: #1f1f24;
+  --line: rgba(72, 72, 80, 0.16);
+  --river: #7e9fb4;
+  --serif: var(--font-serif, "Playfair Display", Georgia, serif);
+  --sans: var(--font-sans, "Inter", system-ui, -apple-system, "Segoe UI", sans-serif);
+
+  background: color-mix(in srgb, var(--antique) 55%, var(--whitesmoke));
+  color: var(--slate);
+  font-family: var(--sans);
+  padding: 48px 24px;
+}
+
+.inner {
+  max-width: 1240px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1.05fr;
+  gap: 36px;
+  align-items: center;
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--firebrick);
+}
+
+.heading {
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: clamp(40px, 5.2vw, 68px);
+  line-height: 1.04;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 14px 0 16px;
+}
+.heading em {
+  color: var(--firebrick);
+}
+
+.lede {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.75;
+  max-width: 54ch;
+}
+.lede strong {
+  color: var(--ink);
+}
+.lede em {
+  color: var(--firebrick);
+  font-family: var(--serif);
+  font-weight: 500;
+}
+.lede + .lede {
+  margin-top: 16px;
+}
+
+/* Facts */
+.facts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 28px 0 0;
+  background: var(--whitesmoke);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  box-shadow: 0 12px 32px -24px rgba(31, 31, 36, 0.35);
+}
+.fact {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  padding: 22px 20px;
+}
+.fact + .fact {
+  border-left: 1px solid var(--line);
+}
+.fact dd {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 30px;
+  line-height: 1.1;
+  color: var(--firebrick);
+}
+.fact dt {
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Buttons */
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 26px;
+  border-radius: 4px;
+  border: 1px solid var(--firebrick);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+.btnSolid {
+  background: var(--firebrick);
+  color: var(--whitesmoke);
+}
+.btnSolid:hover {
+  background: var(--firebrick-dark);
+}
+.btnGhost {
+  background: var(--whitesmoke);
+  color: var(--firebrick);
+  border-color: var(--line);
+}
+.btnGhost:hover {
+  border-color: var(--firebrick);
+}
+.btn:focus-visible,
+.tab:focus-visible {
+  outline: 3px solid var(--slate);
+  outline-offset: 3px;
+}
+
+/* Map card */
+.mapCard {
+  background: var(--whitesmoke);
+  border: 1px solid var(--line);
+  border-left: 6px solid var(--firebrick);
+  border-radius: 6px;
+  padding: 18px;
+  box-shadow: 0 24px 48px -32px rgba(31, 31, 36, 0.45);
+}
+.mapHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+.mapTitle {
+  margin: 0;
+  font-family: var(--serif);
+  font-weight: 500;
+  font-size: 26px;
+  color: var(--ink);
+}
+.mapTitle em {
+  color: var(--firebrick);
+}
+.tabs {
+  display: inline-flex;
+  padding: 4px;
+  background: var(--antique);
+  border-radius: 999px;
+}
+.tab {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  font: 600 12px var(--sans);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--slate);
+  padding: 9px 16px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.tab[aria-selected="true"] {
+  background: var(--whitesmoke);
+  color: var(--firebrick);
+  box-shadow: 0 1px 3px rgba(31, 31, 36, 0.15);
+}
+.panel svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.panel[hidden] {
+  display: none;
+}
+
+.mapFoot {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  font-size: 13px;
+}
+.key {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.key i {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  display: inline-block;
+}
+.keyNky {
+  background: var(--firebrick);
+}
+.keyRiver {
+  background: var(--river);
+  opacity: 0.7;
+}
+
+/* Tri-State map */
+.state path {
+  fill: #efedea;
+  stroke: var(--slate);
+  stroke-opacity: 0.45;
+  stroke-width: 1.2;
+  stroke-linejoin: round;
+}
+.state .stateHome {
+  fill: var(--antique);
+}
+.nky {
+  fill: var(--firebrick);
+  stroke: var(--whitesmoke);
+  stroke-width: 0.8;
+}
+.halo {
+  fill: var(--firebrick);
+  fill-opacity: 0.14;
+}
+.pulse {
+  fill: none;
+  stroke: var(--firebrick);
+  stroke-opacity: 0.35;
+  stroke-width: 1.5;
+  stroke-dasharray: 3 4;
+}
+.heart {
+  fill: var(--firebrick);
+  stroke: var(--whitesmoke);
+  stroke-width: 2;
+}
+.stateLabel text {
+  font: 600 13px var(--sans);
+  letter-spacing: 0.22em;
+  fill: var(--slate);
+  fill-opacity: 0.55;
+  text-anchor: middle;
+}
+.callout line {
+  stroke: var(--firebrick);
+  stroke-width: 1.2;
+}
+.callout text {
+  font: italic 500 18px var(--serif);
+  fill: var(--ink);
+}
+.callout .calloutSub {
+  font: 600 10.5px var(--sans);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  fill: var(--slate);
+}
+
+/* NKY map */
+.county {
+  fill: #efedea;
+  stroke: var(--slate);
+  stroke-opacity: 0.28;
+  stroke-width: 1;
+}
+.countyHome {
+  fill: #eedcd3;
+}
+.countyClinic {
+  fill: #e5c3b6;
+}
+.river {
+  fill: none;
+  stroke: var(--river);
+  stroke-width: 5;
+  stroke-opacity: 0.55;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.riverLabel {
+  font: 600 10px var(--sans);
+  letter-spacing: 0.3em;
+  fill: #5d7f95;
+}
+.countyLabel {
+  font: 500 11.5px var(--sans);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-anchor: middle;
+  fill: var(--slate);
+  fill-opacity: 0.7;
+}
+.countyLabel tspan {
+  font-weight: 600;
+  fill-opacity: 0.6;
+}
+.countyLabelHome {
+  fill: var(--ink);
+  fill-opacity: 0.85;
+  font-weight: 600;
+}
+.city circle {
+  fill: var(--slate);
+}
+.city text {
+  font: italic 500 14px var(--serif);
+  fill: var(--slate);
+}
+.pin path {
+  fill: var(--firebrick);
+  stroke: var(--whitesmoke);
+  stroke-width: 2;
+}
+.pin .pinDot {
+  fill: var(--whitesmoke);
+  stroke: none;
+}
+.pinName,
+.pinSub {
+  paint-order: stroke;
+  stroke: var(--whitesmoke);
+  stroke-width: 4px;
+}
+.pinName {
+  font: italic 600 17px var(--serif);
+  fill: var(--ink);
+}
+.pinSub {
+  font: 600 10px var(--sans);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  fill: var(--firebrick);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .pulse {
+    animation: rooted-spin 24s linear infinite;
+  }
+}
+@keyframes rooted-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 960px) {
+  .rooted {
+    padding: 72px 16px;
+  }
+  .inner {
+    grid-template-columns: 1fr;
+    gap: 48px;
+  }
+  .mapCard {
+    padding: 20px 16px 16px;
+    border-left-width: 4px;
+  }
+}
+@media (max-width: 520px) {
+  .facts {
+    grid-template-columns: 1fr;
+  }
+  .fact + .fact {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+  }
+  .btn {
+    width: 100%;
+  }
+}

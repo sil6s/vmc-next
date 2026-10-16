@@ -5,6 +5,21 @@ export type FAQ = {
 
 export const homeFaqs: FAQ[] = [
   {
+    question: "Where are your Northern Kentucky vet clinics located?",
+    answer:
+      "Veterinary Medical Centers has two Northern Kentucky vet clinics: Fort Thomas at 2000 Memorial Parkway, Fort Thomas, KY 41075, and Independence at 4147 Madison Pike, Independence, KY 41051."
+  },
+  {
+    question: "What areas do you serve?",
+    answer:
+      "Pet families visit us from Fort Thomas, Independence, Newport, Bellevue, Highland Heights, Cold Spring, Covington, Taylor Mill, Erlanger, Edgewood, Florence, and across Greater Cincinnati."
+  },
+  {
+    question: "Can I book a vet appointment online?",
+    answer:
+      "Yes. You can book online through our patient portal at any time, or call the Fort Thomas or Independence clinic if you would rather talk with our team."
+  },
+  {
     question: "Do you accept new veterinary patients?",
     answer:
       "Yes. Veterinary Medical Centers welcome new dogs and cats at both the Fort Thomas and Independence locations. You can request an appointment online, call your local vet team, or start with the new patient information page before your first visit."

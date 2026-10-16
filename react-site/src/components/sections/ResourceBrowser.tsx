@@ -74,10 +74,13 @@ function sortItems(items: ResourceCardItem[], sort: SortId) {
   return copy;
 }
 
+const PAGE_SIZE = 12;
+
 export function ResourceBrowser({ resources }: { resources: ResourceCardItem[] }) {
   const [active, setActive] = useState<FilterId>("all");
   const [sort, setSort] = useState<SortId>("newest");
   const [query, setQuery] = useState("");
+  const [limit, setLimit] = useState(PAGE_SIZE);
   const deferredQuery = useDeferredValue(query);
 
   const activeFilter = filters.find((f) => f.id === active);
@@ -88,6 +91,7 @@ export function ResourceBrowser({ resources }: { resources: ResourceCardItem[] }
   const searched = fuzzySearch(tabFiltered, deferredQuery);
   const visible = sortItems(searched, sort);
   const isSearching = deferredQuery.trim().length > 0;
+  const shown = visible.slice(0, limit);
 
   return (
     <div className="resource-browser">
@@ -99,7 +103,7 @@ export function ResourceBrowser({ resources }: { resources: ResourceCardItem[] }
           type="search"
           placeholder="Search guides, topics, and resources…"
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => { setQuery(e.target.value); setLimit(PAGE_SIZE); }}
           autoComplete="off"
           spellCheck={false}
         />
@@ -107,7 +111,7 @@ export function ResourceBrowser({ resources }: { resources: ResourceCardItem[] }
           <button
             type="button"
             className="resource-search-clear"
-            onClick={() => setQuery("")}
+            onClick={() => { setQuery(""); setLimit(PAGE_SIZE); }}
             aria-label="Clear search"
           >
             <X aria-hidden="true" size={16} />
@@ -123,7 +127,7 @@ export function ResourceBrowser({ resources }: { resources: ResourceCardItem[] }
               key={f.id}
               type="button"
               className={`resource-filter-chip${active === f.id ? " is-active" : ""}`}
-              onClick={() => setActive(f.id)}
+              onClick={() => { setActive(f.id); setLimit(PAGE_SIZE); }}
               aria-pressed={active === f.id}
             >
               {f.label}
@@ -157,7 +161,7 @@ export function ResourceBrowser({ resources }: { resources: ResourceCardItem[] }
       {/* Grid or empty state */}
       {visible.length ? (
         <div className="blog-card-grid">
-          {visible.map((post) => (
+          {shown.map((post) => (
             <article className="blog-card" key={post.slug}>
               <Link
                 className="blog-card-image"
@@ -191,7 +195,15 @@ export function ResourceBrowser({ resources }: { resources: ResourceCardItem[] }
             </article>
           ))}
         </div>
-      ) : (
+      ) : null}
+      {visible.length > shown.length && (
+        <div className="resource-show-more">
+          <button type="button" className="btn btn-ghost" onClick={() => setLimit((current) => current + PAGE_SIZE)}>
+            Show more guides ({visible.length - shown.length} more)
+          </button>
+        </div>
+      )}
+      {visible.length ? null : (
         <div className="resource-empty-state">
           <Search aria-hidden="true" size={28} />
           <h3>

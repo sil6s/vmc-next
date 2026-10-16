@@ -7,7 +7,7 @@ type SeoInput = {
   path?: string;
   image?: string;
   canonicalUrl?: string;
-  type?: "website" | "article";
+  type?: "website" | "article" | "profile";
   languages?: Record<string, string>;
   noIndex?: boolean;
 };

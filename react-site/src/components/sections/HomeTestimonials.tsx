@@ -1,78 +1,55 @@
-import Image from "next/image";
-import { PawPrint, Star } from "lucide-react";
+import { Heart, Quote, Star } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
 export const pawstimonials = [
+  { pet: "Edith", community: "Northern Kentucky", image: "/images/edith-testo.jpg", alt: "Edith, a Veterinary Medical Centers pet patient in Northern Kentucky" },
+  { pet: "Ezra", community: "Fort Thomas", image: "/images/ezra-testo.jpg", alt: "Ezra, a Veterinary Medical Centers pet patient near Fort Thomas" },
+  { pet: "Marshall", community: "Independence", image: "/images/marshall-testo.jpg", alt: "Marshall, a Veterinary Medical Centers pet patient near Independence" },
+  { pet: "Wilson", community: "Northern Kentucky", image: "/images/wilson-testo.jpg", alt: "Wilson, a Veterinary Medical Centers pet patient in Northern Kentucky" }
+];
+
+const reviews = [
   {
-    pet: "Edith",
-    owner: "Edith’s pet parent",
-    community: "Northern Kentucky",
-    quote: "The team made Edith’s visit feel calm and easy. I left knowing exactly what was going on and what to do next.",
-    image: "/images/edith-testo.jpg",
-    alt: "Edith, a Veterinary Medical Centers pet patient in Northern Kentucky"
+    name: "Jacob S.",
+    quote: "We take all of our pets here and the staff is outstanding. They stagger the schedule, so the office never feels crowded or stressful for dogs.",
+    location: "Northern Kentucky"
   },
   {
-    pet: "Ezra",
-    owner: "Ezra’s pet parent",
-    community: "Fort Thomas",
-    quote: "They took time to answer every question and explain the plan in a way that made sense.",
-    image: "/images/ezra-testo.jpg",
-    alt: "Ezra, a Veterinary Medical Centers pet patient near Fort Thomas"
+    name: "Everett S.",
+    quote: "This team did an incredible job with our cat’s rabies vaccine. Their patience, expertise, and grit were seriously impressive.",
+    location: "Northern Kentucky"
   },
   {
-    pet: "Marshall",
-    owner: "Marshall’s pet parent",
-    community: "Independence",
-    quote: "From the front desk to the exam room, everyone was kind, patient, and helpful.",
-    image: "/images/marshall-testo.jpg",
-    alt: "Marshall, a Veterinary Medical Centers pet patient near Independence"
-  },
-  {
-    pet: "Wilson",
-    owner: "Wilson’s pet parent",
-    community: "NKY",
-    quote: "I appreciate having a local vet team that remembers my pet and treats us like neighbors.",
-    image: "/images/wilson-testo.jpg",
-    alt: "Wilson, a Veterinary Medical Centers pet patient receiving local Northern Kentucky vet care"
+    name: "Sandra G.",
+    quote: "The Independence team was friendly, informative, and kind to my pet and me. It is wonderful to have found a permanent place for our care.",
+    location: "Independence"
   }
 ];
 
 export function HomeTestimonials() {
-  const featured = pawstimonials.slice(0, 3);
-
   return (
-    <div className="pawstimonials">
-      <div className="pawstimonial-grid">
-        {featured.map((item) => (
-          <article className="pawstimonial-card" key={item.pet}>
-            <div className="pawstimonial-image">
-              <Image src={item.image} alt={item.alt} width={520} height={340} sizes="(max-width: 720px) 100vw, 25vw" />
-              <span aria-hidden="true">
-                <PawPrint size={17} />
-              </span>
+    <div className="home-review-story">
+      <div className="home-review-grid">
+        {reviews.map((review) => (
+          <article className="home-review-card" key={review.name}>
+            <div className="home-review-card-top">
+              <span className="home-review-heart" aria-hidden="true"><Heart size={16} fill="currentColor" /></span>
+              <Quote aria-hidden="true" size={24} strokeWidth={1.6} />
             </div>
-            <div className="pawstimonial-body">
-              <div className="pawstimonial-stars" role="img" aria-label="Five star rating">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star key={star} size={13} fill="currentColor" />
-                ))}
-              </div>
-              <h3>{item.pet}</h3>
-              <p>“{item.quote}”</p>
-              <small>{item.owner} · {item.community}</small>
+            <div className="home-review-stars" role="img" aria-label="Five star rating">
+              {[1, 2, 3, 4, 5].map((star) => <Star key={star} size={13} fill="currentColor" />)}
             </div>
+            <p>“{review.quote}”</p>
+            <footer><strong>{review.name}</strong><span>{review.location} · Google review</span></footer>
           </article>
         ))}
       </div>
-      <div className="pawstimonial-cta">
+      <div className="home-review-cta">
         <div>
-          <h3>Want your pet to be part of our story?</h3>
-          <p>Start with an appointment or message our team with questions about the right next step.</p>
+          <h3>Care that pets and people can feel good about.</h3>
+          <p>Every visit is a chance to listen closely, explain clearly, and make the next step feel manageable.</p>
         </div>
-        <div className="hero-actions">
-          <Button href="/book-appointment/">Request an Appointment</Button>
-          <Button href="/contact/#chat-support" variant="ghost">Message Our Team</Button>
-        </div>
+        <Button href="/book-appointment/">Book an Appointment</Button>
       </div>
     </div>
   );

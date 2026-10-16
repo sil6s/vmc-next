@@ -39,7 +39,7 @@ export const defaultExternalLinks: ExternalLinks = {
   onlinePortalUrl: "https://care.televet.com/login",
   pharmacyUrl: "https://nky-vet.ourvet.com/pet/",
   bookAppointmentUrl: "/book-appointment/",
-  newPatientFormUrl: "/new-patient-registration-form/",
+  newPatientFormUrl: "/new-patients/",
   existingClientFormUrl: "",
   smsPrivacyPolicyUrl: "/privacy-policy/",
   facebookUrl: "",

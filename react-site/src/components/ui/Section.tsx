@@ -11,10 +11,10 @@ export function Section({
   className
 }: {
   children?: ReactNode;
-  eyebrow?: string;
-  title?: string;
-  intro?: string;
-  tone?: "cream" | "white" | "warm" | "red";
+  eyebrow?: ReactNode;
+  title?: ReactNode;
+  intro?: ReactNode;
+  tone?: "cream" | "white" | "warm" | "red" | "dark";
   id?: string;
   className?: string;
 }) {

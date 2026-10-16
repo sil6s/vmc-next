@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { AlertTriangle, Clock, MapPin, MessageCircle, Phone } from "lucide-react";
+import { Heart, Phone } from "lucide-react";
 import { ContactHelpCenter } from "@/components/sections/ContactHelpCenter";
 import { FAQSection } from "@/components/sections/FAQSection";
-import { Button } from "@/components/ui/Button";
+import { Hero } from "@/components/sections/Hero";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { locations } from "@/data/locations";
@@ -18,6 +18,21 @@ import { getPublicSettings, type PublicLocation } from "@/lib/settings/public";
 export const metadata: Metadata = pageMetadata({ ...pages.contact.seo, path: "/contact/" });
 
 const contactFaqs = [
+  {
+    question: "What are your phone numbers?",
+    answer:
+      "Call Veterinary Medical Center of Fort Thomas at (859) 442-4420 or Veterinary Medical Center of Independence at (859) 356-2242."
+  },
+  {
+    question: "What are your hours?",
+    answer:
+      "Both clinics are open Monday through Friday, 8:00 AM to 6:00 PM. Fort Thomas has rotating Saturday hours, so please call ahead. Both clinics are closed Sunday."
+  },
+  {
+    question: "Where are your clinics located?",
+    answer:
+      "Fort Thomas is at 2000 Memorial Parkway, Fort Thomas, KY 41075. Independence is at 4147 Madison Pike, Independence, KY 41051."
+  },
   {
     question: "What if I don't know which option to choose?",
     answer:
@@ -53,49 +68,6 @@ function onlineLocationSlug(shortName: string): OnlineHelpLocationSlug {
   return shortName === "Fort Thomas" ? "fort-thomas" : "independence";
 }
 
-function LocationHelpCard({
-  location,
-  publicLocation
-}: {
-  location: (typeof locations)[number];
-  publicLocation: PublicLocation;
-}) {
-  const helpSlug = onlineLocationSlug(location.shortName);
-  const hours = publicLocation.hours.length ? publicLocation.hours : site.locations.find((item) => item.name.includes(location.shortName))?.hours || [];
-
-  return (
-    <article className="contact-clinic-help-card">
-      <div className="contact-clinic-help-image">
-        <Image src={location.image} alt={location.imageAlt} fill sizes="(max-width: 860px) 100vw, 560px" />
-      </div>
-      <div className="contact-clinic-help-body">
-        <p className="eyebrow">{location.shortName} Clinic</p>
-        <h3>{location.shortName === "Fort Thomas" ? "Fort Thomas Veterinary Medical Center" : "Independence Veterinary Medical Center"}</h3>
-        <p>{location.shortName === "Fort Thomas" ? "Your neighborhood veterinary team on Memorial Parkway." : "Local veterinary care on Madison Pike."}</p>
-        <div className="contact-clinic-help-details">
-          <address>
-            <MapPin aria-hidden="true" size={17} />
-            {publicLocation.address || location.address}
-          </address>
-          <a href={`tel:${publicLocation.tel || location.tel}`}>
-            <Phone aria-hidden="true" size={17} />
-            {publicLocation.phone || location.phone}
-          </a>
-          <span>
-            <Clock aria-hidden="true" size={17} />
-            {hours[0] || "Call for current hours."}
-          </span>
-        </div>
-        <div className="inline-actions">
-          <Button href={onlineHelpPath(helpSlug, "direct-booking")}>Book Appointment</Button>
-          <Button href={publicLocation.mapUrl || site.locations[0].mapUrl} variant="ghost">Get Directions</Button>
-          <Button href={`tel:${publicLocation.tel || location.tel}`} variant="ghost">Call</Button>
-        </div>
-      </div>
-    </article>
-  );
-}
-
 export default async function ContactPage() {
   const settings = await getPublicSettings();
   const fortThomas = publicLocationById(settings.publicLocations, "fort-thomas") || settings.publicLocations[0] || site.locations[0];
@@ -107,35 +79,28 @@ export default async function ContactPage() {
 
   return (
     <>
-      <section className="contact-help-hero">
-        <Container>
-          <div className="contact-help-hero-grid">
-            <div>
-              <p className="eyebrow">Contact Veterinary Medical Centers</p>
-              <h1>How can we help today?</h1>
-              <p>
-                You do not need to know the exact department, form, or appointment type. Start with what your pet needs,
-                choose Fort Thomas or Independence, and our locally owned Northern Kentucky team will help route the next
-                step.
-              </p>
-              <div className="hero-actions">
-                <Button href={onlineHelpPath("fort-thomas", "direct-booking")}>Book an Appointment</Button>
-                <Button href={`tel:${fortThomas.tel}`} variant="ghost">Call Fort Thomas</Button>
-                <Button href={`tel:${independence.tel}`} variant="ghost">Call Independence</Button>
-              </div>
-            </div>
-            <div className="contact-help-hero-image">
-              <Image
-                src="/images/vet-stock2.jpg"
-                alt="Veterinary Medical Centers team member helping a pet owner"
-                fill
-                priority
-                sizes="(max-width: 900px) 100vw, 520px"
-              />
-            </div>
-          </div>
-        </Container>
-      </section>
+      <Hero
+        eyebrow="Contact Veterinary Medical Centers"
+        title="Call, book, or message"
+        emphasis="your local vet team."
+        body="Reach our Fort Thomas or Independence clinic by phone, book online, or send a message. Not sure what you need? Start below and we'll route you to the right place."
+        image="/images/vet-stock2.jpg"
+        imageAlt="Veterinary team member helping a pet owner in Northern Kentucky"
+        primaryCta={{ label: "Book an Appointment", href: onlineHelpPath("fort-thomas", "direct-booking") }}
+        secondaryCta={{ label: "Call Fort Thomas", href: `tel:${fortThomas.tel}` }}
+        showStats={false}
+        inlineEmphasis
+        compact
+      />
+
+      <div className="home-love-banner">
+        <p className="home-love-banner-inner contact-phone-strip">
+          <Heart aria-hidden="true" size={13} />
+          <span>Fort Thomas <a href={`tel:${fortThomas.tel}`}>{fortThomas.phone}</a></span>
+          <span aria-hidden="true">·</span>
+          <span>Independence <a href={`tel:${independence.tel}`}>{independence.phone}</a></span>
+        </p>
+      </div>
 
       <section className="contact-help-center-section">
         <Container>
@@ -146,57 +111,47 @@ export default async function ContactPage() {
       <Section
         id="locations"
         tone="cream"
-        eyebrow="Choose Your Clinic"
-        title="Two clinics, one local team."
-        intro="Choose the location that is easiest for your family. Both VMC clinics care for dogs and cats and can help you find the right appointment if you are unsure where to start."
-        className="contact-section-tight"
+        eyebrow="Our clinics"
+        title={<>Visit a Northern Kentucky vet <em>near you.</em></>}
+        intro="Both clinics care for dogs and cats. Choose whichever is easiest for your family."
+        className="home-locations-section"
       >
-        <div className="contact-clinic-help-grid">
+        <div className="home-location-grid">
           {locations.map((location) => {
             const id = location.shortName === "Fort Thomas" ? "fort-thomas" : "independence";
             const publicLocation = publicLocationById(settings.publicLocations, id) || (id === "fort-thomas" ? fortThomas : independence);
-
-            return <LocationHelpCard key={location.slug} location={location} publicLocation={publicLocation} />;
+            const hours = publicLocation.hours?.length ? publicLocation.hours : site.locations.find((item) => item.id === id)?.hours || [];
+            return (
+              <article className="home-location-card" key={location.slug}>
+                <div className="home-location-image">
+                  <Image src={location.image} alt={location.imageAlt} fill sizes="(max-width: 760px) 100vw, 50vw" />
+                </div>
+                <div className="home-location-copy">
+                  <h3><Link href={`/locations/${location.slug}/`}>{location.shortName}, KY</Link></h3>
+                  <p className="home-location-official">Veterinary Medical Center of {location.shortName}</p>
+                  <div className="home-location-details">
+                    <address>{publicLocation.address || location.address}</address>
+                    <a href={`tel:${publicLocation.tel || location.tel}`}>{publicLocation.phone || location.phone}</a>
+                    <p className="home-location-weekday-hours">Monday–Friday <span>·</span> 8 AM–6 PM</p>
+                    <details className="home-location-full-hours">
+                      <summary>Full hours</summary>
+                      <ul>
+                        {hours.map((line) => <li key={line}>{line}</li>)}
+                      </ul>
+                    </details>
+                  </div>
+                </div>
+                <div className="inline-actions">
+                  <Link className="btn btn-primary" href={onlineHelpPath(onlineLocationSlug(location.shortName), "direct-booking")}>Book Appointment</Link>
+                  <a className="text-link" href={publicLocation.mapUrl || site.locations.find((item) => item.id === id)?.mapUrl} target="_blank" rel="noopener noreferrer">Get Directions</a>
+                </div>
+              </article>
+            );
           })}
         </div>
       </Section>
 
-      <Section tone="white" className="contact-section-tight">
-        <div className="contact-otto-bottom">
-          <MessageCircle aria-hidden="true" size={26} />
-          <div>
-            <p className="eyebrow">Not Sure Where To Start?</p>
-            <h2>Message the VMC care team through Otto.</h2>
-            <p>
-              Use Otto for appointment requests, medication or food refills, medical records, virtual consults, and
-              non-urgent care questions. Choose the clinic that works best and our team will help route the request.
-            </p>
-          </div>
-          <div className="contact-otto-bottom-actions">
-            <Button href={onlineHelpPath("fort-thomas", "general")}>Message Fort Thomas</Button>
-            <Button href={onlineHelpPath("independence", "general")} variant="ghost">Message Independence</Button>
-          </div>
-        </div>
-      </Section>
-
-      <Section tone="cream" eyebrow="Need Help Sooner?" title="Please call for urgent or time-sensitive concerns." className="contact-section-tight">
-        <div className="contact-urgent-help">
-          <div>
-            <AlertTriangle aria-hidden="true" size={28} />
-            <h3>Phone is the safest path when timing matters.</h3>
-            <p>
-              Call if your pet has new or worsening symptoms, you need same-day guidance, or you are not sure whether
-              your pet needs urgent care. For severe symptoms, contact an emergency veterinary hospital right away.
-            </p>
-          </div>
-          <div className="contact-urgent-help-actions">
-            <Button href={`tel:${fortThomas.tel}`}>Call Fort Thomas</Button>
-            <Button href={`tel:${independence.tel}`} variant="ghost">Call Independence</Button>
-          </div>
-        </div>
-      </Section>
-
-      <FAQSection faqs={contactFaqs} title="Common contact questions" />
+      <FAQSection faqs={contactFaqs} title="Questions about contacting our clinics" />
 
       <div className="contact-mobile-actions" aria-label="Quick contact actions">
         <a href={`tel:${fortThomas.tel}`}>

@@ -3,31 +3,31 @@ export const pages = {
     title: "Veterinary Medical Centers",
     seo: {
       title: "Northern Kentucky Vet for Dogs & Cats | VMC",
-      description: "Locally owned veterinary clinic in Northern Kentucky serving dogs and cats at Fort Thomas and Independence. Same-week appointments available — schedule a visit today."
+      description: "Looking for a Northern Kentucky vet? Locally owned Veterinary Medical Centers cares for dogs and cats in Fort Thomas and Independence, KY. Book online today."
     },
     hero: {
       eyebrow: "Veterinary Medical Centers",
-      title: "Northern Kentucky vet for dogs and cats,",
-      emphasis: "built around real relationships",
+      title: "The Northern Kentucky vet",
+      emphasis: "that feels like family.",
       body:
-        "From first checkups to lifelong care, our locally owned veterinary team takes time to know your pet, listen to your concerns, and explain every recommendation clearly. Visit us in Fort Thomas or Independence for thoughtful care from people who treat your pet like family.",
-      image: "/images/cat-closeup-hero.png",
-      imageAlt: "Cat receiving a gentle veterinary exam at Veterinary Medical Centers",
-      badgeTitle: "Same-week appointments",
-      badgeSub: "New patients welcome"
+        "Locally owned clinics in Fort Thomas and Independence, caring for dogs and cats from their first checkup to their golden years. Book online in minutes, or call and talk with a team that knows your pet by name.",
+      image: "/images/home-hero-dogs.webp",
+      imageAlt: "Two dogs wearing burgundy bandanas on a fall walk",
+      badgeTitle: "Online booking available",
+      badgeSub: "Fort Thomas & Independence"
     },
     ticker: ["Fear-Free Certified", "Same-week appointments", "Fort Thomas", "Independence", "Locally owned", "Dogs and cats", "Wellness", "Dental care", "Surgery", "Behavior support"]
   },
   about: {
     seo: {
-      title: "Independently Owned Vet in Northern Kentucky | VMC",
-      description: "Meet Veterinary Medical Centers, an independently owned vet in Northern Kentucky serving Fort Thomas and Independence with caring dog and cat care."
+      title: "Northern Kentucky Veterinarians | Locally Owned | VMC",
+      description: "Meet the Northern Kentucky veterinarians at Veterinary Medical Centers, a locally owned practice caring for dogs and cats in Fort Thomas and Independence, KY."
     }
   },
   contact: {
     seo: {
-      title: "Contact Veterinary Medical Center | Fort Thomas & Independence KY Vets",
-      description: "Contact Veterinary Medical Center in Fort Thomas or Independence, KY. Call your nearest clinic, request an appointment, send a message, or get directions."
+      title: "Contact Us | Fort Thomas & Independence, KY Vet | VMC",
+      description: "Call Fort Thomas (859) 442-4420 or Independence (859) 356-2242, book online, or message our Northern Kentucky vet team. Hours, directions, and help."
     }
   },
   newPatients: {

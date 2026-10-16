@@ -61,7 +61,8 @@ function renderHeadlineAccent(headline: string, accent: string) {
 
 export function generateStaticParams() {
   const locationSlugs = locations.map((location) => ({ slug: location.slug }));
-  const citySlugs = getCityPageSlugs().map((slug) => ({ slug }));
+  // vet-near-cincinnati-oh has its own dedicated page in app/locations/vet-near-cincinnati-oh/.
+  const citySlugs = getCityPageSlugs().filter((slug) => slug !== "vet-near-cincinnati-oh").map((slug) => ({ slug }));
   return [...locationSlugs, ...citySlugs];
 }
 

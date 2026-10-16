@@ -9,7 +9,12 @@ export type UmamiEventName =
   | "contact_form_submitted"
   | "new_patient_form_click"
   | "existing_client_form_click"
-  | "google_reviews_click";
+  | "google_reviews_click"
+  | "online_booking_click"
+  | "location_booking_click"
+  | "mobile_booking_click"
+  | "phone_click"
+  | "new_patient_booking_click";
 
 type UmamiWindow = Window & {
   umami?: {
