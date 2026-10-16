@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { serviceArticles } from "@/data/serviceArticles";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import {
@@ -271,6 +272,7 @@ export default async function ServicePage({ params }: Params) {
   const servicePath = locale === "en" ? `/services/${service.slug}/` : `/${locale}/services/${service.slug}/`;
   const relatedServices = await getRelatedServiceCards(service, locale);
   const educationReferences = getEducationReferences(service).slice(0, 3);
+  const relatedArticles = (service.relatedResources?.length ? service.relatedResources : serviceArticles[service.slug] || []).filter((article) => article?.slug);
   const updatedDate = displayDate(service.lastReviewedDate || service.updatedAt || service.publishedAt);
   const heroImage = service.heroImageSource
     ? urlFor(service.heroImageSource).width(1300).height(980).fit("crop").url()
@@ -571,14 +573,14 @@ export default async function ServicePage({ params }: Params) {
               </section>
             )}
 
-            {service.relatedResources && service.relatedResources.length > 0 && (
+            {relatedArticles.length > 0 && (
               <section className="nky-section">
                 <div className="nky-section-head">
                   <p className="nky-eyebrow">Pet care articles</p>
-                  <AccentHeading children="Learn more about" accent={`${service.title.toLowerCase()}.`} />
+                  <AccentHeading accent={`${service.title.toLowerCase()}.`}>Learn more about</AccentHeading>
                 </div>
                 <div className="service-related-articles">
-                  {service.relatedResources.filter((article) => article?.slug).map((article) => (
+                  {relatedArticles.map((article) => (
                     <Link key={article.slug} href={`/resources/${article.slug}/`} className="service-related-article">
                       {article.category && <small>{article.category}</small>}
                       <strong>{article.title}</strong>

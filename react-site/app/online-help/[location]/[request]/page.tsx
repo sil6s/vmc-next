@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Phone } from "lucide-react";
+import { CircleAlert, Phone } from "lucide-react";
 import { OttoInlineWidget } from "@/components/sections/OttoInlineWidget";
 import { Container } from "@/components/ui/Container";
 import { locations } from "@/data/locations";
@@ -13,8 +13,48 @@ import {
 } from "@/lib/online-help";
 import { pageMetadata } from "@/lib/metadata";
 import { breadcrumbSchema, JsonLd, webpageSchema } from "@/lib/schema";
+import { headers } from "next/headers";
+import { isLocale, type Locale } from "@/lib/i18n";
 
 type Params = { params: Promise<{ location: string; request: string }> };
+
+const ottoSupportCopy: Record<Locale, { noticeTitle: string; notice: string; helpTitle: string; help: (clinic: string) => string; call: (clinic: string) => string }> = {
+  en: {
+    noticeTitle: "",
+    notice: "",
+    helpTitle: "Need a hand?",
+    help: (clinic) => `Otto, our secure software partner, manages the form above. We cannot control its availability or language. If it does not load, you run into a problem, or you would rather speak with someone, call our ${clinic} team and we will help right away.`,
+    call: (clinic) => `Call ${clinic}`
+  },
+  es: {
+    noticeTitle: "Aviso sobre la herramienta de reservas",
+    notice: "El formulario de reservas de arriba es proporcionado y administrado por Otto, nuestro socio de software seguro. Es posible que parte de la herramienta aparezca en inglés.",
+    helpTitle: "¿Necesita ayuda?",
+    help: (clinic) => `Otto, nuestro socio de software seguro, administra el formulario de arriba. No podemos controlar su disponibilidad ni su idioma. Si no se carga, tiene algún problema o prefiere hablar con alguien, llame al equipo de ${clinic} y le ayudaremos de inmediato.`,
+    call: (clinic) => `Llame a ${clinic}`
+  },
+  fr: {
+    noticeTitle: "À propos de l’outil de réservation",
+    notice: "Le formulaire de réservation ci-dessus est fourni et géré par Otto, notre partenaire logiciel sécurisé. Certaines parties de l’outil peuvent apparaître en anglais.",
+    helpTitle: "Besoin d’aide ?",
+    help: (clinic) => `Otto, notre partenaire logiciel sécurisé, gère le formulaire ci-dessus. Nous ne pouvons pas contrôler sa disponibilité ni sa langue. S’il ne se charge pas, si vous rencontrez un problème ou si vous préférez parler à quelqu’un, appelez l’équipe de ${clinic} et nous vous aiderons immédiatement.`,
+    call: (clinic) => `Appeler ${clinic}`
+  },
+  hi: {
+    noticeTitle: "बुकिंग टूल के बारे में सूचना",
+    notice: "ऊपर दिया गया बुकिंग फॉर्म हमारे सुरक्षित सॉफ्टवेयर पार्टनर Otto द्वारा उपलब्ध कराया और प्रबंधित किया जाता है। टूल के कुछ हिस्से अंग्रेज़ी में दिखाई दे सकते हैं।",
+    helpTitle: "मदद चाहिए?",
+    help: (clinic) => `ऊपर दिया गया फॉर्म हमारे सुरक्षित सॉफ्टवेयर पार्टनर Otto द्वारा प्रबंधित किया जाता है। हम इसकी उपलब्धता या भाषा को नियंत्रित नहीं कर सकते। यदि यह लोड नहीं होता, कोई समस्या आती है, या आप किसी से बात करना चाहते हैं, तो ${clinic} टीम को कॉल करें। हम तुरंत मदद करेंगे।`,
+    call: (clinic) => `${clinic} को कॉल करें`
+  },
+  zh: {
+    noticeTitle: "关于预约工具的说明",
+    notice: "上方的预约表单由我们的安全软件合作伙伴 Otto 提供和管理。工具中的部分内容可能仍以英文显示。",
+    helpTitle: "需要帮助吗？",
+    help: (clinic) => `上方表单由我们的安全软件合作伙伴 Otto 管理。我们无法控制其可用性或语言。如果它没有加载、您遇到问题，或您希望直接与工作人员交流，请致电 ${clinic} 团队，我们会立即帮助您。`,
+    call: (clinic) => `致电 ${clinic}`
+  }
+};
 
 function getHelpRoute(locationParam: string, requestParam: string) {
   const helpLocation = onlineHelpLocations[locationParam as OnlineHelpLocationSlug];
@@ -67,6 +107,9 @@ export default async function OnlineHelpPage({ params }: Params) {
   const { helpLocation, helpRequest } = route;
   const clinic = locations.find((item) => item.slug === helpLocation.locationSlug);
   if (!clinic) notFound();
+  const localeHeader = (await headers()).get("x-vmc-locale");
+  const locale = isLocale(localeHeader) ? localeHeader : "en";
+  const copy = ottoSupportCopy[locale];
   const lead = transactionSentence(helpRequest.slug, clinic.shortName);
 
   const crumbs = [
@@ -94,14 +137,24 @@ export default async function OnlineHelpPage({ params }: Params) {
               />
             </div>
 
+            {locale !== "en" && (
+              <aside className="online-help-translation-notice" aria-label={copy.noticeTitle}>
+                <CircleAlert aria-hidden="true" size={22} />
+                <div>
+                  <strong>{copy.noticeTitle}</strong>
+                  <p>{copy.notice}</p>
+                </div>
+              </aside>
+            )}
+
             <div className="online-help-fallback">
               <div>
-                <h2>Need a hand?</h2>
-                <p>Can&apos;t find what you need? Our {clinic.shortName} team is happy to help.</p>
+                <h2>{copy.helpTitle}</h2>
+                <p>{copy.help(clinic.shortName)}</p>
               </div>
               <a href={`tel:${clinic.tel}`} className="online-help-call-button">
                 <Phone aria-hidden="true" size={18} />
-                Call {clinic.shortName} · {clinic.phone}
+                {copy.call(clinic.shortName)} · {clinic.phone}
               </a>
             </div>
           </div>

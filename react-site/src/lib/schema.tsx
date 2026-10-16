@@ -6,19 +6,20 @@ import type { PublicSettings } from "@/lib/settings/public";
 
 export function organizationSchema(settings?: PublicSettings) {
   const locations = settings?.publicLocations || site.locations;
+  const siteUrl = settings?.siteUrl || site.siteUrl;
+  const primaryLocation = locations[0];
   const sameAs = settings?.seo.sameAsSocialLinks?.length
     ? settings.seo.sameAsSocialLinks
     : site.sameAs;
 
   return {
     "@context": "https://schema.org",
-    "@type": "VeterinaryCare",
-    "@id": `${settings?.siteUrl || site.siteUrl}/#organization`,
+    "@type": "Organization",
+    "@id": `${siteUrl}/#organization`,
     name: site.name,
-    url: settings?.siteUrl || site.siteUrl,
+    url: siteUrl,
     email: site.email,
     image: absoluteUrl(site.socialImage),
-    priceRange: "$$",
     areaServed: [
       "Northern Kentucky",
       "Fort Thomas KY",
@@ -28,23 +29,43 @@ export function organizationSchema(settings?: PublicSettings) {
       "Greater Cincinnati"
     ],
     ...(sameAs ? { sameAs } : {}),
-    openingHoursSpecification: [
-      {
-        "@type": "OpeningHoursSpecification",
-        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
-        opens: "08:00",
-        closes: "18:00"
-      }
-    ],
-    address: locations.map((location) => ({
+    ...(primaryLocation
+      ? {
+          telephone: primaryLocation.tel,
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: primaryLocation.street,
+            addressLocality: primaryLocation.city,
+            addressRegion: primaryLocation.state,
+            postalCode: primaryLocation.zip,
+            addressCountry: "US"
+          }
+        }
+      : {}),
+    department: locations.map((location) => ({
+      "@type": "VeterinaryCare",
+      "@id": `${siteUrl}/#${location.id}`,
+      name: `Veterinary Medical Center of ${location.name}`,
+      telephone: location.tel,
+      priceRange: "$$",
+      url: `${siteUrl}/locations/${location.id === "fort-thomas" ? "vet-in-fort-thomas-ky" : "vet-in-independence-ky"}/`,
+      address: {
       "@type": "PostalAddress",
       streetAddress: location.street,
       addressLocality: location.city,
       addressRegion: location.state,
       postalCode: location.zip,
       addressCountry: "US"
-    })),
-    telephone: locations.map((location) => location.tel)
+      },
+      openingHoursSpecification: [
+        {
+          "@type": "OpeningHoursSpecification",
+          dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+          opens: "08:00",
+          closes: "18:00"
+        }
+      ]
+    }))
   };
 }
 
@@ -159,19 +180,7 @@ export function veterinaryServiceSchema(service: ServiceDetail, path: string, de
       audienceType: "Pet owners"
     },
     provider: {
-      "@type": "VeterinaryCare",
-      "@id": `${site.siteUrl}/#organization`,
-      name: site.name,
-      url: site.siteUrl,
-      telephone: site.locations.map((location) => location.tel),
-      address: site.locations.map((location) => ({
-        "@type": "PostalAddress",
-        streetAddress: location.street,
-        addressLocality: location.city,
-        addressRegion: location.state,
-        postalCode: location.zip,
-        addressCountry: "US"
-      }))
+      "@id": `${site.siteUrl}/#organization`
     }
   };
 }

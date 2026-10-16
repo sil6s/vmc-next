@@ -40,9 +40,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...resourceRoutes
   ];
 
+  const postLastModified = new Map(posts.map((post) => [`/resources/${post.slug}/`, post.updatedAt || post.date]));
+
   return allRoutes.map((route) => ({
     url: new URL(route, site.siteUrl).toString(),
-    lastModified: new Date(),
+    ...(postLastModified.get(route) ? { lastModified: new Date(postLastModified.get(route)!) } : {}),
     changeFrequency: route === "/" ? "weekly" : route.startsWith("/resources/") ? "monthly" : "monthly",
     priority: priority(route)
   }));

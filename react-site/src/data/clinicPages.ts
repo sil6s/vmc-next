@@ -23,9 +23,9 @@ export const clinicPages: ClinicPage[] = [
     town: "Fort Thomas",
     siteId: "fort-thomas",
     seo: {
-      title: "Vet in Fort Thomas, KY | Locally Owned Dog & Cat Care | VMC",
+      title: "Fort Thomas KY Vet | Local Dog & Cat Care | VMC",
       description:
-        "Your neighborhood vet in Fort Thomas, KY. Veterinary Medical Center of Fort Thomas on Memorial Parkway offers locally owned, relationship-first care for dogs and cats."
+        "Fort Thomas, KY vet for dogs and cats. Find locally owned veterinary care, wellness exams, dental care, surgery, and sick visits on Memorial Parkway."
     },
     hero: {
       title: "Your neighborhood vet in Fort Thomas,",
@@ -120,9 +120,9 @@ export const clinicPages: ClinicPage[] = [
     town: "Independence",
     siteId: "independence",
     seo: {
-      title: "Vet in Independence, KY | Locally Owned Dog & Cat Care | VMC",
+      title: "Independence KY Vet | Local Dog & Cat Care | VMC",
       description:
-        "Your hometown vet in Independence, KY. Veterinary Medical Center of Independence on Madison Pike has offered locally owned, personal care for dogs and cats since 2008."
+        "Independence, KY vet for dogs and cats. Find locally owned veterinary care, wellness exams, dental care, surgery, and sick visits on Madison Pike."
     },
     hero: {
       title: "Your hometown vet in Independence,",

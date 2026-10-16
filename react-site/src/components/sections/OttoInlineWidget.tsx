@@ -1,106 +1,61 @@
-"use client";
-
-import { useEffect, useRef, useState } from "react";
-
-type OttoWidget = {
-  initialize?: (clinicId: string, options?: { selectRequestType?: string; isOpen?: boolean }) => void;
-  destroy?: () => void;
-  selectRequestType?: (requestType: string) => void;
-};
-
-type OttoWindow = Window & {
-  televet?: { id?: string };
-  otto?: { widget?: OttoWidget };
+type OttoInlineWidgetProps = {
+  clinicId: string;
+  clinicName?: string;
+  requestType?: string;
 };
 
 const SHIM_URL = "https://connect.televet.com/shim.js";
 
-function loadOttoScript() {
-  // Always remove any existing shim so re-mounting forces a clean Otto init.
-  document.querySelector(`script[src="${SHIM_URL}"]`)?.remove();
-  const script = document.createElement("script");
-  script.async = true;
-  script.src = SHIM_URL;
-  document.body.appendChild(script);
+function toJsString(value: string | undefined) {
+  return JSON.stringify(value || "").replace(/</g, "\\u003c");
 }
 
-export function OttoInlineWidget({
-  clinicId,
-  clinicName,
-  requestType
-}: {
-  clinicId: string;
-  clinicName?: string;
-  requestType?: string;
-}) {
-  const widgetKey = `${clinicId}:${requestType || ""}`;
-  const [loadedWidgetKey, setLoadedWidgetKey] = useState<string | null>(null);
-  const initialized = useRef(false);
-  const loading = loadedWidgetKey !== widgetKey;
-
-  useEffect(() => {
-    initialized.current = false;
-
-    const w = window as OttoWindow;
-
-    // Tear down any previous instance first
-    try { w.otto?.widget?.destroy?.(); } catch { /* ignore */ }
-
-    // Wipe Otto's global so the re-added shim.js boots from scratch.
-    // Otto guards its own init with something like "if (window.otto) return" —
-    // without this, re-adding the script tag on tab switch is a no-op and the
-    // widget never comes back after SPA navigation.
-    try { delete (w as unknown as Record<string, unknown>).otto; } catch { /* ignore */ }
-
-    // Set clinic ID before the script runs
-    w.televet = { id: clinicId };
-
-    // Force a fresh script execution so Otto re-detects #otto-widget-iframe-container
-    loadOttoScript();
-
-    // Poll until the widget API is ready
-    let attempts = 0;
-    const interval = window.setInterval(() => {
-      const widget = w.otto?.widget;
-      if (widget && !initialized.current) {
-        initialized.current = true;
-        // initialize() pre-selects before the widget renders (no general-menu flash).
-        // selectRequestType() is also called as a backstop in case initialize() fired
-        // too late and the widget already rendered with the general menu.
-        if (widget.initialize) {
-          widget.initialize(clinicId, requestType ? { selectRequestType: requestType } : undefined);
+/**
+ * Otto is an external widget. Its loader intentionally uses a plain browser
+ * script rather than a React effect so direct-booking works on localized routes
+ * and on pages where React hydration is deferred.
+ */
+export function OttoInlineWidget({ clinicId, clinicName, requestType }: OttoInlineWidgetProps) {
+  const script = `(() => {
+    const clinicId = ${toJsString(clinicId)};
+    const requestType = ${toJsString(requestType)};
+    const start = () => {
+      const container = document.querySelector("#otto-widget-iframe-container");
+      if (!container || container.dataset.ottoLoaded === clinicId + requestType) return;
+      container.dataset.ottoLoaded = clinicId + requestType;
+      window.televet = { id: clinicId };
+      const existing = document.querySelector('script[src="${SHIM_URL}"]');
+      if (existing) existing.remove();
+      const shim = document.createElement("script");
+      shim.async = true;
+      shim.src = "${SHIM_URL}";
+      document.body.appendChild(shim);
+      let attempts = 0;
+      const waitForWidget = window.setInterval(() => {
+        const widget = window.otto && window.otto.widget;
+        if (widget) {
+          if (widget.initialize) widget.initialize(clinicId, requestType ? { selectRequestType: requestType } : undefined);
+          if (requestType && widget.selectRequestType) widget.selectRequestType(requestType);
+          container.closest(".otto-widget-frame")?.classList.remove("is-loading");
+          window.clearInterval(waitForWidget);
+        } else if (++attempts > 60) {
+          container.closest(".otto-widget-frame")?.classList.remove("is-loading");
+          window.clearInterval(waitForWidget);
         }
-        if (requestType) {
-          widget.selectRequestType?.(requestType);
-        }
-        setLoadedWidgetKey(widgetKey);
-        window.clearInterval(interval);
-        return;
-      }
-      if (++attempts > 60) {
-        setLoadedWidgetKey(widgetKey);
-        window.clearInterval(interval);
-      }
-    }, 400);
-
-    return () => {
-      window.clearInterval(interval);
-      try { w.otto?.widget?.destroy?.(); } catch { /* ignore */ }
+      }, 400);
     };
-  }, [clinicId, requestType, widgetKey]);
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start, { once: true });
+    else start();
+  })();`;
 
   return (
-    <div className="otto-widget-frame">
-      <div
-        id="otto-widget-iframe-container"
-        aria-label={`Connect with ${clinicName || "our team"} online`}
-      />
-      {loading && (
-        <div className="otto-loading-overlay" aria-hidden="true">
-          <span className="otto-loading-spinner" />
-          <span className="otto-loading-text">Connecting to help center…</span>
-        </div>
-      )}
+    <div className="otto-widget-frame is-loading">
+      <div id="otto-widget-iframe-container" aria-label={`Connect with ${clinicName || "our team"} online`} />
+      <div className="otto-loading-overlay" aria-hidden="true">
+        <span className="otto-loading-spinner" />
+        <span className="otto-loading-text">Connecting to help center…</span>
+      </div>
+      <script dangerouslySetInnerHTML={{ __html: script }} />
     </div>
   );
 }

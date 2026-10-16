@@ -119,7 +119,7 @@ export const veterinarians: Veterinarian[] = [
     shortName: "Dr. Becky",
     credentials: "DVM",
     role: "Veterinarian",
-    cardRole: "Veterinarian · Auburn University, Class of 1990",
+    cardRole: "Veterinarian",
     cardSummary:
       "A Northern Kentucky native, Dr. Golatzki brings decades of small-animal and preventive-care experience. Her work is rooted in lasting relationships with pets and the people who care for them.",
     location: "Northern Kentucky",

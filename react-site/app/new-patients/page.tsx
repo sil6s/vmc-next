@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 import { CalendarCheck, Check, HeartHandshake, MapPin, MessageCircle, Phone } from "lucide-react";
@@ -7,11 +8,13 @@ import { locations } from "@/data/locations";
 import { pageMetadata } from "@/lib/metadata";
 import { breadcrumbSchema, JsonLd, organizationSchema, webpageSchema } from "@/lib/schema";
 import { getPublicSettings } from "@/lib/settings/public";
+import { getStaticPageTranslationDictionary } from "@/data/static-page-translations";
+import { isLocale } from "@/lib/i18n";
 
 const seo = {
   title: "New Patients | Book Your First Vet Visit in Northern Kentucky",
   description:
-    "Looking for a veterinarian in Northern Kentucky? New dog and cat patients can book a first visit with Veterinary Medical Centers in Fort Thomas or Independence, KY."
+    "New dog and cat patients can book their first VMC visit in Fort Thomas or Independence, KY. Learn what to bring and what to expect."
 };
 
 const crumbs = [
@@ -98,6 +101,10 @@ function locationByShortName(shortName: string) {
 }
 
 export default async function NewPatientsPage() {
+  const localeHeader = (await headers()).get("x-vmc-locale");
+  const locale = isLocale(localeHeader) ? localeHeader : "en";
+  const dictionary: Record<string, string> = locale === "en" ? {} : getStaticPageTranslationDictionary(locale);
+  const t = (value: string) => dictionary[value] || value;
   const settings = await getPublicSettings();
   const fortThomas = locationByShortName("Fort Thomas")!;
   const independence = locationByShortName("Independence")!;
@@ -107,14 +114,14 @@ export default async function NewPatientsPage() {
   return (
     <main className="vmc-new">
       <Hero
-        eyebrow="New to Veterinary Medical Centers?"
-        title="Welcome."
-        emphasis="We&rsquo;d love to meet your pet."
-        body="Whether you&rsquo;ve just brought home a new pet, recently moved to Northern Kentucky, or are looking for a local veterinarian closer to home, we&rsquo;re glad you found us. Our Fort Thomas and Independence veterinary teams welcome new dogs and cats for first visits, preventive care, everyday checkups, and unexpected worries."
+        eyebrow={t("New to Veterinary Medical Centers?")}
+        title={t("Welcome.")}
+        emphasis={t("We’d love to meet your pet.")}
+        body={t("Whether you’ve just brought home a new pet, recently moved to Northern Kentucky, or are looking for a local veterinarian closer to home, we’re glad you found us. Our Fort Thomas and Independence veterinary teams welcome new dogs and cats for first visits, preventive care, everyday checkups, and unexpected worries.")}
         image="/images/vet-stock2.jpg"
         imageAlt="Veterinary Medical Centers team member caring for a pet"
-        primaryCta={{ label: "Book Your First Visit", href: "#choose-clinic" }}
-        secondaryCta={{ label: "Prefer to Call?", href: "#call-us" }}
+        primaryCta={{ label: t("Book Your First Visit"), href: "#choose-clinic" }}
+        secondaryCta={{ label: t("Prefer to Call?"), href: "#call-us" }}
         showStats={false}
         inlineEmphasis
         compact
@@ -123,37 +130,33 @@ export default async function NewPatientsPage() {
       <section className="vmc-about">
         <div className="vmc-wrap vmc-about-grid">
           <div>
-            <p className="vmc-eyebrow">A little about us</p>
+            <p className="vmc-eyebrow">{t("A little about us")}</p>
             <h2>
-              Your neighborhood vet, <em>for the long haul.</em>
+              {t("Your neighborhood vet,")} <em>{t("for the long haul.")}</em>
             </h2>
           </div>
           <div className="vmc-about-copy">
             <p>
-              Veterinary Medical Centers is a locally and independently owned veterinary practice with clinics in Fort
-              Thomas and Independence. As a Northern Kentucky veterinarian for dogs and cats, we care for pets through
-              routine wellness visits, worried phone calls, first appointments, and the harder moments too.
+              {t("Veterinary Medical Centers is a locally and independently owned veterinary practice with clinics in Fort Thomas and Independence. As a Northern Kentucky veterinarian for dogs and cats, we care for pets through routine wellness visits, worried phone calls, first appointments, and the harder moments too.")}
             </p>
             <p>
-              We believe good veterinary care starts with listening. We want to know what you&apos;ve noticed at home,
-              what matters to your family, and what makes your pet feel safe. Then we&apos;ll explain what we find and
-              help you decide what comes next.
+              {t("We believe good veterinary care starts with listening. We want to know what you've noticed at home, what matters to your family, and what makes your pet feel safe. Then we'll explain what we find and help you decide what comes next.")}
             </p>
             <div className="vmc-values">
               <div className="vmc-value">
                 <div className="vmc-value-icon"><HeartHandshake aria-hidden="true" size={20} /></div>
-                <strong>We listen first</strong>
-                <span>You know your pet better than anyone. What you notice matters.</span>
+                <strong>{t("We listen first")}</strong>
+                <span>{t("You know your pet better than anyone. What you notice matters.")}</span>
               </div>
               <div className="vmc-value">
                 <div className="vmc-value-icon"><Check aria-hidden="true" size={20} /></div>
-                <strong>We explain the why</strong>
-                <span>You should understand what we&apos;re recommending and why.</span>
+                <strong>{t("We explain the why")}</strong>
+                <span>{t("You should understand what we're recommending and why.")}</span>
               </div>
               <div className="vmc-value">
                 <div className="vmc-value-icon"><CalendarCheck aria-hidden="true" size={20} /></div>
-                <strong>We stay with you</strong>
-                <span>From first visits through senior years, we&apos;re here for the relationship.</span>
+                <strong>{t("We stay with you")}</strong>
+                <span>{t("From first visits through senior years, we're here for the relationship.")}</span>
               </div>
             </div>
           </div>
@@ -163,13 +166,12 @@ export default async function NewPatientsPage() {
       <section className="vmc-section vmc-location-section" id="choose-clinic">
         <div className="vmc-wrap">
           <div className="vmc-section-head">
-            <p className="vmc-eyebrow">First things first</p>
+            <p className="vmc-eyebrow">{t("First things first")}</p>
             <h2>
-              Choose the clinic that feels <span className="vmc-accent">closest to home.</span>
+              {t("Choose the clinic that feels")} <span className="vmc-accent">{t("closest to home.")}</span>
             </h2>
             <p>
-              Both VMC locations welcome new patients. Choose the Fort Thomas or Independence veterinary clinic that is
-              most convenient for your family, and we&apos;ll guide you through the new-patient booking process.
+              {t("Both VMC locations welcome new patients. Choose the Fort Thomas or Independence veterinary clinic that is most convenient for your family, and we'll guide you through the new-patient booking process.")}
             </p>
           </div>
 
@@ -186,18 +188,17 @@ export default async function NewPatientsPage() {
               <div className="vmc-location-body">
                 <div className="vmc-location-icon" aria-hidden="true"><MapPin size={20} /></div>
                 <span className="vmc-location-label">Fort Thomas</span>
-                <h3>Fort Thomas Veterinary Medical Center</h3>
+                <h3>{t("Fort Thomas Veterinary Medical Center")}</h3>
                 <p>
                   {fortThomas.address}<br />
                   {ftPublic?.phone || fortThomas.phone}
                 </p>
                 <p className="vmc-location-detail">
-                  Convenient for Fort Thomas, Highland Heights, Bellevue, Newport, Dayton, Cold Spring, and nearby
-                  Cincinnati neighborhoods.
+                  {t("Convenient for Fort Thomas, Highland Heights, Bellevue, Newport, Dayton, Cold Spring, and nearby Cincinnati neighborhoods.")}
                 </p>
                 <div className="vmc-location-actions">
-                  <Link href="/online-help/fort-thomas/direct-booking/" className="vmc-btn vmc-btn-red">Book with Fort Thomas -&gt;</Link>
-                  <a href={`tel:${ftPublic?.tel || fortThomas.tel}`} className="vmc-btn vmc-btn-outline">Call</a>
+                  <Link href="/online-help/fort-thomas/direct-booking/" className="vmc-btn vmc-btn-red">{t("Book with Fort Thomas ->")}</Link>
+                  <a href={`tel:${ftPublic?.tel || fortThomas.tel}`} className="vmc-btn vmc-btn-outline">{t("Call")}</a>
                 </div>
               </div>
             </article>
@@ -214,18 +215,17 @@ export default async function NewPatientsPage() {
               <div className="vmc-location-body">
                 <div className="vmc-location-icon" aria-hidden="true"><MapPin size={20} /></div>
                 <span className="vmc-location-label">Independence</span>
-                <h3>Independence Veterinary Medical Center</h3>
+                <h3>{t("Independence Veterinary Medical Center")}</h3>
                 <p>
                   {independence.address}<br />
                   {indPublic?.phone || independence.phone}
                 </p>
                 <p className="vmc-location-detail">
-                  Convenient for Independence, Taylor Mill, Covington, Latonia, Erlanger, Florence, and central Northern
-                  Kentucky.
+                  {t("Convenient for Independence, Taylor Mill, Covington, Latonia, Erlanger, Florence, and central Northern Kentucky.")}
                 </p>
                 <div className="vmc-location-actions">
-                  <Link href="/online-help/independence/direct-booking/" className="vmc-btn vmc-btn-red">Book with Independence -&gt;</Link>
-                  <a href={`tel:${indPublic?.tel || independence.tel}`} className="vmc-btn vmc-btn-outline">Call</a>
+                  <Link href="/online-help/independence/direct-booking/" className="vmc-btn vmc-btn-red">{t("Book with Independence ->")}</Link>
+                  <a href={`tel:${indPublic?.tel || independence.tel}`} className="vmc-btn vmc-btn-outline">{t("Call")}</a>
                 </div>
               </div>
             </article>
@@ -236,13 +236,12 @@ export default async function NewPatientsPage() {
       <section className="vmc-section vmc-booking">
         <div className="vmc-wrap vmc-booking-layout">
           <div className="vmc-booking-intro">
-            <p className="vmc-eyebrow">Booking your first visit</p>
+            <p className="vmc-eyebrow">{t("Booking your first visit")}</p>
             <h2>
-              A few details, then <span className="vmc-accent">pick your time.</span>
+              {t("A few details, then")} <span className="vmc-accent">{t("pick your time.")}</span>
             </h2>
             <p>
-              Our online booking partner, Otto, walks you through the process. You&apos;ll tell us a little about
-              yourself and your pet, then choose an available New Client Visit at the clinic you selected.
+              {t("Our online booking partner, Otto, walks you through the process. You'll tell us a little about yourself and your pet, then choose an available New Client Visit at the clinic you selected.")}
             </p>
           </div>
 
@@ -251,21 +250,20 @@ export default async function NewPatientsPage() {
               <article className="vmc-step" key={step.title}>
                 <div className="vmc-step-number">{String(index + 1).padStart(2, "0")}</div>
                 <div className="vmc-step-content">
-                  <span className="vmc-step-kicker">{step.kicker}</span>
-                  <h3>{step.title}</h3>
-                  <p>{step.text}</p>
+                  <span className="vmc-step-kicker">{t(step.kicker)}</span>
+                  <h3>{t(step.title)}</h3>
+                  <p>{t(step.text)}</p>
                   {index === 1 && (
                     <>
                       <div className="vmc-pet-preview">
-                        <div className="vmc-pet-preview-title">New Pet Information</div>
+                        <div className="vmc-pet-preview-title">{t("New Pet Information")}</div>
                         <div className="vmc-pet-options">
-                          <div className="vmc-pet-option">Canine</div>
-                          <div className="vmc-pet-option">Feline</div>
+                          <div className="vmc-pet-option">{t("Canine")}</div>
+                          <div className="vmc-pet-option">{t("Feline")}</div>
                         </div>
                       </div>
                       <p className="vmc-small-note">
-                        Don&apos;t know every answer? That&apos;s okay. Fill in what you know. You can always call us if
-                        something is unclear.
+                        {t("Don't know every answer? That's okay. Fill in what you know. You can always call us if something is unclear.")}
                       </p>
                     </>
                   )}

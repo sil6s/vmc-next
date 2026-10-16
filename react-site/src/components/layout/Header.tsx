@@ -180,10 +180,10 @@ export function Header({
                 type="button"
                 className="mobile-search-bar"
                 onClick={() => window.dispatchEvent(new CustomEvent("vmc:open-search"))}
-                aria-label="Search the site"
+                aria-label={copy.searchSite}
               >
                 <Search aria-hidden="true" size={16} />
-                <span className="mobile-search-bar-placeholder">Search services, resources…</span>
+                <span className="mobile-search-bar-placeholder">{copy.searchHint}</span>
               </button>
             </SheetClose>
 
@@ -211,7 +211,7 @@ export function Header({
                   onClick={() => window.dispatchEvent(new CustomEvent("vmc:open-chat-support"))}
                 >
                   <MessageCircle aria-hidden="true" size={18} />
-                  Get help now
+                  {copy.getHelpNow}
                 </button>
               </SheetClose>
               {showBookingButton && (

@@ -1,4 +1,5 @@
 import type { Locale } from "@/lib/i18n";
+import generatedTranslations from "./generated-static-page-translations.json";
 
 type TranslationDictionary = Record<string, string>;
 type TranslatedLocale = Exclude<Locale, "en">;
@@ -285,7 +286,78 @@ const common: Record<TranslatedLocale, TranslationDictionary> = {
     "Pawstimonials": "Testimascotas",
     "Pawstimonials from pets and their people": "Testimascotas de mascotas y sus dueños",
     "Helpful pet care guides from your local vet team": "Guías útiles de cuidado de mascotas de su equipo veterinario local",
-    "Pet Care Guides": "Guías de cuidado de mascotas"
+    "Pet Care Guides": "Guías de cuidado de mascotas",
+    "New to Veterinary Medical Centers?": "¿Es nuevo en Veterinary Medical Centers?",
+    "Welcome.": "Bienvenido.",
+    "We’d love to meet your pet.": "Nos encantaría conocer a su mascota.",
+    "Whether you’ve just brought home a new pet, recently moved to Northern Kentucky, or are looking for a local veterinarian closer to home, we’re glad you found us. Our Fort Thomas and Independence veterinary teams welcome new dogs and cats for first visits, preventive care, everyday checkups, and unexpected worries.":
+      "Ya sea que acaba de traer una nueva mascota a casa, se mudó recientemente al norte de Kentucky o busca un veterinario local más cerca de casa, nos alegra que nos haya encontrado. Nuestros equipos veterinarios de Fort Thomas e Independence reciben a nuevos perros y gatos para primeras visitas, atención preventiva, chequeos cotidianos y preocupaciones inesperadas.",
+    "Book Your First Visit": "Reserve su primera visita",
+    "Prefer to Call?": "¿Prefiere llamar?",
+    "A little about us": "Un poco sobre nosotros",
+    "Your neighborhood vet,": "Su veterinario de confianza,",
+    "for the long haul.": "a largo plazo.",
+    "Veterinary Medical Centers is a locally and independently owned veterinary practice with clinics in Fort Thomas and Independence. As a Northern Kentucky veterinarian for dogs and cats, we care for pets through routine wellness visits, worried phone calls, first appointments, and the harder moments too.":
+      "Veterinary Medical Centers es una clínica veterinaria local e independiente con centros en Fort Thomas e Independence. Como veterinario del norte de Kentucky para perros y gatos, atendemos a las mascotas en visitas de bienestar, llamadas de preocupación, primeras citas y momentos más difíciles.",
+    "We believe good veterinary care starts with listening. We want to know what you've noticed at home, what matters to your family, and what makes your pet feel safe. Then we'll explain what we find and help you decide what comes next.":
+      "Creemos que una buena atención veterinaria comienza escuchando. Queremos saber qué ha notado en casa, qué es importante para su familia y qué hace que su mascota se sienta segura. Después le explicaremos lo que encontramos y le ayudaremos a decidir qué sigue.",
+    "We listen first": "Escuchamos primero",
+    "You know your pet better than anyone. What you notice matters.": "Usted conoce a su mascota mejor que nadie. Lo que observa importa.",
+    "We explain the why": "Explicamos el porqué",
+    "You should understand what we're recommending and why.": "Debe entender qué recomendamos y por qué.",
+    "We stay with you": "Estamos con usted",
+    "From first visits through senior years, we're here for the relationship.": "Desde las primeras visitas hasta los años de vejez, estamos aquí para acompañarlos.",
+    "First things first": "Primero lo primero",
+    "Choose the clinic that feels": "Elija la clínica que le quede",
+    "closest to home.": "más cerca de casa.",
+    "Both VMC locations welcome new patients. Choose the Fort Thomas or Independence veterinary clinic that is most convenient for your family, and we'll guide you through the new-patient booking process.":
+      "Ambas ubicaciones de VMC reciben a nuevos pacientes. Elija la clínica veterinaria de Fort Thomas o Independence que sea más conveniente para su familia y le guiaremos durante el proceso de reserva para nuevos pacientes.",
+    "Fort Thomas Veterinary Medical Center": "Veterinary Medical Center de Fort Thomas",
+    "Independence Veterinary Medical Center": "Veterinary Medical Center de Independence",
+    "Convenient for Fort Thomas, Highland Heights, Bellevue, Newport, Dayton, Cold Spring, and nearby Cincinnati neighborhoods.": "Conveniente para Fort Thomas, Highland Heights, Bellevue, Newport, Dayton, Cold Spring y vecindarios cercanos de Cincinnati.",
+    "Convenient for Independence, Taylor Mill, Covington, Latonia, Erlanger, Florence, and central Northern Kentucky.": "Conveniente para Independence, Taylor Mill, Covington, Latonia, Erlanger, Florence y el centro del norte de Kentucky.",
+    "Book with Fort Thomas ->": "Reservar con Fort Thomas ->",
+    "Book with Independence ->": "Reservar con Independence ->",
+    "Booking your first visit": "Reserve su primera visita",
+    "A few details, then": "Algunos datos y luego",
+    "pick your time.": "elija su horario.",
+    "Our online booking partner, Otto, walks you through the process. You'll tell us a little about yourself and your pet, then choose an available New Client Visit at the clinic you selected.":
+      "Nuestro socio de reservas en línea, Otto, le guía durante el proceso. Nos contará un poco sobre usted y su mascota, y luego elegirá una visita disponible para nuevo cliente en la clínica seleccionada.",
+    "About you": "Sobre usted",
+    "Start with your contact information.": "Comience con su información de contacto.",
+    "Enter your name and contact details so our team knows who we're welcoming and how to reach you.": "Ingrese su nombre y datos de contacto para que nuestro equipo sepa a quién recibimos y cómo comunicarse con usted.",
+    "About your pet": "Sobre su mascota",
+    "Then introduce us to your pet.": "Después, preséntenos a su mascota.",
+    "You'll enter your pet's name and a few basic details including whether they're a dog or cat, breed, sex, and other information that helps us prepare for the visit.": "Ingresará el nombre de su mascota y algunos datos básicos, incluidos si es perro o gato, raza, sexo y otra información que nos ayuda a prepararnos para la visita.",
+    "Your first appointment": "Su primera cita",
+    "Select your New Client Visit.": "Seleccione su visita para nuevo cliente.",
+    "You'll see the new-client appointment for the clinic you chose, such as FT - New Client Visit for Fort Thomas.": "Verá la cita para nuevos clientes de la clínica que eligió, como FT - New Client Visit para Fort Thomas.",
+    "Your schedule": "Su horario",
+    "Pick the time that works best.": "Elija el horario que le funcione mejor.",
+    "A calendar of available appointments will appear. Choose the date and time that's most convenient for you and your pet.": "Aparecerá un calendario de citas disponibles. Elija la fecha y hora más conveniente para usted y su mascota.",
+    "Confirmation": "Confirmación",
+    "Review everything and you're all set.": "Revise todo y estará listo.",
+    "Review your information and confirm the appointment. You'll receive your booking details when you're finished.": "Revise su información y confirme la cita. Recibirá los detalles de su reserva al finalizar.",
+    "New Pet Information": "Información de la nueva mascota",
+    "Canine": "Perro",
+    "Feline": "Gato",
+    "Don't know every answer? That's okay. Fill in what you know. You can always call us if something is unclear.": "¿No sabe todas las respuestas? No hay problema. Complete lo que sepa. Siempre puede llamarnos si algo no está claro.",
+    "A little technology that helps": "Un poco de tecnología que ayuda",
+    "Booking powered by Otto.": "Reservas con Otto.",
+    "Care from VMC.": "Atención de VMC.",
+    "Book directly": "Reserve directamente",
+    "Text with our team": "Envíe mensajes a nuestro equipo",
+    "Stay connected": "Manténgase conectado",
+    "No app required": "No necesita aplicación",
+    "Prefer to do it": "¿Prefiere hacerlo",
+    "the old-fashioned way?": "de la manera tradicional?",
+    "Before you come in": "Antes de venir",
+    "A few things help us get to know your pet.": "Algunas cosas nos ayudan a conocer a su mascota.",
+    "Mostly, we want to": "Sobre todo, queremos",
+    "get to know them.": "conocerla.",
+    "Ready when you are": "Listos cuando usted lo esté",
+    "Choose your clinic.": "Elija su clínica.",
+    "We’ll take it from there.": "Nosotros nos encargamos del resto."
   },
   fr: {
     "Home": "Accueil", "About": "À propos", "Services": "Services", "New Patients": "Nouveaux patients",
@@ -759,6 +831,11 @@ const serviceTitles: Record<TranslatedLocale, TranslationDictionary> = {
   }
 };
 
-export function getStaticPageTranslationDictionary(locale: TranslatedLocale) {
-  return { ...common[locale], ...routeTranslations[locale], ...serviceTitles[locale] };
+export function getStaticPageTranslationDictionary(locale: TranslatedLocale): TranslationDictionary {
+  return {
+    ...common[locale],
+    ...routeTranslations[locale],
+    ...serviceTitles[locale],
+    ...(generatedTranslations[locale] || {})
+  };
 }

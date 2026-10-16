@@ -7,7 +7,7 @@ import { pageMetadata } from "@/lib/metadata";
 export const metadata = pageMetadata({
   title: "Terms of Service | Veterinary Medical Centers",
   description:
-    "Terms of Service for Veterinary Medical Centers' website, online tools, appointment requests, and digital services for clients in Fort Thomas and Independence, KY.",
+    "Terms for VMC’s website, online tools, appointment requests, and digital services in Fort Thomas and Independence, KY.",
   path: "/terms/"
 });
 

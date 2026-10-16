@@ -19,7 +19,10 @@ export const localizedStaticPaths = [
   "/contact/",
   "/locations/",
   "/new-patients/",
+  "/patient-portal-online-booking/",
+  "/resources/",
   "/services/",
+  "/team/",
   "/vet-near-me/"
 ] as const;
 
@@ -58,7 +61,9 @@ export function isLocalizedStaticPath(pathname: string) {
   return (
     localizedStaticPaths.includes(normalized as (typeof localizedStaticPaths)[number]) ||
     localizedClinicPaths.includes(normalized as (typeof localizedClinicPaths)[number]) ||
-    normalized.startsWith("/services/")
+    normalized.startsWith("/services/") ||
+    normalized.startsWith("/team/") ||
+    normalized.startsWith("/online-help/")
   );
 }
 
@@ -155,6 +160,9 @@ export const messages = {
     menuDescription: "Navigate the main Veterinary Medical Centers website links.",
     openMenu: "Open menu",
     closeMenu: "Close menu",
+    searchSite: "Search the site",
+    searchHint: "Search services, resources…",
+    getHelpNow: "Get help now",
     emailAddress: "Email address",
     emailPlaceholder: "Your email address",
     subscribe: "Subscribe",
@@ -204,6 +212,9 @@ export const messages = {
     menuDescription: "Navegue por los enlaces principales del sitio web de Veterinary Medical Centers.",
     openMenu: "Abrir menú",
     closeMenu: "Cerrar menú",
+    searchSite: "Buscar en el sitio",
+    searchHint: "Buscar servicios y recursos…",
+    getHelpNow: "Obtenga ayuda ahora",
     emailAddress: "Dirección de correo electrónico",
     emailPlaceholder: "Su correo electrónico",
     subscribe: "Suscribirse",
@@ -253,6 +264,9 @@ export const messages = {
     menuDescription: "Parcourez les principaux liens du site Veterinary Medical Centers.",
     openMenu: "Ouvrir le menu",
     closeMenu: "Fermer le menu",
+    searchSite: "Rechercher sur le site",
+    searchHint: "Rechercher des services et des ressources…",
+    getHelpNow: "Obtenez de l’aide maintenant",
     emailAddress: "Adresse e-mail",
     emailPlaceholder: "Votre adresse e-mail",
     subscribe: "S’abonner",
@@ -302,6 +316,9 @@ export const messages = {
     menuDescription: "Veterinary Medical Centers वेबसाइट के मुख्य लिंक देखें।",
     openMenu: "मेनू खोलें",
     closeMenu: "मेनू बंद करें",
+    searchSite: "साइट खोजें",
+    searchHint: "सेवाएँ और संसाधन खोजें…",
+    getHelpNow: "अभी सहायता प्राप्त करें",
     emailAddress: "ईमेल पता",
     emailPlaceholder: "आपका ईमेल पता",
     subscribe: "सदस्यता लें",
@@ -349,6 +366,9 @@ export const messages = {
     menuDescription: "浏览 Veterinary Medical Centers 网站的主要链接。",
     openMenu: "打开菜单",
     closeMenu: "关闭菜单",
+    searchSite: "搜索网站",
+    searchHint: "搜索服务和资源…",
+    getHelpNow: "立即获取帮助",
     emailAddress: "电子邮件地址",
     emailPlaceholder: "您的电子邮件地址",
     subscribe: "订阅",

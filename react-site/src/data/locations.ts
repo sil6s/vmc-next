@@ -158,7 +158,7 @@ export const locations: LocationPage[] = [
     seo: {
       title: "Vet in Fort Thomas KY | Local Dog & Cat Veterinarian",
       description:
-        "Looking for a vet in Fort Thomas KY? Veterinary Medical Centers offer locally owned dog and cat care, wellness exams, dental care, surgery, and sick visits."
+        "Local dog and cat veterinary care in Fort Thomas, KY, including wellness exams, dental care, surgery, and sick visits."
     }
   },
   {
@@ -288,7 +288,7 @@ export const locations: LocationPage[] = [
     seo: {
       title: "Vet in Independence KY | Local Dog & Cat Veterinarian",
       description:
-        "Need a vet in Independence KY? Veterinary Medical Centers provide locally owned veterinary care for dogs and cats on Madison Pike in Northern Kentucky."
+        "Local dog and cat veterinary care in Independence, KY, on Madison Pike, including wellness exams, dental care, surgery, and sick visits."
     }
   }
 ];

@@ -7,12 +7,12 @@ import { AnnouncementBanner } from "@/components/layout/AnnouncementBanner";
 import { ChatSupportWidget } from "@/components/layout/ChatSupportWidget";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
-import { LocalizedStaticPage } from "@/components/layout/LocalizedStaticPage";
 import { LocalizedStaticLinks } from "@/components/layout/LocalizedStaticLinks";
+import { StaticPageTranslator } from "@/components/layout/StaticPageTranslator";
 import { TranslationBanner } from "@/components/layout/TranslationBanner";
 import { UnavailableTranslationBanner } from "@/components/layout/UnavailableTranslationBanner";
 import { UmamiTracker } from "@/components/layout/UmamiTracker";
-import { isLocale, isStandaloneLocalizedPath } from "@/lib/i18n";
+import { isLocale } from "@/lib/i18n";
 import { getPublicSettings } from "@/lib/settings/public";
 import { JsonLd, organizationSchema, websiteSchema } from "@/lib/schema";
 
@@ -93,11 +93,8 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
         )}
         <main id="main">
           <LocalizedStaticLinks locale={locale} />
-          {locale !== "en" && pageTranslated && isStandaloneLocalizedPath(pathname) ? (
-            <LocalizedStaticPage locale={locale} pathname={pathname} />
-          ) : (
-            children
-          )}
+          {locale !== "en" && pageTranslated && <StaticPageTranslator locale={locale} />}
+          {children}
         </main>
         <Footer
           locale={locale}

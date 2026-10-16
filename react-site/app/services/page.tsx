@@ -37,7 +37,7 @@ import { getServiceHubCards } from "@/sanity/services";
 const seo = {
   title: "Animal Hospital in Northern Kentucky | Vet Services | VMC",
   description:
-    "Full-service Northern Kentucky animal hospital for dogs and cats: wellness exams, vaccines, dental care, surgery, diagnostics, and sick visits in Fort Thomas & Independence."
+    "Northern Kentucky veterinary services for dogs and cats: wellness exams, vaccines, dental care, surgery, diagnostics, and sick visits."
 };
 
 const situationCards = [

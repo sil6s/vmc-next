@@ -14,9 +14,9 @@ import { getPublicSettings } from "@/lib/settings/public";
 import { breadcrumbSchema, faqSchema, JsonLd, locationVeterinaryCareSchema, webpageSchema } from "@/lib/schema";
 
 const seo = {
-  title: "Northern Kentucky Vet Clinics | Fort Thomas & Independence | VMC",
+  title: "Vet Clinics in Fort Thomas & Independence, KY | VMC",
   description:
-    "Two locally owned vet clinics in Northern Kentucky: Fort Thomas on Memorial Parkway and Independence on Madison Pike. Find your nearest clinic, hours, and directions."
+    "Two locally owned Northern Kentucky vet clinics in Fort Thomas and Independence. Find hours, directions, and the right clinic for your family."
 };
 
 export const metadata = pageMetadata({ ...seo, path: "/locations/" });

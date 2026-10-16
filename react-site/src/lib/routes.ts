@@ -22,7 +22,7 @@ export const staticRoutes = [
 ] as const;
 
 export const sitemapStaticRoutes = staticRoutes.filter(
-  (route) => !["/online-vet-pharmacy-northern-kentucky-cincinnati/"].includes(route)
+  (route) => !["/online-vet-pharmacy-northern-kentucky-cincinnati/", "/patient-portal-online-booking/"].includes(route)
 );
 
 export function allRoutes() {

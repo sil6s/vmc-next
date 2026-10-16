@@ -1,62 +1,57 @@
-"use client";
-
-import { useEffect } from "react";
 import { getStaticPageTranslationDictionary } from "@/data/static-page-translations";
 import type { Locale } from "@/lib/i18n";
 
-function translateDynamic(text: string, dictionary: Record<string, string>, locale: Locale) {
-  const trimmed = text.trim();
-  if (dictionary[trimmed]) return text.replace(trimmed, dictionary[trimmed]);
-  if (locale !== "es") return text;
-
-  const translateServiceName = (value: string) => dictionary[value] || value;
-  const next = text
-    .replace(/^What (.+) helps with\.$/, (_match, service) => `En qué ayuda ${translateServiceName(service)}.`)
-    .replace(/^How Veterinary Medical Centers approaches (.+)\.$/, (_match, service) => `Cómo aborda Veterinary Medical Centers ${translateServiceName(service)}.`)
-    .replace(/^Frequently asked questions about (.+)\.$/, (_match, service) => `Preguntas frecuentes sobre ${translateServiceName(service)}.`)
-    .replace(/^Call (Fort Thomas|Independence)$/, "Llamar a $1")
-    .replace(/^(Fort Thomas|Independence) Veterinary Medical Center$/, "Veterinary Medical Center de $1")
-    .replace(/^Reviewed (.+)$/, "Revisado $1");
-  return next;
+function safeJson(value: unknown) {
+  return JSON.stringify(value).replace(/[<>&\u2028\u2029]/g, (character) => {
+    const replacements: Record<string, string> = {
+      "<": "\\u003c",
+      ">": "\\u003e",
+      "&": "\\u0026",
+      "\u2028": "\\u2028",
+      "\u2029": "\\u2029"
+    };
+    return replacements[character];
+  });
 }
 
+/** Applies the saved, one-time LibreTranslate dictionary after page parsing. */
 export function StaticPageTranslator({ locale }: { locale: Locale }) {
-  useEffect(() => {
-    if (locale === "en") return;
-    const dictionary = getStaticPageTranslationDictionary(locale);
-    const root = document.querySelector<HTMLElement>("main");
-    if (!root) return;
+  if (locale === "en") return null;
 
+  const dictionary = safeJson(getStaticPageTranslationDictionary(locale));
+  const script = `(() => {
+    const dictionary = ${dictionary};
     const translate = () => {
+      const root = document.querySelector("#main");
+      if (!root) return;
       const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
       let node = walker.nextNode();
       while (node) {
         const parent = node.parentElement;
-        const text = node.textContent || "";
-        const trimmed = text.trim();
+        const original = node.textContent || "";
+        const trimmed = original.trim();
         if (parent && trimmed && !parent.closest("script, style, [data-no-translate]")) {
-          const translated = translateDynamic(text, dictionary, locale);
-          if (translated !== text) node.textContent = translated;
+          const replacement = dictionary[trimmed];
+          if (replacement) node.textContent = original.replace(trimmed, replacement);
         }
         node = walker.nextNode();
       }
-
-      root.querySelectorAll<HTMLElement>("[aria-label], [placeholder], [title]").forEach((element) => {
-        for (const attribute of ["aria-label", "placeholder", "title"]) {
-          const value = element.getAttribute(attribute);
-          if (value) {
-            const translated = translateDynamic(value, dictionary, locale);
-            if (translated !== value) element.setAttribute(attribute, translated);
-          }
-        }
+      root.querySelectorAll("[aria-label], [placeholder], [title]").forEach((element) => {
+        ["aria-label", "placeholder", "title"].forEach((attribute) => {
+          const original = element.getAttribute(attribute);
+          const replacement = original && dictionary[original.trim()];
+          if (replacement) element.setAttribute(attribute, replacement);
+        });
       });
     };
+    const start = () => {
+      translate();
+      window.setTimeout(translate, 100);
+      window.setTimeout(translate, 500);
+    };
+    if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", start, { once: true });
+    else start();
+  })();`;
 
-    translate();
-    const observer = new MutationObserver(translate);
-    observer.observe(root, { childList: true, subtree: true });
-    return () => observer.disconnect();
-  }, [locale]);
-
-  return null;
+  return <script data-static-page-translator={locale} dangerouslySetInnerHTML={{ __html: script }} />;
 }
