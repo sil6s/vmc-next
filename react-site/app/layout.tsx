@@ -13,6 +13,7 @@ import { TranslationBanner } from "@/components/layout/TranslationBanner";
 import { UnavailableTranslationBanner } from "@/components/layout/UnavailableTranslationBanner";
 import { UmamiTracker } from "@/components/layout/UmamiTracker";
 import { isLocale } from "@/lib/i18n";
+import { cleanSeoTitle } from "@/lib/metadata";
 import { getPublicSettings } from "@/lib/settings/public";
 import { JsonLd, organizationSchema, websiteSchema } from "@/lib/schema";
 
@@ -41,7 +42,7 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL(settings.siteUrl),
     applicationName: "Veterinary Medical Centers",
     title: {
-      default: settings.seo.defaultSeoTitle,
+      default: cleanSeoTitle(settings.seo.defaultSeoTitle),
       template: "%s"
     },
     description: settings.seo.defaultMetaDescription,

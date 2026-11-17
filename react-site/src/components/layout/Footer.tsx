@@ -146,6 +146,7 @@ export async function Footer({
         <span className="footer-legal-links">
           <span>{site.legal}</span>
           <Link href={localizedHref("/privacy-policy/", locale)}>{copy.privacy}</Link>
+          <Link href="/site-map/">Site map</Link>
           <Link href="/ai-business-profile/">AI Business Profile</Link>
         </span>
       </div>

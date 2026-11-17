@@ -30,7 +30,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const guideRoutes = ["/guides/", ...guides.map((guide) => `/guides/${guide.slug}/`)];
   const resourceRoutes = posts.map((post) => `/resources/${post.slug}/`);
 
-  const allRoutes = [
+  const allRoutes = Array.from(new Set([
     ...sitemapStaticRoutes,
     ...teamRoutes,
     ...guideRoutes,
@@ -38,7 +38,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...cityRoutes,
     ...serviceRoutes,
     ...resourceRoutes
-  ];
+  ]));
 
   const postLastModified = new Map(posts.map((post) => [`/resources/${post.slug}/`, post.updatedAt || post.date]));
 

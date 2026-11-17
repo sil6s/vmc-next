@@ -14,6 +14,7 @@ export const staticRoutes = [
   "/book-appointment/",
   "/contact/",
   "/resources/",
+  "/site-map/",
   "/patient-portal-online-booking/",
   "/online-vet-pharmacy-northern-kentucky-cincinnati/",
   "/vet-near-me/",

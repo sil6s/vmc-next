@@ -15257,6 +15257,15 @@ textarea {
   fill: currentColor;
 }
 
+@media (max-width: 760px) {
+  .home-love-banner-inner {
+    flex-direction: column;
+    gap: 4px;
+    padding: 9px 20px;
+    line-height: 1.3;
+  }
+}
+
 /* ── Homepage compassionate microcopy ── */
 .home-reassurance-line {
   display: flex;
@@ -20744,6 +20753,33 @@ body > div:has(> #televet-widget-iframe) {
 
   .chat-support-options article > svg {
     display: none;
+  }
+
+  /* A single, scannable action column avoids cramped two-up cards in the full-screen help panel. */
+  .chat-support-widget:has(.chat-support-panel) .chat-support-panel-head {
+    gap: 8px;
+  }
+
+  .chat-support-widget:has(.chat-support-panel) .chat-support-panel h2 {
+    font-size: clamp(31px, 10vw, 44px);
+    line-height: 1.02;
+  }
+
+  .chat-support-widget:has(.chat-support-panel) .chat-support-help-menu {
+    gap: 10px;
+  }
+
+  .chat-support-widget:has(.chat-support-panel) .chat-support-location-toggle {
+    min-height: 58px;
+  }
+
+  .chat-support-widget:has(.chat-support-panel) .chat-support-location-toggle button {
+    min-height: 48px;
+  }
+
+  .chat-support-widget:has(.chat-support-panel) .chat-support-action-list {
+    grid-template-columns: 1fr;
+    gap: 8px;
   }
 
   .otto-launcher-status {
@@ -28400,6 +28436,17 @@ a.home-team-portrait { display: block; }
 /* Charcoal "independently owned" strip. */
 .home-love-banner { background: #1b1513; }
 .home-love-banner-inner svg { color: #dfae68; }
+
+/* Human-readable crawl hub for visitors and search engines. */
+.site-map-page > .mx-auto { max-width: 1180px; }
+.site-map-intro { max-width: 690px; margin: 0 0 34px; color: var(--body); font-size: 17px; line-height: 1.7; }
+.site-map-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+.site-map-grid section { padding: 26px; border: 1px solid rgba(84, 52, 44, 0.13); border-radius: 14px; background: var(--white); }
+.site-map-grid h2 { margin: 0 0 14px; font-family: var(--font-serif); font-size: clamp(25px, 3vw, 34px); line-height: 1.05; }
+.site-map-grid ul { display: grid; gap: 9px; padding: 0; margin: 0; list-style: none; }
+.site-map-grid li a { color: var(--ink); font-weight: 700; text-decoration-color: rgba(169, 27, 27, 0.35); text-underline-offset: 3px; }
+.site-map-grid .text-link { margin-top: 18px; }
+@media (max-width: 700px) { .site-map-grid { grid-template-columns: 1fr; gap: 14px; } .site-map-grid section { padding: 21px; } }
 
 /* Homepage "More than a visit" feature. */
 .home-relationship-feature { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: clamp(32px, 6vw, 88px); align-items: center; }

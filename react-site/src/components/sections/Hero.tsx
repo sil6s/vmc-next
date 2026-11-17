@@ -49,7 +49,7 @@ export function Hero({ eyebrow, title, emphasis, body, image, imageAlt = "", bad
       </div>
       {image && (
         <div className="hero-media">
-          <Image src={image} alt={imageAlt} width={920} height={720} priority sizes="(max-width: 900px) 100vw, 50vw" />
+          <Image src={image} alt={imageAlt} width={920} height={720} priority fetchPriority="high" sizes="(max-width: 900px) 100vw, 50vw" />
           {(badgeTitle || badgeSub) && (
             <div className="hero-badge">
               <span />

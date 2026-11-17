@@ -18,13 +18,13 @@ export function LanguageSelector({ locale, label, compact = false }: { locale: L
   }
 
   function changeLocale(nextLocale: Locale) {
-    window.location.href = localeHref(nextLocale);
+    window.location.assign(localeHref(nextLocale));
   }
 
   if (compact) {
     return (
       <details className="language-selector language-selector-compact footer-language-menu">
-        <summary aria-label={label}>
+        <summary aria-label={`${localeNames[locale]} ${label}`}>
           <Languages aria-hidden="true" size={16} />
           <span>{localeNames[locale]}</span>
           <ChevronDown aria-hidden="true" size={16} />

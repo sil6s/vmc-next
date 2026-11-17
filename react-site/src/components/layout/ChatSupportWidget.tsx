@@ -337,7 +337,7 @@ export function ChatSupportWidget({
     border: "1px solid rgba(169, 27, 27, 0.14)",
     borderRadius: 999,
     background: "rgba(169, 27, 27, 0.05)",
-    minHeight: isMobilePanel ? 72 : 66,
+    minHeight: isMobilePanel ? 58 : 66,
     alignItems: "center",
     padding: 4
   };
@@ -347,13 +347,13 @@ export function ChatSupportWidget({
     gridTemplateColumns: "34px minmax(0, 1fr) 18px",
     gap: 11,
     alignItems: "center",
-    minHeight: isMobilePanel ? 62 : 54,
+    minHeight: isMobilePanel ? 60 : 54,
     border: "1px solid rgba(169, 27, 27, 0.12)",
     borderRadius: 9,
     background: "var(--white)",
     color: "var(--ink)",
     cursor: "pointer",
-    padding: isMobilePanel ? "12px 13px" : "10px 12px",
+    padding: isMobilePanel ? "10px 13px" : "10px 12px",
     font: "inherit",
     textAlign: "left"
   };
@@ -430,7 +430,6 @@ export function ChatSupportWidget({
         >
           <div className="chat-support-panel-head">
             <div>
-              <p className="eyebrow">VMC Help Center</p>
               <h2 id="vmc-chat-support-title">
                 Help for your pet, <em>right here.</em>
               </h2>
@@ -441,7 +440,7 @@ export function ChatSupportWidget({
             </button>
           </div>
 
-          <div className="chat-support-help-menu" style={{ display: "grid", gap: 12, marginTop: 14 }}>
+          <div className="chat-support-help-menu" style={{ display: "grid", gap: 10, marginTop: 10 }}>
             <div className="chat-support-location-toggle" aria-label="Switch clinic" style={toggleStyle}>
               {(Object.keys(locationMap) as LocationKey[]).map((locationKey) => {
                 const location = locationMap[locationKey];
@@ -461,7 +460,7 @@ export function ChatSupportWidget({
                       color: isSelected ? "var(--ink)" : "var(--body)",
                       cursor: isSelected ? "default" : "pointer",
                       font: "inherit",
-                      minHeight: isMobilePanel ? 56 : 52,
+                      minHeight: isMobilePanel ? 48 : 52,
                       fontSize: isMobilePanel ? 16 : 16,
                       fontWeight: 750,
                       letterSpacing: 0,

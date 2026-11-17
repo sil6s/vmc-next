@@ -3,6 +3,7 @@ import { site } from "@/data/site";
 
 export default function robots(): MetadataRoute.Robots {
   return {
+    host: site.siteUrl,
     rules: [
       {
         userAgent: "*",

@@ -4,6 +4,8 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
   images: {
     formats: ["image/webp"],
+    // Include common phone widths so mobile images do not default to a much larger source.
+    deviceSizes: [360, 390, 420, 640, 750, 828, 1080, 1200, 1920],
     remotePatterns: [
       {
         protocol: "https",

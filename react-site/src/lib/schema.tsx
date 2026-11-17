@@ -2,6 +2,7 @@ import type { FAQ } from "@/data/faqs";
 import type { LocationPage } from "@/data/locations";
 import type { ServiceDetail } from "@/data/serviceHub";
 import { absoluteUrl, canonicalUrl, site } from "@/data/site";
+import { cleanSeoTitle } from "@/lib/metadata";
 import type { PublicSettings } from "@/lib/settings/public";
 
 export function organizationSchema(settings?: PublicSettings) {
@@ -88,7 +89,7 @@ export function webpageSchema(path: string, name: string, description: string) {
     "@context": "https://schema.org",
     "@type": "WebPage",
     "@id": `${url}#webpage`,
-    name,
+    name: cleanSeoTitle(name),
     description,
     url,
     isPartOf: {
@@ -341,7 +342,7 @@ export function articleSchema(post: {
   return {
     "@context": "https://schema.org",
     "@type": "BlogPosting",
-    headline: post.title,
+    headline: cleanSeoTitle(post.title),
     datePublished: post.date,
     dateModified: post.updatedAt || post.date,
     description: post.excerpt,
